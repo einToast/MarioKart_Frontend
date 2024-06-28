@@ -1,0 +1,171 @@
+.no-scroll {
+    --overflow: hidden;
+}
+
+p {
+    font-size: 20px;
+    font-family: Poppins;
+}
+
+h2 {
+    font-size: 32px !important;
+    margin-bottom: 10px !important;
+}
+
+h1 {
+    font-size: 32px !important;
+    margin: 0 !important;
+}
+
+.contentLogin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 80vh;
+}
+
+.loginContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.borderContainer {
+    position: relative;
+
+    &.selectCharacter {
+        display: flex;
+        flex-direction: row-reverse;
+
+        .selected-character {
+            width: 50px;
+
+            img {
+                padding-top: 5px;
+                padding-left: 5px;
+            }
+        }
+    }
+
+    select {
+        appearance: none;
+        background: none;
+        border: none;
+        width: 100%;
+        padding: 10px;
+        font-weight: normal !important;
+        font-family: Poppins  !important;
+        color: #fff;
+        font-size: 16px !important;
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+
+    input {
+        display: inline-block;
+        background: none;
+        padding: 10px;
+        appearance: none;
+        border: none;
+        width: 100%;
+        font-family: Poppins;
+        color: #fff;
+        font-size: 16px !important;
+
+        &::placeholder {
+
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+    }
+
+    &:after {
+        content: '';
+        left: 0;
+        position: absolute;
+        border-width: 2px;
+        border-style: solid;
+        border-image: linear-gradient(45deg, var(--ion-color-gradient01), var(--ion-color-gradient02)) 1;
+        width: calc(100% - 2px);
+        border-radius: 9px;
+        height: 100%;
+        z-index: -1;
+    }
+}
+
+ion-button::part(native) {
+    width: 100%;
+    color: #fff;
+    border-radius: 0;
+    border-image: linear-gradient(45deg, var(--ion-color-gradient01), var(--ion-color-gradient02)) 1;
+    background: var(--ion-color-gradient01);
+    background: -moz-linear-gradient(left, var(--ion-color-gradient01) 0%, var(--ion-color-gradient02) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, var(--ion-color-gradient01)), color-stop(100%, var(--ion-color-gradient02)));
+    background: -webkit-linear-gradient(left, var(--ion-color-gradient01) 0%, var(--ion-color-gradient02) 100%);
+    background: -o-linear-gradient(left, var(--ion-color-gradient01) 0%, var(--ion-color-gradient02) 100%);
+    background: -ms-linear-gradient(left, var(--ion-color-gradient01) 0%, var(--ion-color-gradient02) 100%);
+    background: linear-gradient(to right, var(--ion-color-gradient01) 0%, var(--ion-color-gradient02) 100%);
+}
+
+ion-button {
+    width: 100%;
+    margin: 0;
+}
+
+.adminDashboard {
+    ion-button > div {
+        padding: 10px;
+    }
+}
+
+ion-button {
+    > div {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+
+        p {
+            margin: 0;
+            text-transform: none;
+            font-family: Poppins;
+            color: #fff;
+            letter-spacing: normal;
+            font-size: 16px !important;
+            text-align: left;
+        }
+    }
+}
+
+ion-button.secondary::part(native) {
+    border: 2px solid #fff;
+    background: transparent;
+}
+
+.adminDashboard {
+    flex-direction: column;
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+a {
+    font-family: Poppins;
+    font-size: 12px;
+    margin-top: 15px;
+    color: #ffffff !important;
+}
+
+h2 {
+    padding-bottom: 0;
+}
+
+.custom-alert {
+    h2 {
+        font-size: 20px !important;
+    }
+}

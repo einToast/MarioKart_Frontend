@@ -1,0 +1,268 @@
+.loggedInUserHead {
+    display: flex;
+    align-items: center;
+
+    p {
+        margin: 0 !important;
+        padding-left: 10px;
+    }
+
+    ion-avatar {
+        position: relative;
+
+        &:after {
+            content: "";
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            z-index: -1;
+            background: var(--ion-color-bg01-tint);
+            border-radius: 27px;
+        }
+    }
+}
+
+.flexStart {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 10px;
+
+    select {
+        font-family: Poppins;
+        background-color: #2F315B;
+        border: none;
+        padding: 3px 7px;
+        color: #fff;
+        border-radius: 5px;
+    }
+
+    h2 {
+        margin-bottom: 0 !important;
+    }
+}
+
+body:not(.all-games-selected) .flexSpiel {
+    &.next {
+        opacity: 0.7;
+    }
+
+    .teamContainer div:first-of-type {
+        display: flex;
+
+        &.loggedIn {
+            border: 2px solid #C0B5F3;
+        }
+
+        &.weiß {
+            p:last-of-type {
+                color: #ECECEC !important;
+            }
+        }
+
+        &.grün {
+            p:last-of-type {
+                color: #9DDAAA !important;
+            }
+        }
+
+        &.blau {
+            p:last-of-type {
+                color: #9DAEDA !important;
+            }
+        }
+
+        &.rot {
+            p:last-of-type {
+                color: #DA9DC9 !important;
+            }
+        }
+
+        .imageContainer {
+            img {
+                left: 3px;
+            }
+
+            &.weiß:after {
+                background-color: #ECECEC !important;
+            }
+
+            &.grün:after {
+                background-color: #9DDAAA !important;
+            }
+
+            &.blau:after {
+                background-color: #9DAEDA !important;
+            }
+
+            &.rot:after {
+                background-color: #DA9DC9 !important;
+            }
+        }
+    }
+
+    .roundContainer {
+        gap: 10px;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.all-games-selected .flexSpiel {
+
+    &.next {
+        opacity: 0.7;
+    }
+
+    .swiper-slide {
+        position: relative;
+        display: flex;
+        background-color: #32345E;
+        border-radius: 18px;
+        border: 2px solid #32345E;
+        align-items: center;
+        padding: 10px 10px 10px 150px;
+
+        &.loggedIn {
+            border: 2px solid #C0B5F3;
+        }
+
+        p:first-child {
+            margin-bottom: 5px;
+        }
+
+        .weiß {
+            p:last-of-type {
+                color: #ECECEC !important;
+            }
+        }
+
+        .grün {
+            p:last-of-type {
+                color: #9DDAAA !important;
+            }
+        }
+
+        .blau {
+            p:last-of-type {
+                color: #9DAEDA !important;
+            }
+        }
+
+        .rot {
+            p:last-of-type {
+                color: #DA9DC9 !important;
+            }
+        }
+
+
+        &:last-of-type {
+            margin-bottom: 0 !important;
+        }
+
+        .imageContainer {
+
+            img {
+                width: 35px !important;
+                position: absolute;
+
+                &:first-of-type {
+                    left: 35px;
+                    top: 50px;
+                }
+
+                &:nth-child(2) {
+                    top: 25px;
+                    left: 85px;
+                }
+
+                &:nth-child(3) {
+                    top: 60px;
+                    left: 70px;
+                }
+
+                &:last-of-type {
+                    left: 50px;
+                    top: 15px;
+                }
+            }
+
+            &:after {
+                top: 20px;
+                left: 45px;
+                width: 70px;
+                height: 70px;
+                content: "";
+                position: absolute;
+                z-index: -1;
+                border-radius: 100px;
+            }
+
+            &.weiß:after {
+                background-color: #ECECEC !important;
+            }
+
+            &.grün:after {
+                background-color: #9DDAAA !important;
+            }
+
+            &.blau:after {
+                background-color: #9DAEDA !important;
+            }
+
+            &.rot:after {
+                background-color: #DA9DC9 !important;
+            }
+        }
+    }
+}
+
+
+.roundContainer {
+    padding-bottom: 15px;
+}
+
+.timeContainer {
+    display: flex;
+    justify-content: space-between;
+
+    .timeStamp {
+        background-color: #32345F;
+        width: max-content;
+        padding: 2px 15px;
+        color: #D1B9F9;
+        border-radius: 25px;
+        font-size: 16px;
+        align-items: center;
+        display: flex;
+    }
+}
+
+
+
+
+.swiper-wrapper {
+    align-items: center;
+
+}
+
+.swiper-slide, .slide {
+    p:first-of-type {
+        font-family: Poppins;
+        font-weight: 900;
+        font-size: 18px;
+    }
+
+    p:last-of-type {
+        font-family: Poppins;
+        font-size: 14px;
+        color: #9DAEDA !important;
+    }
+}
+
+.swiper-button-prev:after, .swiper-button-next:after {
+    font-size: 14px !important;
+    color: #fff;
+    font-weight: bold;
+}

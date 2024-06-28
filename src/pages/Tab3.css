@@ -1,0 +1,82 @@
+.progressContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        p {
+            margin: 0;
+
+            span {
+                font-weight: 600;
+                font-family: Poppins;
+            }
+        }
+
+        ion-icon {
+            font-size: 20px;
+        }
+    }
+}
+
+h2 {
+    padding-bottom: 15px;
+}
+
+.img-wrapper {
+    background-color: #8e8da5;
+    display: flex;
+    flex: 1 1 100%;
+    height: auto;
+    overflow: hidden;
+    position: relative;
+    width: 150px;
+}
+
+.img-wrapper img {
+    filter: grayscale(100%) contrast(1);
+    flex: 1 0 100%;
+    height: 100%;
+    max-width: 100%;
+    mix-blend-mode: overlay;
+    object-fit: cover;
+    opacity: 0.5;
+    position: relative;
+    width: 100%;
+}
+
+.img-wrapper::before {
+    background-color: #a486e9;
+    bottom: 0;
+    content: '';
+    height: 100%;
+    left: 0;
+    mix-blend-mode: color-burn;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.organisatorenSingle {
+    display: grid;
+    align-items: end;
+    grid-template-columns: auto 1fr;
+    padding-bottom: 10px;
+    grid-gap: 20px;
+
+    p {
+        margin: 0;
+        font-size: 16px;
+
+        &:first-of-type {
+            font-weight: 600;
+        }
+    }
+}

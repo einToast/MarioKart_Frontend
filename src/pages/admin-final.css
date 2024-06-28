@@ -1,0 +1,33 @@
+p.bold {
+    font-weight: bold;
+}
+
+
+.teamFinalContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.teamFinal {
+    background-color: #32345E;
+    border: 1px solid #32345E;
+    padding: 15px 25px;
+    border-radius: 9px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        border: 1px solid #fff;
+    }
+
+    ion-icon {
+        font-size: 22px;
+    }
+
+    h3 {
+        margin: 0 !important;
+    }
+}

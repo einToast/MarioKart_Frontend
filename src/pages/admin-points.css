@@ -1,0 +1,112 @@
+.back {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    margin-top: 15px;
+
+    a {
+        margin-top: 0;
+        text-decoration: none;
+    }
+}
+
+ion-button.secondary::part(native) {
+    border-width: 1px;
+}
+
+ion-accordion-group {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-bottom: 100px;
+}
+
+ion-checkbox {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-family: Poppins;
+}
+
+ion-accordion {
+    margin-bottom: 10px;
+    box-shadow: 2px 16px 19px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+
+    .ion-color-light, .ion-padding {
+        --ion-color-base: #32345E !important;
+        background: #32345E !important;
+    }
+
+    .inputContainer {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 30px;
+        margin-bottom: 20px;
+    }
+
+    ion-button::part(native) {
+        border-radius: 9px;
+    }
+
+    h3 {
+        font-size: 18px;
+        
+        &.gruen {
+            color: #9DDAAA;
+        }
+        
+        &.rot {
+            color: #DA9DC9;
+        }
+        
+        &.blau {
+            color: #9DAEDA;
+        }
+        
+        &.weiss {
+            color: #ECECEC;
+        }
+    }
+
+    .characterInput {
+        position: relative;
+        display: flex;
+        width: 100%;
+        padding-bottom: 40px;
+
+        input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #fff;
+            border-radius: 5px;
+            min-height: 40px;
+            text-align: center;
+        }
+
+        img {
+            width: 50px;
+            height: auto;
+            position: absolute;
+            left: 50%;
+            top: 30px;
+            transform: translateX(-50%);
+        }
+    }
+}
+
+ion-button.round::part(native) {
+    border-radius: 9px;
+}
+
+.playedContainer {
+    position: fixed;
+    background: #141535;
+    padding: 15px 20px 30px;
+    bottom: -15px;
+    left: 3px;
+    width: 100%;
+
+    .secondary {
+        margin-bottom: 10px;
+    }
+}

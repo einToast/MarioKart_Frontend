@@ -1,0 +1,24 @@
+.survey .teamContainer {
+    border: 2px solid #32345E;
+
+    .imageContainer img {
+        width: 50px;
+        position: relative;
+        z-index: 1;
+    }
+
+    &:hover, &:active, &:focus {
+        border: 2px solid #C0B5F3;
+    }
+
+    .surveyContent {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+
+        p {
+            margin: 0;
+        }
+    }
+}

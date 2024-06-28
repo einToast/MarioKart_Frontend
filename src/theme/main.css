@@ -1,0 +1,95 @@
+/* Font Family Import */
+@font-face {
+    font-family: "Tofino-Wide-Ultra";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/TofinoWide-UltraPersonal.otf");
+}
+
+@font-face {
+    font-family: "Tofino-Wide-Ultra";
+    font-style: normal;
+    font-weight: bold;
+    src: url("../fonts/TofinoWide-BlackPersonal.otf");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/Poppins-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 800;
+    src: url("../fonts/Poppins-ExtraBold.ttf");
+}
+
+* {
+    font-family: "Tofino-Wide-Ultra";
+}
+
+h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h3 {
+    font-family: Poppins;
+    font-weight: 800;
+}
+
+ion-tab-bar {
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+ion-content {
+    --background: linear-gradient(var(--ion-color-bg01), var(--ion-color-bg02));
+    --padding-start: 20px;
+    --padding-end: 20px;
+}
+
+.header-collapse-none {
+    box-shadow: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.header-collapse-none ion-icon {
+    width: 34px;
+    height: 34px;
+}
+
+.header-collapse-none ion-avatar {
+    width: 40px;
+    height: 40px;
+}
+
+/*Navigation Bottom Bar*/
+ion-tab-bar, ion-tab-button {
+    background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+}
+
+ion-tab-button.tab-selected {
+    color: #fff;
+}
+
+/*Fonts*/
+.title-large {
+    text-align: start;
+    align-items: start;
+    color: linear-gradient(to right, var(--ion-color-text01) 100%, var(--ion-color-text02) 100%) !important;
+}
