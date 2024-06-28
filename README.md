@@ -12,13 +12,13 @@ Matrikelnummer: 2021 8582
 5. run $ionic serve
 6. have fun
 
-
-## Installiert auf Webserver:
+## Installed auf Webserver:
 https://mario-kart-master.netlify.app/
-// bringt nicht viel, da MockAPI benötigt wird
+// not usefull without MOCK API
 
 ## Quellen
-- Icons von Mario Kart 8: https://static.wikia.nocookie.net/mariokart/images/c/c6/Mario_kart_8_deluxe_characters.jpg/revision/latest?cb=20170426104539
-- Schriften:
+- Character Icons Mario Kart 8: https://static.wikia.nocookie.net/mariokart/images/c/c6/Mario_kart_8_deluxe_characters.jpg/revision/latest?cb=20170426104539
+- Icons: https://ionic.io/ionicons
+- Fonts:
     Poppins: https://fonts.google.com/specimen/Poppins
     Toffino: https://tofino.losttype.com/
