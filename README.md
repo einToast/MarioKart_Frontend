@@ -21,4 +21,4 @@ https://mario-kart-master.netlify.app/
 - Icons: https://ionic.io/ionicons
 - Fonts:
     Poppins: https://fonts.google.com/specimen/Poppins
-    Toffino: https://tofino.losttype.com/
+    Tofino: https://tofino.losttype.com/
