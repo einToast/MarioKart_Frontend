@@ -1,4 +1,4 @@
-# mkm-Abgabe
+# MARIO KART MASTER
 Fanny Wolff
 Abgabe: Interactive Products & Services
 Prof. Julia Schnitzer & M. Sc. Micha Kodalle
