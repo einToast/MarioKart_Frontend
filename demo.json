@@ -1,1 +1,554 @@
-{"openapi":"3.0.0","info":{"title":"mario-kart-master","version":"1.0.0"},"servers":[{"url":"http://localhost:3000/api"}],"paths":{"/team/0":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"  {\n    \"id\": 0,\n    \"character\": \"Koopa\",\n    \"name\": \"Ninja Turtles\",\n    \"punkte\": 223\n  }"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/0":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 0,\n  \"final\": false,\n  \"gespielt\": false,\n  \"von\": \"16:20\",\n  \"bis\": \"16:40\",\n  \"games\": [\n    {\n      \"id\": 0,\n      \"switch\": \"weiß\",\n      \"teams\": [\n        {\n          \"id\": 0,\n          \"character\": \"Koopa\",\n          \"name\": \"Ninja Turtles\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 1,\n          \"character\": \"Luigi\",\n          \"name\": \"Die Italiener\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 2,\n          \"character\": \"Melinda\",\n          \"name\": \"Mitarbeiter\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 3,\n          \"character\": \"Wario\",\n          \"name\": \"Ultras\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 1,\n      \"switch\": \"rot\",\n      \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Ludwig-von-Koopa\",\n          \"name\": \"Boulevard of broken Teams\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Tanuki-Mario\",\n          \"name\": \"Wesley\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Link\",\n          \"name\": \"Shells like Team Spirit\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Toad\",\n          \"name\": \"FSR\",\n          \"punkte\": 235\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"switch\": \"blau\",\n      \"teams\": [\n        {\n          \"id\": 15,\n          \"character\": \"Toadette\",\n          \"name\": \"Pilz-Pisten-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 9,\n          \"character\": \"Bowser\",\n          \"name\": \"Ultras\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 10,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor3\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 11,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah3\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"switch\": \"grün\",\n      \"teams\": [\n        {\n          \"id\": 16,\n          \"character\": \"Knochentrocken\",\n          \"name\": \"Wüsten-Wirbelwinde\",\n          \"punkte\": 222\n        },\n        {\n          \"id\": 13,\n          \"character\": \"Metall-Mario\",\n          \"name\": \"Glück auf4\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 14,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor4\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 15,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah4\",\n          \"punkte\": 210\n        }\n      ]\n    }\n  ]\n}\n"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/1":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 1,\n  \"final\": false,\n  \"gespielt\": false,\n  \"von\": \"16:40\",\n  \"bis\": \"17:00\",\n  \"games\": [\n    {\n      \"id\": 0,\n      \"switch\": \"weiß\",\n      \"teams\": [\n        {\n          \"id\": 13,\n          \"character\": \"Metall-Mario\",\n          \"name\": \"Glück auf4\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 14,\n          \"character\": \"Waluigi\",\n          \"name\": \"Fieser-Glücksritter\",\n          \"punkte\": 215\n        },\n        {\n          \"id\": 15,\n          \"character\": \"Toadette\",\n          \"name\": \"Pilz-Pisten-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 16,\n          \"character\": \"Knochentrocken\",\n          \"name\": \"Wüsten-Wirbelwinde\",\n          \"punkte\": 222\n        }\n      ]\n    },\n    {\n      \"id\": 1,\n      \"switch\": \"rot\",\n      \"teams\": [\n        {\n          \"id\": 9,\n          \"character\": \"Yoshi\",\n          \"name\": \"Eierschalenfahrer\",\n          \"punkte\": 225\n        },\n        {\n          \"id\": 10,\n          \"character\": \"Bowser\",\n          \"name\": \"Feuerodem-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 11,\n          \"character\": \"Daisy\",\n          \"name\": \"Sonnenblumen-Sprinter\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 12,\n          \"character\": \"Donkey-Kong\",\n          \"name\": \"Dschungel-Racer\",\n          \"punkte\": 220\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"switch\": \"blau\",\n      \"teams\": [\n        {\n          \"id\": 5,\n          \"character\": \"Tanuki-Mario\",\n          \"name\": \"Wesley\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Link\",\n          \"name\": \"Shells like Team Spirit\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Toad\",\n          \"name\": \"FSR\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 8,\n          \"character\": \"Peach\",\n          \"name\": \"Pilzkönigreich\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"switch\": \"grün\",\n      \"teams\": [\n          {\n            \"id\": 0,\n            \"character\": \"Koopa\",\n            \"name\": \"Ninja Turtles\",\n            \"punkte\": 223\n          },\n          {\n            \"id\": 1,\n            \"character\": \"Luigi\",\n            \"name\": \"Die Italiener\",\n            \"punkte\": 213\n          },\n          {\n            \"id\": 2,\n            \"character\": \"Melinda\",\n            \"name\": \"Mitarbeiter\",\n            \"punkte\": 198\n          },\n          {\n            \"id\": 3,\n            \"character\": \"Wario\",\n            \"name\": \"Ultras\",\n            \"punkte\": 210\n          }\n      ]\n    }\n  ]\n}\n"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/2":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":{}}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/0/game/0/team/0":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 0,\n  \"character\": \"Koopa\",\n  \"name\": \"Ninja Turtles\",\n  \"punkte\": 223\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/0/game/0":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":" {\n  \"id\": 0,\n  \"switch\": \"weiß\",\n  \"teams\": [\n    {\n      \"id\": 0,\n      \"character\": \"Koopa\",\n      \"name\": \"Ninja Turtles\",\n      \"punkte\": 223\n    },\n    {\n      \"id\": 1,\n      \"character\": \"Luigi\",\n      \"name\": \"Die Italiener\",\n      \"punkte\": 213\n    },\n    {\n      \"id\": 2,\n      \"character\": \"Melinda\",\n      \"name\": \"Mitarbeiter\",\n      \"punkte\": 198\n    },\n    {\n      \"id\": 3,\n      \"character\": \"Wario\",\n      \"name\": \"Ultras\",\n      \"punkte\": 210\n    }\n  ]\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round/0/game/1":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 1,\n  \"switch\": \"rot\",\n  \"teams\": [\n    {\n      \"id\": 4,\n      \"character\": \"Ludwig-von-Koopa\",\n      \"name\": \"Boulevard of broken Teams\",\n      \"punkte\": 217\n    },\n    {\n      \"id\": 5,\n      \"character\": \"Tanuki-Mario\",\n      \"name\": \"Wesley\",\n      \"punkte\": 235\n    },\n    {\n      \"id\": 6,\n      \"character\": \"Link\",\n      \"name\": \"Shells like Team Spirit\",\n      \"punkte\": 217\n    },\n    {\n      \"id\": 7,\n      \"character\": \"Toad\",\n      \"name\": \"FSR\",\n      \"punkte\": 235\n    }\n  ]\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/team/all":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"[\n  {\n    \"id\": 0,\n    \"character\": \"Koopa\",\n    \"name\": \"Ninja Turtles\",\n    \"punkte\": 223\n  },\n  {\n    \"id\": 1,\n    \"character\": \"Luigi\",\n    \"name\": \"Die Italiener\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 2,\n    \"character\": \"Melinda\",\n    \"name\": \"Mitarbeiter\",\n    \"punkte\": 198\n  },\n  {\n    \"id\": 3,\n    \"character\": \"Wario\",\n    \"name\": \"Ultras\",\n    \"punkte\": 210\n  },\n  {\n    \"id\": 4,\n    \"character\": \"Ludwig-von-Koopa\",\n    \"name\": \"Boulevard of broken Teams\",\n    \"punkte\": 217\n  },\n  {\n    \"id\": 5,\n    \"character\": \"Tanuki-Mario\",\n    \"name\": \"Wesley\",\n    \"punkte\": 235\n  },\n  {\n    \"id\": 6,\n    \"character\": \"Link\",\n    \"name\": \"Shells like Team Spirit\",\n    \"punkte\": 217\n  },\n  {\n    \"id\": 7,\n    \"character\": \"Toad\",\n    \"name\": \"FSR\",\n    \"punkte\": 235\n  },\n  {\n    \"id\": 8,\n    \"character\": \"Peach\",\n    \"name\": \"Pilzkönigreich\",\n    \"punkte\": 210\n  },\n  {\n    \"id\": 9,\n    \"character\": \"Yoshi\",\n    \"name\": \"Eierschalenfahrer\",\n    \"punkte\": 225\n  },\n  {\n    \"id\": 10,\n    \"character\": \"Bowser\",\n    \"name\": \"Feuerodem-Team\",\n    \"punkte\": 205\n  },\n  {\n    \"id\": 11,\n    \"character\": \"Daisy\",\n    \"name\": \"Sonnenblumen-Sprinter\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 12,\n    \"character\": \"Donkey-Kong\",\n    \"name\": \"Dschungel-Racer\",\n    \"punkte\": 220\n  },\n  {\n    \"id\": 13,\n    \"character\": \"Metall-Mario\",\n    \"name\": \"Glück auf4\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 14,\n    \"character\": \"Waluigi\",\n    \"name\": \"Fieser-Glücksritter\",\n    \"punkte\": 215\n  },\n  {\n    \"id\": 15,\n    \"character\": \"Toadette\",\n    \"name\": \"Pilz-Pisten-Team\",\n    \"punkte\": 205\n  },\n  {\n    \"id\": 16,\n    \"character\": \"Knochentrocken\",\n    \"name\": \"Wüsten-Wirbelwinde\",\n    \"punkte\": 222\n  }\n]\n"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/team/create":{"post":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/round":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 0\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/survey/0":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 0,\n  \"active\": true,\n  \"question\": \"Welches Team gewinnt das Mario Kart Turnier WS 2024/25?\",\n  \"answerType\": \"teams\",\n  \"teamCount\": 4,\n  \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Toadette\",\n          \"name\": \"The A Team\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Wendy-O.-Koopa\",\n          \"name\": \"Glück auf\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah\",\n          \"punkte\": 210\n        }\n      ]\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/survey":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 0\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/vote":{"post":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/survey/1":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":"{\n  \"id\": 1,\n  \"active\": true,\n  \"question\": \"Welches Team bekommt den Trostpreis?\",\n  \"answerType\": \"teams\",\n  \"teamCount\": 4,\n  \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Toadette\",\n          \"name\": \"The A Team\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Wendy-O.-Koopa\",\n          \"name\": \"Glück auf\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah\",\n          \"punkte\": 210\n        }\n      ]\n}"}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}},"/admin/login":{"get":{"description":"","responses":{"200":{"description":"","content":{"application/json":{"example":{}}},"headers":{"Access-Control-Allow-Origin":{"schema":{"type":"string"},"example":"*"},"Access-Control-Allow-Methods":{"schema":{"type":"string"},"example":"GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"},"Access-Control-Allow-Headers":{"schema":{"type":"string"},"example":"Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"}}}}}}}}
+{
+  "uuid": "ef06bde1-6f3b-45d7-9c19-728cea8d1878",
+  "lastMigration": 32,
+  "name": "mario-kart-master (copy)",
+  "endpointPrefix": "api",
+  "latency": 0,
+  "port": 3000,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "db9e5736-3747-4cdf-9979-b4180d1c0254",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "team/0",
+      "responses": [
+        {
+          "uuid": "b08b3c12-49e5-4492-97a5-32ab282d2226",
+          "body": "{\n  \"id\": 0,\n  \"character\": \"Koopa\",\n  \"name\": \"Ninja Turtles\",\n  \"punkte\": 223\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "258bc9ab-af97-4af4-b507-d9162f37622e",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/0/game/0/team/0",
+      "responses": [
+        {
+          "uuid": "04159144-1870-4fa0-b938-ab0622cfbccb",
+          "body": "{\n  \"id\": 0,\n  \"character\": \"Koopa\",\n  \"name\": \"Ninja Turtles\",\n  \"punkte\": 223\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "79555cbb-4506-458e-b8fe-3ca5831b72d0",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/0/game/0",
+      "responses": [
+        {
+          "uuid": "e32cf725-5790-41f8-9af2-15bdfc7062f1",
+          "body": "{\n  \"id\": 0,\n  \"switch\": \"weiß\",\n  \"teams\": [\n    {\n      \"id\": 0,\n      \"character\": \"Koopa\",\n      \"name\": \"Ninja Turtles\",\n      \"punkte\": 223\n    },\n    {\n      \"id\": 1,\n      \"character\": \"Luigi\",\n      \"name\": \"Die Italiener\",\n      \"punkte\": 213\n    },\n    {\n      \"id\": 2,\n      \"character\": \"Melinda\",\n      \"name\": \"Mitarbeiter\",\n      \"punkte\": 198\n    },\n    {\n      \"id\": 3,\n      \"character\": \"Wario\",\n      \"name\": \"Ultras\",\n      \"punkte\": 210\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "d585ae97-c010-4d8f-ba19-355b9eb921e5",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "team/all",
+      "responses": [
+        {
+          "uuid": "e0adb646-4a8d-44be-83b5-ae6c98788ec8",
+          "body": "[\n  {\n    \"id\": 0,\n    \"character\": \"Koopa\",\n    \"name\": \"Ninja Turtles\",\n    \"punkte\": 223\n  },\n  {\n    \"id\": 1,\n    \"character\": \"Luigi\",\n    \"name\": \"Die Italiener\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 2,\n    \"character\": \"Melinda\",\n    \"name\": \"Mitarbeiter\",\n    \"punkte\": 198\n  },\n  {\n    \"id\": 3,\n    \"character\": \"Wario\",\n    \"name\": \"Ultras\",\n    \"punkte\": 210\n  },\n  {\n    \"id\": 4,\n    \"character\": \"Ludwig-von-Koopa\",\n    \"name\": \"Boulevard of broken Teams\",\n    \"punkte\": 217\n  },\n  {\n    \"id\": 5,\n    \"character\": \"Tanuki-Mario\",\n    \"name\": \"Wesley\",\n    \"punkte\": 235\n  },\n  {\n    \"id\": 6,\n    \"character\": \"Link\",\n    \"name\": \"Shells like Team Spirit\",\n    \"punkte\": 217\n  },\n  {\n    \"id\": 7,\n    \"character\": \"Toad\",\n    \"name\": \"FSR\",\n    \"punkte\": 235\n  },\n  {\n    \"id\": 8,\n    \"character\": \"Peach\",\n    \"name\": \"Pilzkönigreich\",\n    \"punkte\": 210\n  },\n  {\n    \"id\": 9,\n    \"character\": \"Yoshi\",\n    \"name\": \"Eierschalenfahrer\",\n    \"punkte\": 225\n  },\n  {\n    \"id\": 10,\n    \"character\": \"Bowser\",\n    \"name\": \"Feuerodem-Team\",\n    \"punkte\": 205\n  },\n  {\n    \"id\": 11,\n    \"character\": \"Daisy\",\n    \"name\": \"Sonnenblumen-Sprinter\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 12,\n    \"character\": \"Donkey-Kong\",\n    \"name\": \"Dschungel-Racer\",\n    \"punkte\": 220\n  },\n  {\n    \"id\": 13,\n    \"character\": \"Metall-Mario\",\n    \"name\": \"Glück auf4\",\n    \"punkte\": 213\n  },\n  {\n    \"id\": 14,\n    \"character\": \"Waluigi\",\n    \"name\": \"Fieser-Glücksritter\",\n    \"punkte\": 215\n  },\n  {\n    \"id\": 15,\n    \"character\": \"Toadette\",\n    \"name\": \"Pilz-Pisten-Team\",\n    \"punkte\": 205\n  },\n  {\n    \"id\": 16,\n    \"character\": \"Knochentrocken\",\n    \"name\": \"Wüsten-Wirbelwinde\",\n    \"punkte\": 222\n  }\n]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "2ee16865-4342-4625-ab49-ce2e30a702c9",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "team/create",
+      "responses": [
+        {
+          "uuid": "9f059f42-55ff-427d-8fe3-393484e94fc3",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "d2082a6e-2233-4bcf-819f-f97ab055710d",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/0/game/1",
+      "responses": [
+        {
+          "uuid": "edc9cfc5-4c56-4b8a-bd66-d67828cfc8dd",
+          "body": "{\n  \"id\": 1,\n  \"switch\": \"rot\",\n  \"teams\": [\n    {\n      \"id\": 4,\n      \"character\": \"Ludwig-von-Koopa\",\n      \"name\": \"Boulevard of broken Teams\",\n      \"punkte\": 217\n    },\n    {\n      \"id\": 5,\n      \"character\": \"Tanuki-Mario\",\n      \"name\": \"Wesley\",\n      \"punkte\": 235\n    },\n    {\n      \"id\": 6,\n      \"character\": \"Link\",\n      \"name\": \"Shells like Team Spirit\",\n      \"punkte\": 217\n    },\n    {\n      \"id\": 7,\n      \"character\": \"Toad\",\n      \"name\": \"FSR\",\n      \"punkte\": 235\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "9f0ba19c-11f1-4edc-bc3a-694d2fe162a2",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/0",
+      "responses": [
+        {
+          "uuid": "5f640bc1-aa5b-44b5-8395-7b3de15197aa",
+          "body": "{\n  \"id\": 0,\n  \"final\": false,\n  \"gespielt\": false,\n  \"von\": \"16:20\",\n  \"bis\": \"16:40\",\n  \"games\": [\n    {\n      \"id\": 0,\n      \"switch\": \"weiß\",\n      \"teams\": [\n        {\n          \"id\": 0,\n          \"character\": \"Koopa\",\n          \"name\": \"Ninja Turtles\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 1,\n          \"character\": \"Luigi\",\n          \"name\": \"Die Italiener\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 2,\n          \"character\": \"Melinda\",\n          \"name\": \"Mitarbeiter\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 3,\n          \"character\": \"Wario\",\n          \"name\": \"Ultras\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 1,\n      \"switch\": \"rot\",\n      \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Ludwig-von-Koopa\",\n          \"name\": \"Boulevard of broken Teams\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Tanuki-Mario\",\n          \"name\": \"Wesley\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Link\",\n          \"name\": \"Shells like Team Spirit\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Toad\",\n          \"name\": \"FSR\",\n          \"punkte\": 235\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"switch\": \"blau\",\n      \"teams\": [\n        {\n          \"id\": 15,\n          \"character\": \"Toadette\",\n          \"name\": \"Pilz-Pisten-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 9,\n          \"character\": \"Bowser\",\n          \"name\": \"Ultras\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 10,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor3\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 11,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah3\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"switch\": \"grün\",\n      \"teams\": [\n        {\n          \"id\": 16,\n          \"character\": \"Knochentrocken\",\n          \"name\": \"Wüsten-Wirbelwinde\",\n          \"punkte\": 222\n        },\n        {\n          \"id\": 13,\n          \"character\": \"Metall-Mario\",\n          \"name\": \"Glück auf4\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 14,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor4\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 15,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah4\",\n          \"punkte\": 210\n        }\n      ]\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "7d55e879-8798-495b-9ccc-7e89105fd0e9",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/1",
+      "responses": [
+        {
+          "uuid": "ce2d432c-e3b2-4f89-869b-f58766beb4a0",
+          "body": "{\n  \"id\": 1,\n  \"final\": false,\n  \"gespielt\": false,\n  \"von\": \"16:40\",\n  \"bis\": \"17:00\",\n  \"games\": [\n    {\n      \"id\": 0,\n      \"switch\": \"weiß\",\n      \"teams\": [\n        {\n          \"id\": 13,\n          \"character\": \"Metall-Mario\",\n          \"name\": \"Glück auf4\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 14,\n          \"character\": \"Waluigi\",\n          \"name\": \"Fieser-Glücksritter\",\n          \"punkte\": 215\n        },\n        {\n          \"id\": 15,\n          \"character\": \"Toadette\",\n          \"name\": \"Pilz-Pisten-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 16,\n          \"character\": \"Knochentrocken\",\n          \"name\": \"Wüsten-Wirbelwinde\",\n          \"punkte\": 222\n        }\n      ]\n    },\n    {\n      \"id\": 1,\n      \"switch\": \"rot\",\n      \"teams\": [\n        {\n          \"id\": 9,\n          \"character\": \"Yoshi\",\n          \"name\": \"Eierschalenfahrer\",\n          \"punkte\": 225\n        },\n        {\n          \"id\": 10,\n          \"character\": \"Bowser\",\n          \"name\": \"Feuerodem-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 11,\n          \"character\": \"Daisy\",\n          \"name\": \"Sonnenblumen-Sprinter\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 12,\n          \"character\": \"Donkey-Kong\",\n          \"name\": \"Dschungel-Racer\",\n          \"punkte\": 220\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"switch\": \"blau\",\n      \"teams\": [\n        {\n          \"id\": 5,\n          \"character\": \"Tanuki-Mario\",\n          \"name\": \"Wesley\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Link\",\n          \"name\": \"Shells like Team Spirit\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Toad\",\n          \"name\": \"FSR\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 8,\n          \"character\": \"Peach\",\n          \"name\": \"Pilzkönigreich\",\n          \"punkte\": 210\n        }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"switch\": \"grün\",\n      \"teams\": [\n        {\n          \"id\": 0,\n          \"character\": \"Koopa\",\n          \"name\": \"Ninja Turtles\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 1,\n          \"character\": \"Luigi\",\n          \"name\": \"Die Italiener\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 2,\n          \"character\": \"Melinda\",\n          \"name\": \"Mitarbeiter\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 3,\n          \"character\": \"Wario\",\n          \"name\": \"Ultras\",\n          \"punkte\": 210\n        }\n      ]\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "602ac583-f2e6-4008-aac9-0b2bce67f353",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round",
+      "responses": [
+        {
+          "uuid": "34fa1906-f68c-4e1c-aca9-6ce7ef70cca4",
+          "body": "{\n  \"id\": 0\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "3ac49791-f57c-46de-97d1-d4629b4715eb",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "survey/0",
+      "responses": [
+        {
+          "uuid": "60f4cb12-99f4-4842-a1a0-273deb9462bf",
+          "body": "{\n  \"id\": 0,\n  \"active\": true,\n  \"question\": \"Welches Team gewinnt das Mario Kart Turnier WS 2024/25?\",\n  \"answerType\": \"teams\",\n  \"teamCount\": 4,\n  \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Toadette\",\n          \"name\": \"The A Team\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Wendy-O.-Koopa\",\n          \"name\": \"Glück auf\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah\",\n          \"punkte\": 210\n        }\n      ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "6818b870-2e86-4434-9b95-d248663d6aa6",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "survey",
+      "responses": [
+        {
+          "uuid": "821124e0-7993-4b99-9645-ad1c3076e789",
+          "body": "{\n  \"id\": 0\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "4ec03553-7288-4228-8252-c456e1d3e33c",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "vote",
+      "responses": [
+        {
+          "uuid": "d067ee90-783b-471c-bbf8-4b2c25d3f1c0",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "00c9e49d-8c7d-41ca-b550-2473618d8efb",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "survey/1",
+      "responses": [
+        {
+          "uuid": "f32cc26e-5600-4259-ab91-0d5f6fe57db1",
+          "body": "{\n  \"id\": 1,\n  \"active\": true,\n  \"question\": \"Welches Team bekommt den Trostpreis?\",\n  \"answerType\": \"teams\",\n  \"teamCount\": 4,\n  \"teams\": [\n        {\n          \"id\": 4,\n          \"character\": \"Toadette\",\n          \"name\": \"The A Team\",\n          \"punkte\": 223\n        },\n        {\n          \"id\": 5,\n          \"character\": \"Wendy-O.-Koopa\",\n          \"name\": \"Glück auf\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Melinda\",\n          \"name\": \"Professor\",\n          \"punkte\": 198\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Rosalina\",\n          \"name\": \"Huah\",\n          \"punkte\": 210\n        }\n      ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "514dcd14-cc3f-48ef-9c13-be951dd9b587",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "admin/login",
+      "responses": [
+        {
+          "uuid": "edd0d157-1276-48e8-933a-e1b834cbb012",
+          "body": "{\n  \"username\": \"fsr-admin\",\n  \"password\": \"geheim123\",\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "7fc74b1f-da97-4294-b4e3-6738cbfa2bf4",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "round/2",
+      "responses": [
+        {
+          "uuid": "02c93ed3-4a50-479b-939f-09873b27e919",
+          "body": "{\n  \"id\": 2,\n  \"final\": false,\n  \"gespielt\": false,\n  \"von\": \"16:40\",\n  \"bis\": \"17:00\",\n  \"games\": [\n    {\n      \"id\": 0,\n      \"switch\": \"weiß\",\n      \"teams\": [\n        {\n          \"id\": 13,\n          \"character\": \"Metall-Mario\",\n          \"name\": \"Glück auf4\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 14,\n          \"character\": \"Waluigi\",\n          \"name\": \"Fieser-Glücksritter\",\n          \"punkte\": 215\n        },\n        {\n          \"id\": 15,\n          \"character\": \"Toadette\",\n          \"name\": \"Pilz-Pisten-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 16,\n          \"character\": \"Knochentrocken\",\n          \"name\": \"Wüsten-Wirbelwinde\",\n          \"punkte\": 222\n        }\n      ]\n    },\n    {\n      \"id\": 1,\n      \"switch\": \"rot\",\n      \"teams\": [\n        {\n          \"id\": 9,\n          \"character\": \"Yoshi\",\n          \"name\": \"Eierschalenfahrer\",\n          \"punkte\": 225\n        },\n        {\n          \"id\": 10,\n          \"character\": \"Bowser\",\n          \"name\": \"Feuerodem-Team\",\n          \"punkte\": 205\n        },\n        {\n          \"id\": 11,\n          \"character\": \"Daisy\",\n          \"name\": \"Sonnenblumen-Sprinter\",\n          \"punkte\": 213\n        },\n        {\n          \"id\": 12,\n          \"character\": \"Donkey Kong\",\n          \"name\": \"Dschungel-Racer\",\n          \"punkte\": 220\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n      \"switch\": \"blau\",\n      \"teams\": [\n        {\n          \"id\": 5,\n          \"character\": \"Tanuki-Mario\",\n          \"name\": \"Wesley\",\n          \"punkte\": 235\n        },\n        {\n          \"id\": 6,\n          \"character\": \"Link\",\n          \"name\": \"Shells like Team Spirit\",\n          \"punkte\": 217\n        },\n        {\n          \"id\": 7,\n          \"character\": \"Toad\",\n          \"name\": \"FSR\",\n          \"punkte\": 235\n        },\n        },\n    {\n      \"id\": 3,\n      \"switch\": \"grün\",\n      \"teams\": [\n          {\n            \"id\": 0,\n            \"character\": \"Koopa\",\n            \"name\": \"Ninja Turtles\",\n            \"punkte\": 223\n          },\n          {\n            \"id\": 1,\n            \"character\": \"Luigi\",\n            \"name\": \"Die Italiener\",\n            \"punkte\": 213\n          },\n          {\n            \"id\": 2,\n            \"character\": \"Melinda\",\n            \"name\": \"Mitarbeiter\",\n            \"punkte\": 198\n          },\n          {\n            \"id\": 3,\n            \"character\": \"Wario\",\n            \"name\": \"Ultras\",\n            \"punkte\": 210\n          }\n      ]\n    }\n  ]\n}\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "db9e5736-3747-4cdf-9979-b4180d1c0254"
+    },
+    {
+      "type": "route",
+      "uuid": "9f0ba19c-11f1-4edc-bc3a-694d2fe162a2"
+    },
+    {
+      "type": "route",
+      "uuid": "7d55e879-8798-495b-9ccc-7e89105fd0e9"
+    },
+    {
+      "type": "route",
+      "uuid": "7fc74b1f-da97-4294-b4e3-6738cbfa2bf4"
+    },
+    {
+      "type": "route",
+      "uuid": "258bc9ab-af97-4af4-b507-d9162f37622e"
+    },
+    {
+      "type": "route",
+      "uuid": "79555cbb-4506-458e-b8fe-3ca5831b72d0"
+    },
+    {
+      "type": "route",
+      "uuid": "d2082a6e-2233-4bcf-819f-f97ab055710d"
+    },
+    {
+      "type": "route",
+      "uuid": "d585ae97-c010-4d8f-ba19-355b9eb921e5"
+    },
+    {
+      "type": "route",
+      "uuid": "2ee16865-4342-4625-ab49-ce2e30a702c9"
+    },
+    {
+      "type": "route",
+      "uuid": "602ac583-f2e6-4008-aac9-0b2bce67f353"
+    },
+    {
+      "type": "route",
+      "uuid": "3ac49791-f57c-46de-97d1-d4629b4715eb"
+    },
+    {
+      "type": "route",
+      "uuid": "6818b870-2e86-4434-9b95-d248663d6aa6"
+    },
+    {
+      "type": "route",
+      "uuid": "4ec03553-7288-4228-8252-c456e1d3e33c"
+    },
+    {
+      "type": "route",
+      "uuid": "00c9e49d-8c7d-41ca-b550-2473618d8efb"
+    },
+    {
+      "type": "route",
+      "uuid": "514dcd14-cc3f-48ef-9c13-be951dd9b587"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    },
+    {
+      "key": "Access-Control-Allow-Origin",
+      "value": "*"
+    },
+    {
+      "key": "Access-Control-Allow-Methods",
+      "value": "GET,POST,PUT,PATCH,DELETE,HEAD,OPTIONS"
+    },
+    {
+      "key": "Access-Control-Allow-Headers",
+      "value": "Content-Type, Origin, Accept, Authorization, Content-Length, X-Requested-With"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [],
+  "callbacks": []
+}
