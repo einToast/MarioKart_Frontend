@@ -12,9 +12,12 @@ Matrikelnummer: 2021 8582
 5. run $npx ionic serve
 6. have fun
 
-## Installed auf Webserver:
+## Installed auf Webserver
 https://mario-kart-master.netlify.app/
 // not usefull without MOCK API
+
+## Admin Login Route
+/admin-login-fsr
 
 ## Figma File
 https://www.figma.com/design/LXJtH1euExTeXXzXUljjWe/Mario-Kart-Master?node-id=0-1&t=39hyMf9olHRYXRvN-1
