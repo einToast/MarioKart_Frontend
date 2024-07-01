@@ -1,7 +1,7 @@
 {
   "uuid": "ef06bde1-6f3b-45d7-9c19-728cea8d1878",
   "lastMigration": 32,
-  "name": "mario-kart-master (copy)",
+  "name": "mario-kart-master",
   "endpointPrefix": "api",
   "latency": 0,
   "port": 3000,
