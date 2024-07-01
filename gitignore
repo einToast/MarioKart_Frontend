@@ -1,0 +1,44 @@
+# Node modules
+node_modules/
+
+# Platform specific directories
+platforms/
+
+# Capacitor files
+ios/
+android/
+
+# Build output
+www/
+build/
+dist/
+
+# Logs
+*.log
+
+# Sensitive information
+.env
+
+# IDE specific files
+.vscode/
+.idea/
+
+# macOS specific files
+.DS_Store
+
+# npm debug file
+npm-debug.log*
+
+# Optional npm cache directory
+.npm/
+
+# Typescript compiled files
+*.tsbuildinfo
+
+# Cordova specific files
+plugins/
+
+# Other
+tmp/
+temp/
+*.swp
