@@ -120,7 +120,12 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                             </select>
                             {selectedCharacter && (
                                 <div className="selected-character">
-                                    <img src={`../resources/media/${selectedCharacter}.png`}/>
+                                    {characters.includes(selectedCharacter) && (
+                                        <img
+                                            src={`../resources/media/${selectedCharacter}.png`}
+                                            alt={`${selectedCharacter} character`}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </div>
