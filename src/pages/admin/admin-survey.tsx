@@ -1,4 +1,4 @@
-import '../interface/interfaces'
+import '../../interface/interfaces'
 import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
@@ -20,8 +20,8 @@ import {
 } from 'ionicons/icons';
 import "./admin-survey.css"
 import {useState} from "react";
-import TeamComponent from "../components/TeamComponent";
-import SurveyCreation from "../components/SurveyCreation";
+import TeamComponent from "../../components/TeamComponent";
+import SurveyCreation from "../../components/SurveyCreation";
 
 const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: new Survey adden
@@ -85,6 +85,10 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
+                <div className={"back"}>
+                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
+                    <a href={"/admin/dashboard"}>Zurück</a>
+                </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Umfragen
@@ -118,7 +122,7 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
                                     slot="end"
                                     icon={statsChartOutline}
                                     onClick={() => openResults(survey)}
-                                    style={{ cursor: 'pointer', marginRight: '10px' }}
+                                    style={{cursor: 'pointer', marginRight: '10px'}}
                                 />
                                 <IonIcon
                                     slot="end"
@@ -139,17 +143,18 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
                                     <div className={"allTeamResult"}>
                                         {
                                             results.map(team => (
-                                            <div key={team.id} className={"teamContainer"}>
-                                        <div className={"imageContainer"}>
-                                            <img src={`../resources/media/${team.character}.png`} alt={team.character}
-                                                 className={"iconTeam"}/>
-                                        </div>
-                                        <div className={"teamResult"}>
-                                            <p>{team.name}</p>
-                                            <p className={"punkte"}>{team.punkte} Punkte</p>
-                                        </div>
-                                    </div>
-                                    ))
+                                                <div key={team.id} className={"teamContainer"}>
+                                                    <div className={"imageContainer"}>
+                                                        <img src={`../resources/media/${team.character}.png`}
+                                                             alt={team.character}
+                                                             className={"iconTeam"}/>
+                                                    </div>
+                                                    <div className={"teamResult"}>
+                                                        <p>{team.name}</p>
+                                                        <p className={"punkte"}>{team.punkte} Punkte</p>
+                                                    </div>
+                                                </div>
+                                            ))
                                         }
                                     </div>
                                 </>

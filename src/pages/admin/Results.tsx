@@ -1,5 +1,5 @@
-import '../interface/interfaces'
-import './Login.css'
+import '../../interface/interfaces'
+import '../RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
@@ -13,9 +13,9 @@ import {
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
-import "./admin-points.css"
+import "./Points.css"
 
-const adminResults: React.FC<LoginProps> = (props: LoginProps) => {
+const results: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeam] = useState<Team[] | null>(null);
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
@@ -40,7 +40,7 @@ const adminResults: React.FC<LoginProps> = (props: LoginProps) => {
             <IonContent fullscreen>
                 <div className={"back"}>
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a href={"./admin-dashboard"}>Zurück</a>
+                    <a href={"/admin/dashboard"}>Zurück</a>
                 </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
@@ -76,4 +76,4 @@ const adminResults: React.FC<LoginProps> = (props: LoginProps) => {
         ;
 };
 
-export default adminResults;
+export default results;

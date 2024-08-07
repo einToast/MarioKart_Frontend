@@ -1,6 +1,6 @@
 import {RoundReturnDTO, TeamReturnDTO} from "../api/config/dto";
 import {getCurrentRounds} from "../api/MatchPlanApi";
-import {getAllTeams} from "./loginService";
+import {getAllTeams} from "./teamRegisterService";
 import {getTeamsSortedByNormalPoints} from "../api/RegistrationApi";
 
 export const getBothCurrentRounds = async (): Promise<RoundReturnDTO[]> => {

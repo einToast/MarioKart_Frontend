@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from "axios";
 import '../interface/interfaces';
-import './Login.css';
+import './RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";
 import {
     IonButton,
@@ -13,7 +13,7 @@ import {
 import { arrowForwardOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 import {TeamReturnDTO} from "../util/api/config/dto";
-import {getAllTeams} from "../util/service/loginService";
+import {getAllTeams} from "../util/service/teamRegisterService";
 import characters from "../interface/characters";
 
 interface LoginProps {

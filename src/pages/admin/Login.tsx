@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useHistory } from "react-router";
 import axios from "axios";
-import '../interface/interfaces';
-import './Login.css';
+import '../../interface/interfaces';
+import '../RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";
 import {
     IonButton,
@@ -12,12 +12,13 @@ import {
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
+import {checkToken, loginUser} from "../../util/service/adminService";
 
 interface LoginProps {
     setUserAdmin: (userAdmin: AdminUser) => void;
 }
 
-const AdminLoginFsr: React.FC<LoginProps> = (props: LoginProps) => {
+const Login: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -26,18 +27,26 @@ const AdminLoginFsr: React.FC<LoginProps> = (props: LoginProps) => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.get('http://localhost:3000/api/admin/login', {
-                auth: {
-                    username,
-                    password
-                }
-            });
-            history.push('/admin-dashboard');
+            await loginUser(username, password);
+            history.push('/admin/dashboard');
         } catch (error) {
-            setError('Invalid username or password');
+            if (error instanceof TypeError) {
+                setError('RegisterTeam fehlgeschlagen');
+            } else {
+                setError(error.message);
+            }
             setShowToast(true);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (checkToken()) {
+                history.push('/admin-dashboard');
+            }
+        }
+        fetchData();
+    }, []);
 
     return (
         <IonPage>
@@ -93,4 +102,4 @@ const AdminLoginFsr: React.FC<LoginProps> = (props: LoginProps) => {
     );
 };
 
-export default AdminLoginFsr;
+export default Login;

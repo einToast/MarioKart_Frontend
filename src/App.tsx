@@ -15,15 +15,15 @@ import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
-import Login from './pages/Login';
-import AdminLoginFsr from "./pages/admin-login-fsr";
-import AdminDashboard from "./pages/admin-dashboard";
-import AdminPoints from "./pages/admin-points";
-import AdminFinal from "./pages/admin-final";
-import AdminResults from "./pages/admin-results";
-import AdminSurvey from "./pages/admin-survey";
-import Survey from "./pages/survey";
-import LoginToTeam from './pages/login-to-team';
+import RegisterTeam from './pages/RegisterTeam';
+import Login from "./pages/admin/Login";
+import AdminDashboard from "./pages/admin/Dashboard";
+import AdminPoints from "./pages/admin/Points";
+import Final from "./pages/admin/Final";
+import AdminResults from "./pages/admin/Results";
+import AdminSurvey from "./pages/admin/admin-survey";
+import Survey from "./pages/Survey";
+import LoginToTeam from './pages/LoginTeam';
 import './interface/interfaces';
 
 /* Core CSS required for Ionic components to work properly */
@@ -68,16 +68,20 @@ const App: React.FC = () => {
                             <Route exact path="/tab1" component={Tab1} />
                             <Route exact path="/tab2" component={Tab2} />
                             <Route exact path="/tab3" component={Tab3} />
+                            <Route exact path="/survey" component={Survey} />
+
+                            <Route exact path="/admin/login" component={Login} />
+                            <Route exact path="/admin/dashboard" component={AdminDashboard} />
+                            <Route exact path="/admin/points" component={AdminPoints} />
+                            <Route exact path="/admin/final" component={Final} />
+                            <Route exact path="/admin/results" component={AdminResults} />
+                            <Route exact path="/admin/survey" component={AdminSurvey} />
                             <Route exact path="/">
                                 <Redirect to="/tab1" />
                             </Route>
-                            <Route exact path="/admin-login-fsr" component={AdminLoginFsr} />
-                            <Route exact path="/admin-dashboard" component={AdminDashboard} />
-                            <Route exact path="/admin-points" component={AdminPoints} />
-                            <Route exact path="/admin-final" component={AdminFinal} />
-                            <Route exact path="/admin-results" component={AdminResults} />
-                            <Route exact path="/admin-survey" component={AdminSurvey} />
-                            <Route exact path="/survey" component={Survey} />
+                            <Route exact path="/admin">
+                                <Redirect to="/admin/dashboard" />
+                            </Route>
                         </IonRouterOutlet>
                         <IonTabBar slot="bottom">
                             <IonTabButton tab="tab1" href="/tab1">
@@ -93,8 +97,8 @@ const App: React.FC = () => {
                     </IonTabs>
                 ) : (
                     <IonRouterOutlet>
-                        <Route exact path="/" component={() => <Login setUser={setCurrentUser} />} />
-                        <Route exact path="/LoginTeam" component={() => <LoginToTeam setUser={setCurrentUser} />} />
+                        <Route exact path="/" component={() => <RegisterTeam setUser={setCurrentUser} />} />
+                        <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
                     </IonRouterOutlet>
                 )}
             </IonReactRouter>

@@ -6,7 +6,7 @@ import {arrowForwardOutline} from "ionicons/icons";
 import {useHistory} from "react-router";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import './survey.css'
+import './Survey.css'
 
 const Survey: React.FC = () => {
     const [currentSurvey, setCurrentSurvey] = useState(null);

@@ -1,4 +1,4 @@
-import '../interface/interfaces'
+import '../../interface/interfaces'
 import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
@@ -7,9 +7,9 @@ import {
     IonIcon, IonCheckbox
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline, trashOutline} from 'ionicons/icons';
-import "./admin-final.css"
+import "./Final.css"
 
-const AdminFinal: React.FC<LoginProps> = (props: LoginProps) => {
+const Final: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: get current best 4 teamnames
     //TODO: delete confirmation of teams
     //TODO: after delete of a team -> the next (5.) team is in the table
@@ -19,7 +19,7 @@ const AdminFinal: React.FC<LoginProps> = (props: LoginProps) => {
             <IonContent fullscreen>
                 <div className={"back"}>
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a href={"./admin-dashboard"}>Zurück</a>
+                    <a href={"/admin/dashboard"}>Zurück</a>
                 </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>ACHTUNG!</LinearGradient>
@@ -67,4 +67,4 @@ const AdminFinal: React.FC<LoginProps> = (props: LoginProps) => {
     );
 };
 
-export default AdminFinal;
+export default Final;

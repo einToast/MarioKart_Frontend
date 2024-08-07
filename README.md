@@ -18,7 +18,7 @@ https://mario-kart-master.netlify.app/
 // not usefull without MOCK API
 
 ## Testing
-- choose Team FSR in the Login Screen, registered team has no data, cause of missing backend migration
+- choose Team FSR in the RegisterTeam Screen, registered team has no data, cause of missing backend migration
 - tested on Chrome Browser with iPhone XR, iPhone 12 Pro, Pixel 7
 - developed with webstorm amd mockoon
 

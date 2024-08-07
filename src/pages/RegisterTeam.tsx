@@ -2,7 +2,7 @@ import {createContext, useEffect, useState} from 'react';
 import {useHistory} from "react-router";
 import axios from "axios";
 import '../interface/interfaces'
-import './Login.css'
+import './RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
@@ -13,9 +13,9 @@ import {
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import characters from "../interface/characters";
-import {createTeam, getAllAvailableCharacters, getAllCharacters} from "../util/service/loginService";
+import {createTeam, getAllAvailableCharacters, getAllCharacters} from "../util/service/teamRegisterService";
 
-const Login: React.FC<LoginProps> = (props: LoginProps) => {
+const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
     const history = useHistory();
@@ -121,7 +121,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a href="/LoginTeam">registriertem Team beitreten</a>
+                    <a href="/login">registriertem Team beitreten</a>
                 </div>
             </IonContent>
         </IonPage>
@@ -129,4 +129,4 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
         ;
 };
 
-export default Login;
+export default RegisterTeam;

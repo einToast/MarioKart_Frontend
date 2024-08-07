@@ -1,5 +1,5 @@
-import '../interface/interfaces'
-import './Login.css'
+import '../../interface/interfaces'
+import '../RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
@@ -12,9 +12,9 @@ import {
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useEffect, useRef, useState} from "react";
-import "./admin-points.css"
+import "./Points.css"
 
-const adminPoints: React.FC<LoginProps> = (props: LoginProps) => {
+const points: React.FC<LoginProps> = (props: LoginProps) => {
     const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
 
     //TODO: get all played & current Rounds
@@ -26,7 +26,7 @@ const adminPoints: React.FC<LoginProps> = (props: LoginProps) => {
             <IonContent fullscreen>
                 <div className={"back"}>
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a href={"./admin-dashboard"}>Zurück</a>
+                    <a href={"/admin/dashboard"}>Zurück</a>
                 </div>
                 <div className={"flexStart"}>
                     <h2>
@@ -191,4 +191,4 @@ const adminPoints: React.FC<LoginProps> = (props: LoginProps) => {
         ;
 };
 
-export default adminPoints;
+export default points;

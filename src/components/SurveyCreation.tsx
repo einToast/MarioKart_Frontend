@@ -8,7 +8,7 @@ import {
     IonSelectOption
 } from '@ionic/react';
 import axios from "axios";
-import "../pages/admin-survey.css";
+import "../pages/admin/admin-survey.css";
 import "../interface/interfaces"
 import {arrowForwardOutline} from "ionicons/icons";
 
