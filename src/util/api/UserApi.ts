@@ -10,9 +10,11 @@ import {
 } from './config/dto';
 import {API_BASE_URL} from "./config/constants";
 
+const BASE_URL = `${API_BASE_URL}/users`;
+
 export const login = async (request: AuthenticationRequestDTO): Promise<AuthenticationResponseDTO> => {
     try {
-        const response = await axios.post<AuthenticationResponseDTO>(`${API_BASE_URL}/login`, request);
+        const response = await axios.post<AuthenticationResponseDTO>(`${BASE_URL}/login`, request);
         return response.data;
     } catch (error) {
         console.error('Error logging in:', error);
@@ -22,7 +24,7 @@ export const login = async (request: AuthenticationRequestDTO): Promise<Authenti
 
 export const registerUserPassword = async (userPasswords: UserPasswordsDTO, token: string): Promise<UserDTO> => {
     try {
-        const response = await axios.put<UserDTO>(`${API_BASE_URL}/register/${token}`, userPasswords);
+        const response = await axios.put<UserDTO>(`${BASE_URL}/register/${token}`, userPasswords);
         return response.data;
     } catch (error) {
         console.error('Error registering user password:', error);
@@ -32,7 +34,7 @@ export const registerUserPassword = async (userPasswords: UserPasswordsDTO, toke
 
 export const createUsers = async (userCreations: UserCreationDTO[]): Promise<UserTokenDTO[]> => {
     try {
-        const response = await axios.post<UserTokenDTO[]>(API_BASE_URL, userCreations);
+        const response = await axios.post<UserTokenDTO[]>(BASE_URL, userCreations);
         return response.data;
     } catch (error) {
         console.error('Error creating users:', error);
@@ -42,7 +44,7 @@ export const createUsers = async (userCreations: UserCreationDTO[]): Promise<Use
 
 export const getUsers = async (): Promise<UserDTO[]> => {
     try {
-        const response = await axios.get<UserDTO[]>(API_BASE_URL);
+        const response = await axios.get<UserDTO[]>(BASE_URL);
         return response.data;
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -52,7 +54,7 @@ export const getUsers = async (): Promise<UserDTO[]> => {
 
 export const deleteUser = async (id: number): Promise<void> => {
     try {
-        await axios.delete(`${API_BASE_URL}/${id}`);
+        await axios.delete(`${BASE_URL}/${id}`);
     } catch (error) {
         console.error('Error deleting user:', error);
         throw error;
@@ -61,7 +63,7 @@ export const deleteUser = async (id: number): Promise<void> => {
 
 export const updateUser = async (id: number, updateUser: UpdateUserDTO): Promise<UserDTO> => {
     try {
-        const response = await axios.put<UserDTO>(`${API_BASE_URL}/${id}`, updateUser);
+        const response = await axios.put<UserDTO>(`${BASE_URL}/${id}`, updateUser);
         return response.data;
     } catch (error) {
         console.error('Error updating user:', error);

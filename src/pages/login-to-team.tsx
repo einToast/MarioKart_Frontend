@@ -12,6 +12,8 @@ import {
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
+import {TeamReturnDTO} from "../util/api/config/dto";
+import {getAllTeams} from "../util/service/loginService";
 
 interface LoginProps {
     setUser: (user: User) => void;
@@ -19,38 +21,34 @@ interface LoginProps {
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
-    const [teams, setTeams] = useState<Team[] | null>(null);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showToast, setShowToast] = useState(false);
 
-    const getTeamName = async () => {
+    useEffect(() => {
         setLoading(true);
-        try {
-            const response = await axios.get('http://localhost:3000/api/team/all');
-            const responseData = response.data as Team[];
-            setTeams(responseData);
-        } catch (error) {
+        const allTeams = getAllTeams();
+
+        allTeams.then((response) => {
+            setTeams(response);
+        }).catch((error) => {
             console.error(error);
             setError('Fehler beim Laden der Teams');
             setShowToast(true);
-        } finally {
+        }).finally(() => {
             setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        getTeamName();
+        });
     }, []);
 
     const handleLogin = () => {
-        const selectedTeam = teams?.find(team => team.name === teamName);
+        const selectedTeam = teams?.find(team => team.teamName === teamName);
         if (selectedTeam) {
             const user: User = {
                 loggedIn: true,
-                name: selectedTeam.name,
-                character: selectedTeam.character
+                name: selectedTeam.teamName,
+                character: selectedTeam.character.characterName
             };
             localStorage.setItem("user", JSON.stringify(user));
             props.setUser(user);
@@ -77,7 +75,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             <select value={teamName} onChange={(e) => setTeamName(e.target.value)}>
                                 <option value="">Select Team</option>
                                 {teams && teams.map((team) => (
-                                    <option key={team.name} value={team.name}>{team.name}</option>
+                                    <option key={team.teamName} value={team.teamName}>{team.teamName}</option>
                                 ))}
                             </select>
                         </div>

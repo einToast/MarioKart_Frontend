@@ -13,6 +13,7 @@ import {
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import characters from "../interface/characters";
+import {createTeam, getAllAvailableCharacters, getAllCharacters} from "../util/service/loginService";
 
 const Login: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -24,19 +25,15 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
     const [toastMessage, setToastMessage] = useState("");
 
     const getCharacterNames = () => {
-        axios.get('http://localhost:3000/api/team/all')
-            .then((response) => {
-                const responseData = response.data as Team[];
-                const charactersPlay = responseData.map((team) => team.character);
-                setCharacterNames(existingCharacterNames => {
-                    const updatedCharacterNames = existingCharacterNames ? characters.filter(character => !existingCharacterNames.includes(character)) : null;
-                    setUpdatedCharacterNames(updatedCharacterNames);
-                    return charactersPlay;
-                });
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        const allCharacters = getAllAvailableCharacters()
+
+        allCharacters.then((response) => {
+            setUpdatedCharacterNames(response.map(character => character.characterName));
+        }).catch((error) => {
+            console.error(error);
+            setToastMessage("Fehler beim Laden der Charaktere");
+            setShowToast(true);
+        } );
     };
 
     useEffect(() => {
@@ -44,47 +41,28 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
     }, []);
 
 
-    const handleLogin = () => {
-        const data = {
-            "name": teamName,
-            "character": selectedCharacter,
+    const handleLogin = async () => {
+        try {
+            const team = await createTeam(teamName, selectedCharacter);
+
+            if (team) {
+                const user: User = {
+                    loggedIn: true,
+                    name: team.teamName,
+                    character: team.character.characterName
+                };
+                localStorage.setItem("user", JSON.stringify(user));
+                props.setUser(user);
+                history.push('/tab1');
+            } else {
+                throw new Error("Ein Fehler ist aufgetreten");
+            }
+        } catch (error) {
+            console.error(error);
+            setToastMessage(error.message);
+            setShowToast(true);
+            getCharacterNames();
         }
-
-        if (!teamName) {
-            setToastMessage("Der Teamname darf nicht leer sein!");
-        } else if (!selectedCharacter) {
-            setToastMessage("Der Charakter darf nicht leer sein!");
-        } else {
-            setToastMessage("Es ist ein Fehler aufgetreten, versuche einen anderen Charakter");
-        }
-
-        const user: User = {
-            loggedIn: false,
-            name: null,
-            character: null
-        };
-
-        axios.post('http://localhost:3000/api/team/create', data)
-            .then((response) => {
-                console.log(response)
-                if (response.status === 200) {
-                    user.loggedIn = true;
-                    user.name = teamName;
-                    user.character = selectedCharacter;
-
-                    // save user to localStorage and set reactive variable
-                    localStorage.setItem("user", JSON.stringify(user));
-                    props.setUser(user);
-
-                    history.push('/tab1');
-                } else {
-                    setShowToast(true);
-                    setToastMessage("Ein Fehler ist aufgetreten");
-                }
-            })
-            .catch((error) => {
-                setShowToast(true);
-            });
     }
 
     return (

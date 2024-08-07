@@ -16,7 +16,7 @@ const RoundComponentAll = ({ game, user, switchColor }) => {
                     return (
                         <div
                             key={team.id}
-                            className={`teamContainer ${user.character === team.character ? 'userTeam' : ''} ${switchColor} slide`}
+                            className={`teamContainer ${user.character === team.character.characterName ? 'userTeam' : ''} ${switchColor} slide`}
                         >
                             <TeamComponent team={team} switchColor={switchColor} />
                         </div>

@@ -10,8 +10,8 @@
     "test.e2e": "cypress run",
     "test.unit": "vitest",
     "lint": "eslint",
-    "ionic_serve": "ionic serve",
-    "ionic_build": "ionic build"
+    "ionic_serve": "ionic serve --no-open",
+    "ionic_build": "ionic build --prod"
   },
   "dependencies": {
     "@capacitor/app": "6.0.0",

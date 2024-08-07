@@ -18,7 +18,7 @@ const RoundComponentSwiper = ({ game, user, switchColor }) => {
 
                     game.teams.map((team, index) => {
                         return (
-                        <SwiperSlide key={index} className={game.teams.some(t =>t.character === user.character) ? 'loggedIn' : ''}>
+                        <SwiperSlide key={index} className={game.teams.some(t =>t.character.characterName === user.character) ? 'loggedIn' : ''}>
                             <TeamComponent4 game={game} team={team} switchColor={switchColor}/>
                         </SwiperSlide>
                         )

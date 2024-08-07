@@ -2,9 +2,11 @@ import axios from 'axios';
 import { TeamReturnDTO, TeamInputDTO, CharacterReturnDTO } from './config/dto';
 import { API_BASE_URL } from './config/constants';
 
+const BASE_URL = `${API_BASE_URL}/teams`;
+
 export const getTeams = async (): Promise<TeamReturnDTO[]> => {
     try {
-        const response = await axios.get<TeamReturnDTO[]>(API_BASE_URL);
+        const response = await axios.get<TeamReturnDTO[]>(BASE_URL);
         return response.data;
     } catch (error) {
         console.error('Error fetching teams:', error);
@@ -14,7 +16,7 @@ export const getTeams = async (): Promise<TeamReturnDTO[]> => {
 
 export const getTeamsSortedByNormalPoints = async (): Promise<TeamReturnDTO[]> => {
     try {
-        const response = await axios.get<TeamReturnDTO[]>(`${API_BASE_URL}/sortedByNormalPoints`);
+        const response = await axios.get<TeamReturnDTO[]>(`${BASE_URL}/sortedByNormalPoints`);
         return response.data;
     } catch (error) {
         console.error('Error fetching teams sorted by normal points:', error);
@@ -24,7 +26,7 @@ export const getTeamsSortedByNormalPoints = async (): Promise<TeamReturnDTO[]> =
 
 export const getTeamsSortedByFinalPoints = async (): Promise<TeamReturnDTO[]> => {
     try {
-        const response = await axios.get<TeamReturnDTO[]>(`${API_BASE_URL}/sortedByFinalPoints`);
+        const response = await axios.get<TeamReturnDTO[]>(`${BASE_URL}/sortedByFinalPoints`);
         return response.data;
     } catch (error) {
         console.error('Error fetching teams sorted by final points:', error);
@@ -34,7 +36,7 @@ export const getTeamsSortedByFinalPoints = async (): Promise<TeamReturnDTO[]> =>
 
 export const getTeamById = async (id: number): Promise<TeamReturnDTO> => {
     try {
-        const response = await axios.get<TeamReturnDTO>(`${API_BASE_URL}/${id}`);
+        const response = await axios.get<TeamReturnDTO>(`${BASE_URL}/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching team by ID:', error);
@@ -44,7 +46,7 @@ export const getTeamById = async (id: number): Promise<TeamReturnDTO> => {
 
 export const getTeamByName = async (name: string): Promise<TeamReturnDTO> => {
     try {
-        const response = await axios.get<TeamReturnDTO>(`${API_BASE_URL}/name/${name}`);
+        const response = await axios.get<TeamReturnDTO>(`${BASE_URL}/name/${name}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching team by name:', error);
@@ -54,7 +56,7 @@ export const getTeamByName = async (name: string): Promise<TeamReturnDTO> => {
 
 export const getCharacters = async (): Promise<CharacterReturnDTO[]> => {
     try {
-        const response = await axios.get<CharacterReturnDTO[]>(`${API_BASE_URL}/characters`);
+        const response = await axios.get<CharacterReturnDTO[]>(`${BASE_URL}/characters`);
         return response.data;
     } catch (error) {
         console.error('Error fetching characters:', error);
@@ -64,7 +66,7 @@ export const getCharacters = async (): Promise<CharacterReturnDTO[]> => {
 
 export const getAvailableCharacters = async (): Promise<CharacterReturnDTO[]> => {
     try {
-        const response = await axios.get<CharacterReturnDTO[]>(`${API_BASE_URL}/characters/available`);
+        const response = await axios.get<CharacterReturnDTO[]>(`${BASE_URL}/characters/available`);
         return response.data;
     } catch (error) {
         console.error('Error fetching available characters:', error);
@@ -74,7 +76,7 @@ export const getAvailableCharacters = async (): Promise<CharacterReturnDTO[]> =>
 
 export const getTakenCharacters = async (): Promise<CharacterReturnDTO[]> => {
     try {
-        const response = await axios.get<CharacterReturnDTO[]>(`${API_BASE_URL}/characters/taken`);
+        const response = await axios.get<CharacterReturnDTO[]>(`${BASE_URL}/characters/taken`);
         return response.data;
     } catch (error) {
         console.error('Error fetching taken characters:', error);
@@ -84,7 +86,7 @@ export const getTakenCharacters = async (): Promise<CharacterReturnDTO[]> => {
 
 export const getCharacterById = async (id: number): Promise<CharacterReturnDTO> => {
     try {
-        const response = await axios.get<CharacterReturnDTO>(`${API_BASE_URL}/characters/${id}`);
+        const response = await axios.get<CharacterReturnDTO>(`${BASE_URL}/characters/${id}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching character by ID:', error);
@@ -94,7 +96,7 @@ export const getCharacterById = async (id: number): Promise<CharacterReturnDTO> 
 
 export const getCharacterByName = async (name: string): Promise<CharacterReturnDTO> => {
     try {
-        const response = await axios.get<CharacterReturnDTO>(`${API_BASE_URL}/characters/name/${name}`);
+        const response = await axios.get<CharacterReturnDTO>(`${BASE_URL}/characters/name/${name}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching character by name:', error);
@@ -104,7 +106,7 @@ export const getCharacterByName = async (name: string): Promise<CharacterReturnD
 
 export const addTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> => {
     try {
-        const response = await axios.post<TeamReturnDTO>(API_BASE_URL, team);
+        const response = await axios.post<TeamReturnDTO>(BASE_URL, team);
         return response.data;
     } catch (error) {
         console.error('Error adding team:', error);
@@ -114,7 +116,7 @@ export const addTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> => {
 
 export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamReturnDTO> => {
     try {
-        const response = await axios.put<TeamReturnDTO>(`${API_BASE_URL}/${id}`, team);
+        const response = await axios.put<TeamReturnDTO>(`${BASE_URL}/${id}`, team);
         return response.data;
     } catch (error) {
         console.error('Error updating team:', error);

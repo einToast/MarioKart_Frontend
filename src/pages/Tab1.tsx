@@ -12,10 +12,12 @@ import {Navigation} from 'swiper/modules';
 import RoundComponentAll from "../components/RoundComponentAll";
 import RoundComponentSwiper from "../components/RoundComponentSwiper";
 import {Swiper, SwiperSlide} from "swiper/react";
+import {getBothCurrentRounds} from "../util/service/dashboardService";
+import {RoundReturnDTO} from "../util/api/config/dto";
 
 const Tab1: React.FC = () => {
-    const [currentRound, setCurrentRound] = useState<Round | null>(null);
-    const [nextRound, setNextRound] = useState<Round | null>(null);
+    const [currentRound, setCurrentRound] = useState<RoundReturnDTO>(null);
+    const [nextRound, setNextRound] = useState<RoundReturnDTO>(null);
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
@@ -63,8 +65,20 @@ const Tab1: React.FC = () => {
                 console.log(error);
             }
         };
+        const currentAndNextRound = getBothCurrentRounds();
 
-        getCurrentAndNextRound();
+        currentAndNextRound.then((response) => {
+            response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
+            response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
+            response[1].endTime = response[1].endTime.split('T')[1].slice(0, 5);
+            response[1].startTime = response[1].startTime.split('T')[1].slice(0, 5);
+            setCurrentRound(response[0]);
+            setNextRound(response[1]);
+        }).catch((error) => {
+            console.error(error);
+        });
+
+        // getCurrentAndNextRound();
         setUserCharacter(user.character);
     }, [])
 
@@ -94,15 +108,15 @@ const Tab1: React.FC = () => {
                                     <>
                                         <div className="timeContainer">
                                             <h3>Aktuelle Spiele</h3>
-                                            <p className="timeStamp">{currentRound.von} - {currentRound.bis}</p>
+                                            <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
                                         </div>
 
                                         {currentRound.games && currentRound.games.map(game => {
-                                            const switchColor = game.switch;
-                                            const hasLoggedInCharacter = game.teams.some(team => team.character === user.character);
+                                            const switchColor = game.switchGame;
+                                            const hasLoggedInCharacter = game.teams.some(team => team.character.characterName === user.character);
 
                                             if (hasLoggedInCharacter) {
-                                                const loggedInTeamIndex = game.teams.findIndex(team => team.character === user.character);
+                                                const loggedInTeamIndex = game.teams.findIndex(team => team.character.characterName === user.character);
                                                 const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
                                                 game.teams.unshift(loggedInTeam[0]);
                                             }
@@ -123,15 +137,15 @@ const Tab1: React.FC = () => {
                                     <>
                                         <div className="timeContainer">
                                             <h3>Nächste Spiele</h3>
-                                            <p className="timeStamp">{nextRound.von} - {nextRound.bis}</p>
+                                            <p className="timeStamp">{nextRound.startTime} - {nextRound.endTime}</p>
                                         </div>
 
                                         {nextRound.games && nextRound.games.map(game => {
-                                            const switchColor = game.switch;
-                                            const hasLoggedInCharacter = game.teams.some(team => team.character === user.character);
+                                            const switchColor = game.switchGame;
+                                            const hasLoggedInCharacter = game.teams.some(team => team.character.characterName === user.character);
 
                                             if (hasLoggedInCharacter) {
-                                                const loggedInTeamIndex = game.teams.findIndex(team => team.character === user.character);
+                                                const loggedInTeamIndex = game.teams.findIndex(team => team.character.characterName === user.character);
                                                 const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
                                                 game.teams.unshift(loggedInTeam[0]);
                                             }
@@ -156,18 +170,18 @@ const Tab1: React.FC = () => {
                                     <>
                                         <div className="timeContainer">
                                             <h3>Aktuelles Spiel</h3>
-                                            <p className="timeStamp">{currentRound.von} - {currentRound.bis}</p>
+                                            <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
                                         </div>
                                         {currentRound && currentRound.games ? (
                                             (() => {
                                                 const filteredGames = currentRound.games
-                                                    .filter(game => game.teams.some(team => team.character === user.character)) // Filter games where logged in character is in a team
+                                                    .filter(game => game.teams.some(team => team.character.characterName === user.character)) // Filter games where logged in character is in a team
                                                     .map(game => {
-                                                        const switchColor = game.switch;
-                                                        const hasLoggedInCharacter = game.teams.some(team => team.character === user.character);
+                                                        const switchColor = game.switchGame;
+                                                        const hasLoggedInCharacter = game.teams.some(team => team.character.characterName === user.character);
 
                                                         if (hasLoggedInCharacter) {
-                                                            const loggedInTeamIndex = game.teams.findIndex(team => team.character === user.character);
+                                                            const loggedInTeamIndex = game.teams.findIndex(team => team.character.characterName === user.character);
                                                             const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
                                                             game.teams.unshift(loggedInTeam[0]);
                                                         }
@@ -196,18 +210,18 @@ const Tab1: React.FC = () => {
                                     <>
                                         <div className="timeContainer">
                                             <h3>Nächstes Spiel</h3>
-                                            <p className="timeStamp">{nextRound.von} - {nextRound.bis}</p>
+                                            <p className="timeStamp">{nextRound.startTime} - {nextRound.endTime}</p>
                                         </div>
                                         {nextRound && nextRound.games ? (
                                             (() => {
                                                 const filteredGames = nextRound.games
-                                                    .filter(game => game.teams.some(team => team.character === user.character)) // Filter games where logged in character is in a team
+                                                    .filter(game => game.teams.some(team => team.character.characterName === user.character)) // Filter games where logged in character is in a team
                                                     .map(game => {
-                                                        const switchColor = game.switch;
-                                                        const hasLoggedInCharacter = game.teams.some(team => team.character === user.character);
+                                                        const switchColor = game.switchGame;
+                                                        const hasLoggedInCharacter = game.teams.some(team => team.character.characterName === user.character);
 
                                                         if (hasLoggedInCharacter) {
-                                                            const loggedInTeamIndex = game.teams.findIndex(team => team.character === user.character);
+                                                            const loggedInTeamIndex = game.teams.findIndex(team => team.character.characterName === user.character);
                                                             const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
                                                             game.teams.unshift(loggedInTeam[0]);
                                                         }

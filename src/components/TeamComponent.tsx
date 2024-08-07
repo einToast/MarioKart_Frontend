@@ -1,5 +1,5 @@
 const TeamComponent = ({ team, switchColor }) => {
-    const character = team.character || [];
+    const character = team.character.characterName || [];
 
     return (
         <div className={`${switchColor}`}>
@@ -11,7 +11,7 @@ const TeamComponent = ({ team, switchColor }) => {
                 />
             </div>
             <div>
-                <p>{team.name}</p>
+                <p>{team.teamName}</p>
                 <p>Switch {switchColor}</p>
             </div>
         </div>

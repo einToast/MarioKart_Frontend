@@ -6,27 +6,29 @@ import {useEffect, useState} from "react";
 import '../interface/interfaces';
 import {LinearGradient} from "react-text-gradients";
 import Header from "../components/header";
+import {TeamReturnDTO} from "../util/api/config/dto";
+import {getTeamsRanked} from "../util/service/dashboardService";
 
 const Tab2: React.FC = () => {
 
-    const [teams, setTeam] = useState<Team[] | null>(null);
+    const [teams, setTeams] = useState<TeamReturnDTO[] | null>(null);
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
 
-
-    const getTeamName = () => {
-        axios.get('http://localhost:3000/api/team/all')
-            .then ((response) => {
-                const responseData = response.data as Team[]
-                setTeam(responseData)
-            })
-            .catch((error) => {console.log(error)});
-    }
-
     useEffect(() => {
-        getTeamName();
         setUserCharacter(user.character);
+
+        const teamsRanked = getTeamsRanked();
+
+        teamsRanked.then((response) => {
+            console.log(response);
+            setTeams(response);
+        }).catch((error) => {
+            console.error(error);
+        });
+
+
     },[])
 
     return (
@@ -41,16 +43,15 @@ const Tab2: React.FC = () => {
                 <div className={"flexContainer"}>
                     {teams ? (
                         teams
-                            .sort((a, b) => b.punkte - a.punkte)
                             .map(team => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`../resources/media/${team.character}.png`} alt={team.character}
+                                        <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
                                              className={"iconTeam"}/>
                                     </div>
                                     <div>
-                                        <p>{team.name}</p>
-                                        <p className={"punkte"}>{team.punkte} Punkte</p>
+                                        <p>{team.teamName}</p>
+                                        <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                     </div>
                                 </div>
                             ))

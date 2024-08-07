@@ -50,6 +50,7 @@ const AdminLoginFsr: React.FC<LoginProps> = (props: LoginProps) => {
                     </h2>
                     <h1>Bereich</h1>
                     <p>Hier haben nur die Organisatoren Zutritt. Also versuche es gar nicht erst.</p>
+                    <p>(Das Password ist 12345678)</p>
 
                     <div className="loginContainer">
                         <div className="borderContainer">
