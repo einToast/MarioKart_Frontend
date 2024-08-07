@@ -14,6 +14,7 @@ import { arrowForwardOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getAllTeams} from "../util/service/loginService";
+import characters from "../interface/characters";
 
 interface LoginProps {
     setUser: (user: User) => void;
@@ -59,6 +60,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     };
 
+    let character;
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
@@ -69,15 +71,34 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                         </LinearGradient>
                     </h2>
                     <h1>Login</h1>
-                    <p>Melde dich zu deinem bereits bestehenden (registrierten) Team an. Wenn es bislang nicht in der Liste auftaucht, lade neu oder registriere dein Team.</p>
+                    <p>Melde dich zu deinem bereits bestehenden (registrierten) Team an. Wenn es bislang nicht in der
+                        Liste auftaucht, lade neu oder registriere dein Team.</p>
                     <div className="loginContainer">
-                        <div className="borderContainer">
+                        <div className="borderContainer selectCharacter">
                             <select value={teamName} onChange={(e) => setTeamName(e.target.value)}>
                                 <option value="">Select Team</option>
                                 {teams && teams.map((team) => (
-                                    <option key={team.teamName} value={team.teamName}>{team.teamName}</option>
+                                    <option key={team.teamName}
+                                            value={team.teamName}
+                                            style={{backgroundImage: `url(../resources/media/${team.character.characterName}.png)`}}
+                                    >
+                                        {team.teamName}
+                                    </option>
                                 ))}
                             </select>
+                            {teamName && (
+                                <div className="selected-character">
+                                    {[teams.find(team => team.teamName === teamName).character.characterName].map((character) => (
+                                        characters.includes(character) &&
+                                        <img
+                                            src={`../resources/media/${character}.png`}
+                                            alt={`${character} character`}
+                                        />
+                                    ))
+                                    }
+                                </div>
+                            )
+                            }
                         </div>
                         <IonButton onClick={handleLogin} slot="start">
                             <div>
