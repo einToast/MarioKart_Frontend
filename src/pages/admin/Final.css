@@ -17,7 +17,7 @@ p.bold {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
+    /*cursor: pointer;*/
 
     &:hover {
         border: 1px solid #fff;
