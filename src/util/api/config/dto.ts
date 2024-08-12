@@ -39,6 +39,7 @@ export interface TeamReturnDTO {
 export interface TeamInputDTO {
     teamName: string;
     characterName: string;
+    finalReady: boolean;
 }
 
 export interface CharacterReturnDTO {
