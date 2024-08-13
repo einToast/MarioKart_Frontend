@@ -4,56 +4,81 @@ import {
     IonButton,
     IonContent,
     IonPage,
-    IonIcon, IonCheckbox
+    IonIcon, IonCheckbox, IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline, trashOutline} from 'ionicons/icons';
 import "./Final.css"
 import {useEffect, useState} from "react";
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {
-    checkToken,
     createTeamFinalPlan,
     getTeamFinalRanked,
     removeTeamFinalParticipation, resetAllTeamFinalParticipation,
 } from "../../util/service/adminService";
 import {useHistory} from "react-router";
+import {checkToken} from "../../util/service/loginService";
 
 const Final: React.FC<LoginProps> = (props: LoginProps) => {
-    //TODO: get current best 4 teamnames
-    //TODO: delete confirmation of teams
-    //TODO: after delete of a team -> the next (5.) team is in the table
-    //TODO: POST Finale
+
     const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState(false);
 
     const history = useHistory();
 
-    const removeTeam = async (team: TeamReturnDTO) => {
-        console.log("remove team: " + team.teamName);
-        const removedTeam = await removeTeamFinalParticipation(team);
-        if (removedTeam) {
-            await getFinalTeams();
+    const handleTeamRemove = async (team: TeamReturnDTO) => {
+        try {
+            const removedTeam = await removeTeamFinalParticipation(team);
+            if (removedTeam) {
+                // setError('Team entfernt');
+                // setShowToast(true);
+                await getFinalTeams();
+            } else {
+                throw new TypeError('Team konnte nicht entfernt werden');
+            }
+        } catch (error) {
+            setError(error);
+            setShowToast(true);
         }
     }
 
-    const resetAllTeams = async () => {
-        const teams = await resetAllTeamFinalParticipation();
-        if (teams) {
-            await getFinalTeams();
+    const handleTeamsReset = async () => {
+        try {
+            const teams = await resetAllTeamFinalParticipation();
+            if (teams) {
+                setError('Teams zurückgesetzt');
+                setShowToast(true);
+                await getFinalTeams();
+            } else {
+                throw new TypeError('Teams konnten nicht zurückgesetzt werden');
+            }
+        } catch (error) {
+            setError(error);
+            setShowToast(true);
         }
     }
 
     const getFinalTeams = async () => {
         const teamNames = getTeamFinalRanked();
         teamNames.then((response) => {
-            console.log(response);
             setTeams(response);
         });
     }
 
-    const createFinal = async () => {
-        const final = await createTeamFinalPlan();
-        if (final) {
-            console.log("final created");
+    const handleFinalCreation = async () => {
+        try {
+            const final = await createTeamFinalPlan();
+            if (final) {
+                setError('Finale erfolgreich erstellt');
+                setShowToast(true);
+                history.push('/admin/dashboard');
+            } else {
+                throw new TypeError('Finale konnte nicht erstellt werden');
+            }
+        } catch (error) {
+            setError(error);
+            setShowToast(true);
         }
     }
 
@@ -88,7 +113,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                                     <IonIcon slot="end"
                                              icon={trashOutline}
                                              style={{cursor: "pointer"}}
-                                             onClick={() => removeTeam(team)}
+                                             onClick={() => handleTeamRemove(team)}
                                     ></IonIcon>
                                 </div>
                             ))
@@ -100,21 +125,25 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round secondary"}>
-                        <div onClick={resetAllTeams}>
+                        <div onClick={handleTeamsReset}>
                             <p>Teams zurücksetzen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={resetAllTeams}></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleTeamsReset}></IonIcon>
                         </div>
                     </IonButton>
                     <IonButton slot="start" shape="round" className={"round"}>
-                        <div onClick={createFinal}>
+                        <div onClick={handleFinalCreation}>
                             <p>Finale erzeugen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={createFinal}></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleFinalCreation}></IonIcon>
                         </div>
                     </IonButton>
-
-
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+            />
         </IonPage>
     );
 };

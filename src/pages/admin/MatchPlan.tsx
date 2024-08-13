@@ -8,14 +8,14 @@ import {
     IonIcon,
     IonCheckbox, IonAccordion,
     IonAccordionGroup,
-    IonItem, IonLabel
+    IonItem, IonLabel, IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
-import {getRegisteredTeams, getTeamFinalRanked} from "../../util/service/adminService";
+import {createTeamMatchPlan, getRegisteredTeams, getTeamFinalRanked} from "../../util/service/adminService";
 import {useHistory} from "react-router";
 import {checkToken} from "../../util/service/loginService";
 
@@ -24,6 +24,10 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState(false);
+
     const history = useHistory();
 
     useEffect(() => {
@@ -33,11 +37,34 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
 
         const teamNames = getRegisteredTeams();
         teamNames.then((response) => {
-            console.log(response);
             setTeams(response);
+        }).catch((error) => {
+            console.error(error);
+            setError('Fehler beim Laden der Teams');
+            setShowToast(true);
         });
         setUserCharacter(user.character);
     },[])
+
+    const handleMatchPlanCreation = async () => {
+        try {
+            const newRounds = await createTeamMatchPlan();
+            if (newRounds) {
+                setShowToast(true);
+                setError('Spielplan erfolgreich erstellt');
+                history.push('/admin/dashboard');
+            } else {
+                throw new TypeError('Spielplan konnte nicht erstellt werden');
+            }
+        } catch (error) {
+            if (error instanceof TypeError) {
+                setError('Spielplan konnte nicht erstellt werden');
+            } else {
+                setError(error.message);
+            }
+            setShowToast(true);
+        }
+    }
 
     return (
         <IonPage>
@@ -66,7 +93,6 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                                     <div>
                                         <p>{team.teamName}</p>
                                         {/*<p className={"punkte"}>{team.finalPoints} Punkte</p>*/}
-                                        {/*<p></p>*/}
                                     </div>
                                 </div>
                             ))
@@ -77,14 +103,19 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round"}>
-                        <div onClick={() => console.log("test")}>
+                        <div onClick={handleMatchPlanCreation}>
                             <p>Spielplan erzeugen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline}
-                                     onClick={() => console.log("test")}></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+            />
         </IonPage>
     )
         ;

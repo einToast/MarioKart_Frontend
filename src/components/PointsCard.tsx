@@ -3,7 +3,7 @@ import {
     IonAccordion,
     IonButton,
     IonIcon,
-    IonItem
+    IonItem, IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import { GameReturnDTO, PointsReturnDTO } from "../util/api/config/dto";
@@ -16,6 +16,9 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
     const [pointsTwo, setPointsTwo] = useState<number>(game.points.find(point => point.team.id === game.teams[1].id).points);
     const [pointsThree, setPointsThree] = useState<number>(game.points.find(point => point.team.id === game.teams[2].id).points);
     const [pointsFour, setPointsFour] = useState<number>(game.points.find(point => point.team.id === game.teams[3].id).points);
+    const [error, setError] = useState<string | null>(null);
+    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState(false);
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
         const newValue = parseInt(event.target.value);
@@ -34,8 +37,18 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
     };
 
     const handleSavePoints = async () => {
-        console.log(game);
-        const newPoints = await saveGame(roundId, game);
+        try {
+            const newPoints = await saveGame(roundId, game);
+            if (newPoints) {
+                setShowToast(true);
+                setError('Spiel erfolgreich gespeichert');
+            } else {
+                throw new TypeError('Spiel konnte nicht gespeichert werden');
+            }
+        } catch (error) {
+            setError(error);
+            setShowToast(true);
+        }
 
     }
 
@@ -87,6 +100,12 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                     </div>
                 </IonButton>
             </div>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+            />
         </IonAccordion>
     );
 };

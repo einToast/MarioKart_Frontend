@@ -7,7 +7,7 @@ import {
     IonContent,
     IonIcon,
     IonItem,
-    IonPage
+    IonPage, IonToast
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import { useHistory } from "react-router";
@@ -27,6 +27,10 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
+    const [error, setError] = useState<string | null>(null);
+    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState(false);
+
     const history = useHistory();
 
     const getSelectedRound = (roundNumber: number) => {
@@ -39,9 +43,20 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
         });
     };
 
-    const handleSavePoints = () => {
-        console.log(round);
-        saveRound(round);
+    const handleSavePoints = async () => {
+        try {
+            const savedRound = await saveRound(round);
+
+            if (savedRound) {
+                setShowToast(true);
+                setError('Runde erfolgreich gespeichert');
+            } else {
+                throw new TypeError('Runde konnte nicht gespeichert werden');
+            }
+        } catch (error) {
+            setError(error);
+            setShowToast(true);
+        }
     };
 
     useEffect(() => {
@@ -125,6 +140,12 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                     </IonButton>
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+            />
         </IonPage>
     );
 };
