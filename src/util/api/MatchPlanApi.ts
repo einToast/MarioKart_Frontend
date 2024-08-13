@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { RoundReturnDTO, GameReturnDTO, PointsReturnDTO } from './config/dto';
+import {RoundReturnDTO, GameReturnDTO, PointsReturnDTO, RoundInputDTO, PointsInputDTO} from './config/dto';
 import { API_BASE_URL } from './config/constants';
 import apiClient from "./config/apiClient";
 
@@ -91,6 +91,26 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         console.error('Error creating final plan:', error);
+        throw error;
+    }
+}
+
+export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): Promise<RoundReturnDTO> => {
+    try {
+        const response = await apiClient.put<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}`, round);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating round played:', error);
+        throw error;
+    }
+}
+
+export const updatePoints = async (roundId: number, gameId:number, teamId:number, points: PointsInputDTO): Promise<PointsReturnDTO> => {
+    try {
+        const response = await apiClient.put<PointsReturnDTO>(`${BASE_URL}/rounds/${roundId}/games/${gameId}/teams/${teamId}/points`, points);
+        return response.data;
+    } catch (error) {
+        console.error('Error updating points:', error);
         throw error;
     }
 }
