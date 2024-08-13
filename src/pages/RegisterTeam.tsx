@@ -81,7 +81,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
                     <div className={"loginContainer"}>
                         <div className={"borderContainer selectCharacter"}>
-                            <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)}>
+                            <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{cursor: "pointer"}}>
                                 <option value="">
                                     Bitte wähle deine Charakter
                                 </option>
