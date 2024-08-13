@@ -49,6 +49,14 @@ export interface CharacterReturnDTO {
 
 }
 
+export interface RoundInputDTO {
+    played: boolean;
+}
+
+export interface PointsInputDTO {
+    points: number;
+}
+
 export interface AuthenticationRequestDTO {
     username: string;
     password: string;
