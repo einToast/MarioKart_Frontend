@@ -1,7 +1,7 @@
 import {IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import ExploreContainer from '../components/header';
+import ExploreContainer from '../components/Header';
 import './Tab3.css';
-import Header from "../components/header";
+import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
 import {
     informationCircleOutline,

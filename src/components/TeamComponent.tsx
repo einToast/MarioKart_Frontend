@@ -12,7 +12,7 @@ const TeamComponent = ({ team, switchColor }) => {
             </div>
             <div>
                 <p>{team.teamName}</p>
-                <p>Switch {switchColor}</p>
+                <p className="punkte">Switch {switchColor}</p>
             </div>
         </div>
     );

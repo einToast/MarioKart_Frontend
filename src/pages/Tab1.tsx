@@ -1,7 +1,7 @@
 import {IonAvatar, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import './Tab1.css';
 import {LinearGradient} from 'react-text-gradients'
-import Header from "../components/header";
+import Header from "../components/Header";
 import axios from "axios";
 import '../interface/interfaces';
 import {useEffect, useState} from "react";

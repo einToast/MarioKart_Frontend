@@ -1,11 +1,11 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/header';
+import ExploreContainer from '../components/Header';
 import './Tab2.css';
 import axios from 'axios';
 import {useEffect, useState} from "react";
 import '../interface/interfaces';
 import {LinearGradient} from "react-text-gradients";
-import Header from "../components/header";
+import Header from "../components/Header";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getTeamsRanked} from "../util/service/dashboardService";
 

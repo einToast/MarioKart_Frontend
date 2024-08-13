@@ -1,6 +1,6 @@
 import {IonButton, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import '../interface/interfaces'
-import Header from "../components/header";
+import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
 import {arrowForwardOutline} from "ionicons/icons";
 import {useHistory} from "react-router";

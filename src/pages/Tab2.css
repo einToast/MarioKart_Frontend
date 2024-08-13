@@ -29,15 +29,19 @@
         margin-bottom: 5px;
     }
 
-    div p:last-child {
+    /*div p:last-child {*/
+    /*    color: #6B86CE;*/
+    /*    font-family: Poppins;*/
+    /*    font-weight: 500;*/
+    /*    margin: 0;*/
+    /*}*/
+
+    p.punkte {
+        font-size: 14px;
         color: #6B86CE;
         font-family: Poppins;
         font-weight: 500;
         margin: 0;
-    }
-
-    p.punkte {
-        font-size: 14px;
     }
 
     .imageContainer {
