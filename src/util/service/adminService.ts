@@ -1,21 +1,65 @@
-import {login} from "../api/UserApi";
-import {jwtDecode} from 'jwt-decode';
 import {
-    AuthenticationRequestDTO,
-    AuthenticationResponseDTO,
+    GameReturnDTO,
+    PointsInputDTO, PointsReturnDTO,
+    RoundInputDTO,
     RoundReturnDTO,
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
-import {createFinalPlan, createMatchPlan} from "../api/MatchPlanApi";
+import {getTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
+import {createFinalPlan, createMatchPlan, updatePoints, updateRoundPlayed} from "../api/MatchPlanApi";
+import {getAllTeams} from "./teamRegisterService";
 
+export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> => {
+    for (const game of round.games) {
+        for (const team of game.teams) {
+            const pointInput: PointsInputDTO = {
+                points: game.points.find(point => point.team.id === team.id).points,
+            }
+            try {
+                await updatePoints(round.id, game.id, team.id, pointInput);
+            } catch (error) {
+                console.error('Error updating points:', error);
+                throw error;
+            }
+        }
+    }
+    const roundInput : RoundInputDTO = {
+        played: round.played,
+    }
+    try{
+        return await updateRoundPlayed(round.id, roundInput);
+    } catch (error) {
+        console.error('Error updating round played:', error);
+        throw error;
+    }
+}
+
+export const saveGame = async (roundId: number, game: GameReturnDTO):Promise<PointsReturnDTO[]> => {
+    const points: PointsReturnDTO[] = [];
+    for (const team of game.teams) {
+        const pointInput: PointsInputDTO = {
+            points: game.points.find(point => point.team.id === team.id).points,
+        }
+        try {
+            points.push(await updatePoints(roundId, game.id, team.id, pointInput));
+        } catch (error) {
+            console.error('Error updating points:', error);
+            throw error;
+        }
+    }
+    return points;
+}
 
 export const getTeamFinalRanked = async (): Promise<TeamReturnDTO[]> => {
     const response = (await getTeamsSortedByFinalPoints())
         .filter(team => team.finalReady)
         .slice(0, 4);
     return response;
+}
+
+export const getRegisteredTeams = async (): Promise<TeamReturnDTO[]> => {
+    return await getAllTeams()
 }
 
 export const removeTeamFinalParticipation = async (team: TeamReturnDTO): Promise<TeamReturnDTO> => {
@@ -65,51 +109,4 @@ export const createTeamMatchPlan = async (): Promise<RoundReturnDTO[]> => {
 export const createTeamFinalPlan = async (): Promise<RoundReturnDTO[]> => {
     const response = await createFinalPlan();
     return response;
-}
-
-export const loginUser = async (username:string, password:string): Promise<void> => {
-    const user: AuthenticationRequestDTO = {
-        username: username,
-        password: password
-    }
-    const response = await login(user);
-    setToken(response.accessToken);
-};
-
-export const setToken = (token: string): void => {
-    localStorage.setItem('authToken', token);
-};
-
-export const getToken = (): string | null => {
-    return localStorage.getItem('authToken');
-};
-
-const removeToken = (): void => {
-    localStorage.removeItem('authToken');
-};
-
-const isTokenExpired = (token: string): boolean => {
-    const decodedToken = jwtDecode(token);
-    const expirationTimeInSeconds = decodedToken.exp;
-
-    if (!expirationTimeInSeconds) {
-        return true;
-    }
-
-    const currentDateTime = new Date().getTime() / 1000;
-
-    return expirationTimeInSeconds < currentDateTime;
-}
-
-export const checkToken = (): boolean => {
-    const token = getToken();
-    if (!token) {
-        removeToken();
-        return false;
-    }
-    if (isTokenExpired(token)) {
-        removeToken();
-        return false;
-    }
-    return true;
 }

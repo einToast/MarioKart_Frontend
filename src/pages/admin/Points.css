@@ -10,6 +10,9 @@
         text-decoration: none;
     }
 }
+.back:hover {
+    cursor: pointer;
+}
 
 ion-button.secondary::part(native) {
     border-width: 1px;
@@ -105,6 +108,7 @@ ion-button.round::part(native) {
     bottom: -15px;
     left: 3px;
     width: 100%;
+    z-index: 10;
 
     .secondary {
         margin-bottom: 10px;

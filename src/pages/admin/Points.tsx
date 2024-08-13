@@ -1,32 +1,76 @@
-import '../../interface/interfaces'
-import '../RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
+import React, { useEffect, useRef, useState } from "react";
 import {
-    IonButton,
-    IonContent,
-    IonPage,
-    IonIcon,
-    IonCheckbox, IonAccordion,
+    IonAccordion,
     IonAccordionGroup,
-    IonItem, IonLabel
+    IonButton,
+    IonCheckbox,
+    IonContent,
+    IonIcon,
+    IonItem,
+    IonPage
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useEffect, useRef, useState} from "react";
-import "./Points.css"
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import { useHistory } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import PointsCard from "../../components/PointsCard";
+import { getAllRounds, getRound } from "../../util/service/dashboardService";
+import {saveRound} from "../../util/service/adminService";
+import "../../interface/interfaces";
+import "../RegisterTeam.css";
+import "./Points.css";
+import { RoundReturnDTO } from "../../util/api/config/dto";
+import {checkToken} from "../../util/service/loginService";
 
-const points: React.FC<LoginProps> = (props: LoginProps) => {
-    const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
+const Points: React.FC<LoginProps> = (props: LoginProps) => {
+    const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
+    const [round, setRound] = useState<RoundReturnDTO | null>(null);
+    const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
+    const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
+    const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
+    const history = useHistory();
 
-    //TODO: get all played & current Rounds
-    //TODO: get current Teams & Games of selected Round
-    //TODO: POST selected Points
-    //TODO: POST all Points
+    const getSelectedRound = (roundNumber: number) => {
+        const round = getRound(roundNumber);
+        round.then((round) => {
+            round.games = round.games.sort((a, b) => a.id - b.id);
+            setRound(round);
+            setRoundPlayed(round.played);
+            setOpenAccordions([]); // Close all accordions initially
+        });
+    };
+
+    const handleSavePoints = () => {
+        console.log(round);
+        saveRound(round);
+    };
+
+    useEffect(() => {
+        if (!checkToken()) {
+            window.location.assign('/admin/login');
+        }
+
+        const rounds = getAllRounds();
+        rounds.then((rounds) => {
+            rounds = rounds.sort((a, b) => a.id - b.id);
+            getSelectedRound(rounds[0].id);
+            setNumberOfRounds(rounds.length);
+        });
+    }, []);
+
+    const toggleAccordion = (accordionId: string) => {
+        setOpenAccordions(prevOpenAccordions =>
+            prevOpenAccordions.includes(accordionId)
+                ? prevOpenAccordions.filter(id => id !== accordionId) // Remove the accordion from the list
+                : [...prevOpenAccordions, accordionId] // Add the accordion to the list
+        );
+    };
+
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a href={"/admin/dashboard"}>Zurück</a>
+                    <a>Zurück</a>
                 </div>
                 <div className={"flexStart"}>
                     <h2>
@@ -35,160 +79,54 @@ const points: React.FC<LoginProps> = (props: LoginProps) => {
                         </LinearGradient>
                     </h2>
                     <div>
-                        <select>
-                            <option key={1} value={1}>Runde 1</option>
-                            <option key={2} value={2}>Runde 2</option>
-                            <option key={3} value={3}>Runde 3</option>
+                        <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
+                            {Array.from(Array(numberOfRounds).keys()).map((round) => {
+                                return <option value={round + 1} key={round + 1}>Runde {round + 1}</option>;
+                            })}
                         </select>
-
                     </div>
                 </div>
-                <IonAccordionGroup ref={accordionGroup} multiple={true}>
-                    <IonAccordion value="first">
-                        <IonItem slot="header" color="light">
-                            <h3 className={"gruen"}>Switch grün</h3>
-                        </IonItem>
-
-                        <div className="ion-padding" slot="content">
-                            <div className={"inputContainer"}>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/toadette.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/mario.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/waluigi.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/koopa.png"}/>
-                                </div>
-                            </div>
-                            <IonButton slot="start" shape="round">
-                                <div>
-                                    <p>Spiel speichern</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
+                {round && (
+                    <>
+                        <div className="timeContainer">
+                            <p className="timeStamp">{round.startTime.split('T')[1].slice(0, 5)} - {round.endTime.split('T')[1].slice(0, 5)}</p>
                         </div>
-                    </IonAccordion>
-                    <IonAccordion value="second">
-                        <IonItem slot="header" color="light">
-                            <h3 className={"rot"}>Switch rot</h3>
-                        </IonItem>
-                        <div className="ion-padding" slot="content">
-                            <div className={"inputContainer"}>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/toad.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/daisy.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/lakitu.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/link.png"}/>
-                                </div>
-                            </div>
-                            <IonButton slot="start" shape="round">
-                                <div>
-                                    <p>Spiel speichern</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        </div>
-                    </IonAccordion>
-                    <IonAccordion value="third">
-                        <IonItem slot="header" color="light">
-                            <h3 className={"weiss"}>Switch weiß</h3>
-                        </IonItem>
-                        <div className="ion-padding" slot="content">
-                            <div className={"inputContainer"}>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/luigi.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/melinda.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/peach.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/wario.png"}/>
-                                </div>
-                            </div>
-                            <IonButton slot="start" shape="round">
-                                <div>
-                                    <p>Spiel speichern</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        </div>
-                    </IonAccordion>
-                    <IonAccordion value="fourth">
-                        <IonItem slot="header" color="light">
-                            <h3 className={"blau"}>Switch blau</h3>
-                        </IonItem>
-                        <div className="ion-padding" slot="content">
-                            <div className={"inputContainer"}>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/yoshi.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/rosalina.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/metall-mario.png"}/>
-                                </div>
-                                <div className={"characterInput"}>
-                                    <input></input>
-                                    <img src={"./resources/media/shy-guy.png"}/>
-                                </div>
-                            </div>
-                            <IonButton slot="start" shape="round">
-                                <div>
-                                    <p>Spiel speichern</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        </div>
-                    </IonAccordion>
-                </IonAccordionGroup>
-
+                        <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
+                            {round.games?.map((game, index) => (
+                                game.teams = game.teams.sort((a, b) => a.id - b.id),
+                                <PointsCard
+                                    key={game.id}
+                                    game={game}
+                                    roundId={round.id}
+                                    isOpen={openAccordions.includes(game.id.toString())}
+                                    toggleAccordion={() => toggleAccordion(game.id.toString())}
+                                />
+                            ))}
+                        </IonAccordionGroup>
+                    </>
+                )}
 
                 <div className={"playedContainer"}>
+                    <IonCheckbox labelPlacement="end"
+                                 checked={roundPlayed}
+                                 onIonChange={(e) => {
+                                     setRoundPlayed(e.detail.checked);
+                                     round.played = e.detail.checked;
+                                 }}
+                    >
+                        Runde gespielt
+                    </IonCheckbox>
 
-                    <IonCheckbox labelPlacement="end">Runde gespielt</IonCheckbox>
-
-                    <IonButton slot="start" shape="round" className={"round"}>
+                    <IonButton slot="start" shape="round" className={"round"} onClick={handleSavePoints}>
                         <div>
                             <p>Punkte speichern</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-
-
                 </div>
             </IonContent>
         </IonPage>
-    )
-        ;
+    );
 };
 
-export default points;
+export default Points;
