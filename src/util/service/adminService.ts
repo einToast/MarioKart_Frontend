@@ -82,7 +82,7 @@ export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]>
     const updatedTeams: TeamReturnDTO[] = [];
 
     for (const team of teams) {
-        if (!team.finalReady) {
+        if (team.finalReady) {
             continue;
         }
         const teamInput: TeamInputDTO = {
