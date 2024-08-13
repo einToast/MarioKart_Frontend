@@ -46,6 +46,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 
 import './theme/main.css'
+import MatchPlan from "./pages/admin/MatchPlan";
 
 setupIonicReact();
 
@@ -75,6 +76,7 @@ const App: React.FC = () => {
                             <Route exact path="/admin/points" component={AdminPoints} />
                             <Route exact path="/admin/final" component={Final} />
                             <Route exact path="/admin/results" component={AdminResults} />
+                            <Route exact path="/admin/matchplan" component={MatchPlan} />
                             <Route exact path="/admin/survey" component={AdminSurvey} />
                             <Route exact path="/">
                                 <Redirect to="/tab1" />
