@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getToken } from '../../service/adminService';
+import {getToken} from "../../service/loginService";
 
 // Create an Axios instance
 const apiClient = axios.create();

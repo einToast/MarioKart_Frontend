@@ -12,7 +12,7 @@ import {
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
-import {checkToken, loginUser} from "../../util/service/adminService";
+import {checkToken, loginUser} from "../../util/service/loginService";
 
 interface LoginProps {
     setUserAdmin: (userAdmin: AdminUser) => void;
@@ -28,6 +28,8 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
     const handleLogin = async () => {
         try {
             await loginUser(username, password);
+            setUsername('');
+            setPassword('');
             history.push('/admin/dashboard');
         } catch (error) {
             if (error instanceof TypeError) {
@@ -42,7 +44,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
     useEffect(() => {
         const fetchData = async () => {
             if (checkToken()) {
-                history.push('/admin-dashboard');
+                history.push('/admin/dashboard');
             }
         }
         fetchData();

@@ -121,7 +121,11 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a href="/login">registriertem Team beitreten</a>
+                    <a onClick={() => history.push("/login")}
+                       style={{ cursor: "pointer", textDecoration: "underline" }}
+                    >
+                        registriertem Team beitreten
+                    </a>
                 </div>
             </IonContent>
         </IonPage>

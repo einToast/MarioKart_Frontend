@@ -14,13 +14,12 @@ import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import "./Points.css"
-import {getTeams} from "../../util/api/RegistrationApi";
-import {getAllTeams} from "../../util/service/teamRegisterService";
 import {TeamReturnDTO} from "../../util/api/config/dto";
-import {checkToken, getTeamFinalRanked} from "../../util/service/adminService";
+import {getTeamFinalRanked} from "../../util/service/adminService";
 import {useHistory} from "react-router";
+import {checkToken} from "../../util/service/loginService";
 
-const results: React.FC<LoginProps> = (props: LoginProps) => {
+const Results: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
@@ -79,4 +78,4 @@ const results: React.FC<LoginProps> = (props: LoginProps) => {
         ;
 };
 
-export default results;
+export default Results;

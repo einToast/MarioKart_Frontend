@@ -146,6 +146,12 @@ ion-button.secondary::part(native) {
     background: transparent;
 }
 
+/*ion-button.logout::part(native) {*/
+/*    background-color: #ad000d;*/
+/*    background: #ad000d;*/
+/*}*/
+
+
 .adminDashboard {
     flex-direction: column;
     display: flex;
