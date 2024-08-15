@@ -24,14 +24,14 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install Ionic
-        run: npm install -g @ionic/cli 
+#      - name: Install Ionic
+#        run: npm install -g @ionic/cli
 
       - name: Lint code
         run: npm run lint
 
-      - name: Build the app with Ionic
-        run: npm run ionic_build
+#      - name: Build the app with Ionic
+#        run: npm run ionic_build
 
-      # - name: Build the app
-      #   run: npm run build
+      - name: Build the app
+        run: npm run build

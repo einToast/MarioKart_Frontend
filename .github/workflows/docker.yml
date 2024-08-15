@@ -1,0 +1,42 @@
+name: npm Build + Docker build und DockerHub push
+on:
+  push:
+    branches:
+      - main
+#  pull_request:
+#    branches:
+#      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      #      - name: Install Ionic
+      #        run: npm install -g @ionic/cli
+
+      - name: Lint code
+        run: npm run lint
+
+      #      - name: Build the app with Ionic
+      #        run: npm run ionic_build
+
+      - name: Build the app
+        run: npm run build
+
+      - name: Build the Docker image and Push
+        run: |
+          echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin docker.io
+          docker build . --file Dockerfile --tag docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:latest
+          docker push docker.io/${{ secrets.DOCKER_HUB_USERNAME }}/${{ secrets.DOCKER_HUB_REPOSITORY }}:latest
