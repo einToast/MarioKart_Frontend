@@ -1,19 +1,19 @@
 FROM node:16-alpine
-LABEL authors="fsr"
 
 WORKDIR /app
 
 COPY package*.json ./
 
 RUN npm install
-RUN npm install -g @ionic/cli
-RUN npm install -g serve
 
-#RUN npm run build
+RUN npm install -g @ionic/cli
+
+COPY . .
+
 RUN ionic build --prod
 
-WORKDIR /app/build
+RUN npm install -g serve
 
-EXPOSE 8080
+EXPOSE 5000
 
-CMD ["serve", "-s", ".", "-l", "8080"]
+CMD ["serve", "-s", "www", "-l", "5000"]
