@@ -22,10 +22,11 @@ interface LoginProps {
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
-    const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
     useEffect(() => {
@@ -56,6 +57,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     };
@@ -118,6 +120,10 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     onDidDismiss={() => setShowToast(false)}
                     message={error}
                     duration={3000}
+                    cssClass="toast"
+                    style={{
+                        '--toast-background': toastColor
+                    }}
                 />
             </IonContent>
         </IonPage>

@@ -1,20 +1,23 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import {IonContent, IonHeader, IonPage, IonTitle, IonToast, IonToolbar} from '@ionic/react';
 import ExploreContainer from '../components/Header';
 import './Tab2.css';
-import axios from 'axios';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import '../interface/interfaces';
 import {LinearGradient} from "react-text-gradients";
 import Header from "../components/Header";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getTeamsRanked} from "../util/service/dashboardService";
+import {getUser} from "../util/service/loginService";
 
 const Tab2: React.FC = () => {
 
-    const [teams, setTeams] = useState<TeamReturnDTO[] | null>(null);
-    const storageItem = localStorage.getItem('user');
-    const user = JSON.parse(storageItem);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [showToast, setShowToast] = useState(false);
+
+    const user = getUser();
 
     useEffect(() => {
         setUserCharacter(user.character);
@@ -22,13 +25,13 @@ const Tab2: React.FC = () => {
         const teamsRanked = getTeamsRanked();
 
         teamsRanked.then((response) => {
-            console.log(response);
             setTeams(response);
         }).catch((error) => {
             console.error(error);
+            setError(error.response.data.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
         });
-
-
     },[])
 
     return (
@@ -60,6 +63,17 @@ const Tab2: React.FC = () => {
                     )}
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
     );
 };

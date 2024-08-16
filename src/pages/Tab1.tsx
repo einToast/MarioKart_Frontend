@@ -1,4 +1,4 @@
-import {IonAvatar, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {IonAvatar, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToast, IonToolbar} from '@ionic/react';
 import './Tab1.css';
 import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
@@ -16,13 +16,18 @@ import {getBothCurrentRounds} from "../util/service/dashboardService";
 import {RoundReturnDTO} from "../util/api/config/dto";
 
 const Tab1: React.FC = () => {
-    const [currentRound, setCurrentRound] = useState<RoundReturnDTO>(null);
-    const [nextRound, setNextRound] = useState<RoundReturnDTO>(null);
+    const [currentRound, setCurrentRound] = useState<RoundReturnDTO>();
+    const [nextRound, setNextRound] = useState<RoundReturnDTO>();
+    const [userCharacter, setUserCharacter] = useState<string | null>(null);
+    const [selectedOption, setSelectedOption] = useState('Deine Spiele');
+
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [showToast, setShowToast] = useState(false);
+
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
-    const [userCharacter, setUserCharacter] = useState<string | null>(null);
     let round: number;
-    const [selectedOption, setSelectedOption] = useState('Deine Spiele');
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
@@ -38,47 +43,27 @@ const Tab1: React.FC = () => {
 
 
     useEffect(() => {
-
-        // TODO: neuen Endpunkt benutzen wo man die nächsten beiden Runden bekommt
-        // NOTE: Denk dran, dass bei der letzten Runde auch nur 1 Runde zurückkommen kann
-        // method which will save the round that is currently played aswell as the next round
-        const getCurrentAndNextRound = async () => {
-            try {
-                // get the round which is currently played
-                const roundResponse = await axios.get('http://localhost:3000/api/round');
-                const round = roundResponse.data.id;
-
-                // Get current round
-                const currentRoundResponse = await axios.get(`http://localhost:3000/api/round/${round}`);
-                const currentRoundData = currentRoundResponse.data as Round;
-                setCurrentRound(currentRoundData);
-
-                // get next round
-                const nextRoundResponse = await axios.get(`http://localhost:3000/api/round/${round+1}`);
-                const nextRoundData = nextRoundResponse.data as Round;
-                setNextRound(nextRoundData);
-
-                console.log(currentRoundData)
-                console.log(nextRoundData)
-
-            } catch (error) {
-                console.log(error);
-            }
-        };
         const currentAndNextRound = getBothCurrentRounds();
 
         currentAndNextRound.then((response) => {
-            response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
-            response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
-            response[1].endTime = response[1].endTime.split('T')[1].slice(0, 5);
-            response[1].startTime = response[1].startTime.split('T')[1].slice(0, 5);
+            console.log(response);
+            if (response[0]) {
+                response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
+                response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
+            }
             setCurrentRound(response[0]);
+            if (response[1]) {
+                response[1].endTime = response[1].endTime.split('T')[1].slice(0, 5);
+                response[1].startTime = response[1].startTime.split('T')[1].slice(0, 5);
+            }
             setNextRound(response[1]);
         }).catch((error) => {
             console.error(error);
+            setError('Fehler beim Laden der Spiele');
+            setToastColor('#CD7070');
+            setShowToast(true);
         });
 
-        // getCurrentAndNextRound();
         setUserCharacter(user.character);
     }, [])
 
@@ -247,6 +232,17 @@ const Tab1: React.FC = () => {
                     )}
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
     );
 };

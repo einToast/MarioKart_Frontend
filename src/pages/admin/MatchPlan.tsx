@@ -20,12 +20,12 @@ import {useHistory} from "react-router";
 import {checkToken} from "../../util/service/loginService";
 
 const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
-    const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const storageItem = localStorage.getItem('user');
     const user = JSON.parse(storageItem);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
     const history = useHistory();
@@ -41,6 +41,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         }).catch((error) => {
             console.error(error);
             setError('Fehler beim Laden der Teams');
+            setToastColor('#CD7070');
             setShowToast(true);
         });
         setUserCharacter(user.character);
@@ -50,8 +51,9 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         try {
             const newRounds = await createTeamMatchPlan();
             if (newRounds) {
-                setShowToast(true);
                 setError('Spielplan erfolgreich erstellt');
+                setToastColor('#68964C');
+                setShowToast(true);
                 history.push('/admin/dashboard');
             } else {
                 throw new TypeError('Spielplan konnte nicht erstellt werden');
@@ -62,6 +64,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
             } else {
                 setError(error.message);
             }
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     }
@@ -115,6 +118,11 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
             />
         </IonPage>
     )

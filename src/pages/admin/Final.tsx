@@ -20,9 +20,9 @@ import {checkToken} from "../../util/service/loginService";
 
 const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
-    const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
-    const [error, setError] = useState<string | null>(null);
-    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
     const history = useHistory();
@@ -32,6 +32,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const removedTeam = await removeTeamFinalParticipation(team);
             if (removedTeam) {
                 // setError('Team entfernt');
+                // setToastColor('#68964C');
                 // setShowToast(true);
                 await getFinalTeams();
             } else {
@@ -39,6 +40,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error);
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     }
