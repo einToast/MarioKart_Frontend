@@ -1,4 +1,4 @@
-name: npm Build + Docker build und DockerHub push
+name: Ionic Build + Docker build und DockerHub push
 on:
   push:
     branches:
