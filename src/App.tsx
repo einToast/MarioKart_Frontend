@@ -60,6 +60,8 @@ const App: React.FC = () => {
         }
     }, []);
 
+
+
     return (
         <IonApp>
             <IonReactRouter>
@@ -99,8 +101,21 @@ const App: React.FC = () => {
                     </IonTabs>
                 ) : (
                     <IonRouterOutlet>
-                        <Route exact path="/" component={() => <RegisterTeam setUser={setCurrentUser} />} />
+                        <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
                         <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
+                        <Route exact path="/admin/login" component={Login} />
+                        <Route exact path="/admin/dashboard" component={AdminDashboard} />
+                        <Route exact path="/admin/points" component={AdminPoints} />
+                        <Route exact path="/admin/final" component={Final} />
+                        <Route exact path="/admin/results" component={AdminResults} />
+                        <Route exact path="/admin/matchplan" component={MatchPlan} />
+                        <Route exact path="/admin/survey" component={AdminSurvey} />
+                        <Route exact path="/admin">
+                            <Redirect to="/admin/dashboard" />
+                        </Route>
+                        <Route exact path="/">
+                            <Redirect to="/login" />
+                        </Route>
                     </IonRouterOutlet>
                 )}
             </IonReactRouter>
