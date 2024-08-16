@@ -30,8 +30,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         allCharacters.then((response) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
         }).catch((error) => {
-            console.error(error);
-            setError("Fehler beim Laden der Charaktere");
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         } );
@@ -56,11 +55,10 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                 props.setUser(user);
                 history.push('/tab1');
             } else {
-                throw new Error("Ein Fehler ist aufgetreten");
+                throw new Error("Team konnte nicht erstellt werden");
             }
         } catch (error) {
-            console.error(error);
-            setError("Team konnte nicht erstellt werden");
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
             getCharacterNames();

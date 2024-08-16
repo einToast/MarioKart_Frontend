@@ -39,8 +39,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
-            console.error(error);
-            setError('Fehler beim Laden der Teams');
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         });
@@ -59,11 +58,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                 throw new TypeError('Spielplan konnte nicht erstellt werden');
             }
         } catch (error) {
-            if (error instanceof TypeError) {
-                setError('Spielplan konnte nicht erstellt werden');
-            } else {
-                setError(error.message);
-            }
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         }

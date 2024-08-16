@@ -50,7 +50,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                 throw new TypeError('Spiel konnte nicht gespeichert werden');
             }
         } catch (error) {
-            setError(error);
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         }

@@ -36,11 +36,9 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
 
         const teamNames = getTeamFinalRanked();
         teamNames.then((response) => {
-            console.log(response);
             setTeams(response);
         }).catch((error) => {
-            console.error(error);
-            setError(error.response.data.message);
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         });

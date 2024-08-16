@@ -35,11 +35,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
             setPassword('');
             history.push('/admin/dashboard');
         } catch (error) {
-            if (error instanceof TypeError) {
-                setError('RegisterTeam fehlgeschlagen');
-            } else {
-                setError(error.message);
-            }
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         }

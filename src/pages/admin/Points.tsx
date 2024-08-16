@@ -56,7 +56,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                 throw new TypeError('Runde konnte nicht gespeichert werden');
             }
         } catch (error) {
-            setError(error);
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         }
@@ -72,6 +72,10 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
             rounds = rounds.sort((a, b) => a.id - b.id);
             getSelectedRound(rounds[0].id);
             setNumberOfRounds(rounds.length);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
         });
     }, []);
 

@@ -28,7 +28,7 @@ const Tab2: React.FC = () => {
             setTeams(response);
         }).catch((error) => {
             console.error(error);
-            setError(error.response.data.message);
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         });
