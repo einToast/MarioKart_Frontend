@@ -10,15 +10,18 @@ import { GameReturnDTO, PointsReturnDTO } from "../util/api/config/dto";
 import { convertUmlauts } from "../util/service/util";
 import "../pages/admin/Points.css";
 import {saveGame} from "../util/service/adminService";
+import {getUser} from "../util/service/loginService";
 
 const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
     const [pointsOne, setPointsOne] = useState<number>(game.points.find(point => point.team.id === game.teams[0].id).points);
     const [pointsTwo, setPointsTwo] = useState<number>(game.points.find(point => point.team.id === game.teams[1].id).points);
     const [pointsThree, setPointsThree] = useState<number>(game.points.find(point => point.team.id === game.teams[2].id).points);
     const [pointsFour, setPointsFour] = useState<number>(game.points.find(point => point.team.id === game.teams[3].id).points);
-    const [error, setError] = useState<string | null>(null);
-    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
+
+    const user = getUser();
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
         const newValue = parseInt(event.target.value);
@@ -40,13 +43,15 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
         try {
             const newPoints = await saveGame(roundId, game);
             if (newPoints) {
-                setShowToast(true);
                 setError('Spiel erfolgreich gespeichert');
+                setToastColor('#68964C')
+                setShowToast(true);
             } else {
                 throw new TypeError('Spiel konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error);
+            setToastColor('#CD7070');
             setShowToast(true);
         }
 
@@ -105,6 +110,11 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
             />
         </IonAccordion>
     );

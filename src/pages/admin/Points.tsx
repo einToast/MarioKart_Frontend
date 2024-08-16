@@ -19,18 +19,19 @@ import "../../interface/interfaces";
 import "../RegisterTeam.css";
 import "./Points.css";
 import { RoundReturnDTO } from "../../util/api/config/dto";
-import {checkToken} from "../../util/service/loginService";
+import {checkToken, getUser} from "../../util/service/loginService";
 
 const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [round, setRound] = useState<RoundReturnDTO | null>(null);
+    const [round, setRound] = useState<RoundReturnDTO>();
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
-    const [error, setError] = useState<string | null>(null);
-    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
+    const user = getUser();
     const history = useHistory();
 
     const getSelectedRound = (roundNumber: number) => {
@@ -48,13 +49,15 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
             const savedRound = await saveRound(round);
 
             if (savedRound) {
-                setShowToast(true);
                 setError('Runde erfolgreich gespeichert');
+                setToastColor('#68964C')
+                setShowToast(true);
             } else {
                 throw new TypeError('Runde konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error);
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     };
@@ -145,6 +148,11 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
             />
         </IonPage>
     );

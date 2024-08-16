@@ -12,18 +12,21 @@ import {
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
-import {checkToken, loginUser} from "../../util/service/loginService";
+import {checkToken, getUser, loginUser} from "../../util/service/loginService";
 
 interface LoginProps {
     setUserAdmin: (userAdmin: AdminUser) => void;
 }
 
 const Login: React.FC<LoginProps> = (props: LoginProps) => {
-    const history = useHistory();
+    const user = getUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
+
+    const history = useHistory();
 
     const handleLogin = async () => {
         try {
@@ -37,6 +40,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
             } else {
                 setError(error.message);
             }
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     };
@@ -98,7 +102,13 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                     onDidDismiss={() => setShowToast(false)}
                     message={error}
                     duration={3000}
+                    className={ user ? 'tab-toast' : ''}
+                    cssClass="toast"
+                    style={{
+                        '--toast-background': toastColor
+                    }}
                 />
+
             </IonContent>
         </IonPage>
     );

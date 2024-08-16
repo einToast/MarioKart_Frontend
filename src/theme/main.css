@@ -93,3 +93,16 @@ ion-tab-button.tab-selected {
     align-items: start;
     color: linear-gradient(to right, var(--ion-color-text01) 100%, var(--ion-color-text02) 100%) !important;
 }
+
+.toast {
+    --background: var(--toast-background, #CD7070);
+    /*#68964C*/
+    /*font-size: 20px;*/
+    text-align: center;
+}
+
+.tab-toast {
+    --box-shadow: none;
+    bottom: 60px !important;
+    top: auto !important;
+}

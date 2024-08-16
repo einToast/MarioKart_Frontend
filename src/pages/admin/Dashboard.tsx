@@ -10,11 +10,16 @@ import {
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import {useHistory} from "react-router";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 
-import {checkToken, getToken, removeToken} from "../../util/service/loginService";
+import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
 
 const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [showToast, setShowToast] = useState(false);
+
+    const user = getUser();
     const history = useHistory();
 
     useEffect(() => {
@@ -82,12 +87,21 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-
-                    </div>
+                </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
-    )
-        ;
+    );
 };
 
 export default Dashboard;

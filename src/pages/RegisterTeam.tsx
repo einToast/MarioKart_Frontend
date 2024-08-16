@@ -19,10 +19,10 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
     const history = useHistory();
-    const [characterNames, setCharacterNames] = useState<string[] | null>(null);
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState("");
 
     const getCharacterNames = () => {
         const allCharacters = getAllAvailableCharacters()
@@ -31,7 +31,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
         }).catch((error) => {
             console.error(error);
-            setToastMessage("Fehler beim Laden der Charaktere");
+            setError("Fehler beim Laden der Charaktere");
+            setToastColor('#CD7070');
             setShowToast(true);
         } );
     };
@@ -59,7 +60,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             console.error(error);
-            setToastMessage(error.message);
+            setError("Team konnte nicht erstellt werden");
+            setToastColor('#CD7070');
             setShowToast(true);
             getCharacterNames();
         }
@@ -69,8 +71,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen class="no-scroll">
                 <div className={"contentLogin"}>
-                    <IonToast isOpen={showToast} message={toastMessage} duration={5000}
-                              onDidDismiss={() => setShowToast(false)}/>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                             Team
@@ -128,6 +128,17 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     </a>
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                // className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
     )
         ;

@@ -8,22 +8,25 @@ import {
     IonIcon,
     IonCheckbox, IonAccordion,
     IonAccordionGroup,
-    IonItem, IonLabel
+    IonItem, IonLabel, IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import axios from "axios";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {getTeamFinalRanked} from "../../util/service/adminService";
 import {useHistory} from "react-router";
-import {checkToken} from "../../util/service/loginService";
+import {checkToken, getUser} from "../../util/service/loginService";
 
 const Results: React.FC<LoginProps> = (props: LoginProps) => {
-    const [teams, setTeams] = useState<TeamReturnDTO[]>(null);
-    const storageItem = localStorage.getItem('user');
-    const user = JSON.parse(storageItem);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
+    const [error, setError] = useState<string>('Error');
+    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [showToast, setShowToast] = useState(false);
+
+    const user = getUser();
     const history = useHistory();
 
     useEffect(() => {
@@ -35,6 +38,11 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
         teamNames.then((response) => {
             console.log(response);
             setTeams(response);
+        }).catch((error) => {
+            console.error(error);
+            setError(error.response.data.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
         });
         setUserCharacter(user.character);
     },[])
@@ -73,6 +81,17 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
                     )}
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
     )
         ;
