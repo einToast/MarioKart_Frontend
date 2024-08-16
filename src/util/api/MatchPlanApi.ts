@@ -10,7 +10,13 @@ export const getRounds = async (): Promise<RoundReturnDTO[]> => {
         const response = await apiClient.get<RoundReturnDTO[]>(`${BASE_URL}/rounds`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching rounds:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runden konnten nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -20,7 +26,13 @@ export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
         const response = await apiClient.get<RoundReturnDTO[]>(`${BASE_URL}/rounds/current`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching current rounds:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runden konnten nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -30,7 +42,15 @@ export const getRoundById = async (roundId: number): Promise<RoundReturnDTO> => 
         const response = await apiClient.get<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching round by ID:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404){
+                throw new Error('Runde konnte nicht gefunden werden');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runde konnte nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -40,7 +60,13 @@ export const getGamesByRoundId = async (roundId: number): Promise<GameReturnDTO[
         const response = await apiClient.get<GameReturnDTO[]>(`${BASE_URL}/rounds/${roundId}/games`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching games by round ID:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spiele konnten nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -50,7 +76,13 @@ export const getGames = async (): Promise<GameReturnDTO[]> => {
         const response = await apiClient.get<GameReturnDTO[]>(`${BASE_URL}/games`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching games:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spiele konnten nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -60,7 +92,15 @@ export const getGameById = async (gameId: number): Promise<GameReturnDTO> => {
         const response = await apiClient.get<GameReturnDTO>(`${BASE_URL}/games/${gameId}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching game by ID:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spiel konnte nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -70,7 +110,13 @@ export const getPoints = async (): Promise<PointsReturnDTO[]> => {
         const response = await apiClient.get<PointsReturnDTO[]>(`${BASE_URL}/points`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching points:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Punkte konnten nicht geladen werden');
+            }
+        }
         throw error;
     }
 };
@@ -80,7 +126,13 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
         const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/match_plan`);
         return response.data;
     } catch (error) {
-        console.error('Error creating match plan:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spielplan konnte nicht erstellt werden');
+            }
+        }
         throw error;
     }
 }
@@ -90,7 +142,13 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
         const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/final_plan`);
         return response.data;
     } catch (error) {
-        console.error('Error creating final plan:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Finale konnte nicht erstellt werden');
+            }
+        }
         throw error;
     }
 }
@@ -100,7 +158,15 @@ export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): P
         const response = await apiClient.put<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}`, round);
         return response.data;
     } catch (error) {
-        console.error('Error updating round played:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404){
+                throw new Error('Runde konnte nicht gefunden werden');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runde konnte nicht aktualisiert werden');
+            }
+        }
         throw error;
     }
 }
@@ -110,7 +176,15 @@ export const updatePoints = async (roundId: number, gameId:number, teamId:number
         const response = await apiClient.put<PointsReturnDTO>(`${BASE_URL}/rounds/${roundId}/games/${gameId}/teams/${teamId}/points`, points);
         return response.data;
     } catch (error) {
-        console.error('Error updating points:', error);
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404){
+                throw new Error('Punkte konnten nicht gefunden werden');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Punkte konnten nicht aktualisiert werden');
+            }
+        }
         throw error;
     }
 }

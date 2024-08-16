@@ -8,7 +8,7 @@ import {
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline, trashOutline} from 'ionicons/icons';
 import "./Final.css"
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {
     createTeamFinalPlan,
@@ -16,7 +16,7 @@ import {
     removeTeamFinalParticipation, resetAllTeamFinalParticipation,
 } from "../../util/service/adminService";
 import {useHistory} from "react-router";
-import {checkToken} from "../../util/service/loginService";
+import {checkToken, getUser} from "../../util/service/loginService";
 
 const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
@@ -25,6 +25,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
     const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
+    const user = getUser();
     const history = useHistory();
 
     const handleTeamRemove = async (team: TeamReturnDTO) => {
@@ -39,7 +40,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                 throw new TypeError('Team konnte nicht entfernt werden');
             }
         } catch (error) {
-            setError(error);
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         }
@@ -50,13 +51,15 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const teams = await resetAllTeamFinalParticipation();
             if (teams) {
                 setError('Teams zurückgesetzt');
+                setToastColor('#68964C');
                 setShowToast(true);
                 await getFinalTeams();
             } else {
                 throw new TypeError('Teams konnten nicht zurückgesetzt werden');
             }
         } catch (error) {
-            setError(error);
+            setError(error.message);
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     }
@@ -65,6 +68,10 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
         const teamNames = getTeamFinalRanked();
         teamNames.then((response) => {
             setTeams(response);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
         });
     }
 
@@ -73,6 +80,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const final = await createTeamFinalPlan();
             if (final) {
                 setError('Finale erfolgreich erstellt');
+                setToastColor('#68964C');
                 setShowToast(true);
                 history.push('/admin/dashboard');
             } else {
@@ -80,6 +88,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error);
+            setToastColor('#CD7070');
             setShowToast(true);
         }
     }
@@ -145,6 +154,11 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
             />
         </IonPage>
     );

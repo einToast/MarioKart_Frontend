@@ -36,8 +36,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         allTeams.then((response) => {
             setTeams(response);
         }).catch((error) => {
-            console.error(error);
-            setError('Fehler beim Laden der Teams');
+            setError(error.message);
             setShowToast(true);
         }).finally(() => {
             setLoading(false);
@@ -109,7 +108,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => history.push("/")}
+                    <a onClick={() => history.push("/register")}
                        style={{ cursor: "pointer", textDecoration: "underline" }}
                     >
                         Team registrieren

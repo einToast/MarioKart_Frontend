@@ -46,7 +46,6 @@ const Tab1: React.FC = () => {
         const currentAndNextRound = getBothCurrentRounds();
 
         currentAndNextRound.then((response) => {
-            console.log(response);
             if (response[0]) {
                 response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
                 response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
@@ -58,8 +57,7 @@ const Tab1: React.FC = () => {
             }
             setNextRound(response[1]);
         }).catch((error) => {
-            console.error(error);
-            setError('Fehler beim Laden der Spiele');
+            setError(error.message);
             setToastColor('#CD7070');
             setShowToast(true);
         });
