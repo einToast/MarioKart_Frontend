@@ -31,7 +31,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-text-gradients": "^1.0.2",
-    "swiper": "^11.1.4"
+    "swiper": "^11.1.11"
   },
   "devDependencies": {
     "@capacitor/cli": "6.1.2",
