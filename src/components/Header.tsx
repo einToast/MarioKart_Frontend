@@ -4,16 +4,14 @@ import { pieChartOutline } from 'ionicons/icons';
 import './Header.css';
 import characters from "../interface/characters";
 import {useHistory} from "react-router";
-import {removeUser} from "../util/service/loginService";
+import {getUser, removeUser} from "../util/service/loginService";
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const user = getUser();
     const history = useHistory();
-
-    const storageItem = localStorage.getItem('user');
-    const user = JSON.parse(storageItem);
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);

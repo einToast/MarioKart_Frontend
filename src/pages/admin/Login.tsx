@@ -28,6 +28,12 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
 
     const history = useHistory();
 
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     const handleLogin = async () => {
         try {
             await loginUser(username, password);
@@ -72,6 +78,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                                 placeholder="Benutzername"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
+                                onKeyPress={handleEnterPress}
                             />
                         </div>
                         <div className="borderContainer">
@@ -82,6 +89,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                                 placeholder="Passwort"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                onKeyPress={handleEnterPress}
                                 required
                             />
                         </div>

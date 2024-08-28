@@ -22,6 +22,7 @@ import "./admin-survey.css"
 import {useState} from "react";
 import TeamComponent from "../../components/TeamComponent";
 import SurveyCreation from "../../components/SurveyCreation";
+import {useHistory} from "react-router";
 
 const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: new Survey adden
@@ -37,6 +38,7 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     const [surveysNew, setSurveysNew] = useState([]);
     const [showModalNew, setShowModalNew] = useState(false);
 
+    const history = useHistory();
 
     const toggleVisibility = (id) => {
         setSurveys(surveys.map(survey =>
@@ -85,9 +87,9 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a href={"/admin/dashboard"}>Zurück</a>
+                    <a>Zurück</a>
                 </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>

@@ -6,8 +6,15 @@ import {
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {getTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
-import {createFinalPlan, createMatchPlan, updatePoints, updateRoundPlayed} from "../api/MatchPlanApi";
+import {deleteAllTeams, getTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
+import {
+    checkFinalPlan,
+    checkMatchPlan,
+    createFinalPlan,
+    createMatchPlan, deleteFinalPlan, deleteMatchPlan, reset,
+    updatePoints,
+    updateRoundPlayed
+} from "../api/MatchPlanApi";
 import {getAllTeams} from "./teamRegisterService";
 
 export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> => {
@@ -108,5 +115,35 @@ export const createTeamMatchPlan = async (): Promise<RoundReturnDTO[]> => {
 
 export const createTeamFinalPlan = async (): Promise<RoundReturnDTO[]> => {
     const response = await createFinalPlan();
+    return response;
+}
+
+export const checkMatch = async (): Promise<boolean> => {
+    const response = await checkMatchPlan();
+    return response;
+}
+
+export const checkFinal = async (): Promise<boolean> => {
+    const response = await checkFinalPlan();
+    return response;
+}
+
+export const deleteTeams = async (): Promise<void> => {
+    const response = await deleteAllTeams();
+    return response;
+}
+
+export const deleteMatch = async (): Promise<void> => {
+    const response = await deleteMatchPlan();
+    return response;
+}
+
+export const deleteFinal = async (): Promise<void> => {
+    const response = await deleteFinalPlan();
+    return response;
+}
+
+export const resetEverything = async (): Promise<void> => {
+    const response = await reset();
     return response;
 }

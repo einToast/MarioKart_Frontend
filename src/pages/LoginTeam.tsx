@@ -29,20 +29,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
-    useEffect(() => {
-        setLoading(true);
-        const allTeams = getAllTeams();
-
-        allTeams.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        }).finally(() => {
-            setLoading(false);
-        });
-    }, []);
-
     const handleLogin = () => {
         const selectedTeam = teams?.find(team => team.teamName === teamName);
         if (selectedTeam) {
@@ -61,7 +47,22 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     };
 
-    let character;
+    useEffect(() => {
+        setLoading(true);
+        const allTeams = getAllTeams();
+
+        allTeams.then((response) => {
+            setTeams(response);
+        }).catch((error) => {
+            setError(error.message);
+            setShowToast(true);
+        }).finally(() => {
+            setLoading(false);
+        });
+    }, []);
+
+
+
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
