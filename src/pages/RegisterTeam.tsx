@@ -24,6 +24,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
+    const handleEnterPress = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     const getCharacterNames = () => {
         const allCharacters = getAllAvailableCharacters()
 
@@ -110,6 +116,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 placeholder="Teamname"
                                 value={teamName}
                                 onChange={(e) => setTeamName(e.target.value)}
+                                onKeyPress={handleEnterPress}
                             />
                         </div>
                         <IonButton onClick={handleLogin} slot="start">

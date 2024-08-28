@@ -210,3 +210,36 @@ export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamRe
         throw error;
     }
 };
+
+export const deleteAllTeams = async (): Promise<void> => {
+    try {
+        await apiClient.delete(BASE_URL);
+    } catch (error) {
+        if (axios.isAxiosError(error)){
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Teams konnten nicht gelöscht werden');
+            }
+        }
+        throw error;
+    }
+}
+
+// TODO: check error handling
+export const deleteTeam = async (id: number): Promise<void> => {
+    try {
+        await apiClient.delete(`${BASE_URL}/${id}`);
+    } catch (error) {
+        if (axios.isAxiosError(error)){
+            if (error.response?.status === 404){
+                throw new Error('Team nicht gefunden');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Team konnte nicht gelöscht werden');
+            }
+        }
+        throw error;
+    }
+}

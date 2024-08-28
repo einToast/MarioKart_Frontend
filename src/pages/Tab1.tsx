@@ -4,7 +4,7 @@ import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
 import axios from "axios";
 import '../interface/interfaces';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -14,6 +14,7 @@ import RoundComponentSwiper from "../components/RoundComponentSwiper";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {getBothCurrentRounds} from "../util/service/dashboardService";
 import {RoundReturnDTO} from "../util/api/config/dto";
+import {getUser} from "../util/service/loginService";
 
 const Tab1: React.FC = () => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO>();
@@ -25,9 +26,7 @@ const Tab1: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
-    const storageItem = localStorage.getItem('user');
-    const user = JSON.parse(storageItem);
-    let round: number;
+    const user = getUser();
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);

@@ -8,15 +8,22 @@ import {
     IonIcon,
     IonToast, IonAlert
 } from "@ionic/react";
-import {arrowForwardOutline} from 'ionicons/icons';
+import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useHistory, useLocation} from "react-router";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
 import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
-import {checkFinal, checkMatch} from "../../util/service/adminService";
+import {
+    checkFinal,
+    checkMatch,
+    deleteFinal,
+    deleteMatch,
+    deleteTeams,
+    resetEverything
+} from "../../util/service/adminService";
 
-const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
+const Control: React.FC<LoginProps> = (props: LoginProps) => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
@@ -34,7 +41,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
         }
 
         const match = checkMatch();
-        const final = checkFinal();
+        const final = checkFinal()
 
         match.then((result) => {
             setIsMatchPlan(result);
@@ -54,73 +61,115 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
 
     }, [location]);
 
-    const handleLogout = () => {
-        removeToken();
-        history.push('/admin/login');
+    const handleRegistration = async () => {
+        console.log('Registrierung');
+    }
+
+    const handleTeamsDelete = async () => {
+        try{
+            await deleteTeams();
+            setError('Teams erfolgreich gelöscht');
+            setToastColor('#68964C');
+            setShowToast(true);
+        } catch (error) {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
+        }
+    }
+
+    const handleMatchPlanDelete = async () => {
+        try {
+            await deleteMatch();
+            setError('Spielplan erfolgreich gelöscht');
+            setToastColor('#68964C');
+            setShowToast(true);
+        } catch (error) {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
+        }
+    }
+
+    const handleFinalPlanDelete = async () => {
+        try {
+            await deleteFinal();
+            setError('Finalspiele erfolgreich gelöscht');
+            setToastColor('#68964C');
+            setShowToast(true);
+        } catch (error) {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
+        }
+    }
+
+    const handleReset = async () => {
+        try {
+            await resetEverything();
+            setError('Anwendung erfolgreich zurückgesetzt');
+            setToastColor('#68964C');
+            setShowToast(true);
+        } catch (error) {
+            setError(error.message);
+            setToastColor('#CD7070');
+            setShowToast(true);
+        }
     }
 
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
                 <div className={"contentLogin"}>
+                    <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                        <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
+                        <a>Zurück</a>
+                    </div>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Admin
+                            Kontrollzentrum
                         </LinearGradient>
                     </h2>
-                    <h1>Dashboard</h1>
                     <div className={"adminDashboard"}>
-                        { isMatchPlan ?
-                            <IonButton slot="start" onClick={() => history.push('/admin/points')}>
+                        {!isMatchPlan ?
+                            <IonButton slot="start" onClick={handleRegistration}>
                                 <div>
-                                    <p>Punkte eintragen</p>
+                                    <p>Registrierung</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
                             : ''
                         }
-                        { !isMatchPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/matchplan')}>
+                        {!isMatchPlan ?
+                            <IonButton slot="start" onClick={handleTeamsDelete}>
                                 <div>
-                                    <p>Spielplan erzeugen</p>
+                                    <p>Teams löschen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
                             : ''
                         }
-                        { !isFinalPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
+                        {isMatchPlan && !isFinalPlan ?
+                            <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}>
                                 <div>
-                                    <p>Finalspiele erzeugen</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        : ''
-                        }
-                        { isFinalPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
-                                <div>
-                                    <p>Endergebnis</p>
+                                    <p>Spielplan löschen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
                             : ''
                         }
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/survey')}>
+                        {isFinalPlan ?
+                            <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}>
+                                <div>
+                                    <p>Finalspiele löschen</p>
+                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                                </div>
+                            </IonButton>
+                            : ''
+                        }
+                        <IonButton slot="start" className={"secondary"} onClick={handleReset}>
                             <div>
-                                <p>Umfragen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/control')}>
-                            <div>
-                                <p>Kontrollzentrum</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={handleLogout}>
-                            <div>
-                                <p>Logout</p>
+                                <p>Anwendung zurücksetzen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -142,4 +191,4 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
     );
 };
 
-export default Dashboard;
+export default Control;

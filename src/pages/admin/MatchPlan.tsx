@@ -17,17 +17,16 @@ import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {createTeamMatchPlan, getRegisteredTeams, getTeamFinalRanked} from "../../util/service/adminService";
 import {useHistory} from "react-router";
-import {checkToken} from "../../util/service/loginService";
+import {checkToken, getUser} from "../../util/service/loginService";
 
 const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const storageItem = localStorage.getItem('user');
-    const user = JSON.parse(storageItem);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>('#CD7070');
     const [showToast, setShowToast] = useState(false);
 
+    const user = getUser();
     const history = useHistory();
 
     useEffect(() => {
