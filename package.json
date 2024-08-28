@@ -34,7 +34,7 @@
     "swiper": "^11.1.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "6.0.0",
+    "@capacitor/cli": "6.1.2",
     "@ionic/cli": "^7.2.0",
     "@testing-library/dom": ">=7.21.4",
     "@testing-library/jest-dom": "^5.16.5",
