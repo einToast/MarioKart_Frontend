@@ -20,7 +20,7 @@ export const login = async (request: AuthenticationRequestDTO): Promise<Authenti
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Email oder Passwort ist falsch');
+                throw new Error('Nutzername oder Passwort ist falsch');
             } else {
                 throw new Error('Login fehlgeschlagen');
             }
