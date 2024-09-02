@@ -2,7 +2,7 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-COPY ./dist /dist
+COPY dist ./dist
 
 RUN npm install -g serve
 
