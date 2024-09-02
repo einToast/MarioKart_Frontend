@@ -1,5 +1,5 @@
 #Stage 1: Build
-FROM node:22 AS build
+FROM node:20 AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 RUN ionic build --prod
 
 #Stage 2: Run
-FROM node:22
+FROM node:20
 
 WORKDIR /app
 
