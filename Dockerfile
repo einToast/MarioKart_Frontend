@@ -13,15 +13,15 @@ COPY . .
 
 RUN ionic build --prod
 
-RUN ls -la
-
 RUN ls -la /app
 #Stage 2: Run
 FROM node:16-alpine
 
 WORKDIR /app
 
-COPY --from=build dist ./dist
+RUN ls -la /app
+
+COPY --from=build /app/dist /app/dist
 
 RUN npm install -g serve
 
