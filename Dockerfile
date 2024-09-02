@@ -13,6 +13,9 @@ COPY . .
 
 RUN ionic build --prod
 
+RUN ls -la
+
+RUN ls -la /app
 #Stage 2: Run
 FROM node:16-alpine
 
