@@ -119,6 +119,9 @@ const App: React.FC = () => {
                         <Route exact path="/">
                             <Redirect to="/login" />
                         </Route>
+                        <Route exact path="/healthcheck">
+                            <div>OK</div>
+                        </Route>
                     </IonRouterOutlet>
                 )}
             </IonReactRouter>
