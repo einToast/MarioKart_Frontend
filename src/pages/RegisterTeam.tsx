@@ -13,7 +13,14 @@ import {
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import characters from "../interface/characters";
-import {createTeam, getAllAvailableCharacters, getAllCharacters} from "../util/service/teamRegisterService";
+import {
+    createTeam,
+    getAllAvailableCharacters,
+    getAllCharacters,
+    getRegistrationOpen
+} from "../util/service/teamRegisterService";
+import {setUser} from "../util/service/loginService";
+import {errorToastColor} from "../util/api/config/constants";
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -21,7 +28,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const handleEnterPress = (e) => {
@@ -37,12 +44,15 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         } );
     };
 
     useEffect(() => {
+        if (!getRegistrationOpen()) {
+            history.push('/login');
+        }
         getCharacterNames();
     }, []);
 
@@ -57,7 +67,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     name: team.teamName,
                     character: team.character.characterName
                 };
-                localStorage.setItem("user", JSON.stringify(user));
+                setUser(user);
                 props.setUser(user);
                 history.push('/tab1');
             } else {
@@ -65,7 +75,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
             getCharacterNames();
         }

@@ -13,8 +13,10 @@ import {
 import { arrowForwardOutline } from "ionicons/icons";
 import { useHistory } from "react-router";
 import {TeamReturnDTO} from "../util/api/config/dto";
-import {getAllTeams} from "../util/service/teamRegisterService";
+import {getAllTeams, getTournamentOpen} from "../util/service/teamRegisterService";
 import characters from "../interface/characters";
+import {setUser} from "../util/service/loginService";
+import {errorToastColor} from "../util/api/config/constants";
 
 interface LoginProps {
     setUser: (user: User) => void;
@@ -26,7 +28,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const handleLogin = () => {
@@ -37,18 +39,22 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                 name: selectedTeam.teamName,
                 character: selectedTeam.character.characterName
             };
-            localStorage.setItem("user", JSON.stringify(user));
+            setUser(user);
             props.setUser(user);
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     };
 
     useEffect(() => {
         setLoading(true);
+        if (!getTournamentOpen()){
+            history.push('/admin');
+            setLoading(false);
+        }
         const allTeams = getAllTeams();
 
         allTeams.then((response) => {
