@@ -17,12 +17,13 @@ import {
 } from "../../util/service/adminService";
 import {useHistory} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
+import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
 const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -33,7 +34,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const removedTeam = await removeTeamFinalParticipation(team);
             if (removedTeam) {
                 // setError('Team entfernt');
-                // setToastColor('#68964C');
+                // setToastColor(successToastColor);
                 // setShowToast(true);
                 await getFinalTeams();
             } else {
@@ -41,7 +42,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -51,7 +52,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const teams = await resetAllTeamFinalParticipation();
             if (teams) {
                 setError('Teams zurückgesetzt');
-                setToastColor('#68964C');
+                setToastColor(successToastColor);
                 setShowToast(true);
                 await getFinalTeams();
             } else {
@@ -59,7 +60,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -70,7 +71,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
     }
@@ -80,7 +81,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             const final = await createTeamFinalPlan();
             if (final) {
                 setError('Finale erfolgreich erstellt');
-                setToastColor('#68964C');
+                setToastColor(successToastColor);
                 setShowToast(true);
                 history.push('/admin/dashboard');
             } else {
@@ -88,7 +89,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }

@@ -15,13 +15,14 @@ import {useEffect, useState} from "react";
 import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
 import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
 import {checkFinal, checkMatch} from "../../util/service/adminService";
+import {errorToastColor} from "../../util/api/config/constants";
 
 const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -40,7 +41,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
             setIsMatchPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -48,7 +49,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
             setIsFinalPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
 

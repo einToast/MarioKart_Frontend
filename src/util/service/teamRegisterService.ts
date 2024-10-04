@@ -1,5 +1,6 @@
 import {CharacterReturnDTO, TeamInputDTO, TeamReturnDTO} from "../api/config/dto";
 import {addTeam, getAvailableCharacters, getCharacters, getTeams} from "../api/RegistrationApi";
+import {getSettings} from "../api/SettingsApi";
 
 export const getAllCharacters = async (): Promise<CharacterReturnDTO[]> => {
     const characters = await getCharacters();
@@ -31,5 +32,14 @@ export const createTeam = async (teamName:string, characterName:string): Promise
 
     const response = await addTeam(team);
     return response;
+}
 
+export const getRegistrationOpen = async (): Promise<boolean> => {
+    const tournament = await getSettings();
+    return tournament.tournamentOpen && tournament.registrationOpen;
+}
+
+export const getTournamentOpen = async (): Promise<boolean> => {
+    const tournament = await getSettings();
+    return tournament.tournamentOpen;
 }

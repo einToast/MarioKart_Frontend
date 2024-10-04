@@ -18,12 +18,13 @@ import {TeamReturnDTO} from "../../util/api/config/dto";
 import {getTeamFinalRanked} from "../../util/service/adminService";
 import {useHistory} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
+import {errorToastColor} from "../../util/api/config/constants";
 
 const Results: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -39,7 +40,7 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
         setUserCharacter(user.character);

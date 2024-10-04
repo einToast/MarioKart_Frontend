@@ -57,6 +57,11 @@ export interface PointsInputDTO {
     points: number;
 }
 
+export interface TournamentDTO {
+    tournamentOpen: boolean;
+    registrationOpen: boolean;
+}
+
 export interface AuthenticationRequestDTO {
     username: string;
     password: string;

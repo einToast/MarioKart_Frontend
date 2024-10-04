@@ -20,6 +20,7 @@ import "../RegisterTeam.css";
 import "./Points.css";
 import { RoundReturnDTO } from "../../util/api/config/dto";
 import {checkToken, getUser} from "../../util/service/loginService";
+import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
 const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
@@ -28,7 +29,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -50,14 +51,14 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
 
             if (savedRound) {
                 setError('Runde erfolgreich gespeichert');
-                setToastColor('#68964C')
+                setToastColor(successToastColor)
                 setShowToast(true);
             } else {
                 throw new TypeError('Runde konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     };
@@ -74,7 +75,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
             setNumberOfRounds(rounds.length);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
     }, []);

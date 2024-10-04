@@ -18,7 +18,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
     const [pointsThree, setPointsThree] = useState<number>(game.points.find(point => point.team.id === game.teams[2].id).points);
     const [pointsFour, setPointsFour] = useState<number>(game.points.find(point => point.team.id === game.teams[3].id).points);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -44,14 +44,14 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
             const newPoints = await saveGame(roundId, game);
             if (newPoints) {
                 setError('Spiel erfolgreich gespeichert');
-                setToastColor('#68964C')
+                setToastColor(successToastColor)
                 setShowToast(true);
             } else {
                 throw new TypeError('Spiel konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
 
