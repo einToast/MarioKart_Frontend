@@ -1,6 +1,7 @@
 import {AuthenticationRequestDTO} from "../api/config/dto";
 import {login} from "../api/UserApi";
 import {jwtDecode} from "jwt-decode";
+import Cookies from "js-cookie";
 
 export const loginUser = async (username: string, password: string): Promise<void> => {
     const user: AuthenticationRequestDTO = {
@@ -11,13 +12,13 @@ export const loginUser = async (username: string, password: string): Promise<voi
     setToken(response.accessToken);
 };
 export const setToken = (token: string): void => {
-    localStorage.setItem('authToken', token);
+    Cookies.set('authToken', token, {expires: 7});
 };
 export const getToken = (): string | null => {
-    return localStorage.getItem('authToken');
+    return Cookies.get('authToken');
 };
 export const removeToken = (): void => {
-    localStorage.removeItem('authToken');
+    Cookies.remove('authToken');
 };
 const isTokenExpired = (token: string): boolean => {
     const decodedToken = jwtDecode(token);
@@ -45,13 +46,13 @@ export const checkToken = (): boolean => {
 }
 
 export const setUser = (user: any): void => {
-    localStorage.setItem('user', JSON.stringify(user));
+    Cookies.set('user', JSON.stringify(user), {expires: 7});
 }
 
 export const getUser = (): any => {
-    return JSON.parse(localStorage.getItem('user'));
+    return JSON.parse(Cookies.get('user'));
 }
 
 export const removeUser = (): void => {
-    localStorage.removeItem('user');
+    Cookies.remove('user');
 }

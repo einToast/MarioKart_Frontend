@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { TeamReturnDTO, TeamInputDTO, CharacterReturnDTO } from './config/dto';
-    import { API_BASE_URL } from './config/constants';
-    import apiClient from "./config/apiClient";
+import { API_BASE_URL } from './config/constants';
+import apiClient from "./config/apiClient";
 
-    const BASE_URL = `${API_BASE_URL}/teams`;
+const BASE_URL = `${API_BASE_URL}/teams`;
 
-    export const getTeams = async (): Promise<TeamReturnDTO[]> => {
-        try {
-            const response = await apiClient.get<TeamReturnDTO[]>(BASE_URL);
+export const getTeams = async (): Promise<TeamReturnDTO[]> => {
+    try {
+        const response = await apiClient.get<TeamReturnDTO[]>(BASE_URL);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {

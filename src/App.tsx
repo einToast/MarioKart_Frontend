@@ -48,6 +48,7 @@ import './theme/variables.css';
 import './theme/main.css'
 import MatchPlan from "./pages/admin/MatchPlan";
 import Control from "./pages/admin/Control";
+import {getUser} from "./util/service/loginService";
 
 setupIonicReact();
 
@@ -55,7 +56,7 @@ const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const user = localStorage.getItem("user");
+        const user = getUser();
         if (user) {
             setCurrentUser(JSON.parse(user));
         }

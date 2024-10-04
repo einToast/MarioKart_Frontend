@@ -8,13 +8,14 @@ import Header from "../components/Header";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getTeamsRanked} from "../util/service/dashboardService";
 import {getUser} from "../util/service/loginService";
+import {errorToastColor} from "../util/api/config/constants";
 
 const Tab2: React.FC = () => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -29,7 +30,7 @@ const Tab2: React.FC = () => {
         }).catch((error) => {
             console.error(error);
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
     },[])

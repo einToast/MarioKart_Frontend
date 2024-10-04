@@ -23,7 +23,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const history = useHistory();
@@ -42,7 +42,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
             history.push('/admin/dashboard');
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     };

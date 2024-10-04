@@ -15,6 +15,7 @@ import {Swiper, SwiperSlide} from "swiper/react";
 import {getBothCurrentRounds} from "../util/service/dashboardService";
 import {RoundReturnDTO} from "../util/api/config/dto";
 import {getUser} from "../util/service/loginService";
+import {errorToastColor} from "../util/api/config/constants";
 
 const Tab1: React.FC = () => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO>();
@@ -23,7 +24,7 @@ const Tab1: React.FC = () => {
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
 
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -57,7 +58,7 @@ const Tab1: React.FC = () => {
             setNextRound(response[1]);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
 

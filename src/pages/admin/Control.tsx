@@ -22,13 +22,14 @@ import {
     deleteTeams,
     resetEverything
 } from "../../util/service/adminService";
+import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
 const Control: React.FC<LoginProps> = (props: LoginProps) => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>('#CD7070');
+    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = getUser();
@@ -47,7 +48,7 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
             setIsMatchPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -55,7 +56,7 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
             setIsFinalPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -66,14 +67,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
     const handleTeamsDelete = async () => {
-        try{
+        try {
             await deleteTeams();
             setError('Teams erfolgreich gelöscht');
-            setToastColor('#68964C');
+            setToastColor(successToastColor);
             setShowToast(true);
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -82,11 +83,11 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         try {
             await deleteMatch();
             setError('Spielplan erfolgreich gelöscht');
-            setToastColor('#68964C');
+            setToastColor(successToastColor);
             setShowToast(true);
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -95,11 +96,11 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         try {
             await deleteFinal();
             setError('Finalspiele erfolgreich gelöscht');
-            setToastColor('#68964C');
+            setToastColor(successToastColor);
             setShowToast(true);
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -108,11 +109,11 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         try {
             await resetEverything();
             setError('Anwendung erfolgreich zurückgesetzt');
-            setToastColor('#68964C');
+            setToastColor(successToastColor);
             setShowToast(true);
         } catch (error) {
             setError(error.message);
-            setToastColor('#CD7070');
+            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -120,60 +121,58 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
-                <div className={"contentLogin"}>
-                    <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
-                        <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                        <a>Zurück</a>
-                    </div>
-                    <h2>
-                        <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Kontrollzentrum
-                        </LinearGradient>
-                    </h2>
-                    <div className={"adminDashboard"}>
-                        {!isMatchPlan ?
-                            <IonButton slot="start" onClick={handleRegistration}>
-                                <div>
-                                    <p>Registrierung</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                            : ''
-                        }
-                        {!isMatchPlan ?
-                            <IonButton slot="start" onClick={handleTeamsDelete}>
-                                <div>
-                                    <p>Teams löschen</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                            : ''
-                        }
-                        {isMatchPlan && !isFinalPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}>
-                                <div>
-                                    <p>Spielplan löschen</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                            : ''
-                        }
-                        {isFinalPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}>
-                                <div>
-                                    <p>Finalspiele löschen</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                            : ''
-                        }
-                        <IonButton slot="start" className={"secondary"} onClick={handleReset}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
+                    <a>Zurück</a>
+                </div>
+                <h2>
+                    <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
+                        Kontrollzentrum
+                    </LinearGradient>
+                </h2>
+                <div className={"adminDashboard"}>
+                    {!isMatchPlan ?
+                        <IonButton slot="start" className={"secondary"} onClick={handleRegistration}>
                             <div>
-                                <p>Anwendung zurücksetzen</p>
+                                <p>Registrierung</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                    </div>
+                        : ''
+                    }
+                    {!isMatchPlan ?
+                        <IonButton slot="start" className={"secondary"} onClick={handleTeamsDelete}>
+                            <div>
+                                <p>Teams löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                        : ''
+                    }
+                    {isMatchPlan && !isFinalPlan ?
+                        <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}>
+                            <div>
+                                <p>Spielplan löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                        : ''
+                    }
+                    {isFinalPlan ?
+                        <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}>
+                            <div>
+                                <p>Finalspiele löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                        : ''
+                    }
+                    <IonButton slot="start" className={"secondary"} onClick={handleReset}>
+                        <div>
+                            <p>Anwendung zurücksetzen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
                 </div>
             </IonContent>
             <IonToast
@@ -181,7 +180,7 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor
