@@ -58,7 +58,7 @@ const App: React.FC = () => {
     useEffect(() => {
         const user = getUser();
         if (user) {
-            setCurrentUser(JSON.parse(user));
+            setCurrentUser(user);
         }
     }, []);
 
@@ -117,6 +117,7 @@ const App: React.FC = () => {
                         <Route exact path="/admin">
                             <Redirect to="/admin/dashboard" />
                         </Route>
+
                         <Route exact path="/">
                             <Redirect to="/login" />
                         </Route>

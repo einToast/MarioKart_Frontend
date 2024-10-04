@@ -50,7 +50,11 @@ export const setUser = (user: any): void => {
 }
 
 export const getUser = (): any => {
-    return JSON.parse(Cookies.get('user'));
+    try{
+        return JSON.parse(Cookies.get('user'));
+    } catch (e) {
+        return null;
+    }
 }
 
 export const removeUser = (): void => {
