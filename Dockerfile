@@ -22,6 +22,9 @@ COPY --from=build /app/dist /app/dist
 
 RUN npm install -g serve
 
+RUN npm install react-inject-env
+
 EXPOSE 5000
 
-CMD ["serve", "-s", "dist", "-l", "5000"]
+ENTRYPOINT ["sh", "-c"]
+CMD ["npx react-inject-env set -d dist && serve -s dist -l 5000"]
