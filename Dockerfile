@@ -7,7 +7,7 @@ COPY package*.json ./
 
 RUN npm install --ignore-scripts
 
-RUN npm install -g @ionic/cli --ignore-scripts
+RUN npm install -g --ignore-scripts @ionic/cli
 
 COPY . .
 
@@ -20,9 +20,9 @@ WORKDIR /app
 
 COPY --from=build /app/dist /app/dist
 
-RUN npm install -g serve --ignore-scripts
+RUN npm install -g --ignore-scripts serve
 
-RUN npm install react-inject-env --ignore-scripts
+RUN npm install --ignore-scripts react-inject-env
 
 EXPOSE 5000
 
