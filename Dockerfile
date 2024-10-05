@@ -5,9 +5,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --ignore-scripts
 
-RUN npm install -g @ionic/cli
+RUN npm install -g @ionic/cli --ignore-scripts
 
 COPY . .
 
@@ -20,9 +20,9 @@ WORKDIR /app
 
 COPY --from=build /app/dist /app/dist
 
-RUN npm install -g serve
+RUN npm install -g serve --ignore-scripts
 
-RUN npm install react-inject-env
+RUN npm install react-inject-env --ignore-scripts
 
 EXPOSE 5000
 
