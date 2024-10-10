@@ -15,7 +15,7 @@ import { useHistory } from "react-router";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getAllTeams, getTournamentOpen} from "../util/service/teamRegisterService";
 import characters from "../interface/characters";
-import {setUser} from "../util/service/loginService";
+import {getUser, setUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
 
 interface LoginProps {
@@ -53,6 +53,10 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         setLoading(true);
         if (!getTournamentOpen()){
             history.push('/admin');
+            setLoading(false);
+        }
+        if (getUser()){
+            history.push('/tab1');
             setLoading(false);
         }
         const allTeams = getAllTeams();

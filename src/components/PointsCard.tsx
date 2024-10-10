@@ -11,6 +11,7 @@ import { convertUmlauts } from "../util/service/util";
 import "../pages/admin/Points.css";
 import {saveGame} from "../util/service/adminService";
 import {getUser} from "../util/service/loginService";
+import {errorToastColor, successToastColor} from "../util/api/config/constants";
 
 const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
     const [pointsOne, setPointsOne] = useState<number>(game.points.find(point => point.team.id === game.teams[0].id).points);
