@@ -12,10 +12,14 @@ export const loginUser = async (username: string, password: string): Promise<voi
     setToken(response.accessToken);
 };
 export const setToken = (token: string): void => {
-    Cookies.set('authToken', token, {expires: 7});
+    Cookies.set('authToken', token, {expires: 1, sameSite: 'strict'});
 };
 export const getToken = (): string | null => {
-    return Cookies.get('authToken');
+    try{
+        return Cookies.get('authToken');
+    } catch (e) {
+        return null;
+    }
 };
 export const removeToken = (): void => {
     Cookies.remove('authToken');
@@ -46,7 +50,7 @@ export const checkToken = (): boolean => {
 }
 
 export const setUser = (user: any): void => {
-    Cookies.set('user', JSON.stringify(user), {expires: 7});
+    Cookies.set('user', JSON.stringify(user), {expires: 7, sameSite: 'strict'});
 }
 
 export const getUser = (): any => {
