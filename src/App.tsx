@@ -49,6 +49,7 @@ import './theme/main.css'
 import MatchPlan from "./pages/admin/MatchPlan";
 import Control from "./pages/admin/Control";
 import {getUser} from "./util/service/loginService";
+import {WebSocketProvider} from "./components/WebSocketContext";
 
 setupIonicReact();
 
@@ -66,15 +67,47 @@ const App: React.FC = () => {
 
     return (
         <IonApp>
-            <IonReactRouter>
-                {currentUser?.loggedIn ? (
-                    <IonTabs>
-                        <IonRouterOutlet>
-                            <Route exact path="/tab1" component={Tab1} />
-                            <Route exact path="/tab2" component={Tab2} />
-                            <Route exact path="/tab3" component={Tab3} />
-                            <Route exact path="/survey" component={Survey} />
+            <WebSocketProvider>
+                <IonReactRouter>
+                    {currentUser?.loggedIn ? (
+                        <IonTabs>
+                            <IonRouterOutlet>
+                                <Route exact path="/tab1" component={Tab1} />
+                                <Route exact path="/tab2" component={Tab2} />
+                                <Route exact path="/tab3" component={Tab3} />
+                                <Route exact path="/survey" component={Survey} />
 
+                                <Route exact path="/admin/login" component={Login} />
+                                <Route exact path="/admin/dashboard" component={AdminDashboard} />
+                                <Route exact path="/admin/points" component={AdminPoints} />
+                                <Route exact path="/admin/final" component={Final} />
+                                <Route exact path="/admin/results" component={AdminResults} />
+                                <Route exact path="/admin/matchplan" component={MatchPlan} />
+                                <Route exact path="/admin/control" component={Control} />
+                                <Route exact path="/admin/survey" component={AdminSurvey} />
+                                <Route exact path="/">
+                                    <Redirect to="/tab1" />
+                                </Route>
+                                <Route exact path="/admin">
+                                    <Redirect to="/admin/dashboard" />
+                                </Route>
+                            </IonRouterOutlet>
+                            <IonTabBar slot="bottom">
+                                <IonTabButton tab="tab1" href="/tab1">
+                                    <IonIcon aria-hidden="true" icon={homeOutline} />
+                                </IonTabButton>
+                                <IonTabButton tab="tab2" href="/tab2">
+                                    <IonIcon aria-hidden="true" icon={barChartOutline} />
+                                </IonTabButton>
+                                <IonTabButton tab="tab3" href="/tab3">
+                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} />
+                                </IonTabButton>
+                            </IonTabBar>
+                        </IonTabs>
+                    ) : (
+                        <IonRouterOutlet>
+                            <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
+                            <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
                             <Route exact path="/admin/login" component={Login} />
                             <Route exact path="/admin/dashboard" component={AdminDashboard} />
                             <Route exact path="/admin/points" component={AdminPoints} />
@@ -83,50 +116,20 @@ const App: React.FC = () => {
                             <Route exact path="/admin/matchplan" component={MatchPlan} />
                             <Route exact path="/admin/control" component={Control} />
                             <Route exact path="/admin/survey" component={AdminSurvey} />
-                            <Route exact path="/">
-                                <Redirect to="/tab1" />
-                            </Route>
                             <Route exact path="/admin">
                                 <Redirect to="/admin/dashboard" />
                             </Route>
-                        </IonRouterOutlet>
-                        <IonTabBar slot="bottom">
-                            <IonTabButton tab="tab1" href="/tab1">
-                                <IonIcon aria-hidden="true" icon={homeOutline} />
-                            </IonTabButton>
-                            <IonTabButton tab="tab2" href="/tab2">
-                                <IonIcon aria-hidden="true" icon={barChartOutline} />
-                            </IonTabButton>
-                            <IonTabButton tab="tab3" href="/tab3">
-                                <IonIcon aria-hidden="true" icon={informationCircleOutline} />
-                            </IonTabButton>
-                        </IonTabBar>
-                    </IonTabs>
-                ) : (
-                    <IonRouterOutlet>
-                        <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
-                        <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
-                        <Route exact path="/admin/login" component={Login} />
-                        <Route exact path="/admin/dashboard" component={AdminDashboard} />
-                        <Route exact path="/admin/points" component={AdminPoints} />
-                        <Route exact path="/admin/final" component={Final} />
-                        <Route exact path="/admin/results" component={AdminResults} />
-                        <Route exact path="/admin/matchplan" component={MatchPlan} />
-                        <Route exact path="/admin/control" component={Control} />
-                        <Route exact path="/admin/survey" component={AdminSurvey} />
-                        <Route exact path="/admin">
-                            <Redirect to="/admin/dashboard" />
-                        </Route>
 
-                        <Route exact path="/">
-                            <Redirect to="/login" />
-                        </Route>
-                        <Route exact path="/healthcheck">
-                            <div>OK</div>
-                        </Route>
-                    </IonRouterOutlet>
-                )}
-            </IonReactRouter>
+                            <Route exact path="/">
+                                <Redirect to="/login" />
+                            </Route>
+                            <Route exact path="/healthcheck">
+                                <div>OK</div>
+                            </Route>
+                        </IonRouterOutlet>
+                    )}
+                </IonReactRouter>
+            </WebSocketProvider>
         </IonApp>
     );
 };
