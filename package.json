@@ -38,7 +38,7 @@
     "@capacitor/cli": "6.1.2",
     "@ionic/cli": "^7.2.0",
     "@testing-library/dom": ">=10.4.0",
-    "@testing-library/jest-dom": "^6.6.2",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.4.3",
     "@types/react": "^18.3.12",
