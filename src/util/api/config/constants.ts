@@ -4,3 +4,4 @@ export const WS_BASE_URL = 'http://localhost:8080/api/ws';
 export const errorToastColor = '#CD7070';
 export const successToastColor = '#68964C';
 console.log(API_BASE_URL);
+console.log(WS_BASE_URL);
