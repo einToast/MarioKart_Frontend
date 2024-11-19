@@ -27,7 +27,8 @@ export const createTeam = async (teamName:string, characterName:string): Promise
 
     const team: TeamInputDTO = {
         teamName: teamName,
-        characterName: characterName
+        characterName: characterName,
+        finalReady: true
     };
 
     const response = await addTeam(team);
