@@ -4,9 +4,9 @@ import './Tab3.css';
 import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
 import {
-    arrowForwardOutline,
+    arrowForwardOutline, heart, heartOutline, heartSharp,
     informationCircleOutline,
-    medalOutline,
+    medalOutline, megaphone, megaphoneOutline,
     pizzaOutline,
     playForwardOutline,
     playOutline,
@@ -31,6 +31,10 @@ const Tab3: React.FC = () => {
                 </div>
                 <h3>Programm</h3>
                 <div className={"progressContainer"}>
+                    <div>
+                        <IonIcon aria-hidden="true" icon={megaphoneOutline}/>
+                        <p><span>16:00 - 16:45</span> Arne labert</p>
+                    </div>
                     <div>
                         <IonIcon aria-hidden="true" icon={playOutline}/>
                         <p><span>16:45 - 18:30</span> Runde 1 - 5</p>
@@ -80,8 +84,12 @@ const Tab3: React.FC = () => {
                 {/*        <p>Moderator</p>*/}
                 {/*    </div>*/}
                 {/*</div>*/}
+                {/*<div style={{textAlign: "center"}}>*/}
+                    <br/> Made with <IonIcon icon={heart} aria-hidden="true" style={{color: "#e25555"}}/> by Fanny, Camillo & Laurin <br/>
+                    <a href="https://github.com/einToast/MarioKart">Source Code</a>
+                {/*</div>*/}
                 <div className={"adminDashboard"}>
-                    <IonButton className={"secondary"} onClick={() => history.push('/admin')} >
+                    <IonButton className={"secondary"} onClick={() => history.push('/admin')}>
                         <div>
                             <p>Admin Dashboard</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -90,7 +98,7 @@ const Tab3: React.FC = () => {
                 </div>
             </IonContent>
         </IonPage>
-);
+    );
 };
 
 export default Tab3;
