@@ -17,15 +17,23 @@ import {RoundReturnDTO} from "../util/api/config/dto";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
 
+import { Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import {useWebSocket} from "../components/WebSocketContext";
+
 const Tab1: React.FC = () => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO>();
     const [nextRound, setNextRound] = useState<RoundReturnDTO>();
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
+    const [noGames, setNoGames] = useState<boolean>(false);
+    const [isConnected, setIsConnected] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+
+    const wsService = useWebSocket();
 
     const user = getUser();
 
@@ -33,22 +41,14 @@ const Tab1: React.FC = () => {
         setSelectedOption(event.target.value);
     };
 
-    useEffect(() => {
-        if (selectedOption === 'Alle Spiele') {
-            document.body.classList.add('all-games-selected');
-        } else {
-            document.body.classList.remove('all-games-selected');
-        }
-    }, [selectedOption]);
-
-
-    useEffect(() => {
+    const getNewRounds = async () => {
         const currentAndNextRound = getBothCurrentRounds();
-
         currentAndNextRound.then((response) => {
             if (response[0]) {
                 response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
                 response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
+            } else {
+                setNoGames(true);
             }
             setCurrentRound(response[0]);
             if (response[1]) {
@@ -60,10 +60,48 @@ const Tab1: React.FC = () => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
-        });
+        }
+        );
+    }
 
+    useEffect(() => {
+        if (selectedOption === 'Alle Spiele') {
+            document.body.classList.add('all-games-selected');
+        } else {
+            document.body.classList.remove('all-games-selected');
+        }
+    }, [selectedOption]);
+
+
+    useEffect(() => {
+        getNewRounds();
         setUserCharacter(user.character);
-    }, [])
+
+        const checkConnection = setInterval(() => {
+            if (wsService.isConnected()) {
+                setIsConnected(true)
+                clearInterval(checkConnection);
+            }
+        }, 500);
+
+        return () => {
+            clearInterval(checkConnection);
+        };
+    }, [wsService]);
+
+    useEffect(() => {
+        if (isConnected) {
+            wsService.subscribe('/topic/rounds', (message) => {
+                getNewRounds();
+            });
+
+            return () => {
+                wsService.unsubscribe('/topic/rounds');
+                wsService.unsubscribe('/topic/messages');
+            };
+        }
+    }, [isConnected, wsService]);
+
 
     return (
         <IonPage>
@@ -111,7 +149,13 @@ const Tab1: React.FC = () => {
                                         })}
                                     </>
                                 ) : (
-                                    <p>loading...</p>
+                                    <>
+                                        {noGames ? (
+                                            <p>Keine Spiele gefunden.</p>
+                                        ) : (
+                                            <p>loading...</p>
+                                        )}
+                                    </>
                                 )}
                             </div>
 
@@ -140,7 +184,13 @@ const Tab1: React.FC = () => {
                                         })}
                                     </>
                                 ) : (
-                                    <p>loading...</p>
+                                    <>
+                                        {noGames ? (
+                                            <p>Keine Spiele gefunden.</p>
+                                        ) : (
+                                            <p>loading...</p>
+                                        )}
+                                    </>
                                 )}
                             </div>
                         </>
@@ -179,11 +229,23 @@ const Tab1: React.FC = () => {
                                                     <p>Du hast aktuell kein Spiel.</p>;
                                             })()
                                         ) : (
-                                            <p>loading...</p>
+                                            <>
+                                                {noGames ? (
+                                                    <p>Keine Spiele gefunden.</p>
+                                                ) : (
+                                                    <p>loading...</p>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 ) : (
-                                    <p>loading...</p>
+                                    <>
+                                        {noGames ? (
+                                            <p>Keine Spiele gefunden.</p>
+                                        ) : (
+                                            <p>loading...</p>
+                                        )}
+                                    </>
                                 )}
                             </div>
 
@@ -219,12 +281,22 @@ const Tab1: React.FC = () => {
                                                     <p>Du hast aktuell kein Spiel.</p>;
                                             })()
                                         ) : (
-                                            <p>loading...</p>
-                                        )}
+                                            <>
+                                                {noGames ? (
+                                                    <p>Keine Spiele gefunden.</p>
+                                                ) : (
+                                                    <p>loading...</p>
+                                                )}
+                                            </>                                        )}
                                     </>
                                 ) : (
-                                    <p>loading...</p>
-                                )}
+                                    <>
+                                        {noGames ? (
+                                            <p>Keine Spiele gefunden.</p>
+                                        ) : (
+                                            <p>loading...</p>
+                                        )}
+                                    </>                                )}
                             </div>
                         </>
                     )}

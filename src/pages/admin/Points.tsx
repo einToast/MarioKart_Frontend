@@ -12,7 +12,7 @@ import {
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import PointsCard from "../../components/PointsCard";
+import PointsCard from "../../components/cards/PointsCard";
 import { getAllRounds, getRound } from "../../util/service/dashboardService";
 import {saveRound} from "../../util/service/adminService";
 import "../../interface/interfaces";

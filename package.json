@@ -21,6 +21,7 @@
     "@capacitor/status-bar": "6.0.2",
     "@ionic/react": "^8.4.0",
     "@ionic/react-router": "^8.4.0",
+    "@stomp/stompjs": "^7.0.0",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.7.8",
@@ -32,6 +33,7 @@
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-text-gradients": "^1.0.2",
+    "sockjs-client": "^1.6.1",
     "swiper": "^11.1.15"
   },
   "devDependencies": {
@@ -41,8 +43,10 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.0.1",
     "@testing-library/user-event": "^14.4.3",
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@types/sockjs-client": "^1.5.4",
     "@vitejs/plugin-legacy": "^5.4.3",
     "@vitejs/plugin-react": "^4.3.3",
     "cypress": "^13.16.0",

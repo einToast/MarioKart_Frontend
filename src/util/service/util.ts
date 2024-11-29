@@ -12,3 +12,9 @@ export const convertUmlauts = (text: string): string => {
 
     return text.split('').map(char => umlautMap[char] || char).join('');
 }
+
+export enum QuestionType {
+    MULTIPLE_CHOICE= "MULTIPLE_CHOICE",
+    FREE_TEXT= "FREE_TEXT",
+    CHECKBOX= "CHECKBOX"
+}

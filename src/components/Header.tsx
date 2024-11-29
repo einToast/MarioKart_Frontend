@@ -53,8 +53,10 @@ const Header: React.FC = () => {
                     </div>
                 )}
             </div>
-            <a href="/survey">
-                <IonIcon aria-hidden="true" icon={pieChartOutline} />
+            <a onClick={() => history.push('/survey')}
+               style={{ cursor: "pointer" }}
+            >
+            <IonIcon aria-hidden="true" icon={pieChartOutline} />
             </a>
         </IonHeader>
     );

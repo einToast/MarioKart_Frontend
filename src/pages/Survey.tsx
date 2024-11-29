@@ -1,51 +1,66 @@
-import {IonButton, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
+import {IonAccordionGroup, IonContent, IonPage} from '@ionic/react';
 import '../interface/interfaces'
 import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
-import {arrowForwardOutline} from "ionicons/icons";
-import {useHistory} from "react-router";
-import {useEffect, useState} from "react";
-import axios from "axios";
+import React, {useEffect, useRef, useState} from "react";
 import './Survey.css'
+import {QuestionReturnDTO} from "../util/api/config/dto";
+import {getCurrentQuestions} from "../util/service/surveyService";
+import PointsCard from "../components/cards/PointsCard";
+import {QuestionType} from "../util/service/util";
+import CheckBoxCard from "../components/cards/CheckboxCard";
 
 const Survey: React.FC = () => {
-    const [currentSurvey, setCurrentSurvey] = useState(null);
-    const [surveySubmitted, setSurveySubmitted] = useState(false);
-    const [currentSurveyId, setCurrentSurveyId] = useState(null);
+    const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
+    const [answers, setAnswers] = useState<string[]>([]);
+    const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
+    const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
+
+
+    const getQuestions = async () => {
+        const questions = getCurrentQuestions();
+
+        questions.then((questions) => {
+            console.log(questions);
+            setCurrentQuestions(questions);
+        });
+    };
 
 
     useEffect(() => {
-        const getSurvey = async () => {
-            try {
-                const survey = await axios.get('http://localhost:3000/api/survey');
-                const newSurveyId = survey.data.id;
-                setCurrentSurveyId(newSurveyId);
+        getQuestions();
 
-                const response = await axios.get(`http://localhost:3000/api/survey/${newSurveyId}`);
-                const currentSurveyInterface = response.data;
-                setCurrentSurvey(currentSurveyInterface);
-                setSurveySubmitted(false); // Reset the survey submission state
-            } catch (error) {
-                console.log(error);
-            }
-        };
+        // const myQuestion: QuestionReturnDTO = {
+        //     id: 1,
+        //     questionText: "Welches Team ist besser?",
+        //     questionType: QuestionType.CHECKBOX,
+        //     options: ["Team A", "Team B", "Team C", "Team D"],
+        //     active: true
+        // }
+        // setCurrentQuestions([myQuestion]);
+    }, []);
 
-        getSurvey();
-    }, [currentSurveyId]);
+    // const handleTeamClick = async (team) => {
+    //     const response = await axios.post('http://localhost:3000/api/vote', { teamName: team.name })
+    //             .then((response) => {
+    //                 console.log(response.data);
+    //
+    //                 setSurveySubmitted(true);
+    //                 localStorage.setItem(`surveySubmitted_${currentSurveyId}`, 'true');
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Error posting vote:', error);
+    //             });
+    //
+    //     setSurveySubmitted(true); // Hide the survey once a team is clicked
+    // };
 
-    const handleTeamClick = async (team) => {
-        const response = await axios.post('http://localhost:3000/api/vote', { teamName: team.name })
-                .then((response) => {
-                    console.log(response.data);
-
-                    setSurveySubmitted(true);
-                    localStorage.setItem(`surveySubmitted_${currentSurveyId}`, 'true');
-                })
-                .catch((error) => {
-                    console.error('Error posting vote:', error);
-                });
-
-        setSurveySubmitted(true); // Hide the survey once a team is clicked
+    const toggleAccordion = (accordionId: string) => {
+        setOpenAccordions(prevOpenAccordions =>
+            prevOpenAccordions.includes(accordionId)
+                ? prevOpenAccordions.filter(id => id !== accordionId) // Remove the accordion from the list
+                : [...prevOpenAccordions, accordionId] // Add the accordion to the list
+        );
     };
 
     return (
@@ -57,41 +72,20 @@ const Survey: React.FC = () => {
                         Abstimmungen
                     </LinearGradient>
                 </h1>
-
-                {currentSurvey ? (
-                    currentSurvey.active && !surveySubmitted && localStorage.getItem(`surveySubmitted_${currentSurveyId}`) !== 'true' ? (
-                        <>
-                            <p>{currentSurvey.question}</p>
-                            {currentSurvey.teams.map((team, index) => (
-                                <div className="survey" key={index} onClick={() => handleTeamClick(team)}>
-                                    <div className="teamContainer">
-                                        <div className="imageContainer">
-                                            <img src={`../resources/media/${team.character}.png`} alt={team.character} />
-                                        </div>
-                                        <div className="surveyContent">
-                                            <p>{team.name}</p>
-                                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </>
-                    ) : (
-                        <div>
-                            <p>Aktuell liegt keine Abstimmung vor. Komme später wieder.</p>
-                            <IonButton href={"/tab1"}>
-                                <div>
-                                    <p>Zurück zum Spielplan</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        </div>
-                    )
+                {currentQuestions.length > 0 ? (
+                    <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
+                        {currentQuestions.map((question, index) => (
+                            <CheckBoxCard
+                                key={question.id}
+                                checkboxQuestion={question}
+                                isOpen={openAccordions.includes(question.id.toString())}
+                                toggleAccordion={() => toggleAccordion(question.id.toString())}
+                            />
+                        ))}
+                    </IonAccordionGroup>
                 ) : (
                     <p>Lade Umfrage...</p>
                 )}
-
-
 
             </IonContent>
         </IonPage>

@@ -10,6 +10,11 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_BACKEND_PROTOCOL': JSON.stringify(env.REACT_APP_BACKEND_PROTOCOL),
       'process.env.REACT_APP_BACKEND_URL': JSON.stringify(env.REACT_APP_BACKEND_URL),
       'process.env.REACT_APP_BACKEND_PORT': JSON.stringify(env.REACT_APP_BACKEND_PORT),
+      'process.env.REACT_APP_BACKEND_PATH': JSON.stringify(env.REACT_APP_BACKEND_PATH),
+      'process.env.REACT_APP_WS_PROTOCOL': JSON.stringify(env.REACT_APP_WS_PROTOCOL),
+      'process.env.REACT_APP_WS_URL': JSON.stringify(env.REACT_APP_WS_URL),
+      'process.env.REACT_APP_WS_PORT': JSON.stringify(env.REACT_APP_WS_PORT),
+      'process.env.REACT_APP_WS_PATH': JSON.stringify(env.REACT_APP_WS_PATH),
     },
     plugins: [
       react(),

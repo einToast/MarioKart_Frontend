@@ -89,7 +89,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             </IonButton>
                             : ''
                         }
-                        { !isFinalPlan ?
+                        { !isFinalPlan && isMatchPlan ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
