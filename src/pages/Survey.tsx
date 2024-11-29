@@ -19,23 +19,25 @@ const Survey: React.FC = () => {
 
     const getQuestions = async () => {
         const questions = getCurrentQuestions();
+
         questions.then((questions) => {
+            console.log(questions);
             setCurrentQuestions(questions);
         });
     };
 
 
     useEffect(() => {
-        // getQuestions();
+        getQuestions();
 
-        const myQuestion: QuestionReturnDTO = {
-            id: 1,
-            questionText: "Welches Team ist besser?",
-            questionType: QuestionType.CHECKBOX,
-            options: ["Team A", "Team B", "Team C", "Team D"],
-            active: true
-        }
-        setCurrentQuestions([myQuestion]);
+        // const myQuestion: QuestionReturnDTO = {
+        //     id: 1,
+        //     questionText: "Welches Team ist besser?",
+        //     questionType: QuestionType.CHECKBOX,
+        //     options: ["Team A", "Team B", "Team C", "Team D"],
+        //     active: true
+        // }
+        // setCurrentQuestions([myQuestion]);
     }, []);
 
     // const handleTeamClick = async (team) => {

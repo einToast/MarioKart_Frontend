@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
     IonButton,
@@ -12,41 +12,70 @@ import "../../pages/admin/Points.css";
 import {saveGame} from "../../util/service/adminService";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
 
 const CheckBoxCard: React.FC<{ checkboxQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ checkboxQuestion, isOpen, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+    const [votedId, setVotedId] = useState<number>(-1);
+    // const [timestamp, setTimestamp] = useState<number>(-1);
+    const [results, setResults] = useState<number[]>([]);
 
     const user = getUser();
 
-    const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
-        const newValue = parseInt(event.target.value);
-        points.points = newValue; // Update the points object directly
-    };
+    useEffect(() => {
+        getVote();
+    }, []);
 
-    // const handleSavePoints = async () => {
-    //     try {
-    //         const newPoints = await saveGame(roundId, game);
-    //         if (newPoints) {
-    //             setError('Spiel erfolgreich gespeichert');
-    //             setToastColor(successToastColor)
-    //             setShowToast(true);
-    //         } else {
-    //             throw new TypeError('Spiel konnte nicht gespeichert werden');
-    //         }
-    //     } catch (error) {
-    //         setError(error.message);
-    //         setToastColor(errorToastColor);
-    //         setShowToast(true);
-    //     }
-    //
-    // }
+    const getVote = async () => {
+        const vote = await getAnswer(checkboxQuestion.questionText + checkboxQuestion.id);
+
+        if (vote !== -1) {
+            setVotedId(vote.answerId);
+            // setTimestamp(vote.timestamp);
+            console.log(vote.timestamp);
+        }
+    }
+
+    const handleSaveVote = async (index: number) => {
+        try {
+            const vote = await registerAnswer(checkboxQuestion, index);
+            if (vote) {
+                // setError('Vote erfolgreich gespeichert');
+                // setToastColor(successToastColor)
+                // setShowToast(true);
+                getVote();
+            } else {
+                throw new TypeError('Vote konnte nicht gespeichert werden');
+            }
+        } catch (error) {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        }
+    }
+
+    const showResults = async () => {
+        if (!checkboxQuestion.active) {
+            const answers = await getAnswers(checkboxQuestion.id);
+            const results = new Array(checkboxQuestion.options.length).fill(0);
+            answers.forEach(answer => {
+                answer.checkboxSelectedOptions.forEach(option => {
+                    results[option]++;
+                })
+            });
+            setResults(results);
+            console.log(results);
+        }
+
+    }
 
     return (
         <IonAccordion value={checkboxQuestion.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
-            <IonItem slot="header" color="light">
+            <IonItem slot="header" color="light" disabled={votedId !== -1}>
                 <h3 className="weiss">{checkboxQuestion.questionText}</h3>
+                {/*{timestamp !== -1 ? `${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}` : ''}*/}
             </IonItem>
 
             <div className="ion-padding" slot="content">
@@ -54,30 +83,31 @@ const CheckBoxCard: React.FC<{ checkboxQuestion: QuestionReturnDTO, isOpen: bool
                     {
                         checkboxQuestion.options.map((option, index) => {
                             return (
-                                <IonItem key={index}>
-                                    <IonButton slot="start" shape="round" >
-                                        <div>
-                                            <p>{option}</p>
-                                        </div>
-                                    </IonButton>
-                                </IonItem>
-                            )
+                                <IonButton slot="start" shape="round" //className="bsurvey"
+                                           onClick={votedId === -1 ? () => handleSaveVote(index) : undefined}
+                                           key={index}
+                                           disabled={votedId !== -1 && votedId != index}
+                                           style={{
+                                               pointerEvents: votedId !== -1 ? 'none' : 'auto',
+                                           }}
+
+                                >
+                                    <div className="button-content">
+                                        <p>{option}</p>
+                                        {/*<span className="percentage-fill" style={{ width: `70%` }}></span>*/}
+                                        {/*<p>70%</p>*/}
+                                    </div>
+                                </IonButton>)
                         })
                     }
                 </div>
-                <IonButton slot="start" shape="round" >
-                    <div>
-                        <p>Abstimmung speichern</p>
-                        <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                    </div>
-                </IonButton>
             </div>
             <IonToast
                 isOpen={showToast}
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

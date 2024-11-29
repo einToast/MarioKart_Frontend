@@ -55,9 +55,9 @@ export const getQuestion = async (questionId: number): Promise<QuestionReturnDTO
     }
 }
 
-export const getAnswersOfQuestion = async (questionId: number): Promise<AnswerReturnDTO> => {
+export const getAnswersOfQuestion = async (questionId: number): Promise<AnswerReturnDTO[]> => {
     try {
-        const response = await apiClient.get<AnswerReturnDTO>(`${BASE_URL}/${questionId}/answers`);
+        const response = await apiClient.get<AnswerReturnDTO[]>(`${BASE_URL}/${questionId}/answers`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -91,9 +91,10 @@ export const createQuestion = async (question: QuestionInputDTO): Promise<Questi
     }
 }
 
-export const submitAnswer = async (questionId: number, answer: AnswerInputDTO): Promise<void> => {
+export const submitAnswer = async (answer: AnswerInputDTO): Promise<AnswerReturnDTO> => {
     try {
-        await apiClient.post(`${BASE_URL}/${questionId}/answers`, answer);
+        const response = await apiClient.post(`${BASE_URL}/answer`, answer);
+        return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401){

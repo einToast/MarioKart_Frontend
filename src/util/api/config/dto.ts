@@ -68,6 +68,8 @@ export interface QuestionInputDTO {
     questionType: QuestionType;
     options: string[];
     active: boolean;
+    visible: boolean;
+    live: boolean;
 }
 export interface AnswerInputDTO {
     questionId: number;
@@ -83,6 +85,8 @@ export interface QuestionReturnDTO {
     questionType: QuestionType;
     options: string[];
     active: boolean;
+    visible: boolean;
+    live: boolean;
 }
 
 export interface AnswerReturnDTO {

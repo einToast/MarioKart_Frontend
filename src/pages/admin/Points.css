@@ -95,6 +95,31 @@ ion-accordion {
             transform: translateX(-50%);
         }
     }
+
+    .percentage-button {
+        position: relative;
+        overflow: hidden;
+        color: white;
+        text-align: left;
+    }
+
+    .button-content {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .percentage-fill {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        background-color: rgba(0, 123, 255, 0.5); /* Farbe anpassen */
+        z-index: 1;
+        transition: width 0.3s ease-in-out;
+    }
 }
 
 ion-button.round::part(native) {

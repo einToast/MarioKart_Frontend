@@ -6,13 +6,14 @@ import {LinearGradient} from "react-text-gradients";
 import {
     arrowForwardOutline, heart, heartOutline, heartSharp,
     informationCircleOutline,
-    medalOutline, megaphone, megaphoneOutline,
+    medalOutline, megaphone, megaphoneOutline, pieChartOutline,
     pizzaOutline,
     playForwardOutline,
     playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
 import {useHistory} from "react-router";
+import React from "react";
 
 const Tab3: React.FC = () => {
     const history = useHistory();
@@ -85,17 +86,19 @@ const Tab3: React.FC = () => {
                 {/*    </div>*/}
                 {/*</div>*/}
                 {/*<div style={{textAlign: "center"}}>*/}
-                    <br/> Made with <IonIcon icon={heart} aria-hidden="true" style={{color: "#e25555"}}/> by Fanny, Camillo & Laurin <br/>
-                    <a href="https://github.com/einToast/MarioKart">Source Code</a>
+                <br/> Made with <IonIcon icon={heart} aria-hidden="true" style={{color: "#e25555"}}/> by Fanny, Camillo
+                & Laurin <br/>
+
                 {/*</div>*/}
-                <div className={"adminDashboard"}>
-                    <IonButton className={"secondary"} onClick={() => history.push('/admin')}>
-                        <div>
-                            <p>Admin Dashboard</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                        </div>
-                    </IonButton>
-                </div>
+                <br/>
+
+                <a onClick={() => history.push('/admin')}
+                   style={{cursor: "pointer"}}
+                >
+                    <u>Admin Login</u>
+                </a>
+                <br/>
+                <a href="https://github.com/einToast/MarioKart">Source Code</a>
             </IonContent>
         </IonPage>
     );
