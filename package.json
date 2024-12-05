@@ -47,7 +47,7 @@
     "@types/react": "^18.3.13",
     "@types/react-dom": "^18.3.1",
     "@types/sockjs-client": "^1.5.4",
-    "@vitejs/plugin-legacy": "^5.4.3",
+    "@vitejs/plugin-legacy": "^6.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "cypress": "^13.16.1",
     "eslint": "^8.35.0",
