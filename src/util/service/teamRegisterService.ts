@@ -3,19 +3,16 @@ import {addTeam, getAvailableCharacters, getCharacters, getTeams} from "../api/R
 import {getSettings} from "../api/SettingsApi";
 
 export const getAllCharacters = async (): Promise<CharacterReturnDTO[]> => {
-    const characters = await getCharacters();
     // console.log('Characters:', characters);
-    return characters;
+    return await getCharacters();
 }
 
 export const getAllAvailableCharacters = async (): Promise<CharacterReturnDTO[]> => {
-    const characters = await getAvailableCharacters()  ;
-    return characters;
+    return await getAvailableCharacters();
 }
 
 export const getAllTeams = async (): Promise<TeamReturnDTO[]> => {
-    const teams = await getTeams();
-    return teams;
+    return await getTeams();
 }
 
 export const createTeam = async (teamName:string, characterName:string): Promise<TeamReturnDTO> => {
@@ -31,8 +28,7 @@ export const createTeam = async (teamName:string, characterName:string): Promise
         finalReady: true
     };
 
-    const response = await addTeam(team);
-    return response;
+    return await addTeam(team);
 }
 
 export const getRegistrationOpen = async (): Promise<boolean> => {

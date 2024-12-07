@@ -99,7 +99,14 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                         <img src={`./resources/media/${game.teams[3].character.characterName}.png`} alt="Character"/>
                     </div>
                 </div>
-                <IonButton slot="start" shape="round" onClick={handleSavePoints}>
+                <IonButton slot="start" shape="round" onClick={handleSavePoints}
+                           tabIndex={0}
+                           onKeyDown={(e) => {
+                                 if (e.key === 'Enter' || e.key === ' ') {
+                                      handleSavePoints();
+                                 }
+                           }}
+                >
                     <div>
                         <p>Spiel speichern</p>
                         <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>

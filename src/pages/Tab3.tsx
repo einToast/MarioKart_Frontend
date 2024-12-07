@@ -87,8 +87,16 @@ const Tab3: React.FC = () => {
                 {/*</div>*/}
                 <br/>
 
-                <a onClick={() => history.push('/admin')}
-                   style={{cursor: "pointer"}}
+                <a
+                    onClick={() => history.push('/admin')}
+                    style={{cursor: "pointer"}}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin');
+                        }
+                    }}
+
                 >
                     <u>Admin Login</u>
                 </a>

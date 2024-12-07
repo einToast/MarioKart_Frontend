@@ -4,13 +4,11 @@ import Cookies from "js-cookie";
 import {QuestionType} from "./util";
 
 export const getCurrentQuestions = async (): Promise<QuestionReturnDTO[]> => {
-    const questions = getActiveQuestions();
-    return questions;
+    return getActiveQuestions();
 }
 
 export const getAnswers = async (questionId: number): Promise<AnswerReturnDTO[]> => {
-    const answers = getAnswersOfQuestion(questionId);
-    return answers;
+    return getAnswersOfQuestion(questionId);
 }
 
 

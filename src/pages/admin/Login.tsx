@@ -28,11 +28,6 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
 
     const history = useHistory();
 
-    const handleEnterPress = (e) => {
-        if (e.key === 'Enter') {
-            handleLogin();
-        }
-    };
 
     const handleLogin = async () => {
         try {
@@ -78,7 +73,12 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                                 placeholder="Benutzername"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                onKeyPress={handleEnterPress}
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleLogin();
+                                    }
+                                }}
                             />
                         </div>
                         <div className="borderContainer">
@@ -89,11 +89,23 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                                 placeholder="Passwort"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                onKeyPress={handleEnterPress}
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleLogin();
+                                    }
+                                }}
                                 required
                             />
                         </div>
-                        <IonButton onClick={handleLogin} slot="start">
+                        <IonButton onClick={handleLogin} slot="start"
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleLogin();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Admin Bereich betreten</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>

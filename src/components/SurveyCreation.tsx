@@ -118,7 +118,14 @@ const SurveyCreation = ({ showModal, closeModal, createSurvey }) => {
                 </form>
                     <div className={"playedContainer"}>
 
-                        <IonButton className={"secondary round"} onClick={closeModal}>
+                        <IonButton className={"secondary round"} onClick={closeModal}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           closeModal();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Abbrechen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
