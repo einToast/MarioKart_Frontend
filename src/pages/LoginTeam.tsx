@@ -105,6 +105,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                         <img
                                             src={`../resources/media/${character}.png`}
                                             alt={`${character} character`}
+                                            key={character}
                                         />
                                     ))
                                     }

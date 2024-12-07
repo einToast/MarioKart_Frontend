@@ -60,7 +60,6 @@ const SurveyCreation = ({ showModal, closeModal, createSurvey }) => {
     }, []);
 
     //TODO: publish survey & add to survey Container
-    // @ts-ignore
     return (
         <IonModal isOpen={showModal} onDidDismiss={closeModal}>
             <IonContent>
