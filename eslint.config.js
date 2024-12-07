@@ -11,4 +11,24 @@ export default [
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
+    {rules: {
+        // "no-console": "off",
+        // "no-unused-vars": "off",
+        // "no-undef": "off",
+        "react/react-in-jsx-scope": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "warn",
+          { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
+        ],
+        "@typescript-eslint/no-explicit-any": "warn",
+      },},
+    {ignores: [
+        "dist/*",
+        "node_modules/*",
+        "build/*",
+        ".idea/*",
+        ".github/*"
+        ]
+    }
+
 ];
