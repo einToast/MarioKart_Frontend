@@ -38,7 +38,14 @@ const Header: React.FC = () => {
 
     return (
         <IonHeader>
-            <div className="loggedInUserHead" onClick={toggleDropdown} ref={dropdownRef}>
+            <div className="loggedInUserHead" onClick={toggleDropdown} ref={dropdownRef}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            toggleDropdown();
+                        }
+                    }}
+            >
                 <IonAvatar>
                     {characters.includes(user.character) &&
                         <img src={`../resources/media/${user.character}.png`} alt={user.character} className="iconTeam" />
@@ -48,13 +55,26 @@ const Header: React.FC = () => {
                 {dropdownOpen && (
                     <div className="dropdownMenu">
                         <ul>
-                            <li onClick={handleLogout}>Abmelden</li>
+                            <li onClick={handleLogout}
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleLogout();
+                                    }
+                                }}
+                            >Abmelden</li>
                         </ul>
                     </div>
                 )}
             </div>
             <a onClick={() => history.push('/survey')}
                style={{ cursor: "pointer" }}
+               tabIndex={0}
+               onKeyDown={(e) => {
+                   if (e.key === 'Enter' || e.key === ' ') {
+                       history.push('/survey');
+                   }
+               }}
             >
             <IonIcon aria-hidden="true" icon={pieChartOutline} />
             </a>

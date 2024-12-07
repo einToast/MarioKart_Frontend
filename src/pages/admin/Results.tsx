@@ -45,7 +45,15 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>

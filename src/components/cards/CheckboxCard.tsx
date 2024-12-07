@@ -81,6 +81,12 @@ const CheckBoxCard: React.FC<{ checkboxQuestion: QuestionReturnDTO, isOpen: bool
                             return (
                                 <IonButton slot="start" shape="round" //className="bsurvey"
                                            onClick={votedId === -1 ? () => handleSaveVote(index) : undefined}
+                                           tabIndex={0}
+                                           onKeyDown={(e) => {
+                                              if (e.key === 'Enter' || e.key === ' ') {
+                                                handleSaveVote(index);
+                                              }
+                                           }}
                                            key={index}
                                            disabled={votedId !== -1 && votedId != index}
                                            style={{

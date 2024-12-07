@@ -104,7 +104,14 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>
@@ -126,6 +133,12 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                                              icon={trashOutline}
                                              style={{cursor: "pointer"}}
                                              onClick={() => handleTeamRemove(team)}
+                                             tabIndex={0}
+                                             onKeyDown={(e) => {
+                                                 if (e.key === 'Enter' || e.key === ' ') {
+                                                     handleTeamRemove(team);
+                                                 }
+                                             }}
                                     ></IonIcon>
                                 </div>
                             ))
@@ -137,15 +150,43 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round secondary"}>
-                        <div onClick={handleTeamsReset}>
+                        <div onClick={handleTeamsReset}
+                             tabIndex={0}
+                             onKeyDown={(e) => {
+                                 if (e.key === 'Enter' || e.key === ' ') {
+                                     handleTeamsReset();
+                                 }
+                             }}
+                        >
                             <p>Teams zurücksetzen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleTeamsReset}></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleTeamsReset}
+                                     tabIndex={0}
+                                     onKeyDown={(e) => {
+                                         if (e.key === 'Enter' || e.key === ' ') {
+                                             handleTeamsReset();
+                                         }
+                                     }}
+                            ></IonIcon>
                         </div>
                     </IonButton>
                     <IonButton slot="start" shape="round" className={"round"}>
-                        <div onClick={handleFinalCreation}>
+                        <div onClick={handleFinalCreation}
+                             tabIndex={0}
+                             onKeyDown={(e) => {
+                                 if (e.key === 'Enter' || e.key === ' ') {
+                                     handleFinalCreation();
+                                 }
+                             }}
+                        >
                             <p>Finale erzeugen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleFinalCreation}></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleFinalCreation}
+                                     tabIndex={0}
+                                     onKeyDown={(e) => {
+                                         if (e.key === 'Enter' || e.key === ' ') {
+                                             handleFinalCreation();
+                                         }
+                                     }}
+                            ></IonIcon>
                         </div>
                     </IonButton>
                 </div>

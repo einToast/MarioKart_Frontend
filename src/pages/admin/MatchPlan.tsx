@@ -64,7 +64,14 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>
@@ -98,7 +105,14 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round"}>
-                        <div onClick={handleMatchPlanCreation}>
+                        <div onClick={handleMatchPlanCreation}
+                             tabIndex={0}
+                             onKeyDown={(e) => {
+                                 if (e.key === 'Enter' || e.key === ' ') {
+                                     handleMatchPlanCreation();
+                                 }
+                             }}
+                        >
                             <p>Spielplan erzeugen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>

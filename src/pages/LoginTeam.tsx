@@ -112,7 +112,14 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             )
                             }
                         </div>
-                        <IonButton onClick={handleLogin} slot="start">
+                        <IonButton onClick={handleLogin} slot="start"
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleLogin();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Zum Team {teamName} anmelden</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -121,6 +128,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     </div>
                     <a onClick={() => history.push("/register")}
                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                       tabIndex={0}
+                       onKeyDown={(e) => {
+                           if (e.key === 'Enter' || e.key === ' ') {
+                               history.push('/register');
+                           }
+                       }}
                     >
                         Team registrieren
                     </a>

@@ -83,7 +83,14 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>
@@ -92,7 +99,14 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
                         Umfragen
                     </LinearGradient>
                 </h2>
-                <div className={"newSurvey"} onClick={() => setShowModalNew(true)}>
+                <div className={"newSurvey"} onClick={() => setShowModalNew(true)}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             setShowModalNew(true);
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={addCircleOutline}></IonIcon>
                     <p>Neue Abstimmung</p>
                 </div>
@@ -121,12 +135,24 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
                                     icon={statsChartOutline}
                                     onClick={() => openResults(survey)}
                                     style={{cursor: 'pointer', marginRight: '10px'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            openResults(survey);
+                                        }
+                                    }}
                                 />
                                 <IonIcon
                                     slot="end"
                                     icon={survey.visible ? eyeOutline : eyeOffOutline}
                                     onClick={() => toggleVisibility(survey.id)}
                                     style={{cursor: 'pointer'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            toggleVisibility(survey.id);
+                                        }
+                                    }}
                                 />
                             </div>
                         </div>
@@ -163,7 +189,14 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
                                     ))}
                                 </ul>
                             )}
-                            <IonButton onClick={closeModal} className={"round"}>
+                            <IonButton onClick={closeModal} className={"round"}
+                                       tabIndex={0}
+                                       onKeyDown={(e) => {
+                                           if (e.key === 'Enter' || e.key === ' ') {
+                                               closeModal();
+                                           }
+                                       }}
+                            >
                                 <div>
                                     <p>Ergebnisse schließen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>

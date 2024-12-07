@@ -89,7 +89,14 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>
@@ -138,7 +145,14 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                         Runde gespielt
                     </IonCheckbox>
 
-                    <IonButton slot="start" shape="round" className={"round"} onClick={handleSavePoints}>
+                    <IonButton slot="start" shape="round" className={"round"} onClick={handleSavePoints}
+                               tabIndex={0}
+                               onKeyDown={(e) => {
+                                   if (e.key === 'Enter' || e.key === ' ') {
+                                       handleSavePoints()
+                                   }
+                               }}
+                    >
                         <div>
                             <p>Punkte speichern</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>

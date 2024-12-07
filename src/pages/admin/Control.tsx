@@ -120,7 +120,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}>
+                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                     tabIndex={0}
+                     onKeyDown={(e) => {
+                         if (e.key === 'Enter' || e.key === ' ') {
+                             history.push('/admin/dashboard');
+                         }
+                     }}
+                >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
                 </div>
@@ -131,7 +138,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                 </h2>
                 <div className={"adminDashboard"}>
                     {!isMatchPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleRegistration}>
+                        <IonButton slot="start" className={"secondary"} onClick={handleRegistration}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleRegistration();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Registrierung</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -140,7 +154,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         : ''
                     }
                     {!isMatchPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleTeamsDelete}>
+                        <IonButton slot="start" className={"secondary"} onClick={handleTeamsDelete}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleTeamsDelete();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Teams löschen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -149,7 +170,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         : ''
                     }
                     {isMatchPlan && !isFinalPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}>
+                        <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleMatchPlanDelete();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Spielplan löschen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -158,7 +186,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         : ''
                     }
                     {isFinalPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}>
+                        <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleFinalPlanDelete();
+                                       }
+                                   }}
+                        >
                             <div>
                                 <p>Finalspiele löschen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -166,7 +201,14 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         </IonButton>
                         : ''
                     }
-                    <IonButton slot="start" className={"secondary"} onClick={handleReset}>
+                    <IonButton slot="start" className={"secondary"} onClick={handleReset}
+                               tabIndex={0}
+                               onKeyDown={(e) => {
+                                   if (e.key === 'Enter' || e.key === ' ') {
+                                       handleReset();
+                                   }
+                               }}
+                    >
                         <div>
                             <p>Anwendung zurücksetzen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
