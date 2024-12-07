@@ -1,6 +1,5 @@
-import {createContext, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useHistory} from "react-router";
-import axios from "axios";
 import '../interface/interfaces'
 import './RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
@@ -16,7 +15,6 @@ import characters from "../interface/characters";
 import {
     createTeam,
     getAllAvailableCharacters,
-    getAllCharacters,
     getRegistrationOpen
 } from "../util/service/teamRegisterService";
 import {setUser} from "../util/service/loginService";

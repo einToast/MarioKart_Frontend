@@ -5,22 +5,18 @@ import {
     IonContent,
     IonPage,
     IonIcon,
-    IonCheckbox, IonAccordion,
-    IonAccordionGroup,
-    IonItem, IonLabel, IonModal
+    IonModal
 } from "@ionic/react";
 import {
     addCircleOutline,
     arrowBackOutline,
     arrowForwardOutline,
-    eyedropOutline, eyeOffOutline,
+    eyeOffOutline,
     eyeOutline,
-    playOutline,
     statsChartOutline
 } from 'ionicons/icons';
 import "./admin-survey.css"
 import {useState} from "react";
-import TeamComponent from "../../components/TeamComponent";
 import SurveyCreation from "../../components/SurveyCreation";
 import {useHistory} from "react-router";
 

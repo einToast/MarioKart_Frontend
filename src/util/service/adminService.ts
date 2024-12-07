@@ -1,17 +1,21 @@
 import {
     GameReturnDTO,
-    PointsInputDTO, PointsReturnDTO,
+    PointsInputDTO,
+    PointsReturnDTO,
     RoundInputDTO,
     RoundReturnDTO,
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {deleteAllTeams, getTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
+import {deleteAllTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
 import {
     checkFinalPlan,
     checkMatchPlan,
     createFinalPlan,
-    createMatchPlan, deleteFinalPlan, deleteMatchPlan, reset,
+    createMatchPlan,
+    deleteFinalPlan,
+    deleteMatchPlan,
+    reset,
     updatePoints,
     updateRoundPlayed
 } from "../api/MatchPlanApi";
@@ -59,10 +63,9 @@ export const saveGame = async (roundId: number, game: GameReturnDTO):Promise<Poi
 }
 
 export const getTeamFinalRanked = async (): Promise<TeamReturnDTO[]> => {
-    const response = (await getTeamsSortedByFinalPoints())
+    return (await getTeamsSortedByFinalPoints())
         .filter(team => team.finalReady)
         .slice(0, 4);
-    return response;
 }
 
 export const getRegisteredTeams = async (): Promise<TeamReturnDTO[]> => {
@@ -109,41 +112,33 @@ export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]>
 }
 
 export const createTeamMatchPlan = async (): Promise<RoundReturnDTO[]> => {
-    const response = await createMatchPlan();
-    return response;
+    return await createMatchPlan();
 }
 
 export const createTeamFinalPlan = async (): Promise<RoundReturnDTO[]> => {
-    const response = await createFinalPlan();
-    return response;
+    return await createFinalPlan();
 }
 
 export const checkMatch = async (): Promise<boolean> => {
-    const response = await checkMatchPlan();
-    return response;
+    return await checkMatchPlan();
 }
 
 export const checkFinal = async (): Promise<boolean> => {
-    const response = await checkFinalPlan();
-    return response;
+    return await checkFinalPlan();
 }
 
 export const deleteTeams = async (): Promise<void> => {
-    const response = await deleteAllTeams();
-    return response;
+    return await deleteAllTeams();
 }
 
 export const deleteMatch = async (): Promise<void> => {
-    const response = await deleteMatchPlan();
-    return response;
+    return await deleteMatchPlan();
 }
 
 export const deleteFinal = async (): Promise<void> => {
-    const response = await deleteFinalPlan();
-    return response;
+    return await deleteFinalPlan();
 }
 
 export const resetEverything = async (): Promise<void> => {
-    const response = await reset();
-    return response;
+    return await reset();
 }

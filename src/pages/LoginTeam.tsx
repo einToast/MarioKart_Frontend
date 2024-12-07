@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import axios from "axios";
 import '../interface/interfaces';
 import './RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";

@@ -6,14 +6,13 @@ import {
     IonContent,
     IonPage,
     IonIcon,
-    IonToast, IonAlert
+    IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
 import {useHistory, useLocation} from "react-router";
 import React, {useEffect, useState} from "react";
 
-import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
-import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
+import {checkToken, getUser} from "../../util/service/loginService";
 import {
     checkFinal,
     checkMatch,

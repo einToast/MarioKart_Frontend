@@ -1,14 +1,9 @@
-import {IonButton, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToolbar} from '@ionic/react';
-import ExploreContainer from '../components/Header';
+import {IonContent, IonIcon, IonPage} from '@ionic/react';
 import './Tab3.css';
 import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
 import {
-    arrowForwardOutline, heart, heartOutline, heartSharp,
-    informationCircleOutline,
-    medalOutline, megaphone, megaphoneOutline, pieChartOutline,
-    pizzaOutline,
-    playForwardOutline,
+    heart, medalOutline, megaphoneOutline, pizzaOutline,
     playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";

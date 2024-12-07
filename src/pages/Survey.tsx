@@ -6,8 +6,6 @@ import React, {useEffect, useRef, useState} from "react";
 import './Survey.css'
 import {QuestionReturnDTO} from "../util/api/config/dto";
 import {getCurrentQuestions} from "../util/service/surveyService";
-import PointsCard from "../components/cards/PointsCard";
-import {QuestionType} from "../util/service/util";
 import CheckBoxCard from "../components/cards/CheckboxCard";
 
 const Survey: React.FC = () => {

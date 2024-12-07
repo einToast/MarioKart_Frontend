@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-    IonAccordion,
     IonAccordionGroup,
     IonButton,
     IonCheckbox,
     IonContent,
     IonIcon,
-    IonItem,
     IonPage, IonToast
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
@@ -115,7 +113,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                             <p className="timeStamp">{round.startTime.split('T')[1].slice(0, 5)} - {round.endTime.split('T')[1].slice(0, 5)}</p>
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
-                            {round.games?.map((game, index) => (
+                            {round.games?.map((game) => (
                                 game.teams = game.teams.sort((a, b) => a.id - b.id),
                                 <PointsCard
                                     key={game.id}

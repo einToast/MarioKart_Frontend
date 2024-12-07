@@ -6,16 +6,13 @@ import {
     IonContent,
     IonPage,
     IonIcon,
-    IonCheckbox, IonAccordion,
-    IonAccordionGroup,
-    IonItem, IonLabel, IonToast
+    IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useEffect, useRef, useState} from "react";
-import axios from "axios";
+import {useEffect, useState} from "react";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
-import {createTeamMatchPlan, getRegisteredTeams, getTeamFinalRanked} from "../../util/service/adminService";
+import {createTeamMatchPlan, getRegisteredTeams} from "../../util/service/adminService";
 import {useHistory} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";

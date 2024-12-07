@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import { useHistory } from "react-router";
-import axios from "axios";
 import '../../interface/interfaces';
 import '../RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";
