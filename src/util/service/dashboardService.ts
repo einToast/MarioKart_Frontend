@@ -1,24 +1,19 @@
 import {RoundReturnDTO, TeamReturnDTO} from "../api/config/dto";
 import {getCurrentRounds, getRoundById, getRounds} from "../api/MatchPlanApi";
-import {getAllTeams} from "./teamRegisterService";
 import {getTeamsSortedByNormalPoints} from "../api/RegistrationApi";
 
 export const getBothCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
-    const response = getCurrentRounds();
-    return response;
+    return getCurrentRounds();
 }
 
 export const getTeamsRanked = async (): Promise<TeamReturnDTO[]> => {
-    const response = getTeamsSortedByNormalPoints()
-    return response;
+    return getTeamsSortedByNormalPoints();
 }
 
 export const getAllRounds = async (): Promise<RoundReturnDTO[]> => {
-    const response = getRounds();
-    return response;
+    return getRounds();
 }
 
 export const getRound = async (roundNumber: number): Promise<RoundReturnDTO> => {
-    const response = getRoundById(roundNumber);
-    return response;
+    return getRoundById(roundNumber);
 }

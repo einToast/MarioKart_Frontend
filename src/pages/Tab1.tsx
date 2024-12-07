@@ -1,24 +1,19 @@
-import {IonAvatar, IonContent, IonHeader, IonIcon, IonPage, IonTitle, IonToast, IonToolbar} from '@ionic/react';
+import {IonContent, IonPage, IonToast} from '@ionic/react';
 import './Tab1.css';
 import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
-import axios from "axios";
 import '../interface/interfaces';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import {Navigation} from 'swiper/modules';
 import RoundComponentAll from "../components/RoundComponentAll";
 import RoundComponentSwiper from "../components/RoundComponentSwiper";
-import {Swiper, SwiperSlide} from "swiper/react";
 import {getBothCurrentRounds} from "../util/service/dashboardService";
 import {RoundReturnDTO} from "../util/api/config/dto";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
 
-import { Client } from '@stomp/stompjs';
-import SockJS from 'sockjs-client';
 import {useWebSocket} from "../components/WebSocketContext";
 
 const Tab1: React.FC = () => {

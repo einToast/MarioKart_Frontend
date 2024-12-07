@@ -4,7 +4,7 @@ import {
     IonButton,
     IonContent,
     IonPage,
-    IonIcon, IonCheckbox, IonToast
+    IonIcon, IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline, trashOutline} from 'ionicons/icons';
 import "./Final.css"

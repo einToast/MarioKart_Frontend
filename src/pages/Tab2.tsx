@@ -1,5 +1,4 @@
-import {IonContent, IonHeader, IonPage, IonTitle, IonToast, IonToolbar} from '@ionic/react';
-import ExploreContainer from '../components/Header';
+import {IonContent, IonPage, IonToast} from '@ionic/react';
 import './Tab2.css';
 import React, {useEffect, useState} from "react";
 import '../interface/interfaces';

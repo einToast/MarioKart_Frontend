@@ -2,16 +2,12 @@ import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
     IonButton,
-    IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
-import { arrowForwardOutline } from "ionicons/icons";
-import {GameReturnDTO, PointsReturnDTO, QuestionReturnDTO} from "../../util/api/config/dto";
-import { convertUmlauts } from "../../util/service/util";
+import {QuestionReturnDTO} from "../../util/api/config/dto";
 import "../../pages/admin/Points.css";
-import {saveGame} from "../../util/service/adminService";
 import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import {errorToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
 
 const CheckBoxCard: React.FC<{ checkboxQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ checkboxQuestion, isOpen, toggleAccordion }) => {

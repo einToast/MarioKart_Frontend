@@ -6,14 +6,13 @@ import {
     IonContent,
     IonPage,
     IonIcon,
-    IonToast, IonAlert
+    IonToast
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import {useHistory, useLocation} from "react-router";
 import {useEffect, useState} from "react";
 
-import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
-import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
+import {checkToken, getUser, removeToken} from "../../util/service/loginService";
 import {checkFinal, checkMatch} from "../../util/service/adminService";
 import {errorToastColor} from "../../util/api/config/constants";
 

@@ -2,17 +2,13 @@ import '../../interface/interfaces'
 import '../RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
 import {
-    IonButton,
     IonContent,
     IonPage,
     IonIcon,
-    IonCheckbox, IonAccordion,
-    IonAccordionGroup,
-    IonItem, IonLabel, IonToast
+    IonToast
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import React, {useEffect, useRef, useState} from "react";
-import axios from "axios";
+import {arrowBackOutline} from 'ionicons/icons';
+import React, {useEffect, useState} from "react";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {getTeamFinalRanked} from "../../util/service/adminService";
