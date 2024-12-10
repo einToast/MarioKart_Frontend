@@ -15,12 +15,12 @@ import {
     eyeOutline,
     statsChartOutline
 } from 'ionicons/icons';
-import "./admin-survey.css"
+import "./SurveyAdmin.css"
 import {useState} from "react";
 import SurveyCreation from "../../components/SurveyCreation";
 import {useHistory} from "react-router";
 
-const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
+const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: new Survey adden
 
     const [surveys, setSurveys] = useState([
@@ -212,4 +212,4 @@ const adminSurvey: React.FC<LoginProps> = (props: LoginProps) => {
         ;
 };
 
-export default adminSurvey;
+export default surveyAdmin;

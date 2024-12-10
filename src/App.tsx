@@ -20,7 +20,7 @@ import AdminDashboard from "./pages/admin/Dashboard";
 import AdminPoints from "./pages/admin/Points";
 import Final from "./pages/admin/Final";
 import AdminResults from "./pages/admin/Results";
-import AdminSurvey from "./pages/admin/admin-survey";
+import AdminSurvey from "./pages/admin/SurveyAdmin";
 import Survey from "./pages/Survey";
 import LoginToTeam from './pages/LoginTeam';
 import './interface/interfaces';
