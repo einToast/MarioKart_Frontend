@@ -3,6 +3,7 @@ import { Redirect, Route } from 'react-router-dom';
 import {
     IonApp,
     IonIcon,
+    IonLabel,
     IonRouterOutlet,
     IonTabBar,
     IonTabButton,
@@ -49,6 +50,7 @@ import MatchPlan from "./pages/admin/MatchPlan";
 import Control from "./pages/admin/Control";
 import {getUser} from "./util/service/loginService";
 import {WebSocketProvider} from "./components/WebSocketContext";
+import Teams from './pages/admin/Teams';
 
 setupIonicReact();
 
@@ -84,6 +86,7 @@ const App: React.FC = () => {
                                 <Route exact path="/admin/matchplan" component={MatchPlan} />
                                 <Route exact path="/admin/control" component={Control} />
                                 <Route exact path="/admin/survey" component={AdminSurvey} />
+                                <Route exact path={"/admin/teams"} component={Teams} />
                                 <Route exact path="/">
                                     <Redirect to="/tab1" />
                                 </Route>

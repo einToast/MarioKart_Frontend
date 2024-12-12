@@ -6,13 +6,14 @@ import {
     IonContent,
     IonPage,
     IonIcon,
-    IonToast
+    IonToast, IonAlert
 } from "@ionic/react";
 import {arrowForwardOutline} from 'ionicons/icons';
 import {useHistory, useLocation} from "react-router";
 import {useEffect, useState} from "react";
 
-import {checkToken, getUser, removeToken} from "../../util/service/loginService";
+import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
+import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
 import {checkFinal, checkMatch} from "../../util/service/adminService";
 import {errorToastColor} from "../../util/api/config/constants";
 
@@ -71,14 +72,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                     <h1>Dashboard</h1>
                     <div className={"adminDashboard"}>
                         { isMatchPlan ?
-                            <IonButton slot="start" onClick={() => history.push('/admin/points')}
-                                       tabIndex={0}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               history.push('/admin/points');
-                                           }
-                                       }}
-                            >
+                            <IonButton slot="start" onClick={() => history.push('/admin/points')}>
                                 <div>
                                     <p>Punkte eintragen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -87,14 +81,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             : ''
                         }
                         { !isMatchPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/matchplan')}
-                                       tabIndex={0}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               history.push('/admin/matchplan');
-                                           }
-                                       }}
-                            >
+                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/matchplan')}>
                                 <div>
                                     <p>Spielplan erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -103,14 +90,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             : ''
                         }
                         { !isFinalPlan && isMatchPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}
-                                       tabIndex={0}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               history.push('/admin/final');
-                                           }
-                                       }}
-                            >
+                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -119,14 +99,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                         : ''
                         }
                         { isFinalPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}
-                                       tabIndex={0}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               history.push('/admin/results');
-                                           }
-                                       }}
-                            >
+                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
                                 <div>
                                     <p>Endergebnis</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -134,40 +107,25 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             </IonButton>
                             : ''
                         }
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/survey')}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           history.push('/admin/survey');
-                                       }
-                                   }}
-                        >
+                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/teams')}>
+                            <div>
+                                <p>Teams</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/survey')}>
                             <div>
                                 <p>Umfragen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/control')}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           history.push('/admin/control');
-                                       }
-                                   }}
-                        >
+                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/control')}>
                             <div>
                                 <p>Kontrollzentrum</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={handleLogout}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleLogout();
-                                       }
-                                   }}
-                        >
+                        <IonButton slot="start" className={"secondary"} onClick={handleLogout}>
                             <div>
                                 <p>Logout</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
