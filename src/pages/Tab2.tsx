@@ -8,6 +8,7 @@ import {TeamReturnDTO} from "../util/api/config/dto";
 import {getTeamsRanked} from "../util/service/dashboardService";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
+import {checkFinal} from "../util/service/adminService";
 
 const Tab2: React.FC = () => {
 
@@ -15,14 +16,26 @@ const Tab2: React.FC = () => {
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [final, setFinal] = useState<boolean>(false);
 
     const user = getUser();
 
     useEffect(() => {
         setUserCharacter(user.character);
 
+        const finalCheck = checkFinal();
+
         const teamsRanked = getTeamsRanked();
+
+        finalCheck.then((result) => {
+            setFinal(result);
+        }).catch((error) => {
+            console.error(error);
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
 
         teamsRanked.then((response) => {
             setTeams(response);
@@ -46,7 +59,7 @@ const Tab2: React.FC = () => {
                 <div className={"flexContainer"}>
                     {teams ? (
                         teams
-                            .map(team => (
+                            .map((team, index) => (
                                 <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
                                         <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
@@ -54,7 +67,13 @@ const Tab2: React.FC = () => {
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
-                                        <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                        <p className={"punkte"}>{index + 1}. Platz</p>
+                                        {final ? (
+                                            <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                        ) : (
+                                            ""
+                                        )}
+
                                     </div>
                                 </div>
                             ))

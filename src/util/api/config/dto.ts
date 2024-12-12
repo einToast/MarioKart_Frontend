@@ -95,7 +95,6 @@ export interface AnswerReturnDTO {
     freeTextAnswer: string;
     multipleChoiceSelectedOption: number;
     checkboxSelectedOptions: number[];
-
 }
 
 export interface AuthenticationRequestDTO {

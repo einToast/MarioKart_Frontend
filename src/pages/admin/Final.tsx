@@ -6,7 +6,7 @@ import {
     IonPage,
     IonIcon, IonToast
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline, trashOutline} from 'ionicons/icons';
+import {arrowBackOutline, arrowForwardOutline, removeCircleOutline, trashOutline} from 'ionicons/icons';
 import "./Final.css"
 import React, {useEffect, useState} from "react";
 import {TeamReturnDTO} from "../../util/api/config/dto";
@@ -88,7 +88,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                 throw new TypeError('Finale konnte nicht erstellt werden');
             }
         } catch (error) {
-            setError(error);
+            setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
         }
@@ -130,7 +130,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div key={team.id} className={"teamFinal"}>
                                     <h3>{team.teamName}</h3>
                                     <IonIcon slot="end"
-                                             icon={trashOutline}
+                                             icon={removeCircleOutline}
                                              style={{cursor: "pointer"}}
                                              onClick={() => handleTeamRemove(team)}
                                              tabIndex={0}

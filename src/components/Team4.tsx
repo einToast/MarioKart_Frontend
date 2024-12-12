@@ -1,17 +1,19 @@
-const TeamComponent4 = ({ team, game, switchColor }) => {
+import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
+
+const TeamComponent4: React.FC<{team:TeamReturnDTO, game:GameReturnDTO, switchColor:string}> = ({ team, game, switchColor }) => {
     const character = team.character.characterName || [];
 
     return (
         <div className={`${switchColor}`}>
             <div className={`imageContainer ${switchColor}`} >
 
-                {game.teams.map(icon => {
+                {game.teams.map(team => {
                     return (
                         <img
-                            src={`../resources/media/${icon.character.characterName}.png`}
+                            src={`../resources/media/${team.character.characterName}.png`}
                             alt="teamcharacter"
                             className="iconTeam"
-                            key={icon.character.characterName}
+                            key={team.character.characterName}
                         />
                     )
                     })

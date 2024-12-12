@@ -43,7 +43,7 @@ ion-accordion {
     .inputContainer {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        grid-gap: 30px;
+        grid-gap: 20px;
         margin-bottom: 20px;
     }
 

@@ -2,8 +2,9 @@ import TeamComponent4 from "./Team4";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
+import {GameReturnDTO} from "../util/api/config/dto";
 
-const RoundComponentSwiper = ({ game, user, switchColor }) => {
+const RoundComponentSwiper: React.FC<{game:GameReturnDTO, user:any, switchColor:string}> = ({ game, user, switchColor }) => {
     if (!game || !game.teams) return null;
 
     return (

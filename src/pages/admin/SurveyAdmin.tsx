@@ -1,83 +1,153 @@
 import '../../interface/interfaces'
 import {LinearGradient} from "react-text-gradients";
-import {
-    IonButton,
-    IonContent,
-    IonPage,
-    IonIcon,
-    IonModal
-} from "@ionic/react";
+import {IonContent, IonIcon, IonPage, IonToast} from "@ionic/react";
 import {
     addCircleOutline,
     arrowBackOutline,
-    arrowForwardOutline,
+    chatboxEllipsesOutline,
+    chatboxOutline, createOutline,
     eyeOffOutline,
-    eyeOutline,
-    statsChartOutline
+    eyeOutline, pencil,
+    statsChartOutline,
+    trashOutline,
+    videocamOffOutline,
+    videocamOutline
 } from 'ionicons/icons';
 import "./SurveyAdmin.css"
-import {useState} from "react";
-import SurveyCreation from "../../components/SurveyCreation";
+import React, {useEffect, useState} from "react";
+import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import {useHistory} from "react-router";
+import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import {getUser} from "../../util/service/loginService";
+import {QuestionReturnDTO} from "../../util/api/config/dto";
+import {changeQuestion, getAllQuestions} from "../../util/service/surveyService";
+import SurveyModal from "../../components/modals/SurveyModal";
+import {QuestionType} from "../../util/service/util";
+import SurveyChangeModal from "../../components/modals/SurveyChangeModal";
 
 const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: new Survey adden
 
-    const [surveys, setSurveys] = useState([
-        { id: 1, question: 'Welche Pizza ist als erstes leer?', visible: true },
-        { id: 2, question: 'Welches Team wird gewinnen?', visible: true },
-    ]);
+    const surveysNew = [
+    ];
     const [selectedSurvey, setSelectedSurvey] = useState(null);
-    const [selectedSurveyQuestion, setSelectedSurveyQuestion] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({id: -1, questionText: '',questionType: QuestionType.MULTIPLE_CHOICE, options:[],visible: false, active: false, live: false});
     const [results, setResults] = useState([]);
-    const [surveysNew, setSurveysNew] = useState([]);
-    const [showModalNew, setShowModalNew] = useState(false);
+    const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showChangeModal, setShowChangeModal] = useState(false);
+    const [showResultsModal, setShowResultsModal] = useState(false);
+
+    const [error, setError] = useState<string | null>(null);
+    const [toastColor, setToastColor] = useState<string | null>(null);
+    const [showToast, setShowToast] = useState(false);
+
+    const [modalClosed, setModalClosed] = useState<boolean>(false);
+
+    const user = getUser();
 
     const history = useHistory();
 
-    const toggleVisibility = (id) => {
-        setSurveys(surveys.map(survey =>
-            survey.id === id ? { ...survey, visible: !survey.visible } : survey
-        ));
+    const toggleVisibility = async (id: number) => {
+        console.log(id);
+        try{
+            const question = surveys.find(survey => survey.id === id);
+            if (!question) {
+                throw new TypeError('Frage nicht gefunden');
+            }
+            question.visible = !question.visible;
+            if (question.visible) {
+                question.active = true;
+            }
+            const updatedQuestion = await changeQuestion(question);
+            if (updatedQuestion) {
+                getQuestions();
+            } else {
+                throw new TypeError('Sichtbarkeit konnte nicht geändert werden');
+            }
+        } catch (error) {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        }
+
     };
 
-    const openResults = (survey) => {
-        const surveyResults = fetchResults(survey.id);
-        setResults(surveyResults);
-        setSelectedSurvey(survey.id);
-        setSelectedSurveyQuestion(survey.question);
-        setShowModal(true);
+    const toggleActive = async (id: number) => {
+        try{
+            const question = surveys.find(survey => survey.id === id);
+            if (!question) {
+                throw new TypeError('Frage nicht gefunden');
+            }
+            question.active = !question.active;
+            const updatedQuestion = await changeQuestion(question);
+            if (updatedQuestion) {
+                getQuestions();
+            } else {
+                throw new TypeError('Aktivität konnte nicht geändert werden');
+            }
+        } catch (error) {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        }
+    }
+
+    const toggleLive = async (id: number) => {
+        try{
+            const question = surveys.find(survey => survey.id === id);
+            if (!question) {
+                throw new TypeError('Frage nicht gefunden');
+            }
+            question.live = !question.live;
+            const updatedQuestion = await changeQuestion(question);
+            if (updatedQuestion) {
+                getQuestions();
+            } else {
+                throw new TypeError('Live konnte nicht geändert werden');
+            }
+        } catch (error) {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        }
+    }
+
+    const handleOpenResults = (question) => {
+        setSelectedQuestion(question);
+        setShowResultsModal(true);
+    }
+
+    const handleOpenChange = (question) => {
+        setSelectedQuestion(question);
+        setShowChangeModal(true);
+    }
+
+
+    const closeModal = (surveys:Object) => {
+        setModalClosed(prev => !prev);
+        if (surveys.surveyCreated) {
+            setError('Umfrage erfolgreich erstellt');
+            setToastColor(successToastColor);
+            setShowToast(true);
+        }
+
     };
 
-    const fetchResults = (id) => {
-        // Simulate fetching results from an API or other source
-        const mockResults = {
-            1: [
-                { id: 1, name: 'Funghi', punkte: '36' },
-                { id: 2, name: 'Hawaii',  punkte: '45' },
-                { id: 3, name: 'Salami', punkte: '85' },
-                { id: 4, name: 'Vegetarian',  punkte: '26' },
-            ], // Keine Ergebnisse für die erste Frage
-            2: [
-                { id: 1, name: 'FSR', character: 'toad', punkte: '36' },
-                { id: 2, name: 'Ninja Turtles', character: 'koopa', punkte: '45' },
-                { id: 3, name: 'Mitarbeiter', character: 'tanuki-mario', punkte: '85' },
-                { id: 4, name: 'Toadesser', character: 'donkey-kong', punkte: '26' },
-            ],
-        };
-        return mockResults[id] || [];
-    };
+    const getQuestions = async () => {
+        try{
+            const questions = await getAllQuestions();
+            setSurveys(questions);
+        } catch (error) {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        }
+    }
 
-    const closeModal = () => {
-        setShowModal(false);
-        setSelectedSurvey(null);
-        setSelectedSurveyQuestion('');
-    };
-
-    const createSurvey = (survey) => {
-        setSurveys([...surveys, survey]);
-    };
+    useEffect(() => {
+        getQuestions();
+    }, [modalClosed]);
 
 
     return (
@@ -99,23 +169,19 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                         Umfragen
                     </LinearGradient>
                 </h2>
-                <div className={"newSurvey"} onClick={() => setShowModalNew(true)}
+                <div className={"newSurvey"} onClick={() => setShowAddModal(true)}
                      tabIndex={0}
                      onKeyDown={(e) => {
                          if (e.key === 'Enter' || e.key === ' ') {
-                             setShowModalNew(true);
+                             setShowAddModal(true);
                          }
                      }}
+                     style={{cursor: 'pointer'}}
                 >
                     <IonIcon slot="end" icon={addCircleOutline}></IonIcon>
                     <p>Neue Abstimmung</p>
                 </div>
 
-                <SurveyCreation
-                    showModal={showModalNew}
-                    closeModal={() => setShowModalNew(false)}
-                    createSurvey={createSurvey}
-                />
                 <div className="currentSurveyContainer">
                     {surveysNew.map((survey, index) => (
                         <div key={index} className="currentSurvey">
@@ -128,17 +194,29 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                 <div className="currentSurveyContainer">
                     {surveys.map(survey => (
                         <div key={survey.id} className={`currentSurvey ${survey.visible ? 'active' : ''}`}>
-                            <p>{survey.question}</p>
+                            <p>{survey.questionText}</p>
                             <div>
                                 <IonIcon
                                     slot="end"
                                     icon={statsChartOutline}
-                                    onClick={() => openResults(survey)}
+                                    onClick={() => handleOpenResults(survey)}
                                     style={{cursor: 'pointer', marginRight: '10px'}}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            openResults(survey);
+                                            handleOpenResults(survey);
+                                        }
+                                    }}
+                                />
+                                <IonIcon
+                                    slot="end"
+                                    icon={createOutline}
+                                    onClick={() => handleOpenChange(survey)}
+                                    style={{cursor: 'pointer'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            handleOpenChange(survey);
                                         }
                                     }}
                                 />
@@ -154,59 +232,78 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                         }
                                     }}
                                 />
+                                <IonIcon
+                                    slot="end"
+                                    icon={survey.active ? chatboxEllipsesOutline : chatboxOutline}
+                                    onClick={() => toggleActive(survey.id)}
+                                    style={{cursor: 'pointer'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            toggleVisibility(survey.id);
+                                        }
+                                    }}
+                                />
+                                <IonIcon
+                                    slot="end"
+                                    icon={survey.live ? videocamOutline : videocamOffOutline}
+                                    onClick={() => toggleLive(survey.id)}
+                                    style={{cursor: 'pointer'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            toggleVisibility(survey.id);
+                                        }
+                                    }}
+                                />
+                                <IonIcon
+                                    slot="end"
+                                    icon= {trashOutline}
+                                    // onClick={() => toggleVisibility(survey.id)}
+                                    style={{cursor: 'pointer'}}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            toggleVisibility(survey.id);
+                                        }
+                                    }}
+                                />
                             </div>
                         </div>
                     ))}
-
-                    <IonModal isOpen={showModal} onDidDismiss={closeModal}>
-                        <IonContent>
-                            <h4>{selectedSurveyQuestion}</h4>
-                            {selectedSurvey === 2 ? (
-                                <>
-                                    <h4>Ergebnisse:</h4>
-                                    <div className={"allTeamResult"}>
-                                        {
-                                            results.map(team => (
-                                                <div key={team.id} className={"teamContainer"}>
-                                                    <div className={"imageContainer"}>
-                                                        <img src={`../resources/media/${team.character}.png`}
-                                                             alt={team.character}
-                                                             className={"iconTeam"}/>
-                                                    </div>
-                                                    <div className={"teamResult"}>
-                                                        <p>{team.name}</p>
-                                                        <p className={"punkte"}>{team.punkte} Punkte</p>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        }
-                                    </div>
-                                </>
-                            ) : (
-                                <ul>
-                                    {results.map((result) => (
-                                        <li key={result.id}>{result.name}: {result.punkte}</li>
-                                    ))}
-                                </ul>
-                            )}
-                            <IonButton onClick={closeModal} className={"round"}
-                                       tabIndex={0}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               closeModal();
-                                           }
-                                       }}
-                            >
-                                <div>
-                                    <p>Ergebnisse schließen</p>
-                                    <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                                </div>
-                            </IonButton>
-                        </IonContent>
-                    </IonModal>
                 </div>
 
+                <SurveyAddModal
+                    showModal={showAddModal}
+                    closeModal={(surveys) => {
+                        setShowAddModal(false);
+                        closeModal(surveys);
+                    }}
+                />
+                <SurveyModal
+                    showModal={showResultsModal}
+                    closeModal={() => setShowResultsModal(false)}
+                    question={selectedQuestion}
+                />
+                <SurveyChangeModal
+                    showModal={showChangeModal}
+                    closeModal={() => setShowChangeModal(false)}
+                    question={selectedQuestion}
+                />
+
+
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={ user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonPage>
     )
         ;

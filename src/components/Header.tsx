@@ -7,7 +7,7 @@ import {useHistory} from "react-router";
 import {getUser, removeUser} from "../util/service/loginService";
 
 const Header: React.FC = () => {
-    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const user = getUser();

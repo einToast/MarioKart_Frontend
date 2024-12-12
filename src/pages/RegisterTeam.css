@@ -126,15 +126,15 @@ ion-button.bsurvey::part(native) {
     --ion-color-base: #32345E !important;
     /*background: linear-gradient(to right, var(--ion-color-gradient01) 70%, var(--ion-color-base) 70%);*/
     background: var(--ion-color-gradient02);
-    background: linear-gradient(to right, var(--ion-color-gradient02) 70%, var(--ion-color-base) 70%);
+    background: linear-gradient(to right, var(--ion-color-gradient02) var(--gradient-percentage), var(--ion-color-base) var(--gradient-percentage));
     padding: 8px 16px;
     /*background: linear-gradient(to right, linear-gradient(to right, var(--ion-color-gradient01) 70%, var(--ion-color-base) 70%) 70%, var(--ion-color-base) 70%);*/
 
 }
 
 ion-button.bsurvey:hover::part(native) {
-    --ion-color-gradient01: #6b6dfa; /* Farbe beim Hover */
-    --ion-color-base: #454678; /* Sanfter Übergang der Basisfarbe */
+    --ion-color-gradient01: #6b6dfa;
+    --ion-color-base: #454678;
 }
 
 .adminDashboard {

@@ -21,9 +21,9 @@ export const getQuestions = async (): Promise<QuestionReturnDTO[]> => {
     }
 }
 
-export const getActiveQuestions = async (): Promise<QuestionReturnDTO[]> => {
+export const getVisibleQuestions = async (): Promise<QuestionReturnDTO[]> => {
     try {
-        const response = await apiClient.get<QuestionReturnDTO[]>(`${BASE_URL}/active`);
+        const response = await apiClient.get<QuestionReturnDTO[]>(`${BASE_URL}/visible`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -116,6 +116,22 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Frage konnte nicht gelöscht werden');
+            }
+        }
+        throw error;
+    }
+}
+
+export const updateQuestion = async (questionId: number, question: QuestionInputDTO): Promise<QuestionReturnDTO> => {
+    try {
+        const response = await apiClient.put<QuestionReturnDTO>(`${BASE_URL}/${questionId}`, question);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Frage konnte nicht aktualisiert werden');
             }
         }
         throw error;

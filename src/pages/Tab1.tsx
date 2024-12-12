@@ -26,7 +26,7 @@ const Tab1: React.FC = () => {
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const wsService = useWebSocket();
 
