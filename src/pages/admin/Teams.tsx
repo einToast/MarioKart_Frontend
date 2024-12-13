@@ -19,6 +19,7 @@ import {useHistory} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import { getAllTeams } from '../../util/service/teamRegisterService';
+import final from "./Final";
 
 const Teams: React.FC<LoginProps> = (props: LoginProps) => {
 
@@ -101,33 +102,24 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
                 <div className={"teamFinalContainer"}>
                     {teams ? (
                         teams
-                            .map(team => (
-                                // TODO: add image and points
-                                <div key={team.id} className={"teamFinal"}>
-                                    <h3>{team.teamName}</h3>
-                                    <div>
-                                        <IonIcon slot="end"
-                                                    icon={createOutline}
-                                                    style={{cursor: "pointer"}}
-                                                    onClick={() => handleTeamRemove(team)}
-                                        ></IonIcon>
-                                        <IonIcon slot="end"
-                                                    icon={eyeOutline}
-                                                    style={{cursor: "pointer"}}
-                                                    onClick={() => handleTeamRemove(team)}
-                                        ></IonIcon>
-                                        <IonIcon slot="end"
-                                                    icon={removeCircleOutline}
-                                                    style={{cursor: "pointer"}}
-                                                    onClick={() => handleTeamRemove(team)}
-                                        ></IonIcon>
-                                        <IonIcon slot="end"
-                                                icon={trashOutline}
-                                                style={{cursor: "pointer"}}
-                                                onClick={() => handleTeamRemove(team)}
-                                        ></IonIcon>
+                            .map((team, index) => (
+                                    <div key={team.id} className={`teamContainer`}>
+                                        <div className={"imageContainer"}>
+                                            <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
+                                                 className={"iconTeam"}/>
+                                        </div>
+                                        <div>
+                                            <p>{team.teamName}</p>
+                                            <p className={"punkte"}>{index + 1}. Platz</p>
+                                        </div>
+                                        <div>
+                                            <IonIcon slot="end"
+                                                     icon={createOutline}
+                                                     style={{cursor: "pointer"}}
+                                                     onClick={() => handleTeamRemove(team)}
+                                            ></IonIcon>
+                                        </div>
                                     </div>
-                                </div>
                             ))
                     ) : (
                         <p>loading...</p>
