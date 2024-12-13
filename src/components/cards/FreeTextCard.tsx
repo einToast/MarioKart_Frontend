@@ -9,7 +9,6 @@ import "../../pages/admin/Points.css";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
-import {c} from "vite/dist/node/types.d-aGj9QkWt";
 
 const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, isOpen, toggleAccordion }) => {
 
@@ -31,9 +30,6 @@ const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, isOpen: bool
 
         if (vote !== -1) {
             setVotedId(vote.answerId);
-            if (!freeTextQuestion.active) {
-                setText(vote.answerId);
-            }
         }
     }
 
@@ -55,7 +51,7 @@ const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, isOpen: bool
 
     return (
         <IonAccordion value={freeTextQuestion.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
-            <IonItem slot="header" color="light" disabled={votedId !== -1 || !freeTextQuestion.active}>
+            <IonItem slot="header" color="light" disabled={!freeTextQuestion.active}>
                 <h3 className="weiss">{freeTextQuestion.questionText}</h3>
             </IonItem>
 

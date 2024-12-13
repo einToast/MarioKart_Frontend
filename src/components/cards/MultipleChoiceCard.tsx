@@ -14,6 +14,7 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
 
@@ -27,20 +28,18 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
     }, []);
 
     const getVote = async () => {
-        const vote = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
+        const voted = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
+        console.log(voted);
 
-        if (vote !== -1) {
-            setVotedId(vote.answerId);
+        if (voted !== -1) {
+            setVotedId(voted.answerId);
         }
     }
 
-    const handleSaveVote = async (index: number) => {
+    const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(multipleChoiceQuestion, index);
-            if (vote) {
-                // setError('Vote erfolgreich gespeichert');
-                // setToastColor(successToastColor)
-                // setShowToast(true);
+            const voted = await registerAnswer(multipleChoiceQuestion, vote);
+            if (voted) {
                 getVote();
             } else {
                 throw new TypeError('Vote konnte nicht gespeichert werden');
@@ -75,29 +74,29 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
                      }}
             >
                 <h3 className="weiss">{multipleChoiceQuestion.questionText}</h3>
-                {/*{timestamp !== -1 ? `${new Date(timestamp).getHours()}:${new Date(timestamp).getMinutes()}` : ''}*/}
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        multipleChoiceQuestion.options.map((option, index) => {
+                        multipleChoiceQuestion.options.map((option, index:number) => {
                             return (
                                 <IonButton slot="start" shape="round"
                                            className={!multipleChoiceQuestion.active ? 'bsurvey' : ''}
-                                           onClick={votedId === -1 ? () => handleSaveVote(index) : undefined}
+                                           onClick={votedId === -1 ? () => setVote(index) : undefined}
                                            tabIndex={0}
                                            onKeyDown={(e) => {
                                               if (e.key === 'Enter' || e.key === ' ') {
                                                   if (votedId === -1) {
-                                                      handleSaveVote(index);
+                                                      setVote(index);
                                                   }
                                               }
                                            }}
                                            key={index}
-                                           disabled={votedId !== -1 && votedId != index}
+                                           disabled={!(vote == index || votedId == index ) && votedId !== -1}
                                            style={{
                                                pointerEvents: (votedId !== -1 || !multipleChoiceQuestion.active) ? 'none' : 'auto',
+                                               opacity: vote == index || votedId == index ? 1 : 0.5,
                                                "--gradient-percentage": `${results[index] / Math.max(results.reduce((a, b) => a + b),1) * 100}%`,
                                            }}
 
@@ -111,6 +110,20 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
                         })
                     }
                 </div>
+                {multipleChoiceQuestion.active && votedId === -1 && (
+                    <IonButton
+                        className={"button"}
+                        onClick={() => handleSaveVote()}
+                        disabled={!(votedId === -1) || !multipleChoiceQuestion.active || vote === -1}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleSaveVote();
+                            }
+                        }}
+                    >
+                        Antwort speichern
+                    </IonButton>
+                )}
             </div>
             <IonToast
                 isOpen={showToast}
