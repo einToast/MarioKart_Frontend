@@ -126,17 +126,17 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => history.push("/register")}
-                       style={{ cursor: "pointer", textDecoration: "underline" }}
-                       tabIndex={0}
-                       onKeyDown={(e) => {
-                           if (e.key === 'Enter' || e.key === ' ') {
-                               history.push('/register');
-                           }
-                       }}
-                    >
-                        Team registrieren
-                    </a>
+                    {/*<a onClick={() => history.push("/register")}*/}
+                    {/*   style={{ cursor: "pointer", textDecoration: "underline" }}*/}
+                    {/*   tabIndex={0}*/}
+                    {/*   onKeyDown={(e) => {*/}
+                    {/*       if (e.key === 'Enter' || e.key === ' ') {*/}
+                    {/*           history.push('/register');*/}
+                    {/*       }*/}
+                    {/*   }}*/}
+                    {/*>*/}
+                    {/*    Team registrieren*/}
+                    {/*</a>*/}
                 </div>
                 <IonToast
                     isOpen={showToast}
