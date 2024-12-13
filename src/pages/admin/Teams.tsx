@@ -110,12 +110,12 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
                                         </div>
                                         <div>
                                             <p>{team.teamName}</p>
-                                            <p className={"punkte"}>{index + 1}. Platz</p>
+                                            <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         </div>
-                                        <div>
+                                        <div style={{marginLeft: 'auto'}}>
                                             <IonIcon slot="end"
                                                      icon={createOutline}
-                                                     style={{cursor: "pointer"}}
+                                                     style={{cursor: "pointer", fontSize: '1.5em'}}
                                                      onClick={() => handleTeamRemove(team)}
                                             ></IonIcon>
                                         </div>
