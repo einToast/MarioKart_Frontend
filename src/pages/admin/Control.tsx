@@ -18,30 +18,116 @@ import {
     checkMatch,
     deleteFinal,
     deleteMatch,
-    deleteTeams,
+    deleteTeams, getABreak,
     resetEverything
 } from "../../util/service/adminService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import {ChangeType} from "../../util/service/util";
+import TournamentModal from "../../components/modals/TournamentModal";
+import {
+    getRegistrationOpen,
+    getTournamentOpen,
+    updateRegistrationOpen,
+    updateTournamentOpen
+} from "../../util/service/teamRegisterService";
+import BreakChangeModal from "../../components/modals/BreakChangeModal";
+import {BreakReturnDTO} from "../../util/api/config/dto";
+import {set} from "js-cookie";
 
 const Control: React.FC<LoginProps> = (props: LoginProps) => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
+    const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
+    const [aBreak, setBreak] = useState<BreakReturnDTO>({id: 0, startTime: '', endTime: '', breakEnded: false, round: {id: 0, startTime: '', endTime: '', finalGame: false, played: false}});
+    const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
+    const [showModal, setShowModal] = useState<boolean>(false);
+    const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+    const [modalClosed, setModalClosed] = useState<boolean>(false);
 
     const user = getUser();
     const history = useHistory();
     const location = useLocation();
 
+    const handleOpenModal = (deleteType: ChangeType) => {
+        setDeleteType(deleteType);
+        setShowModal(true);
+    }
+
+    const handleOpenBreakModal = () => {
+        const breakData = getABreak();
+        breakData.then((result) => {
+            setBreak(result);
+            setShowBreakModal(true);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+    }
+
+    const closeModal = (changeT: ChangeType) => {
+        setModalClosed(prev => !prev);
+
+        if (typeof changeT !== 'string') {
+            return;
+        }
+
+        setToastColor(successToastColor);
+        switch (changeT) {
+            case ChangeType.TOURNAMENT:
+                setError('Das Turnier wurde ' + (isTournamentOpen ? 'geschlossen' : 'geöffnet'));
+                break;
+            case ChangeType.REGISTRATION:
+                setError('Die Registrierung wurde ' + (isRegistrationOpen ? 'geschlossen' : 'geöffnet'));
+                break;
+            case ChangeType.SURVEYS:
+                setError('Alle Umfragen wurden gelöscht');
+                break;
+            case ChangeType.TEAMS:
+                setError('Alle Teams wurden gelöscht');
+                break;
+            case ChangeType.MATCH_PLAN:
+                setError('Der Spielplan wurde gelöscht');
+                break;
+            case ChangeType.FINAL_PLAN:
+                setError('Alle Finalspiele wurden gelöscht');
+                break;
+            case ChangeType.ALL:
+                setError('Die Anwendung wurde zurückgesetzt');
+                break;
+            default:
+                setError('Error');
+                setToastColor(errorToastColor);
+                break;
+        }
+        setShowToast(true);
+    };
+
+    const closeBreakModal = (changeBreak:object) => {
+        setModalClosed(prev => !prev);
+
+        if (changeBreak.breakChanged){
+            setToastColor(successToastColor);
+            setError('Die Pause wurde geändert');
+            setShowToast(true);
+        }
+    }
+
     useEffect(() => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('Control.tsx: useEffect()');
 
         const match = checkMatch();
-        const final = checkFinal()
+        const final = checkFinal();
+        const registration = getRegistrationOpen();
+        const tournament = getTournamentOpen();
 
         match.then((result) => {
             setIsMatchPlan(result);
@@ -59,63 +145,23 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
             setShowToast(true);
         });
 
-    }, [location]);
-
-    const handleRegistration = async () => {
-        console.log('Registrierung');
-    }
-
-    const handleTeamsDelete = async () => {
-        try {
-            await deleteTeams();
-            setError('Teams erfolgreich gelöscht');
-            setToastColor(successToastColor);
-            setShowToast(true);
-        } catch (error) {
+        registration.then((result) => {
+            setIsRegistrationOpen(result);
+        }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
-        }
-    }
+        });
 
-    const handleMatchPlanDelete = async () => {
-        try {
-            await deleteMatch();
-            setError('Spielplan erfolgreich gelöscht');
-            setToastColor(successToastColor);
-            setShowToast(true);
-        } catch (error) {
+        tournament.then((result) => {
+            setIsTournamentOpen(result);
+        }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
-        }
-    }
+        });
 
-    const handleFinalPlanDelete = async () => {
-        try {
-            await deleteFinal();
-            setError('Finalspiele erfolgreich gelöscht');
-            setToastColor(successToastColor);
-            setShowToast(true);
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
-
-    const handleReset = async () => {
-        try {
-            await resetEverything();
-            setError('Anwendung erfolgreich zurückgesetzt');
-            setToastColor(successToastColor);
-            setShowToast(true);
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
+    }, [modalClosed, location]);
 
     return (
         <IonPage>
@@ -137,75 +183,114 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                     </LinearGradient>
                 </h2>
                 <div className={"adminDashboard"}>
-                    {!isMatchPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleRegistration}
+                    {(isMatchPlan &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenBreakModal()}
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                        if (e.key === 'Enter' || e.key === ' ') {
-                                           handleRegistration();
+                                           handleOpenBreakModal();
                                        }
                                    }}
                         >
                             <div>
-                                <p>Registrierung</p>
+                                <p>Pause ändern</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                        : ''
-                    }
-                    {!isMatchPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleTeamsDelete}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleTeamsDelete();
-                                       }
-                                   }}
-                        >
-                            <div>
-                                <p>Teams löschen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        : ''
-                    }
-                    {isMatchPlan && !isFinalPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleMatchPlanDelete}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleMatchPlanDelete();
-                                       }
-                                   }}
-                        >
-                            <div>
-                                <p>Spielplan löschen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        : ''
-                    }
-                    {isFinalPlan ?
-                        <IonButton slot="start" className={"secondary"} onClick={handleFinalPlanDelete}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleFinalPlanDelete();
-                                       }
-                                   }}
-                        >
-                            <div>
-                                <p>Finalspiele löschen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        : ''
-                    }
-                    <IonButton slot="start" className={"secondary"} onClick={handleReset}
+                    )}
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TOURNAMENT)}
                                tabIndex={0}
                                onKeyDown={(e) => {
                                    if (e.key === 'Enter' || e.key === ' ') {
-                                       handleReset();
+                                       handleOpenModal(ChangeType.TOURNAMENT);
+                                   }
+                               }}
+                    >
+                        <div>
+                            <p>{isTournamentOpen ? 'Turnier schließen' : 'Turnier öffnen'}</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+
+                    {(!isMatchPlan &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.REGISTRATION)}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleOpenModal(ChangeType.REGISTRATION);
+                                       }
+                                   }}
+                        >
+                            <div>
+                                <p>{isRegistrationOpen ? 'Registrierung schließen' : 'Registrierung öffnen'}</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                    )
+                    }
+                    {(!isMatchPlan &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TEAMS)}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleOpenModal(ChangeType.TEAMS);
+                                       }
+                                   }}
+                        >
+                            <div>
+                                <p>Alle Teams löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                    )}
+                    {((isMatchPlan && !isFinalPlan) &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.MATCH_PLAN)}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleOpenModal(ChangeType.MATCH_PLAN);
+                                       }
+                                   }}
+                        >
+                            <div>
+                                <p>Gesamten Spielplan löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                    )}
+                    {(isFinalPlan &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.FINAL_PLAN)}
+                                   tabIndex={0}
+                                   onKeyDown={(e) => {
+                                       if (e.key === 'Enter' || e.key === ' ') {
+                                           handleOpenModal(ChangeType.FINAL_PLAN);
+                                       }
+                                   }}
+                        >
+                            <div>
+                                <p>Alle Finalspiele löschen</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
+                    )}
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.SURVEYS)}
+                               tabIndex={0}
+                               onKeyDown={(e) => {
+                                   if (e.key === 'Enter' || e.key === ' ') {
+                                       handleOpenModal(ChangeType.SURVEYS);
+                                   }
+                               }}
+                    >
+                        <div>
+                            <p>Alle Umfragen löschen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.ALL)}
+                               tabIndex={0}
+                               onKeyDown={(e) => {
+                                   if (e.key === 'Enter' || e.key === ' ') {
+                                       handleOpenModal(ChangeType.ALL);
                                    }
                                }}
                     >
@@ -215,6 +300,22 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         </div>
                     </IonButton>
                 </div>
+                <TournamentModal
+                    showModal={showModal}
+                    closeModal={(deleteT) => {
+                        setShowModal(false);
+                        closeModal(deleteT);
+                    }}
+                    changeType={deleteType}
+                />
+                <BreakChangeModal
+                    showModal={showBreakModal}
+                    closeModal={(changeBreak) => {
+                        setShowBreakModal(false);
+                        closeBreakModal(changeBreak);
+                    }}
+                    aBreak={aBreak}
+                />
             </IonContent>
             <IonToast
                 isOpen={showToast}
