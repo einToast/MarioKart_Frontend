@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
-    IonButton,
+    IonButton, IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
@@ -9,36 +9,26 @@ import "../../pages/admin/Points.css";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
+import {megaphoneOutline, statsChartOutline, trashOutline} from "ionicons/icons";
+import '../../pages/Survey.css';
 
-const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, isOpen, toggleAccordion }) => {
+const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion,toggleAccordion }) => {
 
     const [text, setText] = useState<string>('');
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const [votedId, setVotedId] = useState<number>(-1);
-    const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+    const [indicator, setIndicator] = useState<string>('');
 
     const user = getUser();
 
-    useEffect(() => {
-        getVote();
-    }, []);
-
-    const getVote = async () => {
-        const vote = await getAnswer(freeTextQuestion.questionText + freeTextQuestion.id);
-
-        if (vote !== -1) {
-            setVotedId(vote.answerId);
-        }
-    }
 
     const handleSaveVote = async () => {
         try {
             const vote = await registerAnswer(freeTextQuestion, text);
             if (vote) {
-                getVote();
                 setText('');
+                toggleAccordion();
             } else {
                 throw new TypeError('Vote konnte nicht gespeichert werden');
             }
@@ -49,9 +39,23 @@ const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, isOpen: bool
         }
     }
 
+    const handleVoteStatus = () => {
+        if (!freeTextQuestion.active) {
+            setIndicator(statsChartOutline)
+        } else {
+            setIndicator(megaphoneOutline)
+        }
+    }
+
+    useEffect(() => {
+        handleVoteStatus();
+    }, []);
+
     return (
-        <IonAccordion value={freeTextQuestion.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
-            <IonItem slot="header" color="light" disabled={!freeTextQuestion.active}>
+        <IonAccordion value={freeTextQuestion.id.toString()}>
+
+            <IonItem slot="header" color="light" disabled={!freeTextQuestion.active} className={"accordion-button"}>
+                <IonIcon icon={indicator} slot="end" />
                 <h3 className="weiss">{freeTextQuestion.questionText}</h3>
             </IonItem>
 

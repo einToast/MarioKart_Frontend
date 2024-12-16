@@ -1,9 +1,9 @@
-import {CharacterReturnDTO, TeamInputDTO, TeamReturnDTO} from "../api/config/dto";
+import {CharacterReturnDTO, TeamInputDTO, TeamReturnDTO, TournamentDTO} from "../api/config/dto";
 import {addTeam, getAvailableCharacters, getCharacters, getTeams} from "../api/RegistrationApi";
-import {getSettings} from "../api/SettingsApi";
+import {getSettings, updateSettings} from "../api/SettingsApi";
+import {c} from "vite/dist/node/types.d-aGj9QkWt";
 
 export const getAllCharacters = async (): Promise<CharacterReturnDTO[]> => {
-    // console.log('Characters:', characters);
     return await getCharacters();
 }
 
@@ -25,7 +25,8 @@ export const createTeam = async (teamName:string, characterName:string): Promise
     const team: TeamInputDTO = {
         teamName: teamName,
         characterName: characterName,
-        finalReady: true
+        finalReady: true,
+        active: true
     };
 
     return await addTeam(team);
@@ -33,10 +34,28 @@ export const createTeam = async (teamName:string, characterName:string): Promise
 
 export const getRegistrationOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
-    return tournament.tournamentOpen && tournament.registrationOpen;
+    return tournament.registrationOpen;
 }
 
 export const getTournamentOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
     return tournament.tournamentOpen;
+}
+
+export const updateRegistrationOpen = async (registrationOpen: boolean): Promise<TournamentDTO> => {
+    // const tournament = await getSettings();
+    // tournament.registrationOpen = registrationOpen;
+    const tournament:TournamentDTO = {
+        registrationOpen: registrationOpen
+    }
+    return await updateSettings(tournament);
+}
+
+export const updateTournamentOpen = async (tournamentOpen: boolean): Promise<TournamentDTO> => {
+    // const tournament = await getSettings();
+    // tournament.tournamentOpen = tournamentOpen;
+    const tournament:TournamentDTO = {
+        tournamentOpen: tournamentOpen
+    }
+    return await updateSettings(tournament);
 }
