@@ -19,8 +19,9 @@ const RoundComponentSwiper: React.FC<{game:GameReturnDTO, user:any, switchColor:
 
                     game.teams.map((team, index) => {
                         return (
-                        <SwiperSlide key={index} className={game.teams.some(t =>t.character.characterName === user.character) ? 'loggedIn' : ''}>
-                            <TeamComponent4 game={game} team={team} switchColor={switchColor}/>
+                        <SwiperSlide key={index} className={game.teams.some(t =>t.character.characterName === user.character) ? 'loggedIn' : ''}
+                                     style={{opacity: team.active ? 1 : 0.5}}>
+                            <TeamComponent4 game={game} team={team} switchColor={switchColor} key={index}/>
                         </SwiperSlide>
                         )
                     })}
