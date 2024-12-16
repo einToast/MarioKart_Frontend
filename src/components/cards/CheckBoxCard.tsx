@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
-    IonButton,
+    IonButton, IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
@@ -9,14 +9,17 @@ import "../../pages/admin/Points.css";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
+import {set} from "js-cookie";
+import {megaphoneOutline, statsChartOutline, thumbsUpOutline} from "ionicons/icons";
 
-const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ checkBoxQuestion, isOpen, toggleAccordion }) => {
+const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion,toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
     const [votes, setVotes] = useState<number[]>([]);
     const [votedId, setVotedId] = useState<number[]>([-1]);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+    const [indicator, setIndicator] = useState<string>('');
 
     const user = getUser();
 
@@ -31,14 +34,13 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: bool
         const vote = await getAnswer(checkBoxQuestion.questionText + checkBoxQuestion.id);
 
         if (vote !== -1) {
-            console.log(vote.answerId.split(',').map(Number));
             if (typeof vote.answerId === 'string' && vote.answerId.includes(',')) {
-                console.log('yeah')
                 setVotedId(vote.answerId.split(',').map(Number));
             } else {
                 setVotedId([vote]);
             }
         }
+        handleVoteStatus(vote.answerId);
     }
 
     const handleSaveVote = async () => {
@@ -46,6 +48,7 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: bool
             const vote = await registerAnswer(checkBoxQuestion, votes);
             if (vote) {
                 getVote();
+                toggleAccordion();
             } else {
                 throw new TypeError('Vote konnte nicht gespeichert werden');
             }
@@ -63,6 +66,17 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: bool
             setVotes([...votes, index]);
         }
     }
+
+    const handleVoteStatus = (vote:number[]) => {
+        if (!checkBoxQuestion.active) {
+            setIndicator(statsChartOutline)
+        } else if (vote === undefined) {
+            setIndicator(megaphoneOutline)
+        } else {
+            setIndicator(thumbsUpOutline)
+        }
+    }
+
     const showResults = async () => {
         if (!checkBoxQuestion.active) {
             const answers = await getAnswers(checkBoxQuestion.id);
@@ -79,7 +93,7 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: bool
     }
 
     return (
-        <IonAccordion value={checkBoxQuestion.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
+        <IonAccordion value={checkBoxQuestion.id.toString()}>
             <IonItem slot="header" color="light" disabled={!votedId.includes(-1) || !checkBoxQuestion.active} onClick={showResults}
                      onKeyDown={(e) => {
                          if (e.key === 'Enter' || e.key === ' ') {
@@ -87,6 +101,7 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, isOpen: bool
                          }
                      }}
             >
+                <IonIcon icon={indicator} slot="end" />
                 <h3 className="weiss">{checkBoxQuestion.questionText}</h3>
             </IonItem>
 

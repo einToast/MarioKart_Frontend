@@ -16,7 +16,7 @@ import {
 import "./SurveyAdmin.css"
 import React, {useEffect, useState} from "react";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
-import {useHistory} from "react-router";
+import {useHistory, useLocation} from "react-router";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import {getUser} from "../../util/service/loginService";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
@@ -24,18 +24,15 @@ import {changeQuestion, getAllQuestions} from "../../util/service/surveyService"
 import SurveyModal from "../../components/modals/SurveyModal";
 import {QuestionType} from "../../util/service/util";
 import SurveyChangeModal from "../../components/modals/SurveyChangeModal";
+import SurveyDeleteModal from "../../components/modals/SurveyDeleteModal";
 
 const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     //TODO: new Survey adden
-
-    const surveysNew = [
-    ];
-    const [selectedSurvey, setSelectedSurvey] = useState(null);
     const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({id: -1, questionText: '',questionType: QuestionType.MULTIPLE_CHOICE, options:[],visible: false, active: false, live: false});
-    const [results, setResults] = useState([]);
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showResultsModal, setShowResultsModal] = useState(false);
 
     const [error, setError] = useState<string | null>(null);
@@ -47,6 +44,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     const user = getUser();
 
     const history = useHistory();
+    const location = useLocation();
 
     const toggleVisibility = async (id: number) => {
         console.log(id);
@@ -93,34 +91,39 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
         }
     }
 
-    const toggleLive = async (id: number) => {
-        try{
-            const question = surveys.find(survey => survey.id === id);
-            if (!question) {
-                throw new TypeError('Frage nicht gefunden');
-            }
-            question.live = !question.live;
-            const updatedQuestion = await changeQuestion(question);
-            if (updatedQuestion) {
-                getQuestions();
-            } else {
-                throw new TypeError('Live konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
+    // const toggleLive = async (id: number) => {
+    //     try{
+    //         const question = surveys.find(survey => survey.id === id);
+    //         if (!question) {
+    //             throw new TypeError('Frage nicht gefunden');
+    //         }
+    //         question.live = !question.live;
+    //         const updatedQuestion = await changeQuestion(question);
+    //         if (updatedQuestion) {
+    //             getQuestions();
+    //         } else {
+    //             throw new TypeError('Live konnte nicht geändert werden');
+    //         }
+    //     } catch (error) {
+    //         setError(error.message);
+    //         setToastColor(errorToastColor);
+    //         setShowToast(true);
+    //     }
+    // }
 
-    const handleOpenResults = (question) => {
-        setSelectedQuestion(question);
-        setShowResultsModal(true);
-    }
-
-    const handleOpenChange = (question) => {
+    const handleOpenChangeModal = (question) => {
         setSelectedQuestion(question);
         setShowChangeModal(true);
+    }
+
+    const handleOpenDeleteModal = (question) => {
+        setSelectedQuestion(question);
+        setShowDeleteModal(true);
+    }
+
+    const handleOpenResultsModal = (question) => {
+        setSelectedQuestion(question);
+        setShowResultsModal(true);
     }
 
 
@@ -130,8 +133,15 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
             setError('Umfrage erfolgreich erstellt');
             setToastColor(successToastColor);
             setShowToast(true);
+        } else if (surveys.surveyChanged) {
+            setError('Umfrage erfolgreich geändert');
+            setToastColor(successToastColor);
+            setShowToast(true);
+        } else if (surveys.surveyDeleted) {
+            setError('Umfrage erfolgreich gelöscht');
+            setToastColor(successToastColor);
+            setShowToast(true);
         }
-
     };
 
     const getQuestions = async () => {
@@ -147,7 +157,8 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         getQuestions();
-    }, [modalClosed]);
+        console.log('SurveyAdmin');
+    }, [modalClosed, location]);
 
 
     return (
@@ -182,14 +193,6 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                     <p>Neue Abstimmung</p>
                 </div>
 
-                <div className="currentSurveyContainer">
-                    {surveysNew.map((survey, index) => (
-                        <div key={index} className="currentSurvey">
-                            <p>{survey.question}</p>
-                        </div>
-                    ))}
-                </div>
-
                 <h3>Aktuelle Abstimmungen</h3>
                 <div className="currentSurveyContainer">
                     {surveys.map(survey => (
@@ -199,24 +202,24 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                 <IonIcon
                                     slot="end"
                                     icon={statsChartOutline}
-                                    onClick={() => handleOpenResults(survey)}
+                                    onClick={() => handleOpenResultsModal(survey)}
                                     style={{cursor: 'pointer', marginRight: '10px'}}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            handleOpenResults(survey);
+                                            handleOpenResultsModal(survey);
                                         }
                                     }}
                                 />
                                 <IonIcon
                                     slot="end"
                                     icon={createOutline}
-                                    onClick={() => handleOpenChange(survey)}
+                                    onClick={() => handleOpenChangeModal(survey)}
                                     style={{cursor: 'pointer'}}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            handleOpenChange(survey);
+                                            handleOpenChangeModal(survey);
                                         }
                                     }}
                                 />
@@ -244,27 +247,27 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                         }
                                     }}
                                 />
-                                <IonIcon
-                                    slot="end"
-                                    icon={survey.live ? videocamOutline : videocamOffOutline}
-                                    onClick={() => toggleLive(survey.id)}
-                                    style={{cursor: 'pointer'}}
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            toggleVisibility(survey.id);
-                                        }
-                                    }}
-                                />
+                                {/*<IonIcon*/}
+                                {/*    slot="end"*/}
+                                {/*    icon={survey.live ? videocamOutline : videocamOffOutline}*/}
+                                {/*    onClick={() => toggleLive(survey.id)}*/}
+                                {/*    style={{cursor: 'pointer'}}*/}
+                                {/*    tabIndex={0}*/}
+                                {/*    onKeyDown={(e) => {*/}
+                                {/*        if (e.key === 'Enter' || e.key === ' ') {*/}
+                                {/*            toggleVisibility(survey.id);*/}
+                                {/*        }*/}
+                                {/*    }}*/}
+                                {/*/>*/}
                                 <IonIcon
                                     slot="end"
                                     icon= {trashOutline}
-                                    // onClick={() => toggleVisibility(survey.id)}
+                                    onClick={() => handleOpenDeleteModal(survey)}
                                     style={{cursor: 'pointer'}}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            toggleVisibility(survey.id);
+                                            handleOpenDeleteModal(survey);
                                         }
                                     }}
                                 />
@@ -280,14 +283,28 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                         closeModal(surveys);
                     }}
                 />
-                <SurveyModal
-                    showModal={showResultsModal}
-                    closeModal={() => setShowResultsModal(false)}
-                    question={selectedQuestion}
-                />
                 <SurveyChangeModal
                     showModal={showChangeModal}
-                    closeModal={() => setShowChangeModal(false)}
+                    closeModal={(surveys) => {
+                        setShowChangeModal(false);
+                        closeModal(surveys);
+                    }}
+                    question={selectedQuestion}
+                />
+                <SurveyDeleteModal
+                    showModal={showDeleteModal}
+                    closeModal={(surveys) => {
+                        setShowDeleteModal(false);
+                        closeModal(surveys);
+                    }}
+                    question={selectedQuestion}
+                />
+                <SurveyModal
+                    showModal={showResultsModal}
+                    closeModal={(surveys) => {
+                        setShowResultsModal(false);
+                        closeModal(surveys);
+                    }}
                     question={selectedQuestion}
                 />
 

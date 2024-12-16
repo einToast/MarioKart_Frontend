@@ -8,8 +8,9 @@ import {submitQuestion} from "../../util/service/surveyService";
 import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import {QuestionReturnDTO} from "../../util/api/config/dto";
 
-const SurveyAddModal = ({ showModal, closeModal }) => {
+const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void}> = ({ showModal, closeModal }) => {
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
     const [options, setOptions] = useState<string[]>(['', '', '', '']);

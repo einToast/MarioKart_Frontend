@@ -10,8 +10,10 @@ import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
 import {set} from "js-cookie";
+import {QuestionReturnDTO} from "../../util/api/config/dto";
 
-const SurveyChangeModal = ({ showModal, closeModal, question }) => {
+const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
@@ -63,11 +65,10 @@ const SurveyChangeModal = ({ showModal, closeModal, question }) => {
             question.questionType = questionType;
             question.options = options;
             const newQuestion = await changeQuestion(question);
-            // console.log(newQuestion);
 
             if (newQuestion) {
                 resetQuestion();
-                closeModal({surveyCreated: true});
+                closeModal({surveyChanged: true});
             } else {
                 throw new TypeError('Umfrage konnte nicht erstellt werden');
             }

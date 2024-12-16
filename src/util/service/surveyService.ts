@@ -4,7 +4,7 @@ import {
     getAnswersOfQuestion,
     getQuestions,
     submitAnswer,
-    updateQuestion
+    updateQuestion, deleteQuestion, deleteQuestions
 } from "../api/SurveyApi";
 import {AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO} from "../api/config/dto";
 import Cookies from "js-cookie";
@@ -63,6 +63,13 @@ export const getAnswers = async (questionId: number): Promise<AnswerReturnDTO[]>
 }
 
 export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Promise<AnswerReturnDTO> => {
+    if (!question.active) {
+        throw new Error('Die Umfrage ist bereits beendet');
+    } else if (vote === '') {
+        throw new Error('Die Antwort darf nicht leer sein');
+    } else if ((vote === -1 && !(typeof vote === 'string')) || (vote.includes(-1) && !(typeof vote === 'string'))|| vote.length === 0) {
+        throw new Error('Es wurde keine Antwort ausgewählt');
+    }
 
     const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT? vote : '';
     const multipleChoiceSelectedOption = question.questionType === QuestionType.MULTIPLE_CHOICE ? vote : -1;
@@ -101,4 +108,12 @@ export const getAnswer = async (questionString: string): Promise<any> => {
         return JSON.parse(answerCookie)
     }
     return -1;
+}
+
+export const removeQuestion = async (question: QuestionReturnDTO): Promise<void> => {
+    return await deleteQuestion(question.id);
+}
+
+export const removeQuestions = async (): Promise<void> => {
+    return await deleteQuestions();
 }

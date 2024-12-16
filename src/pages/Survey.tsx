@@ -11,12 +11,15 @@ import {QuestionType} from "../util/service/util";
 import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
 import FreeTextCard from "../components/cards/FreeTextCard";
 import CheckBoxCard from "../components/cards/CheckBoxCard";
+import {set} from "js-cookie";
+import {getTournamentOpen} from "../util/service/teamRegisterService";
+import ErrorCard from "../components/cards/ErrorCard";
 
 const Survey: React.FC = () => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
     const [answers, setAnswers] = useState<string[]>([]);
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
+    const [openAccordions, setOpenAccordions] = useState<string[]>([]);
 
     const history = useHistory();
     const location = useLocation();
@@ -30,7 +33,7 @@ const Survey: React.FC = () => {
                 const answers = await getAnswer(question.questionText + question.id);
                 return {
                     ...question,
-                    isAnswered: answers !== -1,
+                    isAnswered: (answers !== -1 && question.questionType !== QuestionType.FREE_TEXT),
                 }
             }));
             questionsWithAnswers.sort((a, b) => {
@@ -42,20 +45,11 @@ const Survey: React.FC = () => {
                     return a.isAnswered ? 1 : -1;
                 }
 
-                if (a.isAnswered && b.isAnswered) {
-                    if (a.questionType === QuestionType.FREE_TEXT && b.questionType !== QuestionType.FREE_TEXT) {
-                        return -1;
-                    }
-                    if (b.questionType === QuestionType.FREE_TEXT && a.questionType !== QuestionType.FREE_TEXT) {
-                        return 1;
-                    }
-                }
-
                 if (a.questionType === QuestionType.FREE_TEXT && b.questionType !== QuestionType.FREE_TEXT) {
-                    return a.isAnswered ? 1 : 1; // Unbeantwortet oder abgeschlossen -> nach unten
+                    return a.isAnswered ? 1 : 1;
                 }
                 if (b.questionType === QuestionType.FREE_TEXT && a.questionType !== QuestionType.FREE_TEXT) {
-                    return b.isAnswered ? -1 : -1; // Unbeantwortet oder abgeschlossen -> nach unten
+                    return b.isAnswered ? -1 : -1;
                 }
 
                 return 0;
@@ -66,20 +60,24 @@ const Survey: React.FC = () => {
     };
 
 
+    const toggleAccordion = (id: string) => {
+        setOpenAccordions([id]);
+        setOpenAccordions([])
+    }
+
+
     useEffect(() => {
         getQuestions();
 
+        const tournamentOpen = getTournamentOpen();
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        })
+
     }, [location]);
-
-    // };
-
-    const toggleAccordion = (accordionId: string) => {
-        setOpenAccordions(prevOpenAccordions =>
-            prevOpenAccordions.includes(accordionId)
-                ? prevOpenAccordions.filter(id => id !== accordionId) // Remove the accordion from the list
-                : [...prevOpenAccordions, accordionId] // Add the accordion to the list
-        );
-    };
 
     return (
         <IonPage>
@@ -97,27 +95,25 @@ const Survey: React.FC = () => {
                                 <MultipleChoiceCard
                                     key={question.id}
                                     multipleChoiceQuestion={question}
-                                    isOpen={openAccordions.includes(question.id.toString())}
                                     toggleAccordion={() => toggleAccordion(question.id.toString())}
                                 />
                             ) : (question.questionType === QuestionType.CHECKBOX) ? (
                                 <CheckBoxCard
                                     key={question.id}
                                     checkBoxQuestion={question}
-                                    isOpen={openAccordions.includes(question.id.toString())}
                                     toggleAccordion={() => toggleAccordion(question.id.toString())}
                                 />
                             ) : (question.questionType === QuestionType.FREE_TEXT) ? (
                                 <FreeTextCard
                                     key={question.id}
                                     freeTextQuestion={question}
-                                    isOpen={openAccordions.includes(question.id.toString())}
                                     toggleAccordion={() => toggleAccordion(question.id.toString())}
                                 />
                             ) : (
                                 <p key={question.id}> Fehler </p>
                             )
-                        ))}
+                        ))
+                        }
                     </IonAccordionGroup>
                 ) : (
                     <p>Gerade finden keine Abstimmungen statt.</p>

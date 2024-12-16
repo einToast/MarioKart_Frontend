@@ -22,3 +22,11 @@
         }
     }
 }
+.accordion-button::after {
+    background-image: initial;
+
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: initial;
+}

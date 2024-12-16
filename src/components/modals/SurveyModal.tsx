@@ -13,9 +13,10 @@ import results from "../../pages/admin/Results";
 import SurveyAddModal from "./SurveyAddModal";
 import {AnswerReturnDTO, QuestionReturnDTO} from "../../util/api/config/dto";
 
-const SurveyModal = ({ showModal, closeModal, question }) => {
+const SurveyModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
+    const [totalAnswers, setTotalAnswers] = useState<number>(0);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -26,7 +27,6 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
         try {
             const questionAnswers = await getAnswers(question.id);
             if (questionAnswers) {
-                console.log(questionAnswers);
                 countAnswers(questionAnswers);
             } else {
                 throw new TypeError('Antworten konnten nicht geladen werden');
@@ -57,6 +57,7 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
             });
             setAnswersCount(count);
         }
+        setTotalAnswers(answers.length);
     }
 
     useEffect(() => {
@@ -68,9 +69,10 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
         <IonModal isOpen={showModal} onDidDismiss={closeModal}>
             <IonContent>
                 <h4>{question.questionText}</h4>
+                <h4>Ergebnisse: {totalAnswers} Antworten</h4>
                 {question.questionType !== QuestionType.FREE_TEXT ? (
                     <>
-                        <h4>Ergebnisse:</h4>
+
                         <div className={"allTeamResult"} style={{marginBottom: '50px'}}>
                             <ul>
                                 {
@@ -83,7 +85,6 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
                     </>
                 ) : (
                     <>
-                        <h4>Ergebnisse:</h4>
                         <div className={"allTeamResult"} style={{marginBottom: '50px'}}>
                             <ul>
                                 {
@@ -92,7 +93,6 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
                                     ))
 
                                 }
-                                {console.log(answers)}
                             </ul>
                         </div>
                     </>
@@ -115,7 +115,7 @@ const SurveyModal = ({ showModal, closeModal, question }) => {
             </IonContent>
         </IonModal>
 
-);
+    );
 };
 
 export default SurveyModal;

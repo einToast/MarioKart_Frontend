@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
-    IonButton,
+    IonButton, IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
@@ -9,28 +9,22 @@ import "../../pages/admin/Points.css";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
+import {megaphoneOutline, statsChartOutline, thumbsUp, thumbsUpOutline} from "ionicons/icons";
 
-const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, isOpen: boolean, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, isOpen, toggleAccordion }) => {
+const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
     const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+    const [indicator, setIndicator] = useState<string>('');
 
     const user = getUser();
 
-    useEffect(() => {
-        getVote();
-        if (!multipleChoiceQuestion.active) {
-            showResults();
-        }
-    }, []);
-
     const getVote = async () => {
         const voted = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
-        console.log(voted);
-
+        handleVoteStatus(voted.answerId);
         if (voted !== -1) {
             setVotedId(voted.answerId);
         }
@@ -41,6 +35,7 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
             const voted = await registerAnswer(multipleChoiceQuestion, vote);
             if (voted) {
                 getVote();
+                toggleAccordion();
             } else {
                 throw new TypeError('Vote konnte nicht gespeichert werden');
             }
@@ -48,6 +43,16 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
+        }
+    }
+
+    const handleVoteStatus = (vote:number) => {
+        if (!multipleChoiceQuestion.active) {
+            setIndicator(statsChartOutline)
+        } else if (vote === undefined) {
+            setIndicator(megaphoneOutline)
+        } else {
+            setIndicator(thumbsUpOutline)
         }
     }
 
@@ -61,11 +66,17 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
             setResults(results);
             console.log(results);
         }
-
     }
 
+    useEffect(() => {
+        getVote();
+        if (!multipleChoiceQuestion.active) {
+            showResults();
+        }
+    }, []);
+
     return (
-        <IonAccordion value={multipleChoiceQuestion.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
+        <IonAccordion value={multipleChoiceQuestion.id.toString()} >
             <IonItem slot="header" color="light" disabled={votedId !== -1 || !multipleChoiceQuestion.active} onClick={showResults}
                      onKeyDown={(e) => {
                          if (e.key === 'Enter' || e.key === ' ') {
@@ -73,6 +84,7 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
                          }
                      }}
             >
+                <IonIcon icon={indicator} slot="end" />
                 <h3 className="weiss">{multipleChoiceQuestion.questionText}</h3>
             </IonItem>
 
