@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import { useHistory } from "react-router";
+import {useHistory, useLocation} from "react-router";
 import '../../interface/interfaces';
 import '../RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";
@@ -48,6 +48,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                 history.push('/admin/dashboard');
             }
         }
+        console.log('Login');
         fetchData();
     }, []);
 

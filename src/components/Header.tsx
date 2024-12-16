@@ -39,16 +39,17 @@ const Header: React.FC = () => {
     return (
         <IonHeader>
             <div className="loggedInUserHead" onClick={toggleDropdown} ref={dropdownRef}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            toggleDropdown();
-                        }
-                    }}
+                 tabIndex={0}
+                 onKeyDown={(e) => {
+                     if (e.key === 'Enter' || e.key === ' ') {
+                         toggleDropdown();
+                     }
+                 }}
             >
                 <IonAvatar>
                     {characters.includes(user.character) &&
-                        <img src={`../resources/media/${user.character}.png`} alt={user.character} className="iconTeam" />
+                        <img src={`../resources/media/${user.character}.png`} alt={user.character}
+                             className="iconTeam"/>
                     }
                 </IonAvatar>
                 <p>{user.name}</p>
@@ -62,13 +63,14 @@ const Header: React.FC = () => {
                                         handleLogout();
                                     }
                                 }}
-                            >Abmelden</li>
+                            >Abmelden
+                            </li>
                         </ul>
                     </div>
                 )}
             </div>
             <a onClick={() => history.push('/survey')}
-               style={{ cursor: "pointer" }}
+               style={{cursor: "pointer"}}
                tabIndex={0}
                onKeyDown={(e) => {
                    if (e.key === 'Enter' || e.key === ' ') {

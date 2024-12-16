@@ -8,7 +8,7 @@ import {
     IonPage, IonToast
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
-import { useHistory } from "react-router";
+import {useHistory, useLocation} from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import PointsCard from "../../components/cards/PointsCard";
 import { getAllRounds, getRound } from "../../util/service/dashboardService";
@@ -32,6 +32,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
 
     const user = getUser();
     const history = useHistory();
+    const location = useLocation();
 
     const getSelectedRound = (roundNumber: number) => {
         const round = getRound(roundNumber);
@@ -65,6 +66,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('Points');
 
         const rounds = getAllRounds();
         rounds.then((rounds) => {
@@ -76,7 +78,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-    }, []);
+    }, [location]);
 
     const toggleAccordion = (accordionId: string) => {
         setOpenAccordions(prevOpenAccordions =>

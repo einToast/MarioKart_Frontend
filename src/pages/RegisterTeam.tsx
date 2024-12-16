@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {useHistory} from "react-router";
+import {useHistory, useLocation} from "react-router";
 import '../interface/interfaces'
 import './RegisterTeam.css'
 import {LinearGradient} from "react-text-gradients";
@@ -15,10 +15,11 @@ import characters from "../interface/characters";
 import {
     createTeam,
     getAllAvailableCharacters,
-    getRegistrationOpen
+    getRegistrationOpen, getTournamentOpen
 } from "../util/service/teamRegisterService";
 import {setUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
+import ErrorCard from "../components/cards/ErrorCard";
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -28,6 +29,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+
+    const location = useLocation();
 
     const handleEnterPress = (e) => {
         if (e.key === 'Enter') {
@@ -48,11 +51,30 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        if (!getRegistrationOpen()) {
-            history.push('/login');
-        }
+        const registrationOpen = getRegistrationOpen();
+        const tournamentOpen = getTournamentOpen();
+
+        registrationOpen.then((response) => {
+            if (!response) {
+                history.push('/login');
+            }
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
         getCharacterNames();
-    }, []);
+    }, [location]);
 
 
     const handleLogin = async () => {
@@ -79,6 +101,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     }
 
+
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
@@ -94,8 +117,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <div className={"loginContainer"}>
                         <div className={"borderContainer selectCharacter"}>
                             <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{cursor: "pointer"}}>
-                                <option value="">
-                                    Bitte wähle deine Charakter
+                                <option value="" disabled hidden={true}>
+                                    Wähle deinen Charakter
                                 </option>
                                 {updatedCharacterNames && updatedCharacterNames.map((character) => (
                                     <option

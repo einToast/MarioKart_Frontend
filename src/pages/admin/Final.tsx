@@ -12,10 +12,10 @@ import React, {useEffect, useState} from "react";
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {
     createTeamFinalPlan,
-    getTeamFinalRanked,
-    removeTeamFinalParticipation, resetAllTeamFinalParticipation,
+    getTeamTop4FinalRanked,
+    changeTeam, resetAllTeamFinalParticipation,
 } from "../../util/service/adminService";
-import {useHistory} from "react-router";
+import {useHistory, useLocation} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
@@ -28,14 +28,12 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
     const user = getUser();
     const history = useHistory();
+    const location = useLocation();
 
-    const handleTeamRemove = async (team: TeamReturnDTO) => {
+    const handleTeamFinalRemove = async (team: TeamReturnDTO) => {
         try {
-            const removedTeam = await removeTeamFinalParticipation(team);
+            const removedTeam = await changeTeam(team);
             if (removedTeam) {
-                // setError('Team entfernt');
-                // setToastColor(successToastColor);
-                // setShowToast(true);
                 await getFinalTeams();
             } else {
                 throw new TypeError('Team konnte nicht entfernt werden');
@@ -66,7 +64,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
     const getFinalTeams = async () => {
-        const teamNames = getTeamFinalRanked();
+        const teamNames = getTeamTop4FinalRanked();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -98,8 +96,9 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('Final');
         getFinalTeams();
-    }, [])
+    }, [location]);
 
     return (
         <IonPage>
@@ -132,11 +131,11 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                                     <IonIcon slot="end"
                                              icon={removeCircleOutline}
                                              style={{cursor: "pointer"}}
-                                             onClick={() => handleTeamRemove(team)}
+                                             onClick={() => handleTeamFinalRemove(team)}
                                              tabIndex={0}
                                              onKeyDown={(e) => {
                                                  if (e.key === 'Enter' || e.key === ' ') {
-                                                     handleTeamRemove(team);
+                                                     handleTeamFinalRemove(team);
                                                  }
                                              }}
                                     ></IonIcon>

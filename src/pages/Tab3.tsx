@@ -7,11 +7,28 @@ import {
     playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
-import {useHistory} from "react-router";
-import React from "react";
+import {useHistory, useLocation} from "react-router";
+import React, {useEffect} from "react";
+import {getTournamentOpen} from "../util/service/teamRegisterService";
+import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab3: React.FC = () => {
+
     const history = useHistory();
+    const location = useLocation();
+
+    useEffect(() => {
+        const tournamentOpen = getTournamentOpen();
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        })
+    },[location])
+
+
+
     return (
         <IonPage>
           <Header></Header>

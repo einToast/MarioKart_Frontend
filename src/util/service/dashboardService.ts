@@ -17,3 +17,8 @@ export const getAllRounds = async (): Promise<RoundReturnDTO[]> => {
 export const getRound = async (roundNumber: number): Promise<RoundReturnDTO> => {
     return getRoundById(roundNumber);
 }
+
+export const getNumberOfUnplayedRounds = async (): Promise<number> => {
+    const rounds = await getRounds();
+    return rounds.filter(round => !round.played).length;
+}

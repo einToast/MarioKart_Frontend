@@ -10,7 +10,7 @@ import {
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
-import { useHistory } from "react-router";
+import {useHistory, useLocation} from "react-router";
 import {TeamReturnDTO} from "../util/api/config/dto";
 import {getAllTeams, getTournamentOpen} from "../util/service/teamRegisterService";
 import characters from "../interface/characters";
@@ -29,6 +29,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+
+    const location = useLocation();
 
     const handleLogin = () => {
         const selectedTeam = teams?.find(team => team.teamName === teamName);
@@ -50,15 +52,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         setLoading(true);
-        if (!getTournamentOpen()){
-            history.push('/admin');
-            setLoading(false);
-        }
         if (getUser()){
             history.push('/tab1');
             setLoading(false);
         }
         const allTeams = getAllTeams();
+        const tournamentOpen = getTournamentOpen();
 
         allTeams.then((response) => {
             setTeams(response);
@@ -68,7 +67,17 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }).finally(() => {
             setLoading(false);
         });
-    }, []);
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+    }, [location]);
 
 
 

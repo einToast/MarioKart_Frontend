@@ -1,5 +1,13 @@
 import axios from 'axios';
-import {RoundReturnDTO, GameReturnDTO, PointsReturnDTO, RoundInputDTO, PointsInputDTO} from './config/dto';
+import {
+    RoundReturnDTO,
+    GameReturnDTO,
+    PointsReturnDTO,
+    RoundInputDTO,
+    PointsInputDTO,
+    BreakReturnDTO,
+    BreakInputDTO
+} from './config/dto';
 import { API_BASE_URL } from './config/constants';
 import apiClient from "./config/apiClient";
 
@@ -121,6 +129,22 @@ export const getPoints = async (): Promise<PointsReturnDTO[]> => {
     }
 };
 
+export const getBreak = async (): Promise<BreakReturnDTO> => {
+    try {
+        const response = await apiClient.get<BreakReturnDTO>(`${BASE_URL}/break`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Pausen konnten nicht geladen werden');
+            }
+        }
+        throw error;
+    }
+};
+
 export const checkMatchPlan = async (): Promise<boolean> => {
     try {
         const response = await apiClient.get<boolean>(`${BASE_URL}/create/match_plan`);
@@ -135,7 +159,7 @@ export const checkMatchPlan = async (): Promise<boolean> => {
         }
         throw error;
     }
-}
+};
 
 export const checkFinalPlan = async (): Promise<boolean> => {
     try {
@@ -151,7 +175,7 @@ export const checkFinalPlan = async (): Promise<boolean> => {
         }
         throw error;
     }
-}
+};
 
 export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
     try {
@@ -171,7 +195,7 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
         }
         throw error;
     }
-}
+};
 
 export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
     try {
@@ -193,7 +217,7 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
         }
         throw error;
     }
-}
+};
 
 export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): Promise<RoundReturnDTO> => {
     try {
@@ -211,7 +235,7 @@ export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): P
         }
         throw error;
     }
-}
+};
 
 export const updatePoints = async (roundId: number, gameId:number, teamId:number, points: PointsInputDTO): Promise<PointsReturnDTO> => {
     try {
@@ -229,7 +253,25 @@ export const updatePoints = async (roundId: number, gameId:number, teamId:number
         }
         throw error;
     }
-}
+};
+
+export const updateBreak = async (aBreak: BreakInputDTO): Promise<BreakReturnDTO> => {
+    try {
+        const response = await apiClient.put<BreakReturnDTO>(`${BASE_URL}/break`, aBreak);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404){
+                throw new Error('Pause konnte nicht gefunden werden');
+            } else if (error.response?.status === 401){
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Pause konnte nicht aktualisiert werden');
+            }
+        }
+        throw error;
+    }
+};
 
 export const deleteMatchPlan = async (): Promise<void> => {
     try {
@@ -244,7 +286,7 @@ export const deleteMatchPlan = async (): Promise<void> => {
         }
         throw error;
     }
-}
+};
 
 export const deleteFinalPlan = async (): Promise<void> => {
     try {
@@ -259,19 +301,4 @@ export const deleteFinalPlan = async (): Promise<void> => {
         }
         throw error;
     }
-}
-
-export const reset = async (): Promise<void> => {
-    try {
-        await apiClient.delete(`${BASE_URL}/reset`);
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
-                throw new Error('Nicht autorisierter Zugriff');
-            } else {
-                throw new Error('Daten konnten nicht zurückgesetzt werden');
-            }
-        }
-        throw error;
-    }
-}
+};

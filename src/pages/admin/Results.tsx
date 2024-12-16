@@ -11,8 +11,8 @@ import {arrowBackOutline} from 'ionicons/icons';
 import React, {useEffect, useState} from "react";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
-import {getTeamFinalRanked} from "../../util/service/adminService";
-import {useHistory} from "react-router";
+import {getTeamTop4FinalRanked} from "../../util/service/adminService";
+import {useHistory, useLocation} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor} from "../../util/api/config/constants";
 
@@ -25,13 +25,15 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
 
     const user = getUser();
     const history = useHistory();
+    const location = useLocation();
 
     useEffect(() => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('Results');
 
-        const teamNames = getTeamFinalRanked();
+        const teamNames = getTeamTop4FinalRanked();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -40,7 +42,7 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
             setShowToast(true);
         });
         setUserCharacter(user.character);
-    },[])
+    },[location]);
 
     return (
         <IonPage>

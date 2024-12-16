@@ -13,7 +13,7 @@ import {useEffect, useState} from "react";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {createTeamMatchPlan, getRegisteredTeams} from "../../util/service/adminService";
-import {useHistory} from "react-router";
+import {useHistory, useLocation} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
@@ -26,11 +26,13 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
 
     const user = getUser();
     const history = useHistory();
+    const location = useLocation();
 
     useEffect(() => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('MatchPlan');
 
         const teamNames = getRegisteredTeams();
         teamNames.then((response) => {
@@ -41,7 +43,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
             setShowToast(true);
         });
         setUserCharacter(user.character);
-    },[])
+    },[location]);
 
     const handleMatchPlanCreation = async () => {
         try {
@@ -77,7 +79,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                 </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Endergebnisse
+                        Spielplan erstellen
                     </LinearGradient>
                 </h2>
 

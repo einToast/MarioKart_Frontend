@@ -29,10 +29,16 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const location = useLocation();
 
+    const handleLogout = () => {
+        removeToken();
+        history.push('/admin/login');
+    }
+
     useEffect(() => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
+        console.log('Dashboard');
 
         const match = checkMatch();
         const final = checkFinal();
@@ -55,10 +61,6 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
 
     }, [location]);
 
-    const handleLogout = () => {
-        removeToken();
-        history.push('/admin/login');
-    }
 
     return (
         <IonPage>
