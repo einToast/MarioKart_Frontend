@@ -51,20 +51,39 @@ import Control from "./pages/admin/Control";
 import {getUser} from "./util/service/loginService";
 import {WebSocketProvider} from "./components/WebSocketContext";
 import Teams from './pages/admin/Teams';
+import {match} from "cypress/types/minimatch";
+import {checkFinal, checkMatch} from "./util/service/adminService";
+import {useLocation} from "react-router";
+import {getNumberOfUnplayedRounds} from "./util/service/dashboardService";
 
 setupIonicReact();
 
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [gamesToPlay, setGamesToPlay] = useState<number>(0);
+    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
+    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     useEffect(() => {
         const user = getUser();
         if (user) {
             setCurrentUser(user);
         }
+        const matchplan = checkMatch();
+        const finalplan = checkFinal();
+        const rounds = getNumberOfUnplayedRounds();
+        matchplan.then(value => {
+            setMatchPlanCreated(value);
+        })
+
+        finalplan.then(value => {
+            setFinalPlanCreated(value);
+        })
+
+        rounds.then(value => {
+            setGamesToPlay(value);
+        })
     }, []);
-
-
 
     return (
         <IonApp>
@@ -98,9 +117,11 @@ const App: React.FC = () => {
                                 <IonTabButton tab="tab1" href="/tab1">
                                     <IonIcon aria-hidden="true" icon={homeOutline} />
                                 </IonTabButton>
-                                <IonTabButton tab="tab2" href="/tab2">
-                                    <IonIcon aria-hidden="true" icon={barChartOutline} />
-                                </IonTabButton>
+                                {(!matchPlanCreated || finalPlanCreated || gamesToPlay >= 2) && (
+                                    <IonTabButton tab="tab2" href="/tab2">
+                                        <IonIcon aria-hidden="true" icon={barChartOutline} />
+                                    </IonTabButton>
+                                )}
                                 <IonTabButton tab="tab3" href="/tab3">
                                     <IonIcon aria-hidden="true" icon={informationCircleOutline} />
                                 </IonTabButton>
