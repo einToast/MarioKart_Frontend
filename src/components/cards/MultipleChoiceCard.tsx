@@ -9,7 +9,14 @@ import "../../pages/admin/Points.css";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
-import {megaphoneOutline, statsChartOutline, thumbsUp, thumbsUpOutline} from "ionicons/icons";
+import {
+    checkmarkCircle, checkmarkCircleOutline, checkmarkDoneCircleOutline,
+    checkmarkOutline,
+    megaphoneOutline,
+    statsChartOutline,
+    thumbsUp,
+    thumbsUpOutline
+} from "ionicons/icons";
 
 const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -52,7 +59,7 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
         } else if (vote === undefined) {
             setIndicator(megaphoneOutline)
         } else {
-            setIndicator(thumbsUpOutline)
+            setIndicator(checkmarkCircleOutline)
         }
     }
 

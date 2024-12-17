@@ -10,7 +10,13 @@ import {getUser} from "../../util/service/loginService";
 import {errorToastColor} from "../../util/api/config/constants";
 import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
 import {set} from "js-cookie";
-import {megaphoneOutline, statsChartOutline, thumbsUpOutline} from "ionicons/icons";
+import {
+    checkmarkCircleOutline,
+    checkmarkOutline,
+    megaphoneOutline,
+    statsChartOutline,
+    thumbsUpOutline
+} from "ionicons/icons";
 
 const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion,toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -73,7 +79,7 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
         } else if (vote === undefined) {
             setIndicator(megaphoneOutline)
         } else {
-            setIndicator(thumbsUpOutline)
+            setIndicator(checkmarkCircleOutline)
         }
     }
 
