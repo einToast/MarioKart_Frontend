@@ -369,7 +369,7 @@ const Tab1: React.FC = () => {
                                         {!nextRound.breakEnded ? (
                                             <>
                                                 <div className="timeContainer">
-                                                    <h3>Aktuelles Spiel</h3>
+                                                    <h3>Nächstes Spiel</h3>
                                                     <p className="timeStamp">{nextRound.startTime} - {nextRound.endTime}</p>
                                                 </div>
                                                 <p> It's pizza time! 🍕</p>
