@@ -67,7 +67,7 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Pr
         throw new Error('Die Umfrage ist bereits beendet');
     } else if (vote === '') {
         throw new Error('Die Antwort darf nicht leer sein');
-    } else if ((vote === -1 && !(typeof vote === 'string')) || (vote.includes(-1) && !(typeof vote === 'string'))|| vote.length === 0) {
+    } else if ((vote === -1 && !(typeof vote === 'string')) || (!(typeof vote === 'string' || typeof vote === 'number') && vote.includes(-1))|| vote.length === 0) {
         throw new Error('Es wurde keine Antwort ausgewählt');
     }
 
