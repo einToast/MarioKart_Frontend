@@ -54,9 +54,7 @@ const Tab1: React.FC = () => {
             } else {
                 setNoGames(true);
             }
-            console.log(response[0]);
-            if (response[0].breakTime && !response[0].breakTime.breakEnded) {
-                console.log(response[0].breakTime);
+            if (response[0] &&response[0].breakTime && !response[0].breakTime.breakEnded) {
                 setCurrentRound(response[0].breakTime);
             }
             else {
@@ -71,7 +69,7 @@ const Tab1: React.FC = () => {
                     response[1].breakTime.startTime = response[1].breakTime.startTime.split('T')[1].slice(0, 5);
                 }
             }
-            if (response[1].breakTime && !response[1].breakTime.breakEnded) {
+            if (response[1] && response[1].breakTime && !response[1].breakTime.breakEnded) {
                 setNextRound(response[1].breakTime);
             }
             else {
@@ -188,7 +186,7 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                    {!currentRound.breakEnded ? (
+                                    {currentRound && !currentRound.breakEnded ? (
                                         <>
                                             <div className="timeContainer">
                                                 <h3>Aktuelle Spiele</h3>
@@ -199,17 +197,22 @@ const Tab1: React.FC = () => {
                                         ) : (
                                         <>
                                             {noGames ? (
-                                                <p>Keine Spiele gefunden.</p>
-                                            ) : (
+                                                <>
+                                                    <div className="timeContainer">
+                                                        <h3>Aktuelle Spiele</h3>
+                                                    </div>
+                                                    <p>Keine Spiele gefunden.</p>
+                                                </>
+                                                ) : (
                                                 <p>Test</p>
+                                                )}
+                                                </>
                                             )}
                                         </>
                                     )}
-                                    </>
-                                )}
-                            </div>
+                                    </div>
 
-                            <div className="flexSpiel next">
+                                    <div className="flexSpiel next">
                                 {(nextRound && typeof nextRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
@@ -235,7 +238,7 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {!nextRound.breakEnded ? (
+                                        {nextRound && !nextRound.breakEnded ? (
                                             <>
                                                 <div className="timeContainer">
                                                     <h3>Nächste Spiele</h3>
@@ -246,7 +249,12 @@ const Tab1: React.FC = () => {
                                         ) : (
                                             <>
                                                 {noGames ? (
-                                                    <p>Keine Spiele gefunden.</p>
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Nächste Spiele</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
                                                 ) : (
                                                     <p></p>
                                                 )}
@@ -293,7 +301,12 @@ const Tab1: React.FC = () => {
                                         ) : (
                                             <>
                                                 {noGames ? (
-                                                    <p>Keine Spiele gefunden.</p>
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Aktuelles Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
                                                 ) : (
                                                     <p>loading...</p>
                                                 )}
@@ -302,7 +315,7 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {!currentRound.breakEnded ? (
+                                        {currentRound && !currentRound.breakEnded ? (
                                             <>
                                                 <div className="timeContainer">
                                                     <h3>Aktuelles Spiel</h3>
@@ -313,7 +326,12 @@ const Tab1: React.FC = () => {
                                         ) : (
                                             <>
                                                 {noGames ? (
-                                                    <p>Keine Spiele gefunden.</p>
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Aktuelles Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
                                                 ) : (
                                                     <p></p>
                                                 )}
@@ -366,7 +384,7 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {!nextRound.breakEnded ? (
+                                        {nextRound && !nextRound.breakEnded ? (
                                             <>
                                                 <div className="timeContainer">
                                                     <h3>Nächstes Spiel</h3>
@@ -377,9 +395,14 @@ const Tab1: React.FC = () => {
                                         ) : (
                                             <>
                                                 {noGames ? (
-                                                    <p>Keine Spiele gefunden.</p>
-                                                ) : (
-                                                    <p></p>
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Nächstes Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
+                                                        ) : (
+                                                        <p> </p>
                                                 )}
                                             </>
                                         )}
