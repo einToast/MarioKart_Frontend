@@ -72,7 +72,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                             value={pointsOne}
                             onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[0].id), e, 0)}
                         />
-                        <img src={`./resources/media/${game.teams[0].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams[0].character.characterName}.png`} alt="Character"/>
                     </div>
                     <div className={"characterInput"}>
                         <input
@@ -80,7 +80,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                             value={pointsTwo}
                             onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[1].id), e, 1)}
                         />
-                        <img src={`./resources/media/${game.teams[1].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams[1].character.characterName}.png`} alt="Character"/>
                     </div>
                     <div className={"characterInput"}>
                         <input
@@ -88,7 +88,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                             value={pointsThree}
                             onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[2].id), e, 2)}
                         />
-                        <img src={`./resources/media/${game.teams[2].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams[2].character.characterName}.png`} alt="Character"/>
                     </div>
                     <div className={"characterInput"}>
                         <input
@@ -96,7 +96,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                             value={pointsFour}
                             onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[3].id), e, 3)}
                         />
-                        <img src={`./resources/media/${game.teams[3].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams[3].character.characterName}.png`} alt="Character"/>
                     </div>
                 </div>
                 <IonButton slot="start" shape="round" onClick={handleSavePoints}

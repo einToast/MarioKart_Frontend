@@ -100,7 +100,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 {teams && teams.map((team) => (
                                     <option key={team.teamName}
                                             value={team.teamName}
-                                            style={{backgroundImage: `url(../resources/media/${team.character.characterName}.png)`}}
+                                            style={{backgroundImage: `url(/characters/${team.character.characterName}.png)`}}
                                     >
                                         {team.teamName}
                                     </option>
@@ -111,7 +111,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     {[teams.find(team => team.teamName === teamName).character.characterName].map((character) => (
                                         characters.includes(character) &&
                                         <img
-                                            src={`../resources/media/${character}.png`}
+                                            src={`/characters/${character}.png`}
                                             alt={`${character} character`}
                                             key={character}
                                         />
