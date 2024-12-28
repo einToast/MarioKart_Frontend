@@ -124,7 +124,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     <option
                                         key={character}
                                         value={character}
-                                        style={{backgroundImage: `url(../resources/media/${character}.png)`}} // Verwende url() anstelle von backgroundImage
+                                        style={{backgroundImage: `url(/characters/${character}.png)`}} // Verwende url() anstelle von backgroundImage
                                     >
                                         {character}
                                     </option>
@@ -134,7 +134,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div className="selected-character">
                                     {characters.includes(selectedCharacter) && (
                                         <img
-                                            src={`../resources/media/${selectedCharacter}.png`}
+                                            src={`/characters/${selectedCharacter}.png`}
                                             alt={`${selectedCharacter} character`}
                                         />
                                     )}

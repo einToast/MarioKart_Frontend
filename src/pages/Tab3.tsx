@@ -40,7 +40,7 @@ const Tab3: React.FC = () => {
                 </h1>
                 <h3>Raumplan</h3>
                 <div>
-                    <img src={"../resources/raumplan.png"} alt="raumplan"/>
+                    <img src={"/media/Raumplan.png"} alt="raumplan"/>
                 </div>
                 <h3>Programm</h3>
                 <div className={"progressContainer"}>
@@ -72,7 +72,7 @@ const Tab3: React.FC = () => {
                 {/*<h3>Organisatoren</h3>*/}
                 {/*<div className={"organisatorenSingle"}>*/}
                 {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"../resources/camillo.jpeg"} alt="camillo"/>*/}
+                {/*        <img src={"/media/camillo.jpeg"} alt="camillo"/>*/}
                 {/*    </div>*/}
                 {/*    <div>*/}
                 {/*        <p>Camillo Dobrovsky</p>*/}
@@ -81,7 +81,7 @@ const Tab3: React.FC = () => {
                 {/*</div>*/}
                 {/*<div className={"organisatorenSingle"}>*/}
                 {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"../resources/fanny.jpeg"} alt="fanny"/>*/}
+                {/*        <img src={"/media/fanny.jpeg"} alt="fanny"/>*/}
                 {/*    </div>*/}
                 {/*    <div>*/}
                 {/*        <p>Fanny Wolff</p>*/}
@@ -90,7 +90,7 @@ const Tab3: React.FC = () => {
                 {/*</div>*/}
                 {/*<div className={"organisatorenSingle"}>*/}
                 {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"../resources/arne.jpeg"} alt="arne"/>*/}
+                {/*        <img src={"/media/arne.jpeg"} alt="arne"/>*/}
                 {/*    </div>*/}
                 {/*    <div>*/}
                 {/*        <p>Arne Allwardt</p>*/}

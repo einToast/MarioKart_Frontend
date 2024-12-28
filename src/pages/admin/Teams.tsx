@@ -154,7 +154,7 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
                             .map((team) => (
                                     <div key={team.id} className={`teamContainer`}>
                                         <div className={"imageContainer"}>
-                                            <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
+                                            <img src={`/characterss/media/${team.character.characterName}.png`} alt={team.character.characterName}
                                                  className={"iconTeam"}/>
                                         </div>
                                         <div className={"stats"}>

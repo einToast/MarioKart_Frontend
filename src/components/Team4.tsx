@@ -10,7 +10,7 @@ const TeamComponent4: React.FC<{team:TeamReturnDTO, game:GameReturnDTO, switchCo
                 {game.teams.map(team => {
                     return (
                         <img
-                            src={`../resources/media/${team.character.characterName}.png`}
+                            src={`/characters/${team.character.characterName}.png`}
                             alt="teamcharacter"
                             className="iconTeam"
                             key={team.character.characterName}
