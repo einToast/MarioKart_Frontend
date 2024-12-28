@@ -24,6 +24,8 @@ RUN npm install -g --ignore-scripts serve
 
 RUN npm install --ignore-scripts react-inject-env
 
+RUN apk add --no-cache curl
+
 EXPOSE 5000
 
 ENTRYPOINT ["sh", "-c"]
