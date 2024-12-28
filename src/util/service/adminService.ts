@@ -1,4 +1,6 @@
 import {
+    BreakInputDTO,
+    BreakReturnDTO,
     GameReturnDTO,
     PointsInputDTO,
     PointsReturnDTO,
@@ -7,19 +9,27 @@ import {
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {deleteAllTeams, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
+import {deleteAllTeams, deleteTeam, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
 import {
     checkFinalPlan,
     checkMatchPlan,
     createFinalPlan,
     createMatchPlan,
     deleteFinalPlan,
-    deleteMatchPlan,
-    reset,
+    deleteMatchPlan, getBreak, updateBreak,
     updatePoints,
     updateRoundPlayed
 } from "../api/MatchPlanApi";
-import {getAllTeams} from "./teamRegisterService";
+import {
+    getAllTeams,
+    getRegistrationOpen,
+    getTournamentOpen,
+    updateRegistrationOpen,
+    updateTournamentOpen
+} from "./teamRegisterService";
+import {reset} from "../api/SettingsApi";
+import {ChangeType} from "./util";
+import {removeQuestions} from "./surveyService";
 
 export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> => {
     for (const game of round.games) {
@@ -62,21 +72,30 @@ export const saveGame = async (roundId: number, game: GameReturnDTO):Promise<Poi
     return points;
 }
 
-export const getTeamFinalRanked = async (): Promise<TeamReturnDTO[]> => {
-    return (await getTeamsSortedByFinalPoints())
+export const getTeamTop4FinalRanked = async (): Promise<TeamReturnDTO[]> => {
+    return (await getTeamFinalRanked())
         .filter(team => team.finalReady)
         .slice(0, 4);
+}
+
+export const getTeamFinalRanked = async (): Promise<TeamReturnDTO[]> => {
+    return (await getTeamsSortedByFinalPoints());
 }
 
 export const getRegisteredTeams = async (): Promise<TeamReturnDTO[]> => {
     return await getAllTeams()
 }
 
-export const removeTeamFinalParticipation = async (team: TeamReturnDTO): Promise<TeamReturnDTO> => {
+export const getABreak = async (): Promise<BreakReturnDTO> => {
+    return await getBreak();
+}
+
+export const changeTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> => {
     const teamInput: TeamInputDTO = {
         teamName: team.teamName,
         characterName: team.character.characterName,
-        finalReady: false,
+        finalReady: team.finalReady,
+        active: team.active,
     }
 
     try {
@@ -87,12 +106,40 @@ export const removeTeamFinalParticipation = async (team: TeamReturnDTO): Promise
     }
 }
 
+export const changeTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: string, characterName: string): Promise<TeamReturnDTO> => {
+    const teamInput: TeamInputDTO = {
+        teamName: teamName,
+        characterName: characterName,
+        finalReady: team.finalReady,
+        active: team.active,
+    }
+    try {
+        return await updateTeam(team.id, teamInput);
+    } catch (error) {
+        console.error('Error updating team:', error);
+        throw error;
+    }
+
+}
+
+export const changeBreak = async (roundId: number, breakDuration: number, breakEnded: boolean): Promise<BreakReturnDTO> => {
+    const aBreak: BreakInputDTO = {
+        roundId: roundId,
+        breakDuration: breakDuration,
+        breakEnded: breakEnded,
+    }
+    return await updateBreak(aBreak);
+}
+
 export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]> => {
     const teams = await getTeamsSortedByFinalPoints();
     const updatedTeams: TeamReturnDTO[] = [];
 
     for (const team of teams) {
         if (team.finalReady) {
+            continue;
+        }
+        if (!team.active) {
             continue;
         }
         const teamInput: TeamInputDTO = {
@@ -127,6 +174,10 @@ export const checkFinal = async (): Promise<boolean> => {
     return await checkFinalPlan();
 }
 
+export const removeTeam = async (team: TeamReturnDTO): Promise<void> => {
+    return await deleteTeam(team.id);
+}
+
 export const deleteTeams = async (): Promise<void> => {
     return await deleteAllTeams();
 }
@@ -141,4 +192,34 @@ export const deleteFinal = async (): Promise<void> => {
 
 export const resetEverything = async (): Promise<void> => {
     return await reset();
+}
+
+export const changeService = async (deleteType: ChangeType): Promise<void> => {
+    switch (deleteType) {
+        case ChangeType.TOURNAMENT:
+            await updateTournamentOpen(!await getTournamentOpen());
+            break;
+        case ChangeType.REGISTRATION:
+            await updateRegistrationOpen(!await getRegistrationOpen());
+            break;
+        case ChangeType.SURVEYS:
+            await removeQuestions();
+            break;
+        case ChangeType.TEAMS:
+            await deleteTeams();
+            break;
+        case ChangeType.MATCH_PLAN:
+            await deleteMatch();
+            break;
+        case ChangeType.FINAL_PLAN:
+            await deleteFinal();
+            break;
+        case ChangeType.ALL:
+            await resetEverything();
+            break;
+        default:
+            throw new Error('Error');
+    }
+
+
 }

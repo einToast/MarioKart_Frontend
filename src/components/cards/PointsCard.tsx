@@ -20,7 +20,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
     const [pointsFour, setPointsFour] = useState<number>(game.points.find(point => point.team.id === game.teams[3].id).points);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const user = getUser();
 

@@ -10,15 +10,18 @@ import 'swiper/css/navigation';
 import RoundComponentAll from "../components/RoundComponentAll";
 import RoundComponentSwiper from "../components/RoundComponentSwiper";
 import {getBothCurrentRounds} from "../util/service/dashboardService";
-import {RoundReturnDTO} from "../util/api/config/dto";
+import {BreakReturnDTO, RoundReturnDTO} from "../util/api/config/dto";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
 
 import {useWebSocket} from "../components/WebSocketContext";
+import {useHistory, useLocation} from "react-router";
+import {getRegistrationOpen, getTournamentOpen} from "../util/service/teamRegisterService";
+import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab1: React.FC = () => {
-    const [currentRound, setCurrentRound] = useState<RoundReturnDTO>();
-    const [nextRound, setNextRound] = useState<RoundReturnDTO>();
+    const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO>({id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false});
+    const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO>({id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false});
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
     const [noGames, setNoGames] = useState<boolean>(false);
@@ -26,11 +29,13 @@ const Tab1: React.FC = () => {
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const wsService = useWebSocket();
 
     const user = getUser();
+    const history = useHistory();
+    const location = useLocation();
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
@@ -42,15 +47,34 @@ const Tab1: React.FC = () => {
             if (response[0]) {
                 response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
                 response[0].startTime = response[0].startTime.split('T')[1].slice(0, 5);
+                if (response[0].breakTime) {
+                    response[0].breakTime.endTime = response[0].breakTime.endTime.split('T')[1].slice(0, 5);
+                    response[0].breakTime.startTime = response[0].breakTime.startTime.split('T')[1].slice(0, 5);
+                }
             } else {
                 setNoGames(true);
             }
-            setCurrentRound(response[0]);
+            if (response[0] &&response[0].breakTime && !response[0].breakTime.breakEnded) {
+                setCurrentRound(response[0].breakTime);
+            }
+            else {
+                setCurrentRound(response[0]);
+            }
+
             if (response[1]) {
                 response[1].endTime = response[1].endTime.split('T')[1].slice(0, 5);
                 response[1].startTime = response[1].startTime.split('T')[1].slice(0, 5);
+                if (response[1].breakTime) {
+                    response[1].breakTime.endTime = response[1].breakTime.endTime.split('T')[1].slice(0, 5);
+                    response[1].breakTime.startTime = response[1].breakTime.startTime.split('T')[1].slice(0, 5);
+                }
             }
-            setNextRound(response[1]);
+            if (response[1] && response[1].breakTime && !response[1].breakTime.breakEnded) {
+                setNextRound(response[1].breakTime);
+            }
+            else {
+                setNextRound(response[1]);
+            }
         }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
@@ -59,6 +83,7 @@ const Tab1: React.FC = () => {
         );
     }
 
+
     useEffect(() => {
         if (selectedOption === 'Alle Spiele') {
             document.body.classList.add('all-games-selected');
@@ -66,6 +91,22 @@ const Tab1: React.FC = () => {
             document.body.classList.remove('all-games-selected');
         }
     }, [selectedOption]);
+
+    useEffect(() => {
+        getNewRounds();
+
+        const tournamentOpen = getTournamentOpen();
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+    }, [location]);
 
 
     useEffect(() => {
@@ -120,7 +161,7 @@ const Tab1: React.FC = () => {
                     {selectedOption === 'Alle Spiele' && (
                         <>
                             <div className="flexSpiel">
-                                {currentRound ? (
+                                {(currentRound && typeof currentRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
                                             <h3>Aktuelle Spiele</h3>
@@ -145,17 +186,34 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {noGames ? (
-                                            <p>Keine Spiele gefunden.</p>
+                                    {currentRound && !currentRound.breakEnded ? (
+                                        <>
+                                            <div className="timeContainer">
+                                                <h3>Aktuelle Spiele</h3>
+                                                <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
+                                            </div>
+                                            <p> It's pizza time! 🍕</p>
+                                        </>
                                         ) : (
-                                            <p>loading...</p>
-                                        )}
-                                    </>
-                                )}
-                            </div>
+                                        <>
+                                            {noGames ? (
+                                                <>
+                                                    <div className="timeContainer">
+                                                        <h3>Aktuelle Spiele</h3>
+                                                    </div>
+                                                    <p>Keine Spiele gefunden.</p>
+                                                </>
+                                                ) : (
+                                                <p>Test</p>
+                                                )}
+                                                </>
+                                            )}
+                                        </>
+                                    )}
+                                    </div>
 
-                            <div className="flexSpiel next">
-                                {nextRound ? (
+                                    <div className="flexSpiel next">
+                                {(nextRound && typeof nextRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
                                             <h3>Nächste Spiele</h3>
@@ -180,10 +238,27 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {noGames ? (
-                                            <p>Keine Spiele gefunden.</p>
+                                        {nextRound && !nextRound.breakEnded ? (
+                                            <>
+                                                <div className="timeContainer">
+                                                    <h3>Nächste Spiele</h3>
+                                                    <p className="timeStamp">{nextRound.startTime} - {nextRound.endTime}</p>
+                                                </div>
+                                                <p> It's pizza time! 🍕</p>
+                                            </>
                                         ) : (
-                                            <p>loading...</p>
+                                            <>
+                                                {noGames ? (
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Nächste Spiele</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
+                                                ) : (
+                                                    <p></p>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 )}
@@ -194,7 +269,7 @@ const Tab1: React.FC = () => {
                     {selectedOption === 'Deine Spiele' && (
                         <>
                             <div className="flexSpiel">
-                                {currentRound ? (
+                                {(currentRound && typeof currentRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
                                             <h3>Aktuelles Spiel</h3>
@@ -226,7 +301,12 @@ const Tab1: React.FC = () => {
                                         ) : (
                                             <>
                                                 {noGames ? (
-                                                    <p>Keine Spiele gefunden.</p>
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Aktuelles Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
                                                 ) : (
                                                     <p>loading...</p>
                                                 )}
@@ -235,10 +315,27 @@ const Tab1: React.FC = () => {
                                     </>
                                 ) : (
                                     <>
-                                        {noGames ? (
-                                            <p>Keine Spiele gefunden.</p>
+                                        {currentRound && !currentRound.breakEnded ? (
+                                            <>
+                                                <div className="timeContainer">
+                                                    <h3>Aktuelles Spiel</h3>
+                                                    <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
+                                                </div>
+                                                <p> It's pizza time! 🍕</p>
+                                            </>
                                         ) : (
-                                            <p>loading...</p>
+                                            <>
+                                                {noGames ? (
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Aktuelles Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
+                                                ) : (
+                                                    <p></p>
+                                                )}
+                                            </>
                                         )}
                                     </>
                                 )}
@@ -246,7 +343,7 @@ const Tab1: React.FC = () => {
 
 
                             <div className="flexSpiel next">
-                                {nextRound ? (
+                                {(nextRound && typeof nextRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
                                             <h3>Nächstes Spiel</h3>
@@ -282,16 +379,35 @@ const Tab1: React.FC = () => {
                                                 ) : (
                                                     <p>loading...</p>
                                                 )}
-                                            </>                                        )}
+                                            </>
+                                        )}
                                     </>
                                 ) : (
                                     <>
-                                        {noGames ? (
-                                            <p>Keine Spiele gefunden.</p>
+                                        {nextRound && !nextRound.breakEnded ? (
+                                            <>
+                                                <div className="timeContainer">
+                                                    <h3>Nächstes Spiel</h3>
+                                                    <p className="timeStamp">{nextRound.startTime} - {nextRound.endTime}</p>
+                                                </div>
+                                                <p> It's pizza time! 🍕</p>
+                                            </>
                                         ) : (
-                                            <p>loading...</p>
+                                            <>
+                                                {noGames ? (
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Nächstes Spiel</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
+                                                        ) : (
+                                                        <p> </p>
+                                                )}
+                                            </>
                                         )}
-                                    </>                                )}
+                                    </>
+                                    )}
                             </div>
                         </>
                     )}

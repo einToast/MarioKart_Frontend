@@ -18,3 +18,13 @@ export enum QuestionType {
     FREE_TEXT= "FREE_TEXT",
     CHECKBOX= "CHECKBOX"
 }
+
+export enum ChangeType {
+    REGISTRATION= "Registrierung",
+    TOURNAMENT= "Turnier",
+    SURVEYS= "Umfragen",
+    TEAMS= "Teams",
+    MATCH_PLAN= "Spielplan",
+    FINAL_PLAN= "Finalspiele",
+    ALL= "Anwendung"
+}

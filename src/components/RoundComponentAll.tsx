@@ -1,7 +1,8 @@
 // RoundComponentAll.tsx
 import TeamComponent from './TeamComponent';
+import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
 
-const RoundComponentAll = ({ game, user, switchColor }) => {
+const RoundComponentAll: React.FC<{game:GameReturnDTO, user:any, switchColor:string}> = ({ game, user, switchColor }) => {
     if (!game || !game.teams) {
         console.log("Keine Spiele aktuell");
 
@@ -17,6 +18,7 @@ const RoundComponentAll = ({ game, user, switchColor }) => {
                         <div
                             key={team.id}
                             className={`teamContainer ${user.character === team.character.characterName ? 'userTeam' : ''} ${switchColor} slide`}
+                            style={{opacity: team.active ? 1 : 0.5}}
                         >
                             <TeamComponent team={team} switchColor={switchColor} />
                         </div>

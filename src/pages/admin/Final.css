@@ -7,6 +7,23 @@ p.bold {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    .stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0px;
+    }
+
+    div {
+        display: flex;
+        @media (min-width: 768px) {
+            gap: 15px;
+        }
+
+        ion-icon {
+            font-size: 25px;
+        }
+    }
 }
 .teamFinal {
     background-color: #32345E;

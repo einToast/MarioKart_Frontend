@@ -5,9 +5,13 @@ import '../interface/interfaces';
 import {LinearGradient} from "react-text-gradients";
 import Header from "../components/Header";
 import {TeamReturnDTO} from "../util/api/config/dto";
-import {getTeamsRanked} from "../util/service/dashboardService";
+import {getNumberOfUnplayedRounds, getTeamsRanked} from "../util/service/dashboardService";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
+import {checkFinal, checkMatch} from "../util/service/adminService";
+import {useHistory, useLocation} from "react-router";
+import {getTournamentOpen} from "../util/service/teamRegisterService";
+import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab2: React.FC = () => {
 
@@ -15,24 +19,84 @@ const Tab2: React.FC = () => {
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [final, setFinal] = useState<boolean>(false);
+    const [roundsToPlay, setRoundsToPlay] = useState<number>(8);
+    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
+    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     const user = getUser();
+    const location = useLocation();
+    const history = useHistory();
 
     useEffect(() => {
         setUserCharacter(user.character);
 
+        const finalCheck = checkFinal();
+
         const teamsRanked = getTeamsRanked();
 
-        teamsRanked.then((response) => {
-            setTeams(response);
+        const matchplan = checkMatch();
+        const finalplan = checkFinal();
+        const rounds = getNumberOfUnplayedRounds();
+
+        const tournamentOpen = getTournamentOpen();
+
+        finalCheck.then((result) => {
+            setFinal(result);
         }).catch((error) => {
             console.error(error);
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-    },[])
+
+        teamsRanked.then((response) => {
+            setTeams(response);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+
+        matchplan.then(value => {
+            setMatchPlanCreated(value);
+        })
+
+        finalplan.then(value => {
+            setFinalPlanCreated(value);
+        })
+
+        rounds.then(value => {
+            setRoundsToPlay(value);
+        })
+
+        tournamentOpen.then((response) => {
+            if (!response) {
+                history.push('/admin');
+            }
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+
+    },[location]);
+
+    useEffect(() => {
+        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+            changeLocation();
+        }
+    }, [matchPlanCreated, finalPlanCreated, roundsToPlay]);
+
+    const changeLocation = () => {
+        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+            setError("Die Statistiken können momentan nicht angezeigt werden.");
+            setToastColor(errorToastColor);
+            setShowToast(true);
+            history.push('/tab1');
+        }
+    }
 
     return (
         <IonPage>
@@ -46,7 +110,7 @@ const Tab2: React.FC = () => {
                 <div className={"flexContainer"}>
                     {teams ? (
                         teams
-                            .map(team => (
+                            .map((team, index) => (
                                 <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
                                         <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
@@ -54,7 +118,13 @@ const Tab2: React.FC = () => {
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
-                                        <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                        <p className={"punkte"}>{index + 1}. Platz</p>
+                                        {final ? (
+                                            <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                        ) : (
+                                            ""
+                                        )}
+
                                     </div>
                                 </div>
                             ))

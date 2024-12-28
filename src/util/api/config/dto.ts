@@ -8,7 +8,7 @@ export interface RoundReturnDTO {
     finalGame: boolean;
     played: boolean;
     games?: GameReturnDTO[];
-
+    breakTime?: BreakReturnDTO;
 }
 
 export interface GameReturnDTO {
@@ -27,11 +27,20 @@ export interface PointsReturnDTO {
 
 }
 
+export interface BreakReturnDTO {
+    id: number;
+    startTime: string;
+    endTime: string;
+    breakEnded: boolean;
+    round?: RoundReturnDTO;
+}
+
 export interface TeamReturnDTO {
     id: number;
     teamName: string;
     character?: CharacterReturnDTO;
     finalReady: boolean;
+    active: boolean;
     groupPoints: number;
     finalPoints: number;
     games?: GameReturnDTO[];
@@ -41,6 +50,7 @@ export interface TeamInputDTO {
     teamName: string;
     characterName: string;
     finalReady: boolean;
+    active: boolean;
 }
 
 export interface CharacterReturnDTO {
@@ -56,6 +66,12 @@ export interface RoundInputDTO {
 
 export interface PointsInputDTO {
     points: number;
+}
+
+export interface BreakInputDTO {
+    roundId: number;
+    breakDuration: number;
+    breakEnded: boolean;
 }
 
 export interface TournamentDTO {
@@ -95,7 +111,6 @@ export interface AnswerReturnDTO {
     freeTextAnswer: string;
     multipleChoiceSelectedOption: number;
     checkboxSelectedOptions: number[];
-
 }
 
 export interface AuthenticationRequestDTO {

@@ -29,9 +29,32 @@ ul li {
 }
 
 .form-group {
+    display: flex; /* Aktiviert Flexbox für das Layout */
+    align-items: center; /* Zentriert das Label und Input vertikal */
     border: 1px solid #fff;
     border-radius: 15px;
+    padding: 5px;
+
+    label {
+        font-size: 14px;
+        color: #6B86CE;
+        font-weight: 500;
+        margin-bottom: 5px;
+        margin-right: 10px;
+        flex: 0 0 auto; /* Label behält seine natürliche Größe */
+    }
+
+    input {
+        background-color: transparent;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 500;
+        flex: 1; /* Input füllt den verbleibenden Platz */
+        padding: 5px;
+        min-width: 0; /* Verhindert, dass der Input über das Container hinausgeht */
+    }
 }
+
 
 form {
     p {
@@ -49,22 +72,27 @@ form {
 
     .borderContainer.multipleSelect {
         display: flex;
-        justify-content: space-between;
-        flex-wrap: wrap;
         margin-top: 10px;
         align-items: center;
+        /*justify-content: space-between; !* Ensures space between elements *!*/
+        margin-top: 10px;
+        margin-left: 0;
+        padding-left: 10px;
 
         p {
-            margin-top: 0;
             padding-top: 0;
+            padding-left: 0;
         }
     }
+    .add-option-button {
+        display: flex;
+    }
+
 }
 
-.item-background-color{
+.item-background-color {
     --ion-item-background: transparent;
 }
-
 
 ion-modal {
     .allTeamResult {

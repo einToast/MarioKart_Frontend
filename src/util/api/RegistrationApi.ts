@@ -226,7 +226,6 @@ export const deleteAllTeams = async (): Promise<void> => {
     }
 }
 
-// TODO: check error handling
 export const deleteTeam = async (id: number): Promise<void> => {
     try {
         await apiClient.delete(`${BASE_URL}/${id}`);
