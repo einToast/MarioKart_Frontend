@@ -35,7 +35,7 @@
     "react-router-dom": "^5.3.4",
     "react-text-gradients": "^1.0.2",
     "sockjs-client": "^1.6.1",
-    "swiper": "^11.1.15"
+    "swiper": "^11.2.0"
   },
   "devDependencies": {
     "@capacitor/cli": "6.2.0",
@@ -46,20 +46,20 @@
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/js-cookie": "^3.0.6",
-    "@types/react": "^19.0.2",
+    "@types/react": "^19.0.3",
     "@types/react-dom": "^19.0.2",
     "@types/sockjs-client": "^1.5.4",
     "@vitejs/plugin-legacy": "^5.4.3",
     "@vitejs/plugin-react": "^4.3.4",
     "cypress": "^13.17.0",
     "eslint": "^8.57.1",
-    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react": "^7.37.3",
     "globals": "^15.14.0",
     "jsdom": "^25.0.1",
     "react-inject-env": "^2.1.0",
     "terser": "^5.37.0",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.1",
+    "typescript-eslint": "^8.19.1",
     "vite": "^5.4.11",
     "vitest": "^2.1.8"
   },
