@@ -43,6 +43,7 @@ const Tab1: React.FC = () => {
 
     const getNewRounds = async () => {
         const currentAndNextRound = getBothCurrentRounds();
+        let isBreakTime = false;
         currentAndNextRound.then((response) => {
             if (response[0]) {
                 response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
@@ -56,6 +57,8 @@ const Tab1: React.FC = () => {
             }
             if (response[0] &&response[0].breakTime && !response[0].breakTime.breakEnded) {
                 setCurrentRound(response[0].breakTime);
+                setNextRound(response[0]);
+                isBreakTime = true;
             }
             else {
                 setCurrentRound(response[0]);
@@ -72,7 +75,7 @@ const Tab1: React.FC = () => {
             if (response[1] && response[1].breakTime && !response[1].breakTime.breakEnded) {
                 setNextRound(response[1].breakTime);
             }
-            else {
+            else if (!isBreakTime) {
                 setNextRound(response[1]);
             }
         }).catch((error) => {
