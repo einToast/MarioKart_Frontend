@@ -22,7 +22,7 @@ import {errorToastColor, successToastColor} from "../../util/api/config/constant
 
 const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [round, setRound] = useState<RoundReturnDTO>();
+    const [round, setRound] = useState<RoundReturnDTO>({id: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false});
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
@@ -71,7 +71,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
         const rounds = getAllRounds();
         rounds.then((rounds) => {
             rounds = rounds.sort((a, b) => a.id - b.id);
-            getSelectedRound(rounds[0].id);
+            getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
             setNumberOfRounds(rounds.length);
         }).catch((error) => {
             setError(error.message);
@@ -110,8 +110,8 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                     </h2>
                     <div>
                         <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
-                            {Array.from(Array(numberOfRounds).keys()).map((round) => {
-                                return <option value={round + 1} key={round + 1}>Runde {round + 1}</option>;
+                            {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
+                                return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.id}>Runde {round_number + 1}</option>
                             })}
                         </select>
                     </div>
