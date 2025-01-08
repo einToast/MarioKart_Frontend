@@ -90,7 +90,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div key={team.id}
                                      className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`../resources/media/${team.character.characterName}.png`}
+                                        <img src={`/characters/${team.character.characterName}.png`}
                                              alt={team.character.characterName}
                                              className={"iconTeam"}/>
                                     </div>

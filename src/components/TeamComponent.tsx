@@ -5,7 +5,7 @@ const TeamComponent = ({ team, switchColor }) => {
         <div className={`${switchColor}`}>
             <div className={`imageContainer ${switchColor}`}>
                 <img
-                    src={`../resources/media/${character}.png`}
+                    src={`/characters/${character}.png`}
                     alt="teamcharacter"
                     className="iconTeam"
                 />

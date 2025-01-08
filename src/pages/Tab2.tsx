@@ -113,7 +113,7 @@ const Tab2: React.FC = () => {
                             .map((team, index) => (
                                 <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`../resources/media/${team.character.characterName}.png`} alt={team.character.characterName}
+                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
                                              className={"iconTeam"}/>
                                     </div>
                                     <div>

@@ -3,28 +3,28 @@
     font-family: "Tofino-Wide-Ultra";
     font-style: normal;
     font-weight: normal;
-    src: url("../fonts/TofinoWide-UltraPersonal.otf");
+    src: url("/fonts/TofinoWide-UltraPersonal.otf");
 }
 
 @font-face {
     font-family: "Tofino-Wide-Ultra";
     font-style: normal;
     font-weight: bold;
-    src: url("../fonts/TofinoWide-BlackPersonal.otf");
+    src: url("/fonts/TofinoWide-BlackPersonal.otf");
 }
 
 @font-face {
     font-family: "Poppins";
     font-style: normal;
     font-weight: normal;
-    src: url("../fonts/Poppins-Regular.ttf");
+    src: url("/fonts/Poppins-Regular.ttf");
 }
 
 @font-face {
     font-family: "Poppins";
     font-style: normal;
     font-weight: 800;
-    src: url("../fonts/Poppins-ExtraBold.ttf");
+    src: url("/fonts/Poppins-ExtraBold.ttf");
 }
 
 * {
