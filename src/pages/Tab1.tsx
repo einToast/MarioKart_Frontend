@@ -4,6 +4,7 @@ import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
 import '../interface/interfaces';
 import {useEffect, useState} from "react";
+import { App as CapacitorApp } from '@capacitor/app';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -128,6 +129,21 @@ const Tab1: React.FC = () => {
                 clearInterval(checkConnection);
             }
         }, 500);
+
+        CapacitorApp.addListener('appStateChange', (state) => {
+            if (!state.isActive) {
+                if (wsService) {
+                    wsService.unsubscribe('/topic/rounds');
+                }
+            } else {
+                if (!wsService.isConnected()) {
+                    wsService.subscribe('/topic/rounds', (message) => {
+                        getNewRounds();
+                    });
+                }
+            }
+        });
+
 
         return () => {
             clearInterval(checkConnection);
