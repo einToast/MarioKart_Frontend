@@ -1,4 +1,4 @@
-import {IonContent, IonPage, IonToast} from '@ionic/react';
+import {IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast} from '@ionic/react';
 import './Tab2.css';
 import React, {useEffect, useState} from "react";
 import '../interface/interfaces';
@@ -29,9 +29,7 @@ const Tab2: React.FC = () => {
     const location = useLocation();
     const history = useHistory();
 
-    useEffect(() => {
-        setUserCharacter(user.character);
-
+    const getRanking = async () => {
         const finalCheck = checkFinal();
 
         const teamsRanked = getTeamsRanked();
@@ -39,8 +37,6 @@ const Tab2: React.FC = () => {
         const matchplan = checkMatch();
         const finalplan = checkFinal();
         const rounds = getNumberOfUnplayedRounds();
-
-        const tournamentOpen = getTournamentOpen();
 
         finalCheck.then((result) => {
             setFinal(result);
@@ -70,6 +66,21 @@ const Tab2: React.FC = () => {
         rounds.then(value => {
             setRoundsToPlay(value);
         })
+    }
+
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            getRanking();
+            event.detail.complete();
+        }, 500);
+    };
+
+    useEffect(() => {
+        setUserCharacter(user.character);
+
+        getRanking();
+
+        const tournamentOpen = getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {
@@ -102,6 +113,11 @@ const Tab2: React.FC = () => {
         <IonPage>
             <Header></Header>
             <IonContent fullscreen>
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent
+                        refreshingSpinner="circles"
+                    />
+                </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Rangliste
