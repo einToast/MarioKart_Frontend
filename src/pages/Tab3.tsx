@@ -127,7 +127,9 @@ const Tab3: React.FC = () => {
                     <u>Admin Login</u>
                 </a>
                 <br/>
-                <a href="https://github.com/einToast/MarioKart">Source Code</a>
+                <a href="https://github.com/einToast/MarioKart_Backend">Source Code Backend</a>
+                <br/>
+                <a href="https://github.com/einToast/MarioKart_Frontend">Source Code Frontend</a>
             </IonContent>
         </IonPage>
     );
