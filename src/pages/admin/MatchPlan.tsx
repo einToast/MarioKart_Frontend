@@ -19,7 +19,6 @@ import {errorToastColor, successToastColor} from "../../util/api/config/constant
 
 const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -32,7 +31,6 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('MatchPlan');
 
         const teamNames = getRegisteredTeams();
         teamNames.then((response) => {
@@ -42,7 +40,6 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-        setUserCharacter(user.character);
     },[location]);
 
     const handleMatchPlanCreation = async () => {
@@ -88,7 +85,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                         teams
                             .map(team => (
                                 <div key={team.id}
-                                     className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
+                                     className={`teamContainer`}>
                                     <div className={"imageContainer"}>
                                         <img src={`/characters/${team.character.characterName}.png`}
                                              alt={team.character.characterName}

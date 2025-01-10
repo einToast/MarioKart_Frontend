@@ -86,7 +86,6 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
     const getFinalTeams = async () => {
         const teamNames = getTeamFinalRanked();
         teamNames.then((response) => {
-            console.log(response);
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
@@ -122,7 +121,6 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Teams');
         const matchplan = checkMatch();
 
         getFinalTeams();

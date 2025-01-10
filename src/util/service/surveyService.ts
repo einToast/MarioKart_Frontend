@@ -38,7 +38,6 @@ export const submitQuestion = async (question:string, questionType:QuestionType,
 }
 
 export const changeQuestion = async (question: QuestionReturnDTO): Promise<QuestionReturnDTO> => {
-    console.log('test1')
     if (question.questionText === '') {
         throw new Error('Die Frage darf nicht leer sein');
     } else if (question.questionType !== QuestionType.FREE_TEXT && question.options.length < 2) {
@@ -54,7 +53,6 @@ export const changeQuestion = async (question: QuestionReturnDTO): Promise<Quest
         visible: question.visible,
         live: question.live
     }
-    console.log(questionInput);
     return updateQuestion(question.id, questionInput);
 }
 
@@ -83,7 +81,6 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Pr
         checkboxSelectedOptions: checkboxSelectedOptions
     }
 
-    console.log(answer);
 
     const response = await submitAnswer(answer);
 
@@ -98,7 +95,6 @@ export const setAnswer = async (questionString: string, answer: number): Promise
         answerId: answer.toString(),
         // timestamp: new Date().getTime()
     }
-    console.log(answerCookie);
     Cookies.set(questionString, JSON.stringify(answerCookie), {expires: 1,sameSite: 'strict'});
 }
 

@@ -1,15 +1,16 @@
-import {IonContent, IonPage, IonToast} from '@ionic/react';
+import {IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast} from '@ionic/react';
 import './Tab1.css';
 import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
 import '../interface/interfaces';
 import {useEffect, useState} from "react";
+import { App as CapacitorApp } from '@capacitor/app';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import RoundComponentAll from "../components/RoundComponentAll";
 import RoundComponentSwiper from "../components/RoundComponentSwiper";
-import {getBothCurrentRounds} from "../util/service/dashboardService";
+import {getBothCurrentRounds, getSelectedGamesOption, setSelectedGamesOption} from "../util/service/dashboardService";
 import {BreakReturnDTO, RoundReturnDTO} from "../util/api/config/dto";
 import {getUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
@@ -17,7 +18,6 @@ import {errorToastColor} from "../util/api/config/constants";
 import {useWebSocket} from "../components/WebSocketContext";
 import {useHistory, useLocation} from "react-router";
 import {getRegistrationOpen, getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab1: React.FC = () => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO>({id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false});
@@ -39,10 +39,12 @@ const Tab1: React.FC = () => {
 
     const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
+        setSelectedGamesOption(event.target.value);
     };
 
     const getNewRounds = async () => {
         const currentAndNextRound = getBothCurrentRounds();
+        let isBreakTime = false;
         currentAndNextRound.then((response) => {
             if (response[0]) {
                 response[0].endTime = response[0].endTime.split('T')[1].slice(0, 5);
@@ -56,6 +58,8 @@ const Tab1: React.FC = () => {
             }
             if (response[0] &&response[0].breakTime && !response[0].breakTime.breakEnded) {
                 setCurrentRound(response[0].breakTime);
+                setNextRound(response[0]);
+                isBreakTime = true;
             }
             else {
                 setCurrentRound(response[0]);
@@ -72,7 +76,7 @@ const Tab1: React.FC = () => {
             if (response[1] && response[1].breakTime && !response[1].breakTime.breakEnded) {
                 setNextRound(response[1].breakTime);
             }
-            else {
+            else if (!isBreakTime) {
                 setNextRound(response[1]);
             }
         }).catch((error) => {
@@ -82,7 +86,12 @@ const Tab1: React.FC = () => {
         }
         );
     }
-
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            getNewRounds();
+            event.detail.complete();
+        }, 500);
+    };
 
     useEffect(() => {
         if (selectedOption === 'Alle Spiele') {
@@ -106,6 +115,7 @@ const Tab1: React.FC = () => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
+        setSelectedOption(getSelectedGamesOption() || 'Deine Spiele');
     }, [location]);
 
 
@@ -119,6 +129,21 @@ const Tab1: React.FC = () => {
                 clearInterval(checkConnection);
             }
         }, 500);
+
+        CapacitorApp.addListener('appStateChange', (state) => {
+            if (!state.isActive) {
+                if (wsService) {
+                    wsService.unsubscribe('/topic/rounds');
+                }
+            } else {
+                if (!wsService.isConnected()) {
+                    wsService.subscribe('/topic/rounds', (message) => {
+                        getNewRounds();
+                    });
+                }
+            }
+        });
+
 
         return () => {
             clearInterval(checkConnection);
@@ -143,6 +168,11 @@ const Tab1: React.FC = () => {
         <IonPage>
             <Header/>
             <IonContent fullscreen>
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent
+                        refreshingSpinner="circles"
+                    />
+                </IonRefresher>
                 <div className={"flexStart"}>
                     <h1>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>

@@ -48,7 +48,6 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                 history.push('/admin/dashboard');
             }
         }
-        console.log('Login');
         fetchData();
     }, []);
 

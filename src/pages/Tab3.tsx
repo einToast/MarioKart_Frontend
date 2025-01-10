@@ -1,4 +1,4 @@
-import {IonContent, IonIcon, IonPage} from '@ionic/react';
+import {IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent} from '@ionic/react';
 import './Tab3.css';
 import Header from "../components/Header";
 import {LinearGradient} from "react-text-gradients";
@@ -17,6 +17,12 @@ const Tab3: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            event.detail.complete();
+        }, 500);
+    };
+
     useEffect(() => {
         const tournamentOpen = getTournamentOpen();
 
@@ -27,12 +33,15 @@ const Tab3: React.FC = () => {
         })
     },[location])
 
-
-
     return (
         <IonPage>
           <Header></Header>
             <IonContent fullscreen>
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent
+                        refreshingSpinner="circles"
+                    />
+                </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Details

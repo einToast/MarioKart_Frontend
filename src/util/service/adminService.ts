@@ -40,7 +40,6 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
             try {
                 await updatePoints(round.id, game.id, team.id, pointInput);
             } catch (error) {
-                console.error('Error updating points:', error);
                 throw error;
             }
         }

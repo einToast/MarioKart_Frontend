@@ -47,7 +47,6 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     const location = useLocation();
 
     const toggleVisibility = async (id: number) => {
-        console.log(id);
         try{
             const question = surveys.find(survey => survey.id === id);
             if (!question) {
@@ -157,7 +156,6 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         getQuestions();
-        console.log('SurveyAdmin');
     }, [modalClosed, location]);
 
 

@@ -40,7 +40,6 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Object
     };
 
     const incrementOptions = () => {
-        console.log(numberOfOptions);
         setNumberOfOptions(numberOfOptions + 1);
         setOptions([...options, '']);
     };

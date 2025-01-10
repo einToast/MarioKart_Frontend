@@ -18,7 +18,6 @@ import {errorToastColor} from "../../util/api/config/constants";
 
 const Results: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -31,7 +30,6 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Results');
 
         const teamNames = getTeamTop4FinalRanked();
         teamNames.then((response) => {
@@ -41,7 +39,6 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-        setUserCharacter(user.character);
     },[location]);
 
     return (
@@ -70,7 +67,7 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
                         teams
                             .map(team => (
                                 <div key={team.id}
-                                     className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
+                                     className={`teamContainer`}>
                                     <div className={"imageContainer"}>
                                         <img src={`/characters/media/${team.character.characterName}.png`} alt={team.character.characterName}
                                              className={"iconTeam"}/>
