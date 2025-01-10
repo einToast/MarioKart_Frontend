@@ -48,10 +48,8 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
     }
 
     const handleSubmit = async () => {
-        console.log(questionText, questionType, options);
         try {
             const newQuestion = await submitQuestion(questionText, questionType, options);
-            console.log(newQuestion);
 
             if (newQuestion) {
                 resetQuestion();

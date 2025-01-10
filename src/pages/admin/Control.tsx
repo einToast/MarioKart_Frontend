@@ -122,7 +122,6 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Control.tsx: useEffect()');
 
         const match = checkMatch();
         const final = checkFinal();

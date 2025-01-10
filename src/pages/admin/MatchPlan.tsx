@@ -31,7 +31,6 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('MatchPlan');
 
         const teamNames = getRegisteredTeams();
         teamNames.then((response) => {

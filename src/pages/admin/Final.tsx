@@ -96,7 +96,6 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Final');
         getFinalTeams();
     }, [location]);
 

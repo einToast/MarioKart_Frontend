@@ -60,7 +60,6 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =
     };
 
     const enterBreak = async () => {
-        console.log(aBreak);
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
         setBeforeRound(aBreak.round.id);
@@ -69,7 +68,6 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =
     const getRounds = async () => {
         try {
             const rounds = await getAllRounds();
-            console.log(rounds);
             setRounds(rounds);
         } catch (error) {
             setError(error.message);

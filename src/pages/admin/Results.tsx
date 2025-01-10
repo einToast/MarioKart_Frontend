@@ -30,7 +30,6 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Results');
 
         const teamNames = getTeamTop4FinalRanked();
         teamNames.then((response) => {

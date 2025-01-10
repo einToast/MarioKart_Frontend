@@ -66,7 +66,6 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Points');
 
         const rounds = getAllRounds();
         rounds.then((rounds) => {

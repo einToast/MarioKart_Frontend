@@ -38,7 +38,6 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
         if (!checkToken()) {
             window.location.assign('/admin/login');
         }
-        console.log('Dashboard');
 
         const match = checkMatch();
         const final = checkFinal();

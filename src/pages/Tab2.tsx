@@ -41,7 +41,6 @@ const Tab2: React.FC = () => {
         finalCheck.then((result) => {
             setFinal(result);
         }).catch((error) => {
-            console.error(error);
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);

@@ -71,7 +71,6 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
                 results[answer.multipleChoiceSelectedOption]++;
             });
             setResults(results);
-            console.log(results);
         }
     }
 

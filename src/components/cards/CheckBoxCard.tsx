@@ -93,7 +93,6 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
                 });
             });
             setResults(results);
-            console.log(results);
         }
 
     }
