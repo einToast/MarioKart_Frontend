@@ -106,6 +106,7 @@ const App: React.FC = () => {
                                 <Route exact path="/admin/control" component={Control} />
                                 <Route exact path="/admin/survey" component={AdminSurvey} />
                                 <Route exact path="/admin/teams" component={Teams} />
+                                <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
                                 <Route exact path="/">
                                     <Redirect to="/tab1" />
                                 </Route>
