@@ -105,7 +105,7 @@ const App: React.FC = () => {
                                 <Route exact path="/admin/matchplan" component={MatchPlan} />
                                 <Route exact path="/admin/control" component={Control} />
                                 <Route exact path="/admin/survey" component={AdminSurvey} />
-                                <Route exact path={"/admin/teams"} component={Teams} />
+                                <Route exact path="/admin/teams" component={Teams} />
                                 <Route exact path="/">
                                     <Redirect to="/tab1" />
                                 </Route>
@@ -139,6 +139,7 @@ const App: React.FC = () => {
                             <Route exact path="/admin/matchplan" component={MatchPlan} />
                             <Route exact path="/admin/control" component={Control} />
                             <Route exact path="/admin/survey" component={AdminSurvey} />
+                            <Route exact path="/admin/teams" component={Teams} />
                             <Route exact path="/admin">
                                 <Redirect to="/admin/dashboard" />
                             </Route>
