@@ -31,7 +31,7 @@
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router": "^5.3.4",
+    "react-router": "^6.27.0",
     "react-router-dom": "^5.3.4",
     "react-text-gradients": "^1.0.2",
     "sockjs-client": "^1.6.1",
