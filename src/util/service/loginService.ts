@@ -50,7 +50,7 @@ export const checkToken = (): boolean => {
 }
 
 export const setUser = (user: any): void => {
-    Cookies.set('user', JSON.stringify(user), {expires: 7, sameSite: 'strict'});
+    Cookies.set('user', JSON.stringify(user), {expires: 1, sameSite: 'strict'});
 }
 
 export const getUser = (): any => {
