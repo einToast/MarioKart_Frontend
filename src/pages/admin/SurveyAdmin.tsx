@@ -18,7 +18,7 @@ import React, {useEffect, useState} from "react";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import {useHistory, useLocation} from "react-router";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {getUser} from "../../util/service/loginService";
+import {checkToken, getUser} from "../../util/service/loginService";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
 import {changeQuestion, getAllQuestions} from "../../util/service/surveyService";
 import SurveyModal from "../../components/modals/SurveyModal";
@@ -155,6 +155,9 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
     useEffect(() => {
+        if (!checkToken()) {
+            window.location.assign('/admin/login');
+        }
         getQuestions();
     }, [modalClosed, location]);
 
