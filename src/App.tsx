@@ -52,6 +52,9 @@ import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
 import { getUser } from "./util/service/loginService";
 import { User } from './interface/interfaces';
+
+setupIonicReact();
+
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [gamesToPlay, setGamesToPlay] = useState<number>(0);
