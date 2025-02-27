@@ -58,3 +58,19 @@ interface AdminUser {
     username: string;
     token: string;
 }
+
+interface SurveyModalResult {
+    surveyResults?: boolean;
+    surveyCreated?: boolean;
+    surveyChanged?: boolean;
+    surveyDeleted?: boolean;
+}
+
+interface TeamModalResult {
+    teamChanged?: boolean;
+    teamDeleted?: boolean;
+}
+
+interface BreakModalResult {
+    breakChanged?: boolean;
+}

@@ -1,5 +1,8 @@
-const TeamComponent = ({ team, switchColor }) => {
-    const character = team.character.characterName || [];
+import React from 'react';
+import { TeamReturnDTO } from '../util/api/config/dto';
+
+const TeamComponent = ({ team, switchColor }: { team: TeamReturnDTO, switchColor: string }) => {
+    const character = team.character?.characterName || [];
 
     return (
         <div className={`${switchColor}`}>

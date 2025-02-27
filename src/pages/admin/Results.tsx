@@ -69,7 +69,7 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div key={team.id}
                                      className={`teamContainer`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/media/${team.character.characterName}.png`} alt={team.character.characterName}
+                                        <img src={`/characters/media/${team.character?.characterName}.png`} alt={team.character?.characterName}
                                              className={"iconTeam"}/>
                                     </div>
                                     <div>

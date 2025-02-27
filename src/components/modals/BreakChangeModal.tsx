@@ -10,7 +10,6 @@ import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
-import {set} from "js-cookie";
 import {changeBreak, changeTeam, changeTeamNameAndCharacter} from "../../util/service/adminService";
 import {
     BreakReturnDTO,
@@ -24,7 +23,7 @@ import {getAllRounds} from "../../util/service/dashboardService";
 import Dashboard from "../../pages/admin/Dashboard";
 import {differenceInMinutes} from "date-fns";
 
-const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) => void, aBreak:BreakReturnDTO}> = ({ showModal, closeModal, aBreak }) => {
+const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakModalResult) => void, aBreak:BreakReturnDTO}> = ({ showModal, closeModal, aBreak }) => {
 
     const [breakDuration, setBreakDuration] = useState<number>(0);
     const [breakEnded, setBreakEnded] = useState<boolean>(false);
@@ -62,7 +61,7 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =
     const enterBreak = async () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
-        setBeforeRound(aBreak.round.id);
+        setBeforeRound(aBreak.round?.id || 0);
     }
 
     const getRounds = async () => {
@@ -84,7 +83,7 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({breakChanged: false})}>
             <IonContent>
                 <h4>Team</h4>
                 <form onSubmit={handleChange}>
@@ -125,11 +124,11 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =
                 </form>
                     <div className={"playedContainer"}>
 
-                        <IonButton className={"secondary round"} onClick={closeModal}
+                        <IonButton className={"secondary round"} onClick={() => closeModal({breakChanged: false})}
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                        if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal();
+                                            closeModal({breakChanged: false});
                                        }
                                    }}
                         >

@@ -9,7 +9,7 @@ import {
     IonToast
 } from "@ionic/react";
 import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./Points.css"
 import {TeamReturnDTO} from "../../util/api/config/dto";
 import {createTeamMatchPlan, getRegisteredTeams} from "../../util/service/adminService";
@@ -87,8 +87,8 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div key={team.id}
                                      className={`teamContainer`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character.characterName}.png`}
-                                             alt={team.character.characterName}
+                                        <img src={`/characters/${team.character?.characterName}.png`}
+                                             alt={team.character?.characterName}
                                              className={"iconTeam"}/>
                                     </div>
                                     <div>

@@ -10,13 +10,12 @@ import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
-import {set} from "js-cookie";
 import {changeTeam, changeTeamNameAndCharacter, removeTeam} from "../../util/service/adminService";
 import {CharacterReturnDTO, GameReturnDTO, QuestionReturnDTO} from "../../util/api/config/dto";
 import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
 import TeamChangeModal from "./TeamChangeModal";
 
-const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:SurveyModalResult) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
@@ -36,20 +35,20 @@ const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:Object
     }
 
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({surveyDeleted: false})}>
             <IonContent>
                 <h4>Umfrage löschen</h4>
                 <p> Willst du die Umfrage <span>{question.questionText} </span> wirklich löschen?</p>
                 <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
                 
                     <div className={"playedContainer"}>
-                        <IonButton className={"secondary round"} onClick={closeModal}
+                        <IonButton className={"secondary round"} onClick={() => closeModal({surveyDeleted: false})}
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                        if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal();
-                                       }
-                                   }}
+                                           closeModal({surveyDeleted: false});
+                                    }
+                                }}
                         >
                             <div>
                                 <p>Abbrechen</p>

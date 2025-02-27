@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory, useLocation} from "react-router";
 import '../interface/interfaces'
 import './RegisterTeam.css'
@@ -19,7 +19,6 @@ import {
 } from "../util/service/teamRegisterService";
 import {setUser} from "../util/service/loginService";
 import {errorToastColor} from "../util/api/config/constants";
-import ErrorCard from "../components/cards/ErrorCard";
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -85,7 +84,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                 const user: User = {
                     loggedIn: true,
                     name: team.teamName,
-                    character: team.character.characterName
+                    character: team.character?.characterName || ''
                 };
                 setUser(user);
                 props.setUser(user);

@@ -11,7 +11,6 @@ import {errorToastColor} from "../util/api/config/constants";
 import {checkFinal, checkMatch} from "../util/service/adminService";
 import {useHistory, useLocation} from "react-router";
 import {getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab2: React.FC = () => {
 
@@ -126,9 +125,9 @@ const Tab2: React.FC = () => {
                     {teams ? (
                         teams
                             .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${userCharacter === team.character?.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
+                                        <img src={`/characters/${team.character?.characterName}.png`} alt={team.character?.characterName}
                                              className={"iconTeam"}/>
                                     </div>
                                     <div>

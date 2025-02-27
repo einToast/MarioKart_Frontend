@@ -3,7 +3,7 @@ import './Tab1.css';
 import {LinearGradient} from 'react-text-gradients'
 import Header from "../components/Header";
 import '../interface/interfaces';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { App as CapacitorApp } from '@capacitor/app';
 
 import 'swiper/css';

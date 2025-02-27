@@ -10,12 +10,11 @@ import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
-import {set} from "js-cookie";
 import {changeTeam, changeTeamNameAndCharacter} from "../../util/service/adminService";
 import {CharacterReturnDTO, QuestionReturnDTO, TeamReturnDTO} from "../../util/api/config/dto";
 import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
 
-const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) => void, team: TeamReturnDTO}> = ({ showModal, closeModal, team }) => {
+const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalResult) => void, team: TeamReturnDTO}> = ({ showModal, closeModal, team }) => {
 
     const [teamName, setTeamName] = useState<string>('');
     const [character, setCharacter] = useState<string>('');
@@ -62,13 +61,13 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =>
 
     useEffect(() => {
         setTeamName(team.teamName);
-        setCharacter(team.character.characterName);
+        setCharacter(team.character?.characterName || '');
         getCharacterNames();
     }, [showModal]);
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({teamChanged: false})}>
             <IonContent>
                 <h4>Team</h4>
                 <form onSubmit={handleChange}>
@@ -105,11 +104,11 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =>
                 </form>
                     <div className={"playedContainer"}>
 
-                        <IonButton className={"secondary round"} onClick={closeModal}
+                        <IonButton className={"secondary round"} onClick={() => closeModal({teamChanged: false})}
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                        if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal();
+                                           closeModal({teamChanged: false});
                                        }
                                    }}
                         >

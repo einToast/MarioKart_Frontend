@@ -1,4 +1,5 @@
 // RoundComponentAll.tsx
+import React from 'react';
 import TeamComponent from './TeamComponent';
 import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
 
@@ -16,7 +17,7 @@ const RoundComponentAll: React.FC<{game:GameReturnDTO, user:any, switchColor:str
                     return (
                         <div
                             key={team.id}
-                            className={`teamContainer ${user.character === team.character.characterName ? 'userTeam' : ''} ${switchColor} slide`}
+                            className={`teamContainer ${user.character === team.character?.characterName ? 'userTeam' : ''} ${switchColor} slide`}
                             style={{opacity: team.active ? 1 : 0.5}}
                         >
                             <TeamComponent team={team} switchColor={switchColor} />

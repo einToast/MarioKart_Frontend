@@ -28,7 +28,6 @@ import {
 import {useHistory, useLocation} from "react-router";
 import {checkToken, getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {set} from "js-cookie";
 import TeamChangeModal from "../../components/modals/TeamChangeModal";
 import TeamDeleteModal from "../../components/modals/TeamDeleteModal";
 
@@ -104,7 +103,7 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
         setShowDeleteModal(true);
     }
 
-    const closeModal = (teams:Object) => {
+    const closeModal = (teams: TeamModalResult) => {
         setModalClosed(prev => !prev);
         if (teams.teamChanged) {
             setError('Team wurde geändert');
@@ -152,7 +151,7 @@ const Teams: React.FC<LoginProps> = (props: LoginProps) => {
                             .map((team) => (
                                     <div key={team.id} className={`teamContainer`}>
                                         <div className={"imageContainer"}>
-                                            <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
+                                            <img src={`/characters/${team.character?.characterName}.png`} alt={team.character?.characterName}
                                                  className={"iconTeam"}/>
                                         </div>
                                         <div className={"stats"}>

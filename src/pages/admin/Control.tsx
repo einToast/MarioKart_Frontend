@@ -32,7 +32,6 @@ import {
 } from "../../util/service/teamRegisterService";
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import {BreakReturnDTO} from "../../util/api/config/dto";
-import {set} from "js-cookie";
 
 const Control: React.FC<LoginProps> = (props: LoginProps) => {
 
@@ -108,7 +107,7 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         setShowToast(true);
     };
 
-    const closeBreakModal = (changeBreak:object) => {
+    const closeBreakModal = (changeBreak: BreakModalResult) => {
         setModalClosed(prev => !prev);
 
         if (changeBreak.breakChanged){

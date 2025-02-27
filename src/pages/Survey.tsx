@@ -11,9 +11,7 @@ import {QuestionType} from "../util/service/util";
 import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
 import FreeTextCard from "../components/cards/FreeTextCard";
 import CheckBoxCard from "../components/cards/CheckBoxCard";
-import {set} from "js-cookie";
 import {getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
 
 const Survey: React.FC = () => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);

@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useHistory, useLocation} from "react-router";
 import '../../interface/interfaces';
 import '../RegisterTeam.css';

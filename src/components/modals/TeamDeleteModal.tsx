@@ -10,13 +10,12 @@ import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
-import {set} from "js-cookie";
 import {changeTeam, changeTeamNameAndCharacter, removeTeam} from "../../util/service/adminService";
 import {CharacterReturnDTO, TeamReturnDTO} from "../../util/api/config/dto";
 import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
 import TeamChangeModal from "./TeamChangeModal";
 
-const TeamDeleteModal:React.FC<{ showModal:boolean, closeModal: (team:Object) => void, team: TeamReturnDTO}> = ({ showModal, closeModal, team }) => {
+const TeamDeleteModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalResult) => void, team: TeamReturnDTO}> = ({ showModal, closeModal, team }) => {
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
@@ -36,18 +35,18 @@ const TeamDeleteModal:React.FC<{ showModal:boolean, closeModal: (team:Object) =>
     }
 
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({teamDeleted: false})}>
             <IonContent>
                 <h4>Team löschen</h4>
                 <p> Willst du das Team <span>{team.teamName} </span> wirklich löschen?</p>
                 <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
                 
                     <div className={"playedContainer"}>
-                        <IonButton className={"secondary round"} onClick={closeModal}
+                        <IonButton className={"secondary round"} onClick={() => closeModal({teamDeleted: false})}
                                    tabIndex={0}
                                    onKeyDown={(e) => {
                                        if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal();
+                                           closeModal({teamDeleted: false});
                                        }
                                    }}
                         >

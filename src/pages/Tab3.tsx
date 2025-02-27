@@ -10,7 +10,6 @@ import {
 import {useHistory, useLocation} from "react-router";
 import React, {useEffect} from "react";
 import {getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
 
 const Tab3: React.FC = () => {
 

@@ -52,7 +52,6 @@ import Control from "./pages/admin/Control";
 import {getUser} from "./util/service/loginService";
 import {WebSocketProvider} from "./components/WebSocketContext";
 import Teams from './pages/admin/Teams';
-import {match} from "cypress/types/minimatch";
 import {checkFinal, checkMatch} from "./util/service/adminService";
 import {useLocation} from "react-router";
 import {getNumberOfUnplayedRounds} from "./util/service/dashboardService";
@@ -84,6 +83,7 @@ const App: React.FC = () => {
         rounds.then(value => {
             setGamesToPlay(value);
         })
+        
     }, []);
 
     return (

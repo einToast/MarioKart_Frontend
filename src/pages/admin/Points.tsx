@@ -37,7 +37,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const getSelectedRound = (roundNumber: number) => {
         const round = getRound(roundNumber);
         round.then((round) => {
-            round.games = round.games.sort((a, b) => a.id - b.id);
+            round.games = round.games?.sort((a, b) => a.id - b.id) || [];
             setRound(round);
             setRoundPlayed(round.played);
             setOpenAccordions([]); // Close all accordions initially
@@ -122,7 +122,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
                             {round.games?.map((game) => (
-                                game.teams = game.teams.sort((a, b) => a.id - b.id),
+                                game.teams = game.teams?.sort((a, b) => a.id - b.id) || [],
                                 <PointsCard
                                     key={game.id}
                                     game={game}

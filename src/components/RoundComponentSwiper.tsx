@@ -1,8 +1,9 @@
+import React from 'react';
 import TeamComponent4 from "./Team4";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import 'swiper/swiper-bundle.css';
-import {GameReturnDTO} from "../util/api/config/dto";
+import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
 
 const RoundComponentSwiper: React.FC<{game:GameReturnDTO, user:any, switchColor:string}> = ({ game, user, switchColor }) => {
     if (!game || !game.teams) return null;
@@ -19,7 +20,7 @@ const RoundComponentSwiper: React.FC<{game:GameReturnDTO, user:any, switchColor:
 
                     game.teams.map((team, index) => {
                         return (
-                        <SwiperSlide key={index} className={game.teams.some(t =>t.character.characterName === user.character) ? 'loggedIn' : ''}
+                        <SwiperSlide key={index} className={game.teams?.some(t => t.character?.characterName === user.character) ? 'loggedIn' : ''}
                                      style={{opacity: team.active ? 1 : 0.5}}>
                             <TeamComponent4 game={game} team={team} switchColor={switchColor} key={index}/>
                         </SwiperSlide>

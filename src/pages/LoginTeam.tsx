@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../interface/interfaces';
 import './RegisterTeam.css';
 import { LinearGradient } from "react-text-gradients";
@@ -38,7 +38,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             const user: User = {
                 loggedIn: true,
                 name: selectedTeam.teamName,
-                character: selectedTeam.character.characterName
+                character: selectedTeam.character?.characterName || ''
             };
             setUser(user);
             props.setUser(user);
@@ -100,7 +100,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 {teams && teams.map((team) => (
                                     <option key={team.teamName}
                                             value={team.teamName}
-                                            style={{backgroundImage: `url(/characters/${team.character.characterName}.png)`}}
+                                            style={{backgroundImage: `url(/characters/${team.character?.characterName}.png)`}}
                                     >
                                         {team.teamName}
                                     </option>
@@ -108,8 +108,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </select>
                             {teamName && (
                                 <div className="selected-character">
-                                    {[teams.find(team => team.teamName === teamName).character.characterName].map((character) => (
-                                        characters.includes(character) &&
+                                    {[teams.find(team => team.teamName === teamName)?.character?.characterName].map((character) => (
+                                        character && characters.includes(character) &&
                                         <img
                                             src={`/characters/${character}.png`}
                                             alt={`${character} character`}

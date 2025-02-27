@@ -9,10 +9,9 @@ import {QuestionType} from "../../util/service/util";
 import {getUser} from "../../util/service/loginService";
 import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 import SurveyAddModal from "./SurveyAddModal";
-import {set} from "js-cookie";
 import {QuestionReturnDTO} from "../../util/api/config/dto";
 
-const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:SurveyModalResult) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
 
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
@@ -89,7 +88,7 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Object
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({surveyChanged: false})}>
             <IonContent>
                 <h4>Abstimmung</h4>
                 <form onSubmit={handleChange}>
@@ -162,11 +161,11 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Object
                 </form>
                 <div className={"playedContainer"}>
 
-                    <IonButton className={"secondary round"} onClick={closeModal}
+                    <IonButton className={"secondary round"} onClick={() => closeModal({surveyChanged: false})}
                                tabIndex={0}
                                onKeyDown={(e) => {
                                    if (e.key === 'Enter' || e.key === ' ') {
-                                       closeModal();
+                                       closeModal({surveyChanged: false});
                                    }
                                }}
                     >

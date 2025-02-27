@@ -126,7 +126,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
 
-    const closeModal = (surveys:Object) => {
+    const closeModal = (surveys: SurveyModalResult) => {
         setModalClosed(prev => !prev);
         if (surveys.surveyCreated) {
             setError('Umfrage erfolgreich erstellt');
@@ -314,7 +314,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
             <IonToast
                 isOpen={showToast}
                 onDidDismiss={() => setShowToast(false)}
-                message={error}
+                message={error ?? undefined}
                 duration={3000}
                 className={ user ? 'tab-toast' : ''}
                 cssClass="toast"
