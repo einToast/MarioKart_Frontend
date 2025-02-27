@@ -1,20 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useEffect, useState } from 'react';
+import "../../interface/interfaces";
+import { TeamModalResult } from '../../interface/interfaces';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {changeQuestion, submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import SurveyAddModal from "./SurveyAddModal";
-import {changeTeam, changeTeamNameAndCharacter} from "../../util/service/adminService";
-import {CharacterReturnDTO, QuestionReturnDTO, TeamReturnDTO} from "../../util/api/config/dto";
-import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
+import { errorToastColor } from "../../util/api/config/constants";
+import { TeamReturnDTO } from "../../util/api/config/dto";
+import { changeTeamNameAndCharacter } from "../../util/service/adminService";
+import { getUser } from "../../util/service/loginService";
+import { getAllAvailableCharacters } from "../../util/service/teamRegisterService";
 
-const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalResult) => void, team: TeamReturnDTO}> = ({ showModal, closeModal, team }) => {
+const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
 
     const [teamName, setTeamName] = useState<string>('');
     const [character, setCharacter] = useState<string>('');
@@ -35,7 +32,7 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalR
 
             if (newTeam) {
                 resetTeam();
-                closeModal({teamChanged: true});
+                closeModal({ teamChanged: true });
             } else {
                 throw new TypeError('Umfrage konnte nicht erstellt werden');
             }
@@ -56,7 +53,7 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalR
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
-        } );
+        });
     };
 
     useEffect(() => {
@@ -67,7 +64,7 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalR
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({teamChanged: false})}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamChanged: false })}>
             <IonContent>
                 <h4>Team</h4>
                 <form onSubmit={handleChange}>
@@ -82,56 +79,56 @@ const TeamChangeModal:React.FC<{ showModal:boolean, closeModal: (team:TeamModalR
                             required
                         />
                     </div>
-                        <div className={"borderContainer"}>
-                            <p>Charakter</p>
-                            <select value={character} onChange={(e) => setCharacter(e.target.value)}
-                                    style={{cursor: "pointer"}}>
+                    <div className={"borderContainer"}>
+                        <p>Charakter</p>
+                        <select value={character} onChange={(e) => setCharacter(e.target.value)}
+                            style={{ cursor: "pointer" }}>
+                            <option
+                                value={character}
+                            >
+                                {character}
+                            </option>
+                            {availableCharacters && availableCharacters.map((character) => (
                                 <option
+                                    key={character}
                                     value={character}
                                 >
                                     {character}
                                 </option>
-                                {availableCharacters && availableCharacters.map((character) => (
-                                    <option
-                                        key={character}
-                                        value={character}
-                                    >
-                                        {character}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                </form>
-                    <div className={"playedContainer"}>
-
-                        <IonButton className={"secondary round"} onClick={() => closeModal({teamChanged: false})}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal({teamChanged: false});
-                                       }
-                                   }}
-                        >
-                            <div>
-                                <p>Abbrechen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        <IonButton className={"round"} onClick={handleChange}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleChange();
-                                       }
-                                   }}
-                        >
-
-                            <div>
-                                <p>Team ändern</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
+                            ))}
+                        </select>
                     </div>
+                </form>
+                <div className={"playedContainer"}>
+
+                    <IonButton className={"secondary round"} onClick={() => closeModal({ teamChanged: false })}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                closeModal({ teamChanged: false });
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>Abbrechen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton className={"round"} onClick={handleChange}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleChange();
+                            }
+                        }}
+                    >
+
+                        <div>
+                            <p>Team ändern</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                </div>
             </IonContent>
             <IonToast
                 isOpen={showToast}

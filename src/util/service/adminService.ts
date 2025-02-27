@@ -9,7 +9,6 @@ import {
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {deleteAllTeams, deleteTeam, getTeamsSortedByFinalPoints, updateTeam} from "../api/RegistrationApi";
 import {
     checkFinalPlan,
     checkMatchPlan,
@@ -20,6 +19,9 @@ import {
     updatePoints,
     updateRoundPlayed
 } from "../api/MatchPlanApi";
+import { deleteAllTeams, deleteTeam, getTeamsSortedByFinalPoints, updateTeam } from "../api/RegistrationApi";
+import { reset } from "../api/SettingsApi";
+import { removeQuestions } from "./surveyService";
 import {
     getAllTeams,
     getRegistrationOpen,
@@ -27,9 +29,7 @@ import {
     updateRegistrationOpen,
     updateTournamentOpen
 } from "./teamRegisterService";
-import {reset} from "../api/SettingsApi";
-import {ChangeType} from "./util";
-import {removeQuestions} from "./surveyService";
+import { ChangeType } from "./util";
 
 export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> => {
     for (const game of round.games) {
@@ -44,10 +44,10 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
             }
         }
     }
-    const roundInput : RoundInputDTO = {
+    const roundInput: RoundInputDTO = {
         played: round.played,
     }
-    try{
+    try {
         return await updateRoundPlayed(round.id, roundInput);
     } catch (error) {
         console.error('Error updating round played:', error);
@@ -55,7 +55,7 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
     }
 }
 
-export const saveGame = async (roundId: number, game: GameReturnDTO):Promise<PointsReturnDTO[]> => {
+export const saveGame = async (roundId: number, game: GameReturnDTO): Promise<PointsReturnDTO[]> => {
     const points: PointsReturnDTO[] = [];
     for (const team of game.teams) {
         const pointInput: PointsInputDTO = {

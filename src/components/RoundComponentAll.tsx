@@ -1,9 +1,8 @@
-// RoundComponentAll.tsx
 import React from 'react';
+import { GameReturnDTO } from "../util/api/config/dto";
 import TeamComponent from './TeamComponent';
-import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
 
-const RoundComponentAll: React.FC<{game:GameReturnDTO, user:any, switchColor:string}> = ({ game, user, switchColor }) => {
+const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: any, switchColor: string }> = ({ game, user, switchColor }) => {
     if (!game || !game.teams) {
 
         return (
@@ -13,17 +12,17 @@ const RoundComponentAll: React.FC<{game:GameReturnDTO, user:any, switchColor:str
 
     return (
         <div className="roundContainer" >
-                {game.teams.map(team => {
-                    return (
-                        <div
-                            key={team.id}
-                            className={`teamContainer ${user.character === team.character?.characterName ? 'userTeam' : ''} ${switchColor} slide`}
-                            style={{opacity: team.active ? 1 : 0.5}}
-                        >
-                            <TeamComponent team={team} switchColor={switchColor} />
-                        </div>
-                    );
-                })}
+            {game.teams.map(team => {
+                return (
+                    <div
+                        key={team.id}
+                        className={`teamContainer ${user.character === team.character?.characterName ? 'userTeam' : ''} ${switchColor} slide`}
+                        style={{ opacity: team.active ? 1 : 0.5 }}
+                    >
+                        <TeamComponent team={team} switchColor={switchColor} />
+                    </div>
+                );
+            })}
         </div>
     );
 };

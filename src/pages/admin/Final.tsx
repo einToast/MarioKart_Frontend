@@ -1,23 +1,26 @@
-import '../../interface/interfaces'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
     IonContent,
+    IonIcon,
     IonPage,
-    IonIcon, IonToast
+    IonToast
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline, removeCircleOutline, trashOutline} from 'ionicons/icons';
-import "./Final.css"
-import React, {useEffect, useState} from "react";
-import {TeamReturnDTO} from "../../util/api/config/dto";
+import { arrowBackOutline, arrowForwardOutline, removeCircleOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import '../../interface/interfaces';
+import { LoginProps } from "../../interface/interfaces";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { TeamReturnDTO } from "../../util/api/config/dto";
 import {
+    changeTeam,
     createTeamFinalPlan,
     getTeamTop4FinalRanked,
-    changeTeam, resetAllTeamFinalParticipation,
+    resetAllTeamFinalParticipation,
 } from "../../util/service/adminService";
-import {useHistory, useLocation} from "react-router";
-import {checkToken, getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import { checkToken, getUser } from "../../util/service/loginService";
+import "./Final.css";
 
 const Final: React.FC<LoginProps> = (props: LoginProps) => {
 
@@ -103,12 +106,12 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen>
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
@@ -128,15 +131,15 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                                 <div key={team.id} className={"teamFinal"}>
                                     <h3>{team.teamName}</h3>
                                     <IonIcon slot="end"
-                                             icon={removeCircleOutline}
-                                             style={{cursor: "pointer"}}
-                                             onClick={() => handleTeamFinalRemove(team)}
-                                             tabIndex={0}
-                                             onKeyDown={(e) => {
-                                                 if (e.key === 'Enter' || e.key === ' ') {
-                                                     handleTeamFinalRemove(team);
-                                                 }
-                                             }}
+                                        icon={removeCircleOutline}
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => handleTeamFinalRemove(team)}
+                                        tabIndex={0}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter' || e.key === ' ') {
+                                                handleTeamFinalRemove(team);
+                                            }
+                                        }}
                                     ></IonIcon>
                                 </div>
                             ))
@@ -149,41 +152,41 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round secondary"}>
                         <div onClick={handleTeamsReset}
-                             tabIndex={0}
-                             onKeyDown={(e) => {
-                                 if (e.key === 'Enter' || e.key === ' ') {
-                                     handleTeamsReset();
-                                 }
-                             }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleTeamsReset();
+                                }
+                            }}
                         >
                             <p>Teams zurücksetzen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleTeamsReset}
-                                     tabIndex={0}
-                                     onKeyDown={(e) => {
-                                         if (e.key === 'Enter' || e.key === ' ') {
-                                             handleTeamsReset();
-                                         }
-                                     }}
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleTeamsReset();
+                                    }
+                                }}
                             ></IonIcon>
                         </div>
                     </IonButton>
                     <IonButton slot="start" shape="round" className={"round"}>
                         <div onClick={handleFinalCreation}
-                             tabIndex={0}
-                             onKeyDown={(e) => {
-                                 if (e.key === 'Enter' || e.key === ' ') {
-                                     handleFinalCreation();
-                                 }
-                             }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleFinalCreation();
+                                }
+                            }}
                         >
                             <p>Finale erzeugen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleFinalCreation}
-                                     tabIndex={0}
-                                     onKeyDown={(e) => {
-                                         if (e.key === 'Enter' || e.key === ' ') {
-                                             handleFinalCreation();
-                                         }
-                                     }}
+                                tabIndex={0}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' || e.key === ' ') {
+                                        handleFinalCreation();
+                                    }
+                                }}
                             ></IonIcon>
                         </div>
                     </IonButton>
@@ -194,7 +197,7 @@ const Final: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

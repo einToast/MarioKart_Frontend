@@ -1,10 +1,6 @@
-import React from 'react';
-import {useEffect, useState} from 'react';
-import { Redirect, Route } from 'react-router-dom';
 import {
     IonApp,
     IonIcon,
-    IonLabel,
     IonRouterOutlet,
     IonTabBar,
     IonTabButton,
@@ -13,51 +9,49 @@ import {
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import './interface/interfaces';
+import AdminDashboard from "./pages/admin/Dashboard";
+import Final from "./pages/admin/Final";
+import Login from "./pages/admin/Login";
+import AdminPoints from "./pages/admin/Points";
+import AdminResults from "./pages/admin/Results";
+import AdminSurvey from "./pages/admin/SurveyAdmin";
+import LoginToTeam from './pages/LoginTeam';
+import RegisterTeam from './pages/RegisterTeam';
+import Survey from "./pages/Survey";
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
-import RegisterTeam from './pages/RegisterTeam';
-import Login from "./pages/admin/Login";
-import AdminDashboard from "./pages/admin/Dashboard";
-import AdminPoints from "./pages/admin/Points";
-import Final from "./pages/admin/Final";
-import AdminResults from "./pages/admin/Results";
-import AdminSurvey from "./pages/admin/SurveyAdmin";
-import Survey from "./pages/Survey";
-import LoginToTeam from './pages/LoginTeam';
-import './interface/interfaces';
-
-/* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
 
-/* Basic CSS for apps built with Ionic */
+import '@ionic/react/css/core.css';
+import '@ionic/react/css/normalize.css';
+import '@ionic/react/css/structure.css';
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
-
-/* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
-import '@ionic/react/css/float-elements.css';
-import '@ionic/react/css/text-alignment.css';
-import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/display.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-
-/* Theme variables */
+import '@ionic/react/css/flex-utils.css';
+import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/padding.css';
+import '@ionic/react/css/text-alignment.css';
+import '@ionic/react/css/text-transformation.css';
 import './theme/variables.css';
 
-import './theme/main.css'
-import MatchPlan from "./pages/admin/MatchPlan";
+import './theme/variables.css';
 import Control from "./pages/admin/Control";
-import {getUser} from "./util/service/loginService";
-import {WebSocketProvider} from "./components/WebSocketContext";
+import { WebSocketProvider } from "./components/WebSocketContext";
+import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
-import {checkFinal, checkMatch} from "./util/service/adminService";
-import {useLocation} from "react-router";
-import {getNumberOfUnplayedRounds} from "./util/service/dashboardService";
-
-setupIonicReact();
-
+import './theme/main.css';
+import { checkFinal, checkMatch } from "./util/service/adminService";
+import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
+import { getUser } from "./util/service/loginService";
+import { User } from './interface/interfaces';
 const App: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [gamesToPlay, setGamesToPlay] = useState<number>(0);
@@ -83,7 +77,7 @@ const App: React.FC = () => {
         rounds.then(value => {
             setGamesToPlay(value);
         })
-        
+
     }, []);
 
     return (

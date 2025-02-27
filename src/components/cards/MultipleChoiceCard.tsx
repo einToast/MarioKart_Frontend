@@ -1,22 +1,19 @@
-import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
     IonButton, IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
-import {QuestionReturnDTO} from "../../util/api/config/dto";
-import "../../pages/admin/Points.css";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor} from "../../util/api/config/constants";
-import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
 import {
-    checkmarkCircle, checkmarkCircleOutline, checkmarkDoneCircleOutline,
-    checkmarkOutline,
+    checkmarkCircleOutline,
     megaphoneOutline,
-    statsChartOutline,
-    thumbsUp,
-    thumbsUpOutline
+    statsChartOutline
 } from "ionicons/icons";
+import React, { useEffect, useState } from "react";
+import "../../pages/admin/Points.css";
+import { errorToastColor } from "../../util/api/config/constants";
+import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { getUser } from "../../util/service/loginService";
+import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
 
 const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -53,7 +50,7 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
         }
     }
 
-    const handleVoteStatus = (vote:number) => {
+    const handleVoteStatus = (vote: number) => {
         if (!multipleChoiceQuestion.active) {
             setIndicator(statsChartOutline)
         } else if (vote === undefined) {
@@ -84,11 +81,11 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
     return (
         <IonAccordion value={multipleChoiceQuestion.id.toString()} >
             <IonItem slot="header" color="light" disabled={votedId !== -1 || !multipleChoiceQuestion.active} onClick={showResults}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             showResults();
-                         }
-                     }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        showResults();
+                    }
+                }}
             >
                 <IonIcon icon={indicator} slot="end" />
                 <h3 className="weiss">{multipleChoiceQuestion.questionText}</h3>
@@ -97,31 +94,31 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        multipleChoiceQuestion.options.map((option, index:number) => {
+                        multipleChoiceQuestion.options.map((option, index: number) => {
                             return (
                                 <IonButton slot="start" shape="round"
-                                           className={!multipleChoiceQuestion.active ? 'bsurvey' : ''}
-                                           onClick={votedId === -1 ? () => setVote(index) : undefined}
-                                           tabIndex={0}
-                                           onKeyDown={(e) => {
-                                              if (e.key === 'Enter' || e.key === ' ') {
-                                                  if (votedId === -1) {
-                                                      setVote(index);
-                                                  }
-                                              }
-                                           }}
-                                           key={index}
-                                           disabled={!(vote == index || votedId == index ) && votedId !== -1}
-                                           style={{
-                                               pointerEvents: (votedId !== -1 || !multipleChoiceQuestion.active) ? 'none' : 'auto',
-                                               opacity: vote == index || votedId == index ? 1 : 0.5,
-                                               "--gradient-percentage": `${results[index] / Math.max(results.reduce((a, b) => a + b),1) * 100}%`,
-                                           }}
+                                    className={!multipleChoiceQuestion.active ? 'bsurvey' : ''}
+                                    onClick={votedId === -1 ? () => setVote(index) : undefined}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            if (votedId === -1) {
+                                                setVote(index);
+                                            }
+                                        }
+                                    }}
+                                    key={index}
+                                    disabled={!(vote == index || votedId == index) && votedId !== -1}
+                                    style={{
+                                        pointerEvents: (votedId !== -1 || !multipleChoiceQuestion.active) ? 'none' : 'auto',
+                                        opacity: vote == index || votedId == index ? 1 : 0.5,
+                                        "--gradient-percentage": `${results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%`,
+                                    }}
 
                                 >
                                     <div className="button-content">
                                         <p>{option}</p>
-                                        {!multipleChoiceQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b),1) * 100}%</p>}
+                                        {!multipleChoiceQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
 
                                     </div>
                                 </IonButton>)

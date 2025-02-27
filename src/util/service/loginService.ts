@@ -1,7 +1,7 @@
-import {AuthenticationRequestDTO} from "../api/config/dto";
-import {login} from "../api/UserApi";
-import {jwtDecode} from "jwt-decode";
 import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { AuthenticationRequestDTO } from "../api/config/dto";
+import { login } from "../api/UserApi";
 
 export const loginUser = async (username: string, password: string): Promise<void> => {
     const user: AuthenticationRequestDTO = {
@@ -12,10 +12,10 @@ export const loginUser = async (username: string, password: string): Promise<voi
     setToken(response.accessToken);
 };
 export const setToken = (token: string): void => {
-    Cookies.set('authToken', token, {expires: 1, sameSite: 'strict'});
+    Cookies.set('authToken', token, { expires: 1, sameSite: 'strict' });
 };
 export const getToken = (): string | null => {
-    try{
+    try {
         return Cookies.get('authToken');
     } catch (e) {
         return null;
@@ -50,11 +50,11 @@ export const checkToken = (): boolean => {
 }
 
 export const setUser = (user: any): void => {
-    Cookies.set('user', JSON.stringify(user), {expires: 1, sameSite: 'strict'});
+    Cookies.set('user', JSON.stringify(user), { expires: 1, sameSite: 'strict' });
 }
 
 export const getUser = (): any => {
-    try{
+    try {
         return JSON.parse(Cookies.get('user'));
     } catch (e) {
         return null;

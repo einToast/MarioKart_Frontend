@@ -1,18 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {useHistory, useLocation} from "react-router";
-import '../../interface/interfaces';
-import '../RegisterTeam.css';
-import { LinearGradient } from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
-import {checkToken, getUser, loginUser} from "../../util/service/loginService";
-import {errorToastColor} from "../../util/api/config/constants";
+import React, { useEffect, useState } from 'react';
+import { useHistory } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import '../../interface/interfaces';
+import { AdminUser } from "../../interface/interfaces";
+import { errorToastColor } from "../../util/api/config/constants";
+import { checkToken, getUser, loginUser } from "../../util/service/loginService";
+import '../RegisterTeam.css';
 
 interface LoginProps {
     setUserAdmin: (userAdmin: AdminUser) => void;
@@ -99,12 +100,12 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                             />
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleLogin();
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleLogin();
+                                }
+                            }}
                         >
                             <div>
                                 <p>Admin Bereich betreten</p>
@@ -118,7 +119,7 @@ const Login: React.FC<LoginProps> = (props: LoginProps) => {
                     onDidDismiss={() => setShowToast(false)}
                     message={error}
                     duration={3000}
-                    className={ user ? 'tab-toast' : ''}
+                    className={user ? 'tab-toast' : ''}
                     cssClass="toast"
                     style={{
                         '--toast-background': toastColor

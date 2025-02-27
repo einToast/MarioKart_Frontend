@@ -1,14 +1,15 @@
+import Cookies from "js-cookie";
 import {
     createQuestion,
-    getVisibleQuestions,
+    deleteQuestion, deleteQuestions,
     getAnswersOfQuestion,
     getQuestions,
+    getVisibleQuestions,
     submitAnswer,
-    updateQuestion, deleteQuestion, deleteQuestions
+    updateQuestion
 } from "../api/SurveyApi";
-import {AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO} from "../api/config/dto";
-import Cookies from "js-cookie";
-import {QuestionType} from "./util";
+import { AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
+import { QuestionType } from "./util";
 
 export const getCurrentQuestions = async (): Promise<QuestionReturnDTO[]> => {
     return getVisibleQuestions();
@@ -18,7 +19,7 @@ export const getAllQuestions = async (): Promise<QuestionReturnDTO[]> => {
     return getQuestions();
 }
 
-export const submitQuestion = async (question:string, questionType:QuestionType, options:string[]): Promise<QuestionReturnDTO> => {
+export const submitQuestion = async (question: string, questionType: QuestionType, options: string[]): Promise<QuestionReturnDTO> => {
     if (question === '') {
         throw new Error('Die Frage darf nicht leer sein');
     } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT) {
@@ -65,11 +66,11 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Pr
         throw new Error('Die Umfrage ist bereits beendet');
     } else if (vote === '') {
         throw new Error('Die Antwort darf nicht leer sein');
-    } else if ((vote === -1 && !(typeof vote === 'string')) || (!(typeof vote === 'string' || typeof vote === 'number') && vote.includes(-1))|| vote.length === 0) {
+    } else if ((vote === -1 && !(typeof vote === 'string')) || (!(typeof vote === 'string' || typeof vote === 'number') && vote.includes(-1)) || vote.length === 0) {
         throw new Error('Es wurde keine Antwort ausgewählt');
     }
 
-    const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT? vote : '';
+    const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT ? vote : '';
     const multipleChoiceSelectedOption = question.questionType === QuestionType.MULTIPLE_CHOICE ? vote : -1;
     const checkboxSelectedOptions = question.questionType === QuestionType.CHECKBOX ? vote : [];
 
@@ -95,7 +96,7 @@ export const setAnswer = async (questionString: string, answer: number): Promise
         answerId: answer.toString(),
         // timestamp: new Date().getTime()
     }
-    Cookies.set(questionString, JSON.stringify(answerCookie), {expires: 1,sameSite: 'strict'});
+    Cookies.set(questionString, JSON.stringify(answerCookie), { expires: 1, sameSite: 'strict' });
 }
 
 export const getAnswer = async (questionString: string): Promise<any> => {

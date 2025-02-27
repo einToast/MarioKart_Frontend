@@ -1,7 +1,6 @@
-import {CharacterReturnDTO, TeamInputDTO, TeamReturnDTO, TournamentDTO} from "../api/config/dto";
-import {addTeam, getAvailableCharacters, getCharacters, getTeams} from "../api/RegistrationApi";
-import {getSettings, updateSettings} from "../api/SettingsApi";
-import {c} from "vite/dist/node/types.d-aGj9QkWt";
+import { CharacterReturnDTO, TeamInputDTO, TeamReturnDTO, TournamentDTO } from "../api/config/dto";
+import { addTeam, getAvailableCharacters, getCharacters, getTeams } from "../api/RegistrationApi";
+import { getSettings, updateSettings } from "../api/SettingsApi";
 
 export const getAllCharacters = async (): Promise<CharacterReturnDTO[]> => {
     return await getCharacters();
@@ -15,7 +14,7 @@ export const getAllTeams = async (): Promise<TeamReturnDTO[]> => {
     return await getTeams();
 }
 
-export const createTeam = async (teamName:string, characterName:string): Promise<TeamReturnDTO> => {
+export const createTeam = async (teamName: string, characterName: string): Promise<TeamReturnDTO> => {
     if (!teamName) {
         throw new Error("Der Teamname darf nicht leer sein!");
     } else if (!characterName) {
@@ -45,7 +44,7 @@ export const getTournamentOpen = async (): Promise<boolean> => {
 export const updateRegistrationOpen = async (registrationOpen: boolean): Promise<TournamentDTO> => {
     // const tournament = await getSettings();
     // tournament.registrationOpen = registrationOpen;
-    const tournament:TournamentDTO = {
+    const tournament: TournamentDTO = {
         registrationOpen: registrationOpen
     }
     return await updateSettings(tournament);
@@ -54,7 +53,7 @@ export const updateRegistrationOpen = async (registrationOpen: boolean): Promise
 export const updateTournamentOpen = async (tournamentOpen: boolean): Promise<TournamentDTO> => {
     // const tournament = await getSettings();
     // tournament.tournamentOpen = tournamentOpen;
-    const tournament:TournamentDTO = {
+    const tournament: TournamentDTO = {
         tournamentOpen: tournamentOpen
     }
     return await updateSettings(tournament);

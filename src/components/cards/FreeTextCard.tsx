@@ -1,18 +1,18 @@
-import React, {useEffect, useState} from "react";
 import {
     IonAccordion,
     IonButton, IonIcon,
     IonItem, IonToast
 } from "@ionic/react";
-import {QuestionReturnDTO} from "../../util/api/config/dto";
+import { megaphoneOutline, statsChartOutline } from "ionicons/icons";
+import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {getAnswer, getAnswers, registerAnswer} from "../../util/service/surveyService";
-import {megaphoneOutline, statsChartOutline, trashOutline} from "ionicons/icons";
 import '../../pages/Survey.css';
+import { errorToastColor } from "../../util/api/config/constants";
+import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { getUser } from "../../util/service/loginService";
+import { registerAnswer } from "../../util/service/surveyService";
 
-const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion,toggleAccordion }) => {
+const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
 
     const [text, setText] = useState<string>('');
     const [error, setError] = useState<string>('Error');
@@ -64,7 +64,7 @@ const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccord
                     <textarea
                         className={"input"}
                         placeholder={!freeTextQuestion.active ? "Umfrage geschlossen" : "Dein Feedback"}
-                        style={{height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px"}}
+                        style={{ height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px" }}
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         disabled={!freeTextQuestion.active}

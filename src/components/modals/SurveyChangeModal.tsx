@@ -1,17 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useEffect, useState } from 'react';
+import "../../interface/interfaces";
+import { SurveyModalResult } from '../../interface/interfaces';
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {changeQuestion, submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import SurveyAddModal from "./SurveyAddModal";
-import {QuestionReturnDTO} from "../../util/api/config/dto";
+import { errorToastColor } from "../../util/api/config/constants";
+import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { getUser } from "../../util/service/loginService";
+import { changeQuestion } from "../../util/service/surveyService";
+import { QuestionType } from "../../util/service/util";
 
-const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:SurveyModalResult) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+
+const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
@@ -66,7 +66,7 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
 
             if (newQuestion) {
                 resetQuestion();
-                closeModal({surveyChanged: true});
+                closeModal({ surveyChanged: true });
             } else {
                 throw new TypeError('Umfrage konnte nicht erstellt werden');
             }
@@ -88,7 +88,7 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({surveyChanged: false})}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyChanged: false })}>
             <IonContent>
                 <h4>Abstimmung</h4>
                 <form onSubmit={handleChange}>
@@ -108,11 +108,11 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
                         <div>
                             <p>Abstimmungsoptionen</p>
                             <IonItem className={"item-background-color"}>
-                                <select value={questionType} onChange={(e) => handleQuestionTypeChange(e)} disabled style={{color: 'grey'}}>
+                                <select value={questionType} onChange={(e) => handleQuestionTypeChange(e)} disabled style={{ color: 'grey' }}>
                                     {
                                         Object.keys(QuestionType).map((key) => (
                                             <option key={key}
-                                                    value={key}
+                                                value={key}
                                             >
                                                 {key}
                                             </option>
@@ -122,28 +122,28 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
                             </IonItem>
                         </div>
                         {(questionType !== QuestionType.FREE_TEXT) &&
-                                <div>
-                                    <IonButton className="add-option-button"
-                                               onClick={incrementOptions}>
-                                        <div>
-                                            <p>Option hinzufügen</p>
-                                        </div>
-                                    </IonButton>
-                                    <IonButton className="add-option-button secondary"
-                                               onClick={decrementOptions}>
-                                        <div>
-                                            <p>Option entfernen</p>
-                                        </div>
-                                    </IonButton>
-                                </div>
+                            <div>
+                                <IonButton className="add-option-button"
+                                    onClick={incrementOptions}>
+                                    <div>
+                                        <p>Option hinzufügen</p>
+                                    </div>
+                                </IonButton>
+                                <IonButton className="add-option-button secondary"
+                                    onClick={decrementOptions}>
+                                    <div>
+                                        <p>Option entfernen</p>
+                                    </div>
+                                </IonButton>
+                            </div>
                         }
                     </div>
 
                     <br></br>
                     {(questionType !== QuestionType.FREE_TEXT) &&
                         <>
-                            <div style={{marginBottom: '115px'}}>
-                                {Array.from({length: numberOfOptions}, (_, index) => (
+                            <div style={{ marginBottom: '115px' }}>
+                                {Array.from({ length: numberOfOptions }, (_, index) => (
                                     <div key={index} className="form-group">
                                         <label>Option {index + 1}</label>
                                         <input
@@ -161,13 +161,13 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
                 </form>
                 <div className={"playedContainer"}>
 
-                    <IonButton className={"secondary round"} onClick={() => closeModal({surveyChanged: false})}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       closeModal({surveyChanged: false});
-                                   }
-                               }}
+                    <IonButton className={"secondary round"} onClick={() => closeModal({ surveyChanged: false })}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                closeModal({ surveyChanged: false });
+                            }
+                        }}
                     >
                         <div>
                             <p>Abbrechen</p>
@@ -175,12 +175,12 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
                         </div>
                     </IonButton>
                     <IonButton className={"round"} onClick={handleChange}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleChange();
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleChange();
+                            }
+                        }}
                     >
 
                         <div>
@@ -197,7 +197,7 @@ const SurveyChangeModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

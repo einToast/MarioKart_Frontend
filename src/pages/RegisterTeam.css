@@ -61,6 +61,7 @@ h1 {
         &:focus-visible {
             outline: none;
         }
+
         option {
             color: #fff;
             background: #1a1a1a;
@@ -80,9 +81,7 @@ h1 {
         color: #fff;
         font-size: 16px !important;
 
-        &::placeholder {
-
-        }
+        &::placeholder {}
 
         &:focus-visible {
             outline: none;
@@ -138,13 +137,13 @@ ion-button.bsurvey:hover::part(native) {
 }
 
 .adminDashboard {
-    ion-button > div {
+    ion-button>div {
         padding: 10px;
     }
 }
 
 ion-button {
-    > div {
+    >div {
         display: flex;
         justify-content: space-between;
         width: 100%;

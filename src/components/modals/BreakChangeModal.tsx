@@ -1,29 +1,21 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { differenceInMinutes } from "date-fns";
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useEffect, useState } from 'react';
+import "../../interface/interfaces";
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {changeQuestion, submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import SurveyAddModal from "./SurveyAddModal";
-import {changeBreak, changeTeam, changeTeamNameAndCharacter} from "../../util/service/adminService";
+import { errorToastColor } from "../../util/api/config/constants";
 import {
     BreakReturnDTO,
-    CharacterReturnDTO,
-    QuestionReturnDTO,
-    RoundReturnDTO,
-    TeamReturnDTO
+    RoundReturnDTO
 } from "../../util/api/config/dto";
-import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
-import {getAllRounds} from "../../util/service/dashboardService";
-import Dashboard from "../../pages/admin/Dashboard";
-import {differenceInMinutes} from "date-fns";
+import { changeBreak } from "../../util/service/adminService";
+import { getAllRounds } from "../../util/service/dashboardService";
+import { getUser } from "../../util/service/loginService";
+import { BreakModalResult } from "../../interface/interfaces";
 
-const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakModalResult) => void, aBreak:BreakReturnDTO}> = ({ showModal, closeModal, aBreak }) => {
+const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
     const [breakDuration, setBreakDuration] = useState<number>(0);
     const [breakEnded, setBreakEnded] = useState<boolean>(false);
@@ -46,7 +38,7 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakMod
 
             if (newTeam) {
                 resetBreak();
-                closeModal({breakChanged: true});
+                closeModal({ breakChanged: true });
             } else {
                 throw new TypeError('Umfrage konnte nicht erstellt werden');
             }
@@ -83,7 +75,7 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakMod
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({breakChanged: false})}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ breakChanged: false })}>
             <IonContent>
                 <h4>Team</h4>
                 <form onSubmit={handleChange}>
@@ -101,11 +93,11 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakMod
                     <div className={"borderContainer"}>
                         <p>Vor Runde</p>
                         <select value={beforeRound} onChange={(e) => setBeforeRound(parseInt(e.target.value))}
-                                style={{cursor: "pointer"}}
+                            style={{ cursor: "pointer" }}
                         >
                             {rounds.map((round, index) => (
                                 <option value={round.id}
-                                        key={index}
+                                    key={index}
                                 >
                                     {round.id}
                                 </option>
@@ -115,43 +107,43 @@ const BreakChangeModal:React.FC<{ showModal:boolean, closeModal: (team: BreakMod
                     <div className={"borderContainer"}>
                         <p>Pause beendet</p>
                         <select value={breakEnded ? 1 : 0} onChange={(e) => setBreakEnded(e.target.value === '1')}
-                                style={{cursor: "pointer"}}
+                            style={{ cursor: "pointer" }}
                         >
                             <option value={0}>Nein</option>
                             <option value={1}>Ja</option>
                         </select>
                     </div>
                 </form>
-                    <div className={"playedContainer"}>
+                <div className={"playedContainer"}>
 
-                        <IonButton className={"secondary round"} onClick={() => closeModal({breakChanged: false})}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                            closeModal({breakChanged: false});
-                                       }
-                                   }}
-                        >
-                            <div>
-                                <p>Abbrechen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        <IonButton className={"round"} onClick={handleChange}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleChange();
-                                       }
-                                   }}
-                        >
+                    <IonButton className={"secondary round"} onClick={() => closeModal({ breakChanged: false })}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                closeModal({ breakChanged: false });
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>Abbrechen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton className={"round"} onClick={handleChange}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleChange();
+                            }
+                        }}
+                    >
 
-                            <div>
-                                <p>Pause ändern</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                    </div>
+                        <div>
+                            <p>Pause ändern</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                </div>
             </IonContent>
             <IonToast
                 isOpen={showToast}

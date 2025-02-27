@@ -16,6 +16,7 @@ p.bold {
 
     div {
         display: flex;
+
         @media (min-width: 768px) {
             gap: 15px;
         }
@@ -25,6 +26,7 @@ p.bold {
         }
     }
 }
+
 .teamFinal {
     background-color: #32345E;
     border: 1px solid #32345E;

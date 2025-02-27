@@ -1,8 +1,7 @@
 import React from 'react';
-import {GameReturnDTO, TeamReturnDTO} from "../util/api/config/dto";
+import { GameReturnDTO, TeamReturnDTO } from "../util/api/config/dto";
 
-const TeamComponent4: React.FC<{team:TeamReturnDTO, game:GameReturnDTO, switchColor:string}> = ({ team, game, switchColor }) => {
-    const character = team.character?.characterName || [];
+const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, switchColor: string }> = ({ team, game, switchColor }) => {
 
     return (
         <div className={`${switchColor}`}>
@@ -16,7 +15,7 @@ const TeamComponent4: React.FC<{team:TeamReturnDTO, game:GameReturnDTO, switchCo
                             key={team.character?.characterName}
                         />
                     )
-                    })
+                })
                 }
             </div>
             <div>

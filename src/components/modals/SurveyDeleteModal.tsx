@@ -1,21 +1,17 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useState } from 'react';
+import "../../interface/interfaces";
+import { SurveyModalResult } from '../../interface/interfaces';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {changeQuestion, removeQuestion, submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import SurveyAddModal from "./SurveyAddModal";
-import {changeTeam, changeTeamNameAndCharacter, removeTeam} from "../../util/service/adminService";
-import {CharacterReturnDTO, GameReturnDTO, QuestionReturnDTO} from "../../util/api/config/dto";
-import {getAllAvailableCharacters} from "../../util/service/teamRegisterService";
-import TeamChangeModal from "./TeamChangeModal";
+import { errorToastColor } from "../../util/api/config/constants";
+import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { getUser } from "../../util/service/loginService";
+import { removeQuestion } from "../../util/service/surveyService";
 
-const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:SurveyModalResult) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+
+const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
@@ -26,7 +22,7 @@ const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
     const handleDeletion = async () => {
         try {
             await removeQuestion(question);
-            closeModal({surveyDeleted: true});
+            closeModal({ surveyDeleted: true });
         } catch (error) {
             setError(error.message);
             setToastColor(errorToastColor);
@@ -35,41 +31,41 @@ const SurveyDeleteModal:React.FC<{ showModal:boolean, closeModal: (survey:Survey
     }
 
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({surveyDeleted: false})}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyDeleted: false })}>
             <IonContent>
                 <h4>Umfrage löschen</h4>
                 <p> Willst du die Umfrage <span>{question.questionText} </span> wirklich löschen?</p>
                 <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
-                
-                    <div className={"playedContainer"}>
-                        <IonButton className={"secondary round"} onClick={() => closeModal({surveyDeleted: false})}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           closeModal({surveyDeleted: false});
-                                    }
-                                }}
-                        >
-                            <div>
-                                <p>Abbrechen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                        <IonButton className={"round"} onClick={handleDeletion}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                             handleDeletion();
-                                       }
-                                   }}
-                        >
 
-                            <div>
-                                <p>Umfrage löschen</p>
-                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
-                            </div>
-                        </IonButton>
-                    </div>
+                <div className={"playedContainer"}>
+                    <IonButton className={"secondary round"} onClick={() => closeModal({ surveyDeleted: false })}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                closeModal({ surveyDeleted: false });
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>Abbrechen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton className={"round"} onClick={handleDeletion}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleDeletion();
+                            }
+                        }}
+                    >
+
+                        <div>
+                            <p>Umfrage löschen</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                </div>
             </IonContent>
             <IonToast
                 isOpen={showToast}

@@ -1,4 +1,4 @@
-interface Team {
+export interface Team {
     id: number;
     name: string;
     character: string;
@@ -7,35 +7,35 @@ interface Team {
     final_ready: boolean;
 }
 
-interface User {
+export interface User {
     loggedIn: boolean;
     name: string | null;
     character: string | null;
 }
 
-interface LoginProps {
+export interface LoginProps {
     setUser: (user: User | null) => void
 }
 
-interface Character {
+export interface Character {
     name: string;
     imagePath: string;
 }
 
-interface Game {
+export interface Game {
     id: number,
     switch: string,
     teams: Team[]
 }
 
-interface Point {
+export interface Point {
     id: number,
     final_points: number,
     normal_poins: number,
     team: Team
 }
 
-interface Round {
+export interface Round {
     id: number,
     final: boolean,
     gespielt: boolean,
@@ -44,7 +44,7 @@ interface Round {
     games: Game[]
 }
 
-interface Survey {
+export interface Survey {
     id: number,
     active: boolean,
     question: string,
@@ -53,24 +53,24 @@ interface Survey {
     teams: Team[],
 }
 
-interface AdminUser {
+export interface AdminUser {
     loggedIn: boolean;
     username: string;
     token: string;
 }
 
-interface SurveyModalResult {
+export interface SurveyModalResult {
     surveyResults?: boolean;
     surveyCreated?: boolean;
     surveyChanged?: boolean;
     surveyDeleted?: boolean;
 }
 
-interface TeamModalResult {
+export interface TeamModalResult {
     teamChanged?: boolean;
     teamDeleted?: boolean;
 }
 
-interface BreakModalResult {
+export interface BreakModalResult {
     breakChanged?: boolean;
 }

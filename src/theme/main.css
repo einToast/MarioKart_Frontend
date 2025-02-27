@@ -84,7 +84,8 @@ ion-content {
 }
 
 /*Navigation Bottom Bar*/
-ion-tab-bar, ion-tab-button {
+ion-tab-bar,
+ion-tab-button {
     background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
 }
 

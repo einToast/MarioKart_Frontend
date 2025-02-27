@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import '../interface/interfaces';
-import './RegisterTeam.css';
-import { LinearGradient } from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
-import {useHistory, useLocation} from "react-router";
-import {TeamReturnDTO} from "../util/api/config/dto";
-import {getAllTeams, getTournamentOpen} from "../util/service/teamRegisterService";
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
 import characters from "../interface/characters";
-import {getUser, setUser} from "../util/service/loginService";
-import {errorToastColor} from "../util/api/config/constants";
+import '../interface/interfaces';
+import { User } from '../interface/interfaces';
+import { errorToastColor } from "../util/api/config/constants";
+import { TeamReturnDTO } from "../util/api/config/dto";
+import { getUser, setUser } from "../util/service/loginService";
+import { getAllTeams, getTournamentOpen } from "../util/service/teamRegisterService";
+import './RegisterTeam.css';
 
 interface LoginProps {
     setUser: (user: User) => void;
@@ -52,7 +53,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         setLoading(true);
-        if (getUser()){
+        if (getUser()) {
             history.push('/tab1');
             setLoading(false);
         }
@@ -95,12 +96,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                         Liste auftaucht, lade neu oder registriere dein Team.</p>
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
-                            <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{cursor: "pointer"}}>
+                            <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value="">Select Team</option>
                                 {teams && teams.map((team) => (
                                     <option key={team.teamName}
-                                            value={team.teamName}
-                                            style={{backgroundImage: `url(/characters/${team.character?.characterName}.png)`}}
+                                        value={team.teamName}
+                                        style={{ backgroundImage: `url(/characters/${team.character?.characterName}.png)` }}
                                     >
                                         {team.teamName}
                                     </option>
@@ -122,12 +123,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             }
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleLogin();
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleLogin();
+                                }
+                            }}
                         >
                             <div>
                                 <p>Zum Team {teamName} anmelden</p>

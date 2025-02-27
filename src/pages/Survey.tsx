@@ -1,21 +1,20 @@
-import {IonAccordionGroup, IonContent, IonPage} from '@ionic/react';
-import '../interface/interfaces'
-import Header from "../components/Header";
-import {LinearGradient} from "react-text-gradients";
-import React, {useEffect, useRef, useState} from "react";
-import './Survey.css'
-import {QuestionReturnDTO} from "../util/api/config/dto";
-import {getAnswer, getAnswers, getCurrentQuestions} from "../util/service/surveyService";
-import {useHistory, useLocation} from "react-router";
-import {QuestionType} from "../util/service/util";
-import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
-import FreeTextCard from "../components/cards/FreeTextCard";
+import { IonAccordionGroup, IonContent, IonPage } from '@ionic/react';
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
 import CheckBoxCard from "../components/cards/CheckBoxCard";
-import {getTournamentOpen} from "../util/service/teamRegisterService";
+import FreeTextCard from "../components/cards/FreeTextCard";
+import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
+import Header from "../components/Header";
+import '../interface/interfaces';
+import { QuestionReturnDTO } from "../util/api/config/dto";
+import { getAnswer, getCurrentQuestions } from "../util/service/surveyService";
+import { getTournamentOpen } from "../util/service/teamRegisterService";
+import { QuestionType } from "../util/service/util";
+import './Survey.css';
 
 const Survey: React.FC = () => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
-    const [answers, setAnswers] = useState<string[]>([]);
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]);
 
@@ -88,7 +87,7 @@ const Survey: React.FC = () => {
                 </h1>
                 {currentQuestions.length > 0 ? (
                     <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
-                        {currentQuestions.map((question, index) => (
+                        {currentQuestions.map((question) => (
                             (question.questionType === QuestionType.MULTIPLE_CHOICE) ? (
                                 <MultipleChoiceCard
                                     key={question.id}

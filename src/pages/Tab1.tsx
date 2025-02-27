@@ -1,27 +1,27 @@
-import {IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast} from '@ionic/react';
-import './Tab1.css';
-import {LinearGradient} from 'react-text-gradients'
+import { App as CapacitorApp } from '@capacitor/app';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast } from '@ionic/react';
+import React, { useEffect, useState } from "react";
+import { LinearGradient } from 'react-text-gradients';
 import Header from "../components/Header";
 import '../interface/interfaces';
-import React, {useEffect, useState} from "react";
-import { App as CapacitorApp } from '@capacitor/app';
+import './Tab1.css';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
 import RoundComponentAll from "../components/RoundComponentAll";
 import RoundComponentSwiper from "../components/RoundComponentSwiper";
-import {getBothCurrentRounds, getSelectedGamesOption, setSelectedGamesOption} from "../util/service/dashboardService";
-import {BreakReturnDTO, RoundReturnDTO} from "../util/api/config/dto";
-import {getUser} from "../util/service/loginService";
-import {errorToastColor} from "../util/api/config/constants";
+import { errorToastColor } from "../util/api/config/constants";
+import { BreakReturnDTO, RoundReturnDTO } from "../util/api/config/dto";
+import { getBothCurrentRounds, getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
+import { getUser } from "../util/service/loginService";
 
-import {useWebSocket} from "../components/WebSocketContext";
-import {useHistory, useLocation} from "react-router";
-import {getRegistrationOpen, getTournamentOpen} from "../util/service/teamRegisterService";
+import { useHistory, useLocation } from "react-router";
+import { useWebSocket } from "../components/WebSocketContext";
+import { getTournamentOpen } from "../util/service/teamRegisterService";
 
 const Tab1: React.FC = () => {
-    const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO>({id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false});
-    const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO>({id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false});
+    const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO>({ id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false });
+    const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO>({ id: 0, startTime: '', endTime: '', played: false, games: [], finalGame: false });
     const [userCharacter, setUserCharacter] = useState<string | null>(null);
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
     const [noGames, setNoGames] = useState<boolean>(false);
@@ -56,7 +56,7 @@ const Tab1: React.FC = () => {
             } else {
                 setNoGames(true);
             }
-            if (response[0] &&response[0].breakTime && !response[0].breakTime.breakEnded) {
+            if (response[0] && response[0].breakTime && !response[0].breakTime.breakEnded) {
                 setCurrentRound(response[0].breakTime);
                 setNextRound(response[0]);
                 isBreakTime = true;
@@ -166,7 +166,7 @@ const Tab1: React.FC = () => {
 
     return (
         <IonPage>
-            <Header/>
+            <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
@@ -210,39 +210,39 @@ const Tab1: React.FC = () => {
 
                                             return (
                                                 <RoundComponentSwiper key={game.id} game={game} user={user}
-                                                                      switchColor={switchColor}/>
+                                                    switchColor={switchColor} />
                                             );
                                         })}
                                     </>
                                 ) : (
                                     <>
-                                    {currentRound && !currentRound.breakEnded ? (
-                                        <>
-                                            <div className="timeContainer">
-                                                <h3>Aktuelle Spiele</h3>
-                                                <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
-                                            </div>
-                                            <p> It's pizza time! 🍕</p>
-                                        </>
+                                        {currentRound && !currentRound.breakEnded ? (
+                                            <>
+                                                <div className="timeContainer">
+                                                    <h3>Aktuelle Spiele</h3>
+                                                    <p className="timeStamp">{currentRound.startTime} - {currentRound.endTime}</p>
+                                                </div>
+                                                <p> It's pizza time! 🍕</p>
+                                            </>
                                         ) : (
-                                        <>
-                                            {noGames ? (
-                                                <>
-                                                    <div className="timeContainer">
-                                                        <h3>Aktuelle Spiele</h3>
-                                                    </div>
-                                                    <p>Keine Spiele gefunden.</p>
-                                                </>
+                                            <>
+                                                {noGames ? (
+                                                    <>
+                                                        <div className="timeContainer">
+                                                            <h3>Aktuelle Spiele</h3>
+                                                        </div>
+                                                        <p>Keine Spiele gefunden.</p>
+                                                    </>
                                                 ) : (
-                                                <p>Test</p>
+                                                    <p>Test</p>
                                                 )}
-                                                </>
-                                            )}
-                                        </>
-                                    )}
-                                    </div>
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
 
-                                    <div className="flexSpiel next">
+                            <div className="flexSpiel next">
                                 {(nextRound && typeof nextRound.played === 'boolean') ? (
                                     <>
                                         <div className="timeContainer">
@@ -262,7 +262,7 @@ const Tab1: React.FC = () => {
 
                                             return (
                                                 <RoundComponentSwiper key={game.id} game={game} user={user}
-                                                                      switchColor={switchColor}/>
+                                                    switchColor={switchColor} />
                                             );
                                         })}
                                     </>
@@ -321,7 +321,7 @@ const Tab1: React.FC = () => {
 
                                                         return (
                                                             <RoundComponentAll key={game.id} game={game} user={user}
-                                                                               switchColor={switchColor}/>
+                                                                switchColor={switchColor} />
                                                         );
                                                     });
 
@@ -395,7 +395,7 @@ const Tab1: React.FC = () => {
 
                                                         return (
                                                             <RoundComponentAll key={game.id} game={game} user={user}
-                                                                               switchColor={switchColor}/>
+                                                                switchColor={switchColor} />
                                                         );
                                                     });
 
@@ -431,13 +431,13 @@ const Tab1: React.FC = () => {
                                                         </div>
                                                         <p>Keine Spiele gefunden.</p>
                                                     </>
-                                                        ) : (
-                                                        <p> </p>
+                                                ) : (
+                                                    <p> </p>
                                                 )}
                                             </>
                                         )}
                                     </>
-                                    )}
+                                )}
                             </div>
                         </>
                     )}
@@ -448,7 +448,7 @@ const Tab1: React.FC = () => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor
