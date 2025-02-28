@@ -1,8 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from 'react';
-import "../../interface/interfaces";
-import { SurveyModalResult } from '../../interface/interfaces';
+import { SurveyModalResult } from "../../util/api/config/interfaces";
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";

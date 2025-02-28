@@ -9,12 +9,11 @@ import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import '../../interface/interfaces';
 import '../RegisterTeam.css';
 
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import TournamentModal from "../../components/modals/TournamentModal";
-import { LoginProps } from "../../interface/interfaces";
+import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import {

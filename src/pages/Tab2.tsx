@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import '../interface/interfaces';
 import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { checkFinal, checkMatch } from "../util/service/adminService";

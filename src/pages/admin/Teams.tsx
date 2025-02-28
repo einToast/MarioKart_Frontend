@@ -18,8 +18,7 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import TeamChangeModal from "../../components/modals/TeamChangeModal";
 import TeamDeleteModal from "../../components/modals/TeamDeleteModal";
-import '../../interface/interfaces';
-import { LoginProps, TeamModalResult } from '../../interface/interfaces';
+import { LoginProps, TeamModalResult } from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import {

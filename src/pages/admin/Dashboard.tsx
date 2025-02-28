@@ -9,10 +9,9 @@ import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import '../../interface/interfaces';
 import '../RegisterTeam.css';
 
-import { LoginProps } from "../../interface/interfaces";
+import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor } from "../../util/api/config/constants";
 import { checkFinal, checkMatch } from "../../util/service/adminService";
 import { checkToken, getUser, removeToken } from "../../util/service/loginService";

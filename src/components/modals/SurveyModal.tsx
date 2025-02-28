@@ -1,8 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import "../../interface/interfaces";
-import { SurveyModalResult } from '../../interface/interfaces';
+import { SurveyModalResult} from "../../util/api/config/interfaces";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";

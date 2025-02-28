@@ -2,7 +2,7 @@ import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
-import characters from "../interface/characters";
+import characters from "../util/api/config/characters";
 import { getUser, removeUser } from "../util/service/loginService";
 import './Header.css';
 

@@ -11,7 +11,6 @@ import { IonReactRouter } from '@ionic/react-router';
 import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import './interface/interfaces';
 import AdminDashboard from "./pages/admin/Dashboard";
 import Final from "./pages/admin/Final";
 import Login from "./pages/admin/Login";
@@ -51,7 +50,7 @@ import './theme/main.css';
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
 import { getUser } from "./util/service/loginService";
-import { User } from './interface/interfaces';
+import { User } from "./util/api/config/interfaces";
 
 setupIonicReact();
 

@@ -2,7 +2,6 @@ import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react
 import { differenceInMinutes } from "date-fns";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import "../../interface/interfaces";
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
@@ -13,7 +12,7 @@ import {
 import { changeBreak } from "../../util/service/adminService";
 import { getAllRounds } from "../../util/service/dashboardService";
 import { getUser } from "../../util/service/loginService";
-import { BreakModalResult } from "../../interface/interfaces";
+import { BreakModalResult } from "../../util/api/config/interfaces";
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 

@@ -1,3 +1,5 @@
+import { BreakReturnDTO, GameReturnDTO, RoundReturnDTO } from "./dto";
+
 export interface Team {
     id: number;
     name: string;
@@ -73,4 +75,32 @@ export interface TeamModalResult {
 
 export interface BreakModalResult {
     breakChanged?: boolean;
+}
+
+export interface RoundHeaderProps {
+    title: string;
+    onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+    selectedOption: string;
+}
+
+export interface UseRoundDataReturn {
+    currentRound: RoundReturnDTO | BreakReturnDTO | null;
+    nextRound: RoundReturnDTO | BreakReturnDTO | null;
+    noGames: boolean;
+    error: string | null;
+    refreshRounds: () => Promise<void>;
+}
+
+export interface GameListProps {
+    games: GameReturnDTO[];
+    user: User;
+    viewType: 'all' | 'personal';
+}
+
+export interface RoundDisplayProps {
+    round: RoundReturnDTO | BreakReturnDTO | null;
+    title: string;
+    user: User;
+    viewType: 'all' | 'personal';
+    noGames?: boolean;
 }

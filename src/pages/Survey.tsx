@@ -6,7 +6,6 @@ import CheckBoxCard from "../components/cards/CheckBoxCard";
 import FreeTextCard from "../components/cards/FreeTextCard";
 import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
 import Header from "../components/Header";
-import '../interface/interfaces';
 import { QuestionReturnDTO } from "../util/api/config/dto";
 import { getAnswer, getCurrentQuestions } from "../util/service/surveyService";
 import { getTournamentOpen } from "../util/service/teamRegisterService";

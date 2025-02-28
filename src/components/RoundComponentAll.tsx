@@ -1,12 +1,13 @@
 import React from 'react';
+import { User } from '../util/api/config/interfaces';
 import { GameReturnDTO } from "../util/api/config/dto";
 import TeamComponent from './TeamComponent';
 
-const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: any, switchColor: string }> = ({ game, user, switchColor }) => {
-    if (!game || !game.teams) {
+const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User, switchColor: string }> = ({ game, user, switchColor }) => {
 
+    if (!game || !game.teams) {
         return (
-            <div>Du hast aktuell keine Spiele.</div>
+            <p>Du hast aktuell keine Spiele.</p>
         );
     }
 
