@@ -85,7 +85,11 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                         <div>
                             <p>Abstimmungsoptionen</p>
                             <IonItem className={"item-background-color"}>
-                                <select value={questionType} onChange={(e) => setQuestionType(e.target.value)} style={{ cursor: 'pointer' }}>
+                                <select 
+                                    value={questionType} 
+                                    onChange={(e) => setQuestionType(e.target.value as QuestionType)} 
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     {
                                         Object.keys(QuestionType).map((key) => (
                                             <option key={key}
