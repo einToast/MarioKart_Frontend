@@ -104,6 +104,7 @@ ion-tab-button.tab-selected {
     --background: var(--toast-background, #CD7070);
     /*#68964C*/
     /*font-size: 20px;*/
+    color: #000000 !important;	
     text-align: center;
 }
 
