@@ -75,8 +75,8 @@ export interface BreakInputDTO {
 }
 
 export interface TournamentDTO {
-    tournamentOpen: boolean;
-    registrationOpen: boolean;
+    tournamentOpen?: boolean;
+    registrationOpen?: boolean;
 }
 
 export interface QuestionInputDTO {
@@ -151,7 +151,5 @@ export interface UserCreationDTO {
 
 }
 
-export interface UpdateUserDTO {
-
-}
+export type UpdateUserDTO = object;
 

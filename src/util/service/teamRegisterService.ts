@@ -33,12 +33,12 @@ export const createTeam = async (teamName: string, characterName: string): Promi
 
 export const getRegistrationOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
-    return tournament.registrationOpen;
+    return tournament.registrationOpen ?? false;
 }
 
 export const getTournamentOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
-    return tournament.tournamentOpen;
+    return tournament.tournamentOpen ?? false;
 }
 
 export const updateRegistrationOpen = async (registrationOpen: boolean): Promise<TournamentDTO> => {
