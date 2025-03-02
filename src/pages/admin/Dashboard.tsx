@@ -1,23 +1,21 @@
-import '../../interface/interfaces'
-import '../RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
-    IonToast, IonAlert
+    IonPage,
+    IonToast
 } from "@ionic/react";
-import {arrowForwardOutline} from 'ionicons/icons';
-import {useHistory, useLocation} from "react-router";
-import {useEffect, useState} from "react";
+import { arrowForwardOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import '../RegisterTeam.css';
 
-import {checkToken, getToken, getUser, removeToken} from "../../util/service/loginService";
-import {checkFinalPlan, checkMatchPlan} from "../../util/api/MatchPlanApi";
-import {checkFinal, checkMatch} from "../../util/service/adminService";
-import {errorToastColor} from "../../util/api/config/constants";
+import { errorToastColor } from "../../util/api/config/constants";
+import { checkFinal, checkMatch } from "../../util/service/adminService";
+import { checkToken, getUser, removeToken } from "../../util/service/loginService";
 
-const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
+const Dashboard: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
@@ -72,7 +70,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                     </h2>
                     <h1>Dashboard</h1>
                     <div className={"adminDashboard"}>
-                        { isMatchPlan ?
+                        {isMatchPlan ?
                             <IonButton slot="start" onClick={() => history.push('/admin/points')}>
                                 <div>
                                     <p>Punkte eintragen</p>
@@ -81,7 +79,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             </IonButton>
                             : ''
                         }
-                        { !isMatchPlan ?
+                        {!isMatchPlan ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/matchplan')}>
                                 <div>
                                     <p>Spielplan erzeugen</p>
@@ -90,16 +88,16 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                             </IonButton>
                             : ''
                         }
-                        { !isFinalPlan && isMatchPlan ?
+                        {!isFinalPlan && isMatchPlan ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
-                        : ''
+                            : ''
                         }
-                        { isFinalPlan ?
+                        {isFinalPlan ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
                                 <div>
                                     <p>Endergebnis</p>
@@ -140,7 +138,7 @@ const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

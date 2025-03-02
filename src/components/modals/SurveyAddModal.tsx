@@ -1,16 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {QuestionReturnDTO} from "../../util/api/config/dto";
+import { errorToastColor } from "../../util/api/config/constants";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
+import { getUser } from "../../util/service/loginService";
+import { submitQuestion } from "../../util/service/surveyService";
+import { QuestionType } from "../../util/service/util";
 
-const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void}> = ({ showModal, closeModal }) => {
+const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void }> = ({ showModal, closeModal }) => {
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
@@ -44,7 +42,7 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
         setQuestionType(QuestionType.MULTIPLE_CHOICE);
         setOptions(['', '', '', '']);
         setNumberOfOptions(4);
-        closeModal({surveyCreated: false});
+        closeModal({ surveyCreated: false });
     }
 
     const handleSubmit = async () => {
@@ -53,7 +51,7 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
 
             if (newQuestion) {
                 resetQuestion();
-                closeModal({surveyCreated: true});
+                closeModal({ surveyCreated: true });
             } else {
                 throw new TypeError('Umfrage konnte nicht erstellt werden');
             }
@@ -87,11 +85,15 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
                         <div>
                             <p>Abstimmungsoptionen</p>
                             <IonItem className={"item-background-color"}>
-                                <select value={questionType} onChange={(e) => setQuestionType(e.target.value)} style={{cursor: 'pointer'}}>
+                                <select
+                                    value={questionType}
+                                    onChange={(e) => setQuestionType(e.target.value as QuestionType)}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     {
                                         Object.keys(QuestionType).map((key) => (
                                             <option key={key}
-                                                    value={key}
+                                                value={key}
                                             >
                                                 {key}
                                                 {/*{console.log(key typeof QuestionType.MULTIPLE_CHOICE)}*/}
@@ -102,41 +104,41 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
                             </IonItem>
                         </div>
                         {(questionType !== QuestionType.FREE_TEXT) &&
-                        <div>
-                            <IonButton className="add-option-button"
-                                       onClick={incrementOptions}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               incrementOptions();
-                                           }
-                                       }}
-                            >
-                                <div>
-                                    <p>Option hinzufügen</p>
-                                </div>
-                            </IonButton>
-                            <IonButton className="add-option-button secondary"
-                                       onClick={decrementOptions}
-                                       onKeyDown={(e) => {
-                                           if (e.key === 'Enter' || e.key === ' ') {
-                                               decrementOptions();
-                                           }
-                                       }}
+                            <div>
+                                <IonButton className="add-option-button"
+                                    onClick={incrementOptions}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            incrementOptions();
+                                        }
+                                    }}
+                                >
+                                    <div>
+                                        <p>Option hinzufügen</p>
+                                    </div>
+                                </IonButton>
+                                <IonButton className="add-option-button secondary"
+                                    onClick={decrementOptions}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            decrementOptions();
+                                        }
+                                    }}
 
-                            >
-                                 <div>
-                                      <p>Option entfernen</p>
-                                 </div>
-                            </IonButton>
-                        </div>
+                                >
+                                    <div>
+                                        <p>Option entfernen</p>
+                                    </div>
+                                </IonButton>
+                            </div>
                         }
                     </div>
 
                     <br></br>
                     {(questionType === QuestionType.CHECKBOX || questionType === QuestionType.MULTIPLE_CHOICE) &&
                         <>
-                            <div style={{marginBottom: '115px'}}>
-                                {Array.from({length: numberOfOptions}, (_, index) => (
+                            <div style={{ marginBottom: '115px' }}>
+                                {Array.from({ length: numberOfOptions }, (_, index) => (
                                     <div key={index} className="form-group">
                                         <label>Option {index + 1}</label>
                                         <input
@@ -155,12 +157,12 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
                 <div className={"playedContainer"}>
 
                     <IonButton className={"secondary round"} onClick={resetQuestion}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       resetQuestion();
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                resetQuestion();
+                            }
+                        }}
                     >
                         <div>
                             <p>Abbrechen</p>
@@ -168,12 +170,12 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
                         </div>
                     </IonButton>
                     <IonButton className={"round"} onClick={handleSubmit}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleSubmit();
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleSubmit();
+                            }
+                        }}
                     >
 
                         <div>
@@ -188,7 +190,7 @@ const SurveyAddModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) =
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

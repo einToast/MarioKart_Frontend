@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
     IonAccordion,
     IonButton,
@@ -6,18 +5,19 @@ import {
     IonItem, IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
-import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
-import { convertUmlauts } from "../../util/service/util";
+import React, { useState } from "react";
 import "../../pages/admin/Points.css";
-import {saveGame} from "../../util/service/adminService";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
+import { saveGame } from "../../util/service/adminService";
+import { getUser } from "../../util/service/loginService";
+import { convertUmlauts } from "../../util/service/util";
 
 const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
-    const [pointsOne, setPointsOne] = useState<number>(game.points.find(point => point.team.id === game.teams[0].id).points);
-    const [pointsTwo, setPointsTwo] = useState<number>(game.points.find(point => point.team.id === game.teams[1].id).points);
-    const [pointsThree, setPointsThree] = useState<number>(game.points.find(point => point.team.id === game.teams[2].id).points);
-    const [pointsFour, setPointsFour] = useState<number>(game.points.find(point => point.team.id === game.teams[3].id).points);
+    const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[0]?.id)?.points ?? 0);
+    const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[1]?.id)?.points ?? 0);
+    const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[2]?.id)?.points ?? 0);
+    const [pointsFour, setPointsFour] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[3]?.id)?.points ?? 0);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -37,7 +37,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
             setPointsFour(newValue);
         }
 
-        points.points = newValue; // Update the points object directly
+        points.points = newValue;
     };
 
     const handleSavePoints = async () => {
@@ -70,42 +70,42 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                         <input
                             type={"number"}
                             value={pointsOne}
-                            onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[0].id), e, 0)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[0]?.id) ?? {} as PointsReturnDTO, e, 0)}
                         />
-                        <img src={`/characters/${game.teams[0].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams?.[0]?.character?.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsTwo}
-                            onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[1].id), e, 1)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[1]?.id) ?? {} as PointsReturnDTO, e, 1)}
                         />
-                        <img src={`/characters/${game.teams[1].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams?.[1]?.character?.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsThree}
-                            onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[2].id), e, 2)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[2]?.id) ?? {} as PointsReturnDTO, e, 2)}
                         />
-                        <img src={`/characters/${game.teams[2].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams?.[2]?.character?.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsFour}
-                            onChange={(e) => handleChangePoints(game.points.find(point => point.team.id === game.teams[3].id), e, 3)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[3]?.id) ?? {} as PointsReturnDTO, e, 3)}
                         />
-                        <img src={`/characters/${game.teams[3].character.characterName}.png`} alt="Character"/>
+                        <img src={`/characters/${game.teams?.[3]?.character?.characterName}.png`} alt="Character" />
                     </div>
                 </div>
                 <IonButton slot="start" shape="round" onClick={handleSavePoints}
-                           tabIndex={0}
-                           onKeyDown={(e) => {
-                                 if (e.key === 'Enter' || e.key === ' ') {
-                                      handleSavePoints();
-                                 }
-                           }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            handleSavePoints();
+                        }
+                    }}
                 >
                     <div>
                         <p>Spiel speichern</p>
@@ -118,7 +118,7 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

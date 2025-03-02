@@ -1,34 +1,33 @@
-import '../../interface/interfaces'
-import {LinearGradient} from "react-text-gradients";
-import {IonContent, IonIcon, IonPage, IonToast} from "@ionic/react";
+import { IonContent, IonIcon, IonPage, IonToast } from "@ionic/react";
 import {
     addCircleOutline,
     arrowBackOutline,
     chatboxEllipsesOutline,
     chatboxOutline, createOutline,
     eyeOffOutline,
-    eyeOutline, pencil,
+    eyeOutline,
     statsChartOutline,
-    trashOutline,
-    videocamOffOutline,
-    videocamOutline
+    trashOutline
 } from 'ionicons/icons';
-import "./SurveyAdmin.css"
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
-import {useHistory, useLocation} from "react-router";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {getUser} from "../../util/service/loginService";
-import {QuestionReturnDTO} from "../../util/api/config/dto";
-import {changeQuestion, getAllQuestions} from "../../util/service/surveyService";
-import SurveyModal from "../../components/modals/SurveyModal";
-import {QuestionType} from "../../util/service/util";
 import SurveyChangeModal from "../../components/modals/SurveyChangeModal";
 import SurveyDeleteModal from "../../components/modals/SurveyDeleteModal";
+import SurveyModal from "../../components/modals/SurveyModal";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
+import { checkToken, getUser } from "../../util/service/loginService";
+import { changeQuestion, getAllQuestions } from "../../util/service/surveyService";
+import { QuestionType } from "../../util/service/util";
+import "./SurveyAdmin.css";
 
-const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
+
+const surveyAdmin: React.FC = () => {
     //TODO: new Survey adden
-    const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({id: -1, questionText: '',questionType: QuestionType.MULTIPLE_CHOICE, options:[],visible: false, active: false, live: false});
+    const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({ id: -1, questionText: '', questionType: QuestionType.MULTIPLE_CHOICE, options: [], visible: false, active: false, live: false });
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
@@ -47,7 +46,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     const location = useLocation();
 
     const toggleVisibility = async (id: number) => {
-        try{
+        try {
             const question = surveys.find(survey => survey.id === id);
             if (!question) {
                 throw new TypeError('Frage nicht gefunden');
@@ -71,7 +70,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     const toggleActive = async (id: number) => {
-        try{
+        try {
             const question = surveys.find(survey => survey.id === id);
             if (!question) {
                 throw new TypeError('Frage nicht gefunden');
@@ -126,7 +125,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
 
-    const closeModal = (surveys:Object) => {
+    const closeModal = (surveys: SurveyModalResult) => {
         setModalClosed(prev => !prev);
         if (surveys.surveyCreated) {
             setError('Umfrage erfolgreich erstellt');
@@ -144,7 +143,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     const getQuestions = async () => {
-        try{
+        try {
             const questions = await getAllQuestions();
             setSurveys(questions);
         } catch (error) {
@@ -155,6 +154,9 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
     }
 
     useEffect(() => {
+        if (!checkToken()) {
+            window.location.assign('/admin/login');
+        }
         getQuestions();
     }, [modalClosed, location]);
 
@@ -163,12 +165,12 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen>
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
@@ -179,13 +181,13 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                     </LinearGradient>
                 </h2>
                 <div className={"newSurvey"} onClick={() => setShowAddModal(true)}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             setShowAddModal(true);
-                         }
-                     }}
-                     style={{cursor: 'pointer'}}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            setShowAddModal(true);
+                        }
+                    }}
+                    style={{ cursor: 'pointer' }}
                 >
                     <IonIcon slot="end" icon={addCircleOutline}></IonIcon>
                     <p>Neue Abstimmung</p>
@@ -201,7 +203,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                     slot="end"
                                     icon={statsChartOutline}
                                     onClick={() => handleOpenResultsModal(survey)}
-                                    style={{cursor: 'pointer', marginRight: '10px'}}
+                                    style={{ cursor: 'pointer', marginRight: '10px' }}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -213,7 +215,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                     slot="end"
                                     icon={createOutline}
                                     onClick={() => handleOpenChangeModal(survey)}
-                                    style={{cursor: 'pointer'}}
+                                    style={{ cursor: 'pointer' }}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -225,7 +227,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                     slot="end"
                                     icon={survey.visible ? eyeOutline : eyeOffOutline}
                                     onClick={() => toggleVisibility(survey.id)}
-                                    style={{cursor: 'pointer'}}
+                                    style={{ cursor: 'pointer' }}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -237,7 +239,7 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                     slot="end"
                                     icon={survey.active ? chatboxEllipsesOutline : chatboxOutline}
                                     onClick={() => toggleActive(survey.id)}
-                                    style={{cursor: 'pointer'}}
+                                    style={{ cursor: 'pointer' }}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -259,9 +261,9 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
                                 {/*/>*/}
                                 <IonIcon
                                     slot="end"
-                                    icon= {trashOutline}
+                                    icon={trashOutline}
                                     onClick={() => handleOpenDeleteModal(survey)}
-                                    style={{cursor: 'pointer'}}
+                                    style={{ cursor: 'pointer' }}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -311,9 +313,9 @@ const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
             <IonToast
                 isOpen={showToast}
                 onDidDismiss={() => setShowToast(false)}
-                message={error}
+                message={error ?? undefined}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

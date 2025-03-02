@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { TeamReturnDTO, TeamInputDTO, CharacterReturnDTO } from './config/dto';
-import { API_BASE_URL } from './config/constants';
 import apiClient from "./config/apiClient";
+import { API_BASE_URL } from './config/constants';
+import { CharacterReturnDTO, TeamInputDTO, TeamReturnDTO } from './config/dto';
 
 const BASE_URL = `${API_BASE_URL}/teams`;
 
@@ -11,7 +11,7 @@ export const getTeams = async (): Promise<TeamReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Teams konnten nicht geladen werden');
@@ -27,7 +27,7 @@ export const getTeamsSortedByNormalPoints = async (): Promise<TeamReturnDTO[]> =
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Teams konnten nicht geladen werden');
@@ -43,7 +43,7 @@ export const getTeamsSortedByFinalPoints = async (): Promise<TeamReturnDTO[]> =>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Teams konnten nicht geladen werden');
@@ -59,9 +59,9 @@ export const getTeamById = async (id: number): Promise<TeamReturnDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Team nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Team konnte nicht geladen werden');
@@ -77,9 +77,9 @@ export const getTeamByName = async (name: string): Promise<TeamReturnDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Team nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Team konnte nicht geladen werden');
@@ -95,7 +95,7 @@ export const getCharacters = async (): Promise<CharacterReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Charaktere konnten nicht geladen werden');
@@ -111,7 +111,7 @@ export const getAvailableCharacters = async (): Promise<CharacterReturnDTO[]> =>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Charaktere konnten nicht geladen werden');
@@ -127,7 +127,7 @@ export const getTakenCharacters = async (): Promise<CharacterReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Charaktere konnten nicht geladen werden');
@@ -143,9 +143,9 @@ export const getCharacterById = async (id: number): Promise<CharacterReturnDTO> 
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Charakter nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Charakter konnte nicht geladen werden');
@@ -161,7 +161,7 @@ export const getCharacterByName = async (name: string): Promise<CharacterReturnD
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Charakter konnte nicht geladen werden');
@@ -176,13 +176,13 @@ export const addTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> => {
         const response = await apiClient.post<TeamReturnDTO>(BASE_URL, team);
         return response.data;
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (error.response?.status === 404){
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404) {
                 throw new Error('Token nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Token ist abgelaufen');
-            } else if (error.response?.status === 400){
-                throw new Error('Fehlerhafte Anfrage');
+            } else if (error.response?.status === 400) {
+                throw new Error('Charakter schon registriert');
             } else {
                 throw new Error('Team konnte nicht erstellt werden');
             }
@@ -196,12 +196,12 @@ export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamRe
         const response = await apiClient.put<TeamReturnDTO>(`${BASE_URL}/${id}`, team);
         return response.data;
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (error.response?.status === 404){
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404) {
                 throw new Error('Team nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else if (error.response?.status === 400){
+            } else if (error.response?.status === 400) {
                 throw new Error('Fehlerhafte Anfrage');
             } else {
                 throw new Error('Team konnte nicht aktualisiert werden');
@@ -215,8 +215,8 @@ export const deleteAllTeams = async (): Promise<void> => {
     try {
         await apiClient.delete(BASE_URL);
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (error.response?.status === 401){
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Teams konnten nicht gelöscht werden');
@@ -230,10 +230,10 @@ export const deleteTeam = async (id: number): Promise<void> => {
     try {
         await apiClient.delete(`${BASE_URL}/${id}`);
     } catch (error) {
-        if (axios.isAxiosError(error)){
-            if (error.response?.status === 404){
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404) {
                 throw new Error('Team nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Team konnte nicht gelöscht werden');

@@ -247,7 +247,8 @@ body:not(.all-games-selected) .flexSpiel {
 
 }
 
-.swiper-slide, .slide {
+.swiper-slide,
+.slide {
     p:first-of-type {
         font-family: Poppins;
         font-weight: 900;
@@ -261,7 +262,8 @@ body:not(.all-games-selected) .flexSpiel {
     }
 }
 
-.swiper-button-prev:after, .swiper-button-next:after {
+.swiper-button-prev:after,
+.swiper-button-next:after {
     font-size: 14px !important;
     color: #fff;
     font-weight: bold;

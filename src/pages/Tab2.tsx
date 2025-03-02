@@ -1,17 +1,15 @@
-import {IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast} from '@ionic/react';
-import './Tab2.css';
-import React, {useEffect, useState} from "react";
-import '../interface/interfaces';
-import {LinearGradient} from "react-text-gradients";
+import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast } from '@ionic/react';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import {TeamReturnDTO} from "../util/api/config/dto";
-import {getNumberOfUnplayedRounds, getTeamsRanked} from "../util/service/dashboardService";
-import {getUser} from "../util/service/loginService";
-import {errorToastColor} from "../util/api/config/constants";
-import {checkFinal, checkMatch} from "../util/service/adminService";
-import {useHistory, useLocation} from "react-router";
-import {getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
+import { errorToastColor } from "../util/api/config/constants";
+import { TeamReturnDTO } from "../util/api/config/dto";
+import { checkFinal, checkMatch } from "../util/service/adminService";
+import { getNumberOfUnplayedRounds, getTeamsRanked } from "../util/service/dashboardService";
+import { getUser } from "../util/service/loginService";
+import { getTournamentOpen } from "../util/service/teamRegisterService";
+import './Tab2.css';
 
 const Tab2: React.FC = () => {
 
@@ -75,7 +73,7 @@ const Tab2: React.FC = () => {
     };
 
     useEffect(() => {
-        setUserCharacter(user.character);
+        setUserCharacter(user?.character ?? null);
 
         getRanking();
 
@@ -91,7 +89,7 @@ const Tab2: React.FC = () => {
             setShowToast(true);
         });
 
-    },[location]);
+    }, [location]);
 
     useEffect(() => {
         if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
@@ -126,10 +124,10 @@ const Tab2: React.FC = () => {
                     {teams ? (
                         teams
                             .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${userCharacter === team.character?.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
-                                             className={"iconTeam"}/>
+                                        <img src={`/characters/${team.character?.characterName}.png`} alt={team.character?.characterName}
+                                            className={"iconTeam"} />
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
@@ -153,7 +151,7 @@ const Tab2: React.FC = () => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

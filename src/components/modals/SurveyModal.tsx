@@ -1,19 +1,15 @@
-import React, {useEffect, useState} from 'react';
-import {IonButton, IonContent, IonIcon, IonItem, IonModal, IonSelect, IonSelectOption, IonToast} from '@ionic/react';
-import axios from "axios";
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
+import { arrowForwardOutline } from "ionicons/icons";
+import React, { useEffect, useState } from 'react';
+import { SurveyModalResult} from "../../util/api/config/interfaces";
 import "../../pages/admin/SurveyAdmin.css";
-import "../../interface/interfaces"
-import {arrowForwardOutline} from "ionicons/icons";
-import {getAnswers, submitQuestion} from "../../util/service/surveyService";
-import {QuestionType} from "../../util/service/util";
-import {i} from "vite/dist/node/types.d-aGj9QkWt";
-import {getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import results from "../../pages/admin/Results";
-import SurveyAddModal from "./SurveyAddModal";
-import {AnswerReturnDTO, QuestionReturnDTO} from "../../util/api/config/dto";
+import { errorToastColor } from "../../util/api/config/constants";
+import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
+import { getUser } from "../../util/service/loginService";
+import { getAnswers } from "../../util/service/surveyService";
+import { QuestionType } from "../../util/service/util";
 
-const SurveyModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => void, question: QuestionReturnDTO}> = ({ showModal, closeModal, question }) => {
+const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
     const [totalAnswers, setTotalAnswers] = useState<number>(0);
@@ -66,14 +62,14 @@ const SurveyModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => v
 
     //TODO: publish survey & add to survey Container
     return (
-        <IonModal isOpen={showModal} onDidDismiss={closeModal}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyResults: false })}>
             <IonContent>
                 <h4>{question.questionText}</h4>
                 <h4>Ergebnisse: {totalAnswers} Antworten</h4>
                 {question.questionType !== QuestionType.FREE_TEXT ? (
                     <>
 
-                        <div className={"allTeamResult"} style={{marginBottom: '50px'}}>
+                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                             <ul>
                                 {
                                     question.options.map((option, index) => (
@@ -85,7 +81,7 @@ const SurveyModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => v
                     </>
                 ) : (
                     <>
-                        <div className={"allTeamResult"} style={{marginBottom: '50px'}}>
+                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                             <ul>
                                 {
                                     answers.map((answer, index) => (
@@ -98,13 +94,13 @@ const SurveyModal:React.FC<{ showModal:boolean, closeModal: (survey:Object) => v
                     </>
                 )}
                 <div className={"playedContainer"}>
-                    <IonButton onClick={closeModal} className={"round"}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       closeModal();
-                                   }
-                               }}
+                    <IonButton onClick={() => closeModal({ surveyResults: false })} className={"round"}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                closeModal({ surveyResults: false });
+                            }
+                        }}
                     >
                         <div>
                             <p>Ergebnisse schließen</p>

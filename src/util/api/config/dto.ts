@@ -1,4 +1,4 @@
-import {QuestionType} from "../../service/util";
+import { QuestionType } from "../../service/util";
 
 
 export interface RoundReturnDTO {
@@ -50,7 +50,7 @@ export interface TeamInputDTO {
     teamName: string;
     characterName: string;
     finalReady: boolean;
-    active: boolean;
+    active?: boolean;
 }
 
 export interface CharacterReturnDTO {
@@ -75,8 +75,8 @@ export interface BreakInputDTO {
 }
 
 export interface TournamentDTO {
-    tournamentOpen: boolean;
-    registrationOpen: boolean;
+    tournamentOpen?: boolean;
+    registrationOpen?: boolean;
 }
 
 export interface QuestionInputDTO {
@@ -113,6 +113,10 @@ export interface AnswerReturnDTO {
     checkboxSelectedOptions: number[];
 }
 
+export interface AnswerCookieDTO {
+    answerId: string;
+}
+
 export interface AuthenticationRequestDTO {
     username: string;
     password: string;
@@ -129,7 +133,6 @@ export interface UserDTO {
     username: string;
     isAdmin: boolean;
     ID: number;
-
 }
 
 export interface UserPasswordsDTO {
@@ -151,7 +154,5 @@ export interface UserCreationDTO {
 
 }
 
-export interface UpdateUserDTO {
-
-}
+export type UpdateUserDTO = object;
 

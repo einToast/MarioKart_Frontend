@@ -1,46 +1,41 @@
-import '../../interface/interfaces'
-import '../RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useHistory, useLocation} from "react-router";
-import React, {useEffect, useState} from "react";
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import '../RegisterTeam.css';
 
-import {checkToken, getUser} from "../../util/service/loginService";
+import BreakChangeModal from "../../components/modals/BreakChangeModal";
+import TournamentModal from "../../components/modals/TournamentModal";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { BreakReturnDTO } from "../../util/api/config/dto";
+import { BreakModalResult } from "../../util/api/config/interfaces";
 import {
     checkFinal,
     checkMatch,
-    deleteFinal,
-    deleteMatch,
-    deleteTeams, getABreak,
-    resetEverything
+    getABreak
 } from "../../util/service/adminService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
-import {ChangeType} from "../../util/service/util";
-import TournamentModal from "../../components/modals/TournamentModal";
+import { checkToken, getUser } from "../../util/service/loginService";
 import {
     getRegistrationOpen,
-    getTournamentOpen,
-    updateRegistrationOpen,
-    updateTournamentOpen
+    getTournamentOpen
 } from "../../util/service/teamRegisterService";
-import BreakChangeModal from "../../components/modals/BreakChangeModal";
-import {BreakReturnDTO} from "../../util/api/config/dto";
-import {set} from "js-cookie";
+import { ChangeType } from "../../util/service/util";
 
-const Control: React.FC<LoginProps> = (props: LoginProps) => {
+
+const Control: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
-    const [aBreak, setBreak] = useState<BreakReturnDTO>({id: 0, startTime: '', endTime: '', breakEnded: false, round: {id: 0, startTime: '', endTime: '', finalGame: false, played: false}});
+    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: { id: 0, startTime: '', endTime: '', finalGame: false, played: false } });
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
@@ -108,10 +103,10 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         setShowToast(true);
     };
 
-    const closeBreakModal = (changeBreak:object) => {
+    const closeBreakModal = (changeBreak: BreakModalResult) => {
         setModalClosed(prev => !prev);
 
-        if (changeBreak.breakChanged){
+        if (changeBreak.breakChanged) {
             setToastColor(successToastColor);
             setError('Die Pause wurde geändert');
             setShowToast(true);
@@ -166,12 +161,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen class="no-scroll">
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
@@ -184,12 +179,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                 <div className={"adminDashboard"}>
                     {(isMatchPlan &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenBreakModal()}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleOpenBreakModal();
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleOpenBreakModal();
+                                }
+                            }}
                         >
                             <div>
                                 <p>Pause ändern</p>
@@ -198,12 +193,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         </IonButton>
                     )}
                     <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TOURNAMENT)}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleOpenModal(ChangeType.TOURNAMENT);
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenModal(ChangeType.TOURNAMENT);
+                            }
+                        }}
                     >
                         <div>
                             <p>{isTournamentOpen ? 'Turnier schließen' : 'Turnier öffnen'}</p>
@@ -213,12 +208,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
 
                     {(!isMatchPlan &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.REGISTRATION)}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleOpenModal(ChangeType.REGISTRATION);
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleOpenModal(ChangeType.REGISTRATION);
+                                }
+                            }}
                         >
                             <div>
                                 <p>{isRegistrationOpen ? 'Registrierung schließen' : 'Registrierung öffnen'}</p>
@@ -229,12 +224,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                     }
                     {(!isMatchPlan &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TEAMS)}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleOpenModal(ChangeType.TEAMS);
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleOpenModal(ChangeType.TEAMS);
+                                }
+                            }}
                         >
                             <div>
                                 <p>Alle Teams löschen</p>
@@ -244,12 +239,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                     )}
                     {((isMatchPlan && !isFinalPlan) &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.MATCH_PLAN)}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleOpenModal(ChangeType.MATCH_PLAN);
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleOpenModal(ChangeType.MATCH_PLAN);
+                                }
+                            }}
                         >
                             <div>
                                 <p>Gesamten Spielplan löschen</p>
@@ -259,12 +254,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                     )}
                     {(isFinalPlan &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.FINAL_PLAN)}
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleOpenModal(ChangeType.FINAL_PLAN);
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleOpenModal(ChangeType.FINAL_PLAN);
+                                }
+                            }}
                         >
                             <div>
                                 <p>Alle Finalspiele löschen</p>
@@ -273,12 +268,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         </IonButton>
                     )}
                     <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.SURVEYS)}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleOpenModal(ChangeType.SURVEYS);
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenModal(ChangeType.SURVEYS);
+                            }
+                        }}
                     >
                         <div>
                             <p>Alle Umfragen löschen</p>
@@ -286,12 +281,12 @@ const Control: React.FC<LoginProps> = (props: LoginProps) => {
                         </div>
                     </IonButton>
                     <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.ALL)}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleOpenModal(ChangeType.ALL);
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenModal(ChangeType.ALL);
+                            }
+                        }}
                     >
                         <div>
                             <p>Anwendung zurücksetzen</p>

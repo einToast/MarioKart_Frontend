@@ -1,16 +1,15 @@
-import {IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent} from '@ionic/react';
-import './Tab3.css';
-import Header from "../components/Header";
-import {LinearGradient} from "react-text-gradients";
+import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
     heart, medalOutline, megaphoneOutline, pizzaOutline,
     playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
-import {useHistory, useLocation} from "react-router";
-import React, {useEffect} from "react";
-import {getTournamentOpen} from "../util/service/teamRegisterService";
-import ErrorCard from "../components/cards/ErrorCard";
+import React, { useEffect } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import Header from "../components/Header";
+import { getTournamentOpen } from "../util/service/teamRegisterService";
+import './Tab3.css';
 
 const Tab3: React.FC = () => {
 
@@ -31,11 +30,11 @@ const Tab3: React.FC = () => {
                 history.push('/admin');
             }
         })
-    },[location])
+    }, [location])
 
     return (
         <IonPage>
-          <Header></Header>
+            <Header></Header>
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
@@ -49,32 +48,32 @@ const Tab3: React.FC = () => {
                 </h1>
                 <h3>Raumplan</h3>
                 <div>
-                    <img src={"/media/Raumplan.png"} alt="raumplan"/>
+                    <img src={"/media/Raumplan.png"} alt="raumplan" />
                 </div>
                 <h3>Programm</h3>
                 <div className={"progressContainer"}>
                     <div>
-                        <IonIcon aria-hidden="true" icon={megaphoneOutline}/>
+                        <IonIcon aria-hidden="true" icon={megaphoneOutline} />
                         <p><span>16:00 - 16:45</span> Arne labert</p>
                     </div>
                     <div>
-                        <IonIcon aria-hidden="true" icon={playOutline}/>
+                        <IonIcon aria-hidden="true" icon={playOutline} />
                         <p><span>16:45 - 18:30</span> Runde 1 - 5</p>
                     </div>
                     <div>
-                        <IonIcon aria-hidden="true" icon={pizzaOutline}/>
+                        <IonIcon aria-hidden="true" icon={pizzaOutline} />
                         <p><span>18:30 - 19:00</span> Pause</p>
                     </div>
                     <div>
-                        <IonIcon aria-hidden="true" icon={playOutline}/>
+                        <IonIcon aria-hidden="true" icon={playOutline} />
                         <p><span>19:00 - 20:00</span> Runde 6 - 8</p>
                     </div>
                     <div>
-                        <IonIcon aria-hidden="true" icon={playSkipForwardOutline}/>
+                        <IonIcon aria-hidden="true" icon={playSkipForwardOutline} />
                         <p><span>20:00 - 20:45</span> Finale</p>
                     </div>
                     <div>
-                        <IonIcon aria-hidden="true" icon={medalOutline}/>
+                        <IonIcon aria-hidden="true" icon={medalOutline} />
                         <p><span>21:00</span> Siegerehrung</p>
                     </div>
                 </div>
@@ -107,15 +106,15 @@ const Tab3: React.FC = () => {
                 {/*    </div>*/}
                 {/*</div>*/}
                 {/*<div style={{textAlign: "center"}}>*/}
-                <br/> Made with <IonIcon icon={heart} aria-hidden="true" style={{color: "#e25555"}}/> by Fanny, Camillo
-                & Laurin <br/>
+                <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
+                & Laurin <br />
 
                 {/*</div>*/}
-                <br/>
+                <br />
 
                 <a
                     onClick={() => history.push('/admin')}
-                    style={{cursor: "pointer"}}
+                    style={{ cursor: "pointer" }}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
@@ -126,9 +125,9 @@ const Tab3: React.FC = () => {
                 >
                     <u>Admin Login</u>
                 </a>
-                <br/>
+                <br />
                 <a href="https://github.com/einToast/MarioKart_Backend">Source Code Backend</a>
-                <br/>
+                <br />
                 <a href="https://github.com/einToast/MarioKart_Frontend">Source Code Frontend</a>
             </IonContent>
         </IonPage>

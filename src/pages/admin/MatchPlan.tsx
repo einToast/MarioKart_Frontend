@@ -1,23 +1,23 @@
-import '../../interface/interfaces'
-import '../RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
-import {arrowBackOutline, arrowForwardOutline} from 'ionicons/icons';
-import {useEffect, useState} from "react";
-import "./Points.css"
-import {TeamReturnDTO} from "../../util/api/config/dto";
-import {createTeamMatchPlan, getRegisteredTeams} from "../../util/service/adminService";
-import {useHistory, useLocation} from "react-router";
-import {checkToken, getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { TeamReturnDTO } from "../../util/api/config/dto";
+import { createTeamMatchPlan, getRegisteredTeams } from "../../util/service/adminService";
+import { checkToken, getUser } from "../../util/service/loginService";
+import '../RegisterTeam.css';
+import "./Points.css";
 
-const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
+
+const MatchPlan: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
@@ -40,7 +40,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-    },[location]);
+    }, [location]);
 
     const handleMatchPlanCreation = async () => {
         try {
@@ -64,12 +64,12 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen>
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
@@ -80,16 +80,16 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                     </LinearGradient>
                 </h2>
 
-                <div className={"flexContainer"} style={{paddingBottom: "50px"}}>
+                <div className={"flexContainer"} style={{ paddingBottom: "50px" }}>
                     {teams ? (
                         teams
                             .map(team => (
                                 <div key={team.id}
-                                     className={`teamContainer`}>
+                                    className={`teamContainer`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character.characterName}.png`}
-                                             alt={team.character.characterName}
-                                             className={"iconTeam"}/>
+                                        <img src={`/characters/${team.character?.characterName}.png`}
+                                            alt={team.character?.characterName}
+                                            className={"iconTeam"} />
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
@@ -105,12 +105,12 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round"}>
                         <div onClick={handleMatchPlanCreation}
-                             tabIndex={0}
-                             onKeyDown={(e) => {
-                                 if (e.key === 'Enter' || e.key === ' ') {
-                                     handleMatchPlanCreation();
-                                 }
-                             }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleMatchPlanCreation();
+                                }
+                            }}
                         >
                             <p>Spielplan erzeugen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -123,7 +123,7 @@ const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

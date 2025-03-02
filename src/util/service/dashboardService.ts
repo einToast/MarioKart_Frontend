@@ -1,7 +1,7 @@
-import {RoundReturnDTO, TeamReturnDTO} from "../api/config/dto";
-import {getCurrentRounds, getRoundById, getRounds} from "../api/MatchPlanApi";
-import {getTeamsSortedByNormalPoints} from "../api/RegistrationApi";
 import Cookies from "js-cookie";
+import { RoundReturnDTO, TeamReturnDTO } from "../api/config/dto";
+import { getCurrentRounds, getRoundById, getRounds } from "../api/MatchPlanApi";
+import { getTeamsSortedByNormalPoints } from "../api/RegistrationApi";
 
 export const getBothCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
     return getCurrentRounds();
@@ -25,13 +25,14 @@ export const getNumberOfUnplayedRounds = async (): Promise<number> => {
 }
 
 export const setSelectedGamesOption = (option: string): void => {
-    Cookies.set('selectedGamesOption', option, {expires: 1, sameSite: 'strict'});
+    Cookies.set('selectedGamesOption', option, { expires: 1, sameSite: 'strict' });
 }
 
 export const getSelectedGamesOption = (): string | null => {
     try {
-        return Cookies.get('selectedGamesOption');
+        return Cookies.get('selectedGamesOption') ?? null;
     } catch (e) {
+        console.error('Error getting selected games option', e);
         return null;
     }
 }

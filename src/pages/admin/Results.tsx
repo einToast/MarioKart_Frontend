@@ -1,22 +1,22 @@
-import '../../interface/interfaces'
-import '../RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
-import {arrowBackOutline} from 'ionicons/icons';
-import React, {useEffect, useState} from "react";
-import "./Points.css"
-import {TeamReturnDTO} from "../../util/api/config/dto";
-import {getTeamTop4FinalRanked} from "../../util/service/adminService";
-import {useHistory, useLocation} from "react-router";
-import {checkToken, getUser} from "../../util/service/loginService";
-import {errorToastColor} from "../../util/api/config/constants";
+import { arrowBackOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import { errorToastColor } from "../../util/api/config/constants";
+import { TeamReturnDTO } from "../../util/api/config/dto";
+import { getTeamTop4FinalRanked } from "../../util/service/adminService";
+import { checkToken, getUser } from "../../util/service/loginService";
+import '../RegisterTeam.css';
+import "./Points.css";
 
-const Results: React.FC<LoginProps> = (props: LoginProps) => {
+
+const Results: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
@@ -39,18 +39,18 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-    },[location]);
+    }, [location]);
 
     return (
         <IonPage>
             <IonContent fullscreen>
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
 
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
@@ -67,10 +67,10 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
                         teams
                             .map(team => (
                                 <div key={team.id}
-                                     className={`teamContainer`}>
+                                    className={`teamContainer`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/media/${team.character.characterName}.png`} alt={team.character.characterName}
-                                             className={"iconTeam"}/>
+                                        <img src={`/characters/media/${team.character?.characterName}.png`} alt={team.character?.characterName}
+                                            className={"iconTeam"} />
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
@@ -88,7 +88,7 @@ const Results: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

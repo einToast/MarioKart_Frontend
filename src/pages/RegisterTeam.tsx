@@ -1,25 +1,25 @@
-import {useEffect, useState} from 'react';
-import {useHistory, useLocation} from "react-router";
-import '../interface/interfaces'
-import './RegisterTeam.css'
-import {LinearGradient} from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
-import {arrowForwardOutline} from 'ionicons/icons';
-import characters from "../interface/characters";
+import { arrowForwardOutline } from 'ionicons/icons';
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import characters from "../util/api/config/characters";
+import { errorToastColor } from "../util/api/config/constants";
+import { LoginProps, User } from '../util/api/config/interfaces';
+import { setUser } from "../util/service/loginService";
 import {
     createTeam,
     getAllAvailableCharacters,
     getRegistrationOpen, getTournamentOpen
 } from "../util/service/teamRegisterService";
-import {setUser} from "../util/service/loginService";
-import {errorToastColor} from "../util/api/config/constants";
-import ErrorCard from "../components/cards/ErrorCard";
+import './RegisterTeam.css';
+
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -47,7 +47,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
-        } );
+        });
     };
 
     useEffect(() => {
@@ -83,9 +83,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
             if (team) {
                 const user: User = {
-                    loggedIn: true,
                     name: team.teamName,
-                    character: team.character.characterName
+                    character: team.character?.characterName || ''
                 };
                 setUser(user);
                 props.setUser(user);
@@ -116,7 +115,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
                     <div className={"loginContainer"}>
                         <div className={"borderContainer selectCharacter"}>
-                            <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{cursor: "pointer"}}>
+                            <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value="" disabled hidden={true}>
                                     Wähle deinen Charakter
                                 </option>
@@ -124,7 +123,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     <option
                                         key={character}
                                         value={character}
-                                        style={{backgroundImage: `url(/characters/${character}.png)`}} // Verwende url() anstelle von backgroundImage
+                                        style={{ backgroundImage: `url(/characters/${character}.png)` }} // Verwende url() anstelle von backgroundImage
                                     >
                                         {character}
                                     </option>
@@ -151,12 +150,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             />
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleLogin();
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleLogin();
+                                }
+                            }}
                         >
                             <div>
                                 <p>Team registrieren</p>
@@ -165,13 +164,13 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                         </IonButton>
                     </div>
                     <a onClick={() => history.push("/login")}
-                       style={{ cursor: "pointer", textDecoration: "underline" }}
-                       tabIndex={0}
-                       onKeyDown={(e) => {
-                           if (e.key === 'Enter' || e.key === ' ') {
-                               history.push('/login');
-                           }
-                       }}
+                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                history.push('/login');
+                            }
+                        }}
                     >
                         registriertem Team beitreten
                     </a>

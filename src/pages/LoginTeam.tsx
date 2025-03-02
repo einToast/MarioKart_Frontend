@@ -1,31 +1,27 @@
-import { useEffect, useState } from 'react';
-import '../interface/interfaces';
-import './RegisterTeam.css';
-import { LinearGradient } from "react-text-gradients";
 import {
     IonButton,
     IonContent,
-    IonPage,
     IonIcon,
+    IonPage,
     IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
-import {useHistory, useLocation} from "react-router";
-import {TeamReturnDTO} from "../util/api/config/dto";
-import {getAllTeams, getTournamentOpen} from "../util/service/teamRegisterService";
-import characters from "../interface/characters";
-import {getUser, setUser} from "../util/service/loginService";
-import {errorToastColor} from "../util/api/config/constants";
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from "react-router";
+import { LinearGradient } from "react-text-gradients";
+import characters from "../util/api/config/characters";
+import { errorToastColor } from "../util/api/config/constants";
+import { TeamReturnDTO } from "../util/api/config/dto";
+import { LoginProps, User } from '../util/api/config/interfaces';
+import { getUser, setUser } from "../util/service/loginService";
+import { getAllTeams, getTournamentOpen } from "../util/service/teamRegisterService";
+import './RegisterTeam.css';
 
-interface LoginProps {
-    setUser: (user: User) => void;
-}
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamName, setTeamName] = useState('');
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -33,15 +29,16 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const location = useLocation();
 
     const handleLogin = () => {
+        // TODO: refactor this
         const selectedTeam = teams?.find(team => team.teamName === teamName);
         if (selectedTeam) {
             const user: User = {
-                loggedIn: true,
                 name: selectedTeam.teamName,
-                character: selectedTeam.character.characterName
+                character: selectedTeam.character?.characterName || ''
             };
             setUser(user);
             props.setUser(user);
+            console.log("pushing to tab1");
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
@@ -51,10 +48,9 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        setLoading(true);
-        if (getUser()){
-            history.push('/tab1');
-            setLoading(false);
+        if (getUser()?.name) {
+            console.log("pushing to tab1");
+            history.push('/tab3');
         }
         const allTeams = getAllTeams();
         const tournamentOpen = getTournamentOpen();
@@ -64,8 +60,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }).catch((error) => {
             setError(error.message);
             setShowToast(true);
-        }).finally(() => {
-            setLoading(false);
         });
 
         tournamentOpen.then((response) => {
@@ -95,12 +89,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                         Liste auftaucht, lade neu oder registriere dein Team.</p>
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
-                            <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{cursor: "pointer"}}>
+                            <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value="">Select Team</option>
                                 {teams && teams.map((team) => (
                                     <option key={team.teamName}
-                                            value={team.teamName}
-                                            style={{backgroundImage: `url(/characters/${team.character.characterName}.png)`}}
+                                        value={team.teamName}
+                                        style={{ backgroundImage: `url(/characters/${team.character?.characterName}.png)` }}
                                     >
                                         {team.teamName}
                                     </option>
@@ -108,8 +102,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </select>
                             {teamName && (
                                 <div className="selected-character">
-                                    {[teams.find(team => team.teamName === teamName).character.characterName].map((character) => (
-                                        characters.includes(character) &&
+                                    {[teams.find(team => team.teamName === teamName)?.character?.characterName].map((character) => (
+                                        character && characters.includes(character) &&
                                         <img
                                             src={`/characters/${character}.png`}
                                             alt={`${character} character`}
@@ -122,12 +116,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             }
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
-                                   tabIndex={0}
-                                   onKeyDown={(e) => {
-                                       if (e.key === 'Enter' || e.key === ' ') {
-                                           handleLogin();
-                                       }
-                                   }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    handleLogin();
+                                }
+                            }}
                         >
                             <div>
                                 <p>Zum Team {teamName} anmelden</p>

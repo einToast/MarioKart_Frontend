@@ -1,4 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
     IonAccordionGroup,
     IonButton,
@@ -8,21 +7,22 @@ import {
     IonPage, IonToast
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
-import {useHistory, useLocation} from "react-router";
+import React, { useEffect, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import PointsCard from "../../components/cards/PointsCard";
+import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import { RoundReturnDTO } from "../../util/api/config/dto";
+import { saveRound } from "../../util/service/adminService";
 import { getAllRounds, getRound } from "../../util/service/dashboardService";
-import {saveRound} from "../../util/service/adminService";
-import "../../interface/interfaces";
+import { checkToken, getUser } from "../../util/service/loginService";
 import "../RegisterTeam.css";
 import "./Points.css";
-import { RoundReturnDTO } from "../../util/api/config/dto";
-import {checkToken, getUser} from "../../util/service/loginService";
-import {errorToastColor, successToastColor} from "../../util/api/config/constants";
 
-const Points: React.FC<LoginProps> = (props: LoginProps) => {
+
+const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [round, setRound] = useState<RoundReturnDTO>({id: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false});
+    const [round, setRound] = useState<RoundReturnDTO>({ id: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
@@ -37,7 +37,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
     const getSelectedRound = (roundNumber: number) => {
         const round = getRound(roundNumber);
         round.then((round) => {
-            round.games = round.games.sort((a, b) => a.id - b.id);
+            round.games = round.games?.sort((a, b) => a.id - b.id) || [];
             setRound(round);
             setRoundPlayed(round.played);
             setOpenAccordions([]); // Close all accordions initially
@@ -91,12 +91,12 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
         <IonPage>
             <IonContent fullscreen>
                 <div className={"back"} onClick={() => history.push('/admin/dashboard')}
-                     tabIndex={0}
-                     onKeyDown={(e) => {
-                         if (e.key === 'Enter' || e.key === ' ') {
-                             history.push('/admin/dashboard');
-                         }
-                     }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            history.push('/admin/dashboard');
+                        }
+                    }}
                 >
                     <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
                     <a>Zurück</a>
@@ -122,7 +122,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
                             {round.games?.map((game) => (
-                                game.teams = game.teams.sort((a, b) => a.id - b.id),
+                                game.teams = game.teams?.sort((a, b) => a.id - b.id) || [],
                                 <PointsCard
                                     key={game.id}
                                     game={game}
@@ -137,22 +137,22 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
 
                 <div className={"playedContainer"}>
                     <IonCheckbox labelPlacement="end"
-                                 checked={roundPlayed}
-                                 onIonChange={(e) => {
-                                     setRoundPlayed(e.detail.checked);
-                                     round.played = e.detail.checked;
-                                 }}
+                        checked={roundPlayed}
+                        onIonChange={(e) => {
+                            setRoundPlayed(e.detail.checked);
+                            round.played = e.detail.checked;
+                        }}
                     >
                         Runde gespielt
                     </IonCheckbox>
 
                     <IonButton slot="start" shape="round" className={"round"} onClick={handleSavePoints}
-                               tabIndex={0}
-                               onKeyDown={(e) => {
-                                   if (e.key === 'Enter' || e.key === ' ') {
-                                       handleSavePoints()
-                                   }
-                               }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleSavePoints()
+                            }
+                        }}
                     >
                         <div>
                             <p>Punkte speichern</p>
@@ -166,7 +166,7 @@ const Points: React.FC<LoginProps> = (props: LoginProps) => {
                 onDidDismiss={() => setShowToast(false)}
                 message={error}
                 duration={3000}
-                className={ user ? 'tab-toast' : ''}
+                className={user ? 'tab-toast' : ''}
                 cssClass="toast"
                 style={{
                     '--toast-background': toastColor

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { IonHeader, IonAvatar, IonIcon } from '@ionic/react';
+import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
+import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from "react-router";
+import characters from "../util/api/config/characters";
+import { getUser, removeUser } from "../util/service/loginService";
 import './Header.css';
-import characters from "../interface/characters";
-import {useHistory} from "react-router";
-import {getUser, removeUser} from "../util/service/loginService";
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -39,20 +39,20 @@ const Header: React.FC = () => {
     return (
         <IonHeader>
             <div className="loggedInUserHead" onClick={toggleDropdown} ref={dropdownRef}
-                 tabIndex={0}
-                 onKeyDown={(e) => {
-                     if (e.key === 'Enter' || e.key === ' ') {
-                         toggleDropdown();
-                     }
-                 }}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        toggleDropdown();
+                    }
+                }}
             >
                 <IonAvatar>
-                    {characters.includes(user.character) &&
+                    {user && user.character && characters.includes(user.character) &&
                         <img src={`/characters/${user.character}.png`} alt={user.character}
-                             className="iconTeam"/>
+                            className="iconTeam" />
                     }
                 </IonAvatar>
-                <p>{user.name}</p>
+                <p>{user?.name}</p>
                 {dropdownOpen && (
                     <div className="dropdownMenu">
                         <ul>
@@ -70,15 +70,15 @@ const Header: React.FC = () => {
                 )}
             </div>
             <a onClick={() => history.push('/survey')}
-               style={{cursor: "pointer"}}
-               tabIndex={0}
-               onKeyDown={(e) => {
-                   if (e.key === 'Enter' || e.key === ' ') {
-                       history.push('/survey');
-                   }
-               }}
+                style={{ cursor: "pointer" }}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        history.push('/survey');
+                    }
+                }}
             >
-            <IonIcon aria-hidden="true" icon={pieChartOutline} />
+                <IonIcon aria-hidden="true" icon={pieChartOutline} />
             </a>
         </IonHeader>
     );

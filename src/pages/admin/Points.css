@@ -10,6 +10,7 @@
         text-decoration: none;
     }
 }
+
 .back:hover {
     cursor: pointer;
 }
@@ -35,7 +36,8 @@ ion-accordion {
     box-shadow: 2px 16px 19px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
 
-    .ion-color-light, .ion-padding {
+    .ion-color-light,
+    .ion-padding {
         --ion-color-base: #32345E !important;
         background: #32345E !important;
     }
@@ -56,19 +58,19 @@ ion-accordion {
 
     h3 {
         font-size: 18px;
-        
+
         &.gruen {
             color: #9DDAAA;
         }
-        
+
         &.rot {
             color: #DA9DC9;
         }
-        
+
         &.blau {
             color: #9DAEDA;
         }
-        
+
         &.weiss {
             color: #ECECEC;
         }
@@ -119,7 +121,8 @@ ion-accordion {
         top: 0;
         left: 0;
         height: 100%;
-        background-color: rgba(0, 123, 255, 0.5); /* Farbe anpassen */
+        background-color: rgba(0, 123, 255, 0.5);
+        /* Farbe anpassen */
         z-index: 1;
         transition: width 0.3s ease-in-out;
     }

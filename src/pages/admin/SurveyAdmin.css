@@ -29,8 +29,10 @@ ul li {
 }
 
 .form-group {
-    display: flex; /* Aktiviert Flexbox für das Layout */
-    align-items: center; /* Zentriert das Label und Input vertikal */
+    display: flex;
+    /* Aktiviert Flexbox für das Layout */
+    align-items: center;
+    /* Zentriert das Label und Input vertikal */
     border: 1px solid #fff;
     border-radius: 15px;
     padding: 5px;
@@ -41,7 +43,8 @@ ul li {
         font-weight: 500;
         margin-bottom: 5px;
         margin-right: 10px;
-        flex: 0 0 auto; /* Label behält seine natürliche Größe */
+        flex: 0 0 auto;
+        /* Label behält seine natürliche Größe */
     }
 
     input {
@@ -49,9 +52,11 @@ ul li {
         color: #fff;
         font-size: 14px;
         font-weight: 500;
-        flex: 1; /* Input füllt den verbleibenden Platz */
+        flex: 1;
+        /* Input füllt den verbleibenden Platz */
         padding: 5px;
-        min-width: 0; /* Verhindert, dass der Input über das Container hinausgeht */
+        min-width: 0;
+        /* Verhindert, dass der Input über das Container hinausgeht */
     }
 }
 
@@ -84,6 +89,7 @@ form {
             padding-left: 0;
         }
     }
+
     .add-option-button {
         display: flex;
     }
@@ -101,7 +107,7 @@ ion-modal {
         gap: 10px;
     }
 
-    .teamContainer > div:first-of-type {
+    .teamContainer>div:first-of-type {
         background-color: #32345E;
         border-radius: 18px;
         border: 2px solid #32345E;

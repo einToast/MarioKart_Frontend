@@ -7,7 +7,9 @@
         z-index: 1;
     }
 
-    &:hover, &:active, &:focus {
+    &:hover,
+    &:active,
+    &:focus {
         border: 2px solid #C0B5F3;
     }
 
@@ -22,6 +24,7 @@
         }
     }
 }
+
 .accordion-button::after {
     background-image: initial;
 
