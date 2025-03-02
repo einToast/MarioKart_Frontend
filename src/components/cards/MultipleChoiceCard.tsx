@@ -28,10 +28,12 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
 
     const getVote = async () => {
         const voted = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
-        handleVoteStatus(voted.answerId);
+
         if (voted !== -1) {
-            setVotedId(voted.answerId);
+            setVotedId(parseInt(voted.answerId));
+            handleVoteStatus(voted.answerId);
         }
+
     }
 
     const handleSaveVote = async () => {
@@ -50,10 +52,10 @@ const MultipleChoiceCard: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, 
         }
     }
 
-    const handleVoteStatus = (vote: number) => {
+    const handleVoteStatus = (vote: string | number) => {
         if (!multipleChoiceQuestion.active) {
             setIndicator(statsChartOutline)
-        } else if (vote === undefined) {
+        } else if (vote === undefined || vote === -1) {
             setIndicator(megaphoneOutline)
         } else {
             setIndicator(checkmarkCircleOutline)

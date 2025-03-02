@@ -47,12 +47,12 @@ const Header: React.FC = () => {
                 }}
             >
                 <IonAvatar>
-                    {characters.includes(user.character) &&
+                    {user && user.character && characters.includes(user.character) &&
                         <img src={`/characters/${user.character}.png`} alt={user.character}
                             className="iconTeam" />
                     }
                 </IonAvatar>
-                <p>{user.name}</p>
+                <p>{user?.name}</p>
                 {dropdownOpen && (
                     <div className="dropdownMenu">
                         <ul>

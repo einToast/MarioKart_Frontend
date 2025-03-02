@@ -40,10 +40,14 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
             if (typeof vote.answerId === 'string' && vote.answerId.includes(',')) {
                 setVotedId(vote.answerId.split(',').map(Number));
             } else {
-                setVotedId([vote]);
+                setVotedId([parseInt(vote.answerId)]);
             }
+            handleVoteStatus(vote.answerId);
+        } else {
+            handleVoteStatus(-1);
         }
-        handleVoteStatus(vote.answerId);
+
+
     }
 
     const handleSaveVote = async () => {
@@ -70,10 +74,10 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
         }
     }
 
-    const handleVoteStatus = (vote: number[]) => {
+    const handleVoteStatus = (vote: string | number) => {
         if (!checkBoxQuestion.active) {
             setIndicator(statsChartOutline)
-        } else if (vote === undefined) {
+        } else if (vote === undefined || vote === -1) {
             setIndicator(megaphoneOutline)
         } else {
             setIndicator(checkmarkCircleOutline)
