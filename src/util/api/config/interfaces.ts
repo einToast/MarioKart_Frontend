@@ -5,6 +5,10 @@ export interface User {
     character: string | null;
 }
 
+export interface LoginProps {
+    setUser: (user: User) => void;
+}
+
 export interface AdminUser {
     loggedIn: boolean;
     username: string;

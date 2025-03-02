@@ -11,7 +11,7 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import characters from "../util/api/config/characters";
 import { errorToastColor } from "../util/api/config/constants";
-import { User } from '../util/api/config/interfaces';
+import { LoginProps, User } from '../util/api/config/interfaces';
 import { setUser } from "../util/service/loginService";
 import {
     createTeam,
@@ -20,7 +20,8 @@ import {
 } from "../util/service/teamRegisterService";
 import './RegisterTeam.css';
 
-const RegisterTeam: React.FC = () => {
+
+const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
     const history = useHistory();
@@ -86,6 +87,7 @@ const RegisterTeam: React.FC = () => {
                     character: team.character?.characterName || ''
                 };
                 setUser(user);
+                props.setUser(user);
                 history.push('/tab1');
             } else {
                 throw new Error("Team konnte nicht erstellt werden");

@@ -8,6 +8,7 @@ import {
     setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import '@ionic/react/css/core.css';
 import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
@@ -23,34 +24,29 @@ import Survey from "./pages/Survey";
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
-import '@ionic/react/css/core.css';
 
 import '@ionic/react/css/core.css';
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/normalize.css';
-import '@ionic/react/css/structure.css';
-import '@ionic/react/css/typography.css';
-import '@ionic/react/css/display.css';
-import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/padding.css';
+import '@ionic/react/css/structure.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
+import '@ionic/react/css/typography.css';
 import './theme/variables.css';
 
-import './theme/variables.css';
-import Control from "./pages/admin/Control";
 import { WebSocketProvider } from "./components/WebSocketContext";
+import Control from "./pages/admin/Control";
 import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
 import './theme/main.css';
+import './theme/variables.css';
+import { User } from "./util/api/config/interfaces";
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
 import { getUser } from "./util/service/loginService";
-import { User } from "./util/api/config/interfaces";
 
 setupIonicReact();
 
@@ -62,7 +58,8 @@ const App: React.FC = () => {
 
     useEffect(() => {
         const user = getUser();
-        if (user) {
+        console.log(user?.name);
+        if (user?.name) {
             setCurrentUser(user);
         }
         const matchplan = checkMatch();
@@ -86,7 +83,7 @@ const App: React.FC = () => {
         <IonApp>
             <WebSocketProvider>
                 <IonReactRouter>
-                    {currentUser ? (
+                    {currentUser?.name ? (
                         <IonTabs>
                             <IonRouterOutlet>
                                 <Route exact path="/tab1" component={Tab1} />

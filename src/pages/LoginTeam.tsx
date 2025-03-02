@@ -12,13 +12,13 @@ import { LinearGradient } from "react-text-gradients";
 import characters from "../util/api/config/characters";
 import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
-import { User } from '../util/api/config/interfaces';
+import { LoginProps, User } from '../util/api/config/interfaces';
 import { getUser, setUser } from "../util/service/loginService";
 import { getAllTeams, getTournamentOpen } from "../util/service/teamRegisterService";
 import './RegisterTeam.css';
 
 
-const LoginTeam: React.FC = () => {
+const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamName, setTeamName] = useState('');
@@ -37,6 +37,8 @@ const LoginTeam: React.FC = () => {
                 character: selectedTeam.character?.characterName || ''
             };
             setUser(user);
+            props.setUser(user);
+            console.log("pushing to tab1");
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
@@ -46,8 +48,9 @@ const LoginTeam: React.FC = () => {
     };
 
     useEffect(() => {
-        if (getUser()) {
-            history.push('/tab1');
+        if (getUser()?.name) {
+            console.log("pushing to tab1");
+            history.push('/tab3');
         }
         const allTeams = getAllTeams();
         const tournamentOpen = getTournamentOpen();

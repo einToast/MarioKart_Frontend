@@ -57,7 +57,9 @@ export const setUser = (user: User): void => {
 
 export const getUser = (): User | null => {
     try {
+        console.log(JSON.parse(Cookies.get('user') ?? '{}') as User);
         return JSON.parse(Cookies.get('user') ?? '{}') as User;
+
     } catch (e) {
         console.error('Error getting user:', e);
         return null;
