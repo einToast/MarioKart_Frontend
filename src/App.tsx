@@ -58,7 +58,6 @@ const App: React.FC = () => {
 
     useEffect(() => {
         const user = getUser();
-        console.log(user?.name);
         if (user?.name) {
             setCurrentUser(user);
         }
