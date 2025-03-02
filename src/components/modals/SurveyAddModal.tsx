@@ -1,9 +1,9 @@
 import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from 'react';
-import { SurveyModalResult} from "../../util/api/config/interfaces";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { getUser } from "../../util/service/loginService";
 import { submitQuestion } from "../../util/service/surveyService";
 import { QuestionType } from "../../util/service/util";
@@ -85,9 +85,9 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                         <div>
                             <p>Abstimmungsoptionen</p>
                             <IonItem className={"item-background-color"}>
-                                <select 
-                                    value={questionType} 
-                                    onChange={(e) => setQuestionType(e.target.value as QuestionType)} 
+                                <select
+                                    value={questionType}
+                                    onChange={(e) => setQuestionType(e.target.value as QuestionType)}
                                     style={{ cursor: 'pointer' }}
                                 >
                                     {

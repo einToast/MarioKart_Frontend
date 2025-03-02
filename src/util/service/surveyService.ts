@@ -8,7 +8,7 @@ import {
     submitAnswer,
     updateQuestion
 } from "../api/SurveyApi";
-import { AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
+import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
 import { QuestionType } from "./util";
 
 export const getCurrentQuestions = async (): Promise<QuestionReturnDTO[]> => {
@@ -61,18 +61,21 @@ export const getAnswers = async (questionId: number): Promise<AnswerReturnDTO[]>
     return getAnswersOfQuestion(questionId);
 }
 
-export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Promise<AnswerReturnDTO> => {
+export const registerAnswer = async (question: QuestionReturnDTO, vote: string | number | number[]): Promise<AnswerReturnDTO> => {
     if (!question.active) {
         throw new Error('Die Umfrage ist bereits beendet');
     } else if (vote === '') {
         throw new Error('Die Antwort darf nicht leer sein');
-    } else if ((vote === -1 && !(typeof vote === 'string')) || (!(typeof vote === 'string' || typeof vote === 'number') && vote.includes(-1)) || vote.length === 0) {
+    } else if (
+        (typeof vote === 'number' && vote === -1) || 
+        (Array.isArray(vote) && (vote.length === 0 || vote.some(v => v === -1)))
+    ) {
         throw new Error('Es wurde keine Antwort ausgewählt');
     }
 
-    const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT ? vote : '';
-    const multipleChoiceSelectedOption = question.questionType === QuestionType.MULTIPLE_CHOICE ? vote : -1;
-    const checkboxSelectedOptions = question.questionType === QuestionType.CHECKBOX ? vote : [];
+    const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT ? String(vote) : '';
+    const multipleChoiceSelectedOption = question.questionType === QuestionType.MULTIPLE_CHOICE ? Number(vote) : -1;
+    const checkboxSelectedOptions = question.questionType === QuestionType.CHECKBOX ? (Array.isArray(vote) ? vote.map(Number) : []) : [];
 
     const answer: AnswerInputDTO = {
         questionId: question.id,
@@ -85,24 +88,23 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: any): Pr
 
     const response = await submitAnswer(answer);
 
-    await setAnswer(question.questionText + question.id, vote);
+    await setAnswer(question.questionText + question.id, typeof vote === 'number' ? vote : Number(Array.isArray(vote) ? vote[0] : vote));
 
     return response;
 }
 
 export const setAnswer = async (questionString: string, answer: number): Promise<void> => {
 
-    const answerCookie = {
+    const answerCookie: AnswerCookieDTO = {
         answerId: answer.toString(),
-        // timestamp: new Date().getTime()
     }
     Cookies.set(questionString, JSON.stringify(answerCookie), { expires: 1, sameSite: 'strict' });
 }
 
-export const getAnswer = async (questionString: string): Promise<any> => {
+export const getAnswer = async (questionString: string): Promise<AnswerCookieDTO | -1> => {
     const answerCookie = Cookies.get(questionString);
     if (answerCookie) {
-        return JSON.parse(answerCookie)
+        return JSON.parse(answerCookie) as AnswerCookieDTO;
     }
     return -1;
 }

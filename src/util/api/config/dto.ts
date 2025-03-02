@@ -1,4 +1,4 @@
-import {QuestionType} from "../../service/util";
+import { QuestionType } from "../../service/util";
 
 
 export interface RoundReturnDTO {
@@ -50,7 +50,7 @@ export interface TeamInputDTO {
     teamName: string;
     characterName: string;
     finalReady: boolean;
-    active: boolean;
+    active?: boolean;
 }
 
 export interface CharacterReturnDTO {
@@ -111,6 +111,10 @@ export interface AnswerReturnDTO {
     freeTextAnswer: string;
     multipleChoiceSelectedOption: number;
     checkboxSelectedOptions: number[];
+}
+
+export interface AnswerCookieDTO {
+    answerId: string;
 }
 
 export interface AuthenticationRequestDTO {

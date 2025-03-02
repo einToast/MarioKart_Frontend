@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { AuthenticationRequestDTO } from "../api/config/dto";
+import { AuthenticationRequestDTO, UserDTO } from "../api/config/dto";
 import { login } from "../api/UserApi";
 
 export const loginUser = async (username: string, password: string): Promise<void> => {
@@ -16,8 +16,9 @@ export const setToken = (token: string): void => {
 };
 export const getToken = (): string | null => {
     try {
-        return Cookies.get('authToken');
+        return Cookies.get('authToken') ?? null;
     } catch (e) {
+        console.error('Error getting token:', e);
         return null;
     }
 };
@@ -49,14 +50,15 @@ export const checkToken = (): boolean => {
     return true;
 }
 
-export const setUser = (user: any): void => {
+export const setUser = (user: UserDTO): void => {
     Cookies.set('user', JSON.stringify(user), { expires: 1, sameSite: 'strict' });
 }
 
-export const getUser = (): any => {
+export const getUser = (): UserDTO | null => {
     try {
-        return JSON.parse(Cookies.get('user'));
+        return JSON.parse(Cookies.get('user') ?? '{}') as UserDTO;
     } catch (e) {
+        console.error('Error getting user:', e);
         return null;
     }
 }

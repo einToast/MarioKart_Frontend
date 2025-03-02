@@ -30,8 +30,9 @@ export const setSelectedGamesOption = (option: string): void => {
 
 export const getSelectedGamesOption = (): string | null => {
     try {
-        return Cookies.get('selectedGamesOption');
+        return Cookies.get('selectedGamesOption') ?? null;
     } catch (e) {
+        console.error('Error getting selected games option', e);
         return null;
     }
 }
