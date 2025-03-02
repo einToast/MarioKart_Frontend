@@ -86,7 +86,7 @@ const App: React.FC = () => {
         <IonApp>
             <WebSocketProvider>
                 <IonReactRouter>
-                    {currentUser?.loggedIn ? (
+                    {currentUser ? (
                         <IonTabs>
                             <IonRouterOutlet>
                                 <Route exact path="/tab1" component={Tab1} />

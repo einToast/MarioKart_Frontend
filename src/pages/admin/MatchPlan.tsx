@@ -9,7 +9,6 @@ import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { createTeamMatchPlan, getRegisteredTeams } from "../../util/service/adminService";
@@ -18,7 +17,7 @@ import '../RegisterTeam.css';
 import "./Points.css";
 
 
-const MatchPlan: React.FC<LoginProps> = (props: LoginProps) => {
+const MatchPlan: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);

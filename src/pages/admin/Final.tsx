@@ -9,7 +9,6 @@ import { arrowBackOutline, arrowForwardOutline, removeCircleOutline } from 'ioni
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import {
@@ -21,7 +20,7 @@ import {
 import { checkToken, getUser } from "../../util/service/loginService";
 import "./Final.css";
 
-const Final: React.FC<LoginProps> = (props: LoginProps) => {
+const Final: React.FC = () => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');

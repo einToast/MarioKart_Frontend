@@ -10,22 +10,18 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import characters from "../util/api/config/characters";
-import { User } from '../util/api/config/interfaces';
 import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
+import { User } from '../util/api/config/interfaces';
 import { getUser, setUser } from "../util/service/loginService";
 import { getAllTeams, getTournamentOpen } from "../util/service/teamRegisterService";
 import './RegisterTeam.css';
 
-interface LoginProps {
-    setUser: (user: User) => void;
-}
 
-const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
+const LoginTeam: React.FC = () => {
     const history = useHistory();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamName, setTeamName] = useState('');
-    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -33,15 +29,14 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const location = useLocation();
 
     const handleLogin = () => {
+        // TODO: refactor this
         const selectedTeam = teams?.find(team => team.teamName === teamName);
         if (selectedTeam) {
             const user: User = {
-                loggedIn: true,
                 name: selectedTeam.teamName,
                 character: selectedTeam.character?.characterName || ''
             };
             setUser(user);
-            props.setUser(user);
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
@@ -51,10 +46,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        setLoading(true);
         if (getUser()) {
             history.push('/tab1');
-            setLoading(false);
         }
         const allTeams = getAllTeams();
         const tournamentOpen = getTournamentOpen();
@@ -64,8 +57,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }).catch((error) => {
             setError(error.message);
             setShowToast(true);
-        }).finally(() => {
-            setLoading(false);
         });
 
         tournamentOpen.then((response) => {

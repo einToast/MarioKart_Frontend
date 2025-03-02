@@ -13,9 +13,9 @@ import '../RegisterTeam.css';
 
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import TournamentModal from "../../components/modals/TournamentModal";
-import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { BreakReturnDTO } from "../../util/api/config/dto";
+import { BreakModalResult } from "../../util/api/config/interfaces";
 import {
     checkFinal,
     checkMatch,
@@ -29,7 +29,7 @@ import {
 import { ChangeType } from "../../util/service/util";
 
 
-const Control: React.FC<LoginProps> = (props: LoginProps) => {
+const Control: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);

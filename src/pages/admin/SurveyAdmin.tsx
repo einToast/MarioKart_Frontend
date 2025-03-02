@@ -16,16 +16,16 @@ import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import SurveyChangeModal from "../../components/modals/SurveyChangeModal";
 import SurveyDeleteModal from "../../components/modals/SurveyDeleteModal";
 import SurveyModal from "../../components/modals/SurveyModal";
-import { LoginProps, SurveyModalResult} from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { checkToken, getUser } from "../../util/service/loginService";
 import { changeQuestion, getAllQuestions } from "../../util/service/surveyService";
 import { QuestionType } from "../../util/service/util";
 import "./SurveyAdmin.css";
 
 
-const surveyAdmin: React.FC<LoginProps> = (props: LoginProps) => {
+const surveyAdmin: React.FC = () => {
     //TODO: new Survey adden
     const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({ id: -1, questionText: '', questionType: QuestionType.MULTIPLE_CHOICE, options: [], visible: false, active: false, live: false });
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);

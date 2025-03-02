@@ -80,7 +80,7 @@ const Tab1: React.FC = () => {
                     <RoundDisplay
                         round={currentRound}
                         title={selectedOption === 'Alle Spiele' ? 'Aktuelle Spiele' : 'Aktuelles Spiel'}
-                        user={user}
+                        user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         noGames={noGames}
                     />
@@ -88,7 +88,7 @@ const Tab1: React.FC = () => {
                     <RoundDisplay
                         round={nextRound}
                         title={selectedOption === 'Alle Spiele' ? 'Nächste Spiele' : 'Nächstes Spiel'}
-                        user={user}
+                        user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         noGames={noGames}
                     />

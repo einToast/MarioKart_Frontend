@@ -73,7 +73,7 @@ const Tab2: React.FC = () => {
     };
 
     useEffect(() => {
-        setUserCharacter(user.character);
+        setUserCharacter(user?.character ?? null);
 
         getRanking();
 

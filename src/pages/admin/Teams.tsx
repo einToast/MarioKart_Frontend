@@ -18,9 +18,9 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import TeamChangeModal from "../../components/modals/TeamChangeModal";
 import TeamDeleteModal from "../../components/modals/TeamDeleteModal";
-import { LoginProps, TeamModalResult } from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
+import { TeamModalResult } from "../../util/api/config/interfaces";
 import {
     changeTeam, checkMatch,
     getTeamFinalRanked,
@@ -28,7 +28,7 @@ import {
 import { checkToken, getUser } from "../../util/service/loginService";
 import "./Final.css";
 
-const Teams: React.FC<LoginProps> = (props: LoginProps) => {
+const Teams: React.FC = () => {
 
     const [selectedTeam, setSelectedTeam] = useState<TeamReturnDTO>({ id: -1, teamName: '', character: { id: -1, characterName: '' }, groupPoints: 0, finalPoints: 0, active: false, finalReady: false });
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);

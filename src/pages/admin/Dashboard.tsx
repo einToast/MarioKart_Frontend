@@ -11,12 +11,11 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
-import { LoginProps} from "../../util/api/config/interfaces";
 import { errorToastColor } from "../../util/api/config/constants";
 import { checkFinal, checkMatch } from "../../util/service/adminService";
 import { checkToken, getUser, removeToken } from "../../util/service/loginService";
 
-const Dashboard: React.FC<LoginProps> = (props: LoginProps) => {
+const Dashboard: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);

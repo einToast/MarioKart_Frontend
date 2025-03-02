@@ -11,7 +11,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import PointsCard from "../../components/cards/PointsCard";
-import { LoginProps } from "../../util/api/config/interfaces";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { RoundReturnDTO } from "../../util/api/config/dto";
 import { saveRound } from "../../util/service/adminService";
@@ -21,7 +20,7 @@ import "../RegisterTeam.css";
 import "./Points.css";
 
 
-const Points: React.FC<LoginProps> = (props: LoginProps) => {
+const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);

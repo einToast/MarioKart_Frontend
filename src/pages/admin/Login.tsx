@@ -9,16 +9,11 @@ import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import { AdminUser} from "../../util/api/config/interfaces";
 import { errorToastColor } from "../../util/api/config/constants";
 import { checkToken, getUser, loginUser } from "../../util/service/loginService";
 import '../RegisterTeam.css';
 
-interface LoginProps {
-    setUserAdmin: (userAdmin: AdminUser) => void;
-}
-
-const Login: React.FC<LoginProps> = (props: LoginProps) => {
+const Login: React.FC = () => {
     const user = getUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');

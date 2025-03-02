@@ -1,6 +1,7 @@
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import { AuthenticationRequestDTO, UserDTO } from "../api/config/dto";
+import { AuthenticationRequestDTO } from "../api/config/dto";
+import { User } from "../api/config/interfaces";
 import { login } from "../api/UserApi";
 
 export const loginUser = async (username: string, password: string): Promise<void> => {
@@ -50,13 +51,13 @@ export const checkToken = (): boolean => {
     return true;
 }
 
-export const setUser = (user: UserDTO): void => {
+export const setUser = (user: User): void => {
     Cookies.set('user', JSON.stringify(user), { expires: 1, sameSite: 'strict' });
 }
 
-export const getUser = (): UserDTO | null => {
+export const getUser = (): User | null => {
     try {
-        return JSON.parse(Cookies.get('user') ?? '{}') as UserDTO;
+        return JSON.parse(Cookies.get('user') ?? '{}') as User;
     } catch (e) {
         console.error('Error getting user:', e);
         return null;

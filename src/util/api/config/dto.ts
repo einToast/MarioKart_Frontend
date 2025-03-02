@@ -133,7 +133,6 @@ export interface UserDTO {
     username: string;
     isAdmin: boolean;
     ID: number;
-
 }
 
 export interface UserPasswordsDTO {

@@ -10,8 +10,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import characters from "../util/api/config/characters";
-import { LoginProps, User } from '../util/api/config/interfaces';
 import { errorToastColor } from "../util/api/config/constants";
+import { User } from '../util/api/config/interfaces';
 import { setUser } from "../util/service/loginService";
 import {
     createTeam,
@@ -20,7 +20,7 @@ import {
 } from "../util/service/teamRegisterService";
 import './RegisterTeam.css';
 
-const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
+const RegisterTeam: React.FC = () => {
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
     const history = useHistory();
@@ -82,12 +82,10 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
             if (team) {
                 const user: User = {
-                    loggedIn: true,
                     name: team.teamName,
                     character: team.character?.characterName || ''
                 };
                 setUser(user);
-                props.setUser(user);
                 history.push('/tab1');
             } else {
                 throw new Error("Team konnte nicht erstellt werden");
