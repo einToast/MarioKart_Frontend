@@ -3,6 +3,7 @@ import { QuestionType } from "../../service/util";
 
 export interface RoundReturnDTO {
     id: number;
+    roundNumber: number;
     startTime: string;
     endTime: string;
     finalGame: boolean;

@@ -98,7 +98,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                                 <option value={round.id}
                                     key={index}
                                 >
-                                    {round.id}
+                                    {round.roundNumber}
                                 </option>
                             ))}
                         </select>

@@ -22,8 +22,9 @@ import "./Points.css";
 
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [round, setRound] = useState<RoundReturnDTO>({ id: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
+    const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
+    const [numberOfFinalRounds, setNumberOfFinalRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
@@ -34,8 +35,8 @@ const Points: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const getSelectedRound = (roundNumber: number) => {
-        const round = getRound(roundNumber);
+    const getSelectedRound = (id: number) => {
+        const round = getRound(id);
         round.then((round) => {
             round.games = round.games?.sort((a, b) => a.id - b.id) || [];
             setRound(round);
@@ -69,9 +70,10 @@ const Points: React.FC = () => {
 
         const rounds = getAllRounds();
         rounds.then((rounds) => {
-            rounds = rounds.sort((a, b) => a.id - b.id);
+            rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
             getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
             setNumberOfRounds(rounds.length);
+            setNumberOfFinalRounds(rounds.filter(round => round.finalGame).length);
         }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
@@ -108,9 +110,10 @@ const Points: React.FC = () => {
                         </LinearGradient>
                     </h2>
                     <div>
+                        {/* TODO: differentiate between round and final round */}
                         <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
                             {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
-                                return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.id}>Runde {round_number + 1}</option>
+                                return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.roundNumber}>Runde {round_number + 1}</option>
                             })}
                         </select>
                     </div>
