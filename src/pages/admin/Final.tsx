@@ -26,7 +26,7 @@ const Final: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
-
+    const [buttonDisabled, setButtonDisabled] = useState(false);
     const user = getUser();
     const history = useHistory();
     const location = useLocation();
@@ -77,6 +77,7 @@ const Final: React.FC = () => {
 
     const handleFinalCreation = async () => {
         try {
+            setButtonDisabled(true);
             const final = await createTeamFinalPlan();
             if (final) {
                 setError('Finale erfolgreich erstellt');
@@ -90,6 +91,8 @@ const Final: React.FC = () => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
+        } finally {
+            setButtonDisabled(false);
         }
     }
 
@@ -168,7 +171,7 @@ const Final: React.FC = () => {
                             ></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton slot="start" shape="round" className={"round"}>
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleFinalCreation}
                             tabIndex={0}
                             onKeyDown={(e) => {

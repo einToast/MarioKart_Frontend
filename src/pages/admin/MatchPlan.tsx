@@ -22,6 +22,7 @@ const MatchPlan: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+    const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const user = getUser();
     const history = useHistory();
@@ -44,6 +45,7 @@ const MatchPlan: React.FC = () => {
 
     const handleMatchPlanCreation = async () => {
         try {
+            setButtonDisabled(true);
             const newRounds = await createTeamMatchPlan();
             if (newRounds) {
                 setError('Spielplan erfolgreich erstellt');
@@ -57,7 +59,10 @@ const MatchPlan: React.FC = () => {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
+        } finally {
+            setButtonDisabled(false);
         }
+
     }
 
     return (
@@ -103,7 +108,7 @@ const MatchPlan: React.FC = () => {
                 </div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round"}>
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleMatchPlanCreation}
                             tabIndex={0}
                             onKeyDown={(e) => {
