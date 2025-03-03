@@ -9,10 +9,10 @@ import {
     BreakReturnDTO,
     RoundReturnDTO
 } from "../../util/api/config/dto";
+import { BreakModalResult } from "../../util/api/config/interfaces";
 import { changeBreak } from "../../util/service/adminService";
 import { getAllRounds } from "../../util/service/dashboardService";
 import { getUser } from "../../util/service/loginService";
-import { BreakModalResult } from "../../util/api/config/interfaces";
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
