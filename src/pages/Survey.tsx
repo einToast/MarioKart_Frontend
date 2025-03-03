@@ -5,6 +5,7 @@ import { LinearGradient } from "react-text-gradients";
 import CheckBoxCard from "../components/cards/CheckBoxCard";
 import FreeTextCard from "../components/cards/FreeTextCard";
 import MultipleChoiceCard from "../components/cards/MultipleChoiceCard";
+import TeamCard from '../components/cards/TeamCard';
 import Header from "../components/Header";
 import { QuestionReturnDTO } from "../util/api/config/dto";
 import { getAnswer, getCurrentQuestions } from "../util/service/surveyService";
@@ -103,6 +104,12 @@ const Survey: React.FC = () => {
                                 <FreeTextCard
                                     key={question.id}
                                     freeTextQuestion={question}
+                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
+                                />
+                            ) : (question.questionType === QuestionType.TEAM) ? (
+                                <TeamCard
+                                    key={question.id}
+                                    teamQuestion={question}
                                     toggleAccordion={() => toggleAccordion(question.id.toString())}
                                 />
                             ) : (

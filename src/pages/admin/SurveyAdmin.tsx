@@ -27,7 +27,7 @@ import "./SurveyAdmin.css";
 
 const surveyAdmin: React.FC = () => {
     //TODO: new Survey adden
-    const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({ id: -1, questionText: '', questionType: QuestionType.MULTIPLE_CHOICE, options: [], visible: false, active: false, live: false });
+    const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({ id: -1, questionText: '', questionType: QuestionType.MULTIPLE_CHOICE, options: [], visible: false, active: false, live: false, finalTeamsOnly: false });
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [showAddModal, setShowAddModal] = useState(false);
     const [showChangeModal, setShowChangeModal] = useState(false);
@@ -52,9 +52,7 @@ const surveyAdmin: React.FC = () => {
                 throw new TypeError('Frage nicht gefunden');
             }
             question.visible = !question.visible;
-            if (question.visible) {
-                question.active = true;
-            }
+            question.active = question.visible
             const updatedQuestion = await changeQuestion(question);
             if (updatedQuestion) {
                 getQuestions();
@@ -243,7 +241,7 @@ const surveyAdmin: React.FC = () => {
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            toggleVisibility(survey.id);
+                                            toggleActive(survey.id);
                                         }
                                     }}
                                 />

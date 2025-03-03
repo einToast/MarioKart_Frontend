@@ -19,12 +19,12 @@ export const getAllQuestions = async (): Promise<QuestionReturnDTO[]> => {
     return getQuestions();
 }
 
-export const submitQuestion = async (question: string, questionType: QuestionType, options: string[]): Promise<QuestionReturnDTO> => {
+export const submitQuestion = async (question: string, questionType: QuestionType, options: string[], finalTeamsOnly: boolean): Promise<QuestionReturnDTO> => {
     if (question === '') {
         throw new Error('Die Frage darf nicht leer sein');
-    } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT) {
+    } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT && questionType !== QuestionType.TEAM) {
         throw new Error('Es müssen mindestens 2 Optionen angegeben werden');
-    } else if (options.some(option => option === '') && questionType !== QuestionType.FREE_TEXT) {
+    } else if (options.some(option => option === '') && questionType !== QuestionType.FREE_TEXT && questionType !== QuestionType.TEAM) {
         throw new Error('Alle Optionen müssen ausgefüllt sein');
     }
     const questionInput: QuestionInputDTO = {
@@ -33,7 +33,8 @@ export const submitQuestion = async (question: string, questionType: QuestionTyp
         options: options,
         active: false,
         visible: false,
-        live: false
+        live: false,
+        finalTeamsOnly: finalTeamsOnly
     }
     return createQuestion(questionInput);
 }
@@ -52,7 +53,8 @@ export const changeQuestion = async (question: QuestionReturnDTO): Promise<Quest
         options: (question.questionText === QuestionType.FREE_TEXT) ? [] : question.options,
         active: question.active,
         visible: question.visible,
-        live: question.live
+        live: question.live,
+        finalTeamsOnly: question.finalTeamsOnly
     }
     return updateQuestion(question.id, questionInput);
 }
@@ -67,7 +69,7 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: string |
     } else if (vote === '') {
         throw new Error('Die Antwort darf nicht leer sein');
     } else if (
-        (typeof vote === 'number' && vote === -1) || 
+        (typeof vote === 'number' && vote === -1) ||
         (Array.isArray(vote) && (vote.length === 0 || vote.some(v => v === -1)))
     ) {
         throw new Error('Es wurde keine Antwort ausgewählt');
@@ -76,13 +78,14 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: string |
     const freeTextAnswer = question.questionType === QuestionType.FREE_TEXT ? String(vote) : '';
     const multipleChoiceSelectedOption = question.questionType === QuestionType.MULTIPLE_CHOICE ? Number(vote) : -1;
     const checkboxSelectedOptions = question.questionType === QuestionType.CHECKBOX ? (Array.isArray(vote) ? vote.map(Number) : []) : [];
-
+    const teamSelectedOption = question.questionType === QuestionType.TEAM ? Number(vote) : -1;
     const answer: AnswerInputDTO = {
         questionId: question.id,
         answerType: question.questionType,
         freeTextAnswer: freeTextAnswer,
         multipleChoiceSelectedOption: multipleChoiceSelectedOption,
-        checkboxSelectedOptions: checkboxSelectedOptions
+        checkboxSelectedOptions: checkboxSelectedOptions,
+        teamSelectedOption: teamSelectedOption
     }
 
 

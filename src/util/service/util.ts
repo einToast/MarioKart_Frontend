@@ -16,7 +16,8 @@ export const convertUmlauts = (text: string): string => {
 export enum QuestionType {
     MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
     FREE_TEXT = "FREE_TEXT",
-    CHECKBOX = "CHECKBOX"
+    CHECKBOX = "CHECKBOX",
+    TEAM = "TEAM"
 }
 
 export enum ChangeType {

@@ -52,6 +52,12 @@ const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyMod
                 });
             });
             setAnswersCount(count);
+        } else if (question.questionType === QuestionType.TEAM) {
+            const count = new Array(question.options.length).fill(0);
+            answers.forEach(answer => {
+                count[answer.teamSelectedOption]++;
+            });
+            setAnswersCount(count);
         }
         setTotalAnswers(answers.length);
     }

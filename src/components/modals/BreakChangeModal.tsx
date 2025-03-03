@@ -52,7 +52,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     const enterBreak = async () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
-        setBeforeRound(aBreak.round?.id || 0);
+        setBeforeRound(aBreak.round?.id || -1);
     }
 
     const getRounds = async () => {

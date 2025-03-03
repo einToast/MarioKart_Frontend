@@ -10,7 +10,7 @@ import { getNumberOfUnplayedRounds, getTeamsRanked } from "../util/service/dashb
 import { getUser } from "../util/service/loginService";
 import { getTournamentOpen } from "../util/service/teamRegisterService";
 import './Tab2.css';
-
+// TODO: when last round use Props to tell it App.tsx
 const Tab2: React.FC = () => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);

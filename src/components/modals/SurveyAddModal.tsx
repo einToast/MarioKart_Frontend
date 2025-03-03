@@ -16,6 +16,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
     const user = getUser();
 
@@ -47,7 +48,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
 
     const handleSubmit = async () => {
         try {
-            const newQuestion = await submitQuestion(questionText, questionType, options);
+            const newQuestion = await submitQuestion(questionText, questionType, options, finalTeamsOnly);
 
             if (newQuestion) {
                 resetQuestion();
@@ -103,7 +104,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                 </select>
                             </IonItem>
                         </div>
-                        {(questionType !== QuestionType.FREE_TEXT) &&
+                        {(questionType === QuestionType.MULTIPLE_CHOICE || questionType === QuestionType.CHECKBOX) &&
                             <div>
                                 <IonButton className="add-option-button"
                                     onClick={incrementOptions}
@@ -135,7 +136,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                     </div>
 
                     <br></br>
-                    {(questionType === QuestionType.CHECKBOX || questionType === QuestionType.MULTIPLE_CHOICE) &&
+                    {(questionType === QuestionType.MULTIPLE_CHOICE || questionType === QuestionType.CHECKBOX) &&
                         <>
                             <div style={{ marginBottom: '115px' }}>
                                 {Array.from({ length: numberOfOptions }, (_, index) => (
@@ -152,6 +153,24 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                 ))}
                             </div>
                         </>
+                    }
+                    {(questionType === QuestionType.TEAM) &&
+                        <div className="borderContainer multipleSelect">
+                            <div>
+                                <p>Teamauswahl</p>
+                                <IonItem className={"item-background-color"}>
+                                    <select
+                                        value={finalTeamsOnly ? 'true' : 'false'}
+                                        onChange={(e) => setFinalTeamsOnly(e.target.value === 'true')}
+                                        style={{ cursor: 'pointer' }}
+                                        className="item-background-color"
+                                    >
+                                        <option value="false">Alle Teams</option>
+                                        <option value="true">Nur Finalteams</option>
+                                    </select>
+                                </IonItem>
+                            </div>
+                        </div>
                     }
                 </form>
                 <div className={"playedContainer"}>
