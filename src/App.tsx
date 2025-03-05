@@ -80,6 +80,7 @@ const App: React.FC = () => {
         <IonApp>
             <WebSocketProvider>
                 <IonReactRouter>
+                    {/* TODO: update with standard routes */}
                     {currentUser?.name ? (
                         <IonTabs>
                             <IonRouterOutlet>

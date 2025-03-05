@@ -225,7 +225,9 @@ export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): P
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 409){
+                throw new Error('Pause wurde noch nicht beendet');
+            } else if (error.response?.status === 404){
                 throw new Error('Runde konnte nicht gefunden werden');
             } else if (error.response?.status === 401){
                 throw new Error('Nicht autorisierter Zugriff');

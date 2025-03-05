@@ -171,6 +171,7 @@ const Final: React.FC = () => {
                             ></IonIcon>
                         </div>
                     </IonButton>
+                    {/* TODO: fix, does not work properly */}
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleFinalCreation}
                             tabIndex={0}
