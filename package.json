@@ -38,7 +38,7 @@
     "swiper": "^11.2.4"
   },
   "devDependencies": {
-    "@capacitor/cli": "next",
+    "@capacitor/cli": "^7.0.0",
     "@eslint/js": "^9.21.0",
     "@ionic/cli": "^7.2.0",
     "@testing-library/dom": ">=10.4.0",
