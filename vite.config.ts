@@ -1,6 +1,7 @@
 import legacy from '@vitejs/plugin-legacy'
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -18,6 +19,9 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      VitePWA({
+        registerType: 'autoUpdate',
+      }),
       legacy()
     ],
     test: {
