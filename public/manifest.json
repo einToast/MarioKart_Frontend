@@ -3,15 +3,40 @@
   "name": "Mario Kart Turnier",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "assets/icon/favicon.ico",
+      "sizes": "48x48",
       "type": "image/x-icon"
     },
     {
-      "src": "assets/icon/icon.png",
+      "src": "assets/icon/favicon-64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon/icon-256x256.png",
+      "sizes": "256x256",
       "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon/icon-512x512.png",
       "sizes": "512x512",
-      "purpose": "maskable"
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+    "screenshots": [
+      {
+        "src": "assets/screenshots/screenshot-2880x1919.png",
+        "sizes": "2880x1919",
+        "type": "image/png",
+        "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshots/screenshot-1008x1940.png",
+      "sizes": "1008x1940",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ],
   "start_url": ".",
