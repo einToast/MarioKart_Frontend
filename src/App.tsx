@@ -8,7 +8,6 @@ import {
     setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import '@ionic/react/css/core.css';
 import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
@@ -42,7 +41,6 @@ import Control from "./pages/admin/Control";
 import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
 import './theme/main.css';
-import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
@@ -82,6 +80,7 @@ const App: React.FC = () => {
         <IonApp>
             <WebSocketProvider>
                 <IonReactRouter>
+                    {/* TODO: update with standard routes */}
                     {currentUser?.name ? (
                         <IonTabs>
                             <IonRouterOutlet>

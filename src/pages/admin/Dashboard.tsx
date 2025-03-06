@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
+    // TODO: user into useEffect (in every page)
     const user = getUser();
     const history = useHistory();
     const location = useLocation();

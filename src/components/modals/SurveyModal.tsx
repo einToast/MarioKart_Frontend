@@ -1,10 +1,10 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import { SurveyModalResult} from "../../util/api/config/interfaces";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { getUser } from "../../util/service/loginService";
 import { getAnswers } from "../../util/service/surveyService";
 import { QuestionType } from "../../util/service/util";
@@ -50,6 +50,12 @@ const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyMod
                 answer.checkboxSelectedOptions.forEach(option => {
                     count[option]++;
                 });
+            });
+            setAnswersCount(count);
+        } else if (question.questionType === QuestionType.TEAM) {
+            const count = new Array(question.options.length).fill(0);
+            answers.forEach(answer => {
+                count[answer.teamSelectedOption]++;
             });
             setAnswersCount(count);
         }

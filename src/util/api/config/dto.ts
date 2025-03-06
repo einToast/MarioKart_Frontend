@@ -3,6 +3,7 @@ import { QuestionType } from "../../service/util";
 
 export interface RoundReturnDTO {
     id: number;
+    roundNumber: number;
     startTime: string;
     endTime: string;
     finalGame: boolean;
@@ -44,6 +45,7 @@ export interface TeamReturnDTO {
     groupPoints: number;
     finalPoints: number;
     games?: GameReturnDTO[];
+    gamesPlayed?: number;
 }
 
 export interface TeamInputDTO {
@@ -86,6 +88,7 @@ export interface QuestionInputDTO {
     active: boolean;
     visible: boolean;
     live: boolean;
+    finalTeamsOnly?: boolean;
 }
 export interface AnswerInputDTO {
     questionId: number;
@@ -93,6 +96,7 @@ export interface AnswerInputDTO {
     freeTextAnswer: string;
     multipleChoiceSelectedOption: number;
     checkboxSelectedOptions: number[];
+    teamSelectedOption: number;
 }
 
 export interface QuestionReturnDTO {
@@ -103,6 +107,7 @@ export interface QuestionReturnDTO {
     active: boolean;
     visible: boolean;
     live: boolean;
+    finalTeamsOnly: boolean;
 }
 
 export interface AnswerReturnDTO {
@@ -111,6 +116,7 @@ export interface AnswerReturnDTO {
     freeTextAnswer: string;
     multipleChoiceSelectedOption: number;
     checkboxSelectedOptions: number[];
+    teamSelectedOption: number;
 }
 
 export interface AnswerCookieDTO {

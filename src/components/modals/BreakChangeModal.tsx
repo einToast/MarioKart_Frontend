@@ -9,10 +9,10 @@ import {
     BreakReturnDTO,
     RoundReturnDTO
 } from "../../util/api/config/dto";
+import { BreakModalResult } from "../../util/api/config/interfaces";
 import { changeBreak } from "../../util/service/adminService";
 import { getAllRounds } from "../../util/service/dashboardService";
 import { getUser } from "../../util/service/loginService";
-import { BreakModalResult } from "../../util/api/config/interfaces";
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
@@ -52,7 +52,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     const enterBreak = async () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
-        setBeforeRound(aBreak.round?.id || 0);
+        setBeforeRound(aBreak.round?.id || -1);
     }
 
     const getRounds = async () => {
@@ -98,7 +98,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                                 <option value={round.id}
                                     key={index}
                                 >
-                                    {round.id}
+                                    {round.roundNumber}
                                 </option>
                             ))}
                         </select>

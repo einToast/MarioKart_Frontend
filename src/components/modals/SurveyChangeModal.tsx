@@ -1,10 +1,10 @@
 import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import { SurveyModalResult} from "../../util/api/config/interfaces";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { getUser } from "../../util/service/loginService";
 import { changeQuestion } from "../../util/service/surveyService";
 import { QuestionType } from "../../util/service/util";
@@ -19,6 +19,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
     const user = getUser();
 
@@ -61,6 +62,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             question.questionText = questionText;
             question.questionType = questionType;
             question.options = options;
+            question.finalTeamsOnly = finalTeamsOnly;
             const newQuestion = await changeQuestion(question);
 
             if (newQuestion) {
@@ -82,6 +84,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         setQuestionType(question.questionType);
         setOptions((question.options) ? question.options : ['']);
         setNumberOfOptions((question.options) ? question.options.length : 0);
+        setFinalTeamsOnly(question.finalTeamsOnly);
 
     }, [showModal]);
 
@@ -120,7 +123,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                                 </select>
                             </IonItem>
                         </div>
-                        {(questionType !== QuestionType.FREE_TEXT) &&
+                        {(questionType === QuestionType.MULTIPLE_CHOICE || questionType === QuestionType.CHECKBOX) &&
                             <div>
                                 <IonButton className="add-option-button"
                                     onClick={incrementOptions}>
@@ -139,7 +142,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     </div>
 
                     <br></br>
-                    {(questionType !== QuestionType.FREE_TEXT) &&
+                    {(questionType === QuestionType.MULTIPLE_CHOICE || questionType === QuestionType.CHECKBOX) &&
                         <>
                             <div style={{ marginBottom: '115px' }}>
                                 {Array.from({ length: numberOfOptions }, (_, index) => (

@@ -16,17 +16,27 @@ export const useRoundData = (): UseRoundDataReturn => {
     const refreshRounds = async () => {
         try {
             const currentAndNextRound = await getBothCurrentRounds();
+            let isBreak = false;
 
             if (currentAndNextRound[0]) {
-                const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0]);
+                const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
+                if ("breakEnded" in formattedCurrentRound) {
+                    isBreak = true;
+                }
                 setCurrentRound(formattedCurrentRound);
                 setNoGames(false);
             } else {
                 setNoGames(true);
             }
 
+
             if (currentAndNextRound[1]) {
-                const formattedNextRound = formatRoundTimes(currentAndNextRound[1]);
+                const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
+                setNextRound(formattedNextRound);
+            }
+
+            if (isBreak) {
+                const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
                 setNextRound(formattedNextRound);
             }
 
@@ -39,14 +49,15 @@ export const useRoundData = (): UseRoundDataReturn => {
         }
     };
 
-    const formatRoundTimes = (round: RoundReturnDTO): RoundReturnDTO => {
+    const formatRoundTimes = (round: RoundReturnDTO, isBreak: boolean): RoundReturnDTO | BreakReturnDTO => {
         const formattedRound = { ...round };
         formattedRound.endTime = round.endTime.split('T')[1].slice(0, 5);
         formattedRound.startTime = round.startTime.split('T')[1].slice(0, 5);
 
-        if (formattedRound.breakTime) {
+        if (formattedRound.breakTime && !formattedRound.breakTime.breakEnded && !isBreak) {
             formattedRound.breakTime.endTime = formattedRound.breakTime.endTime.split('T')[1].slice(0, 5);
             formattedRound.breakTime.startTime = formattedRound.breakTime.startTime.split('T')[1].slice(0, 5);
+            return formattedRound.breakTime;
         }
 
         return formattedRound;

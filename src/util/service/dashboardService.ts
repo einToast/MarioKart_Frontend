@@ -12,7 +12,7 @@ export const getTeamsRanked = async (): Promise<TeamReturnDTO[]> => {
 }
 
 export const getAllRounds = async (): Promise<RoundReturnDTO[]> => {
-    return getRounds();
+    return getRounds().then(rounds => rounds.sort((a, b) => a.roundNumber - b.roundNumber));
 }
 
 export const getRound = async (roundNumber: number): Promise<RoundReturnDTO> => {
