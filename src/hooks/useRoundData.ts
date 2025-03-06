@@ -30,13 +30,13 @@ export const useRoundData = (): UseRoundDataReturn => {
             }
 
 
-            if (currentAndNextRound[1] || isBreak) {
-                let formattedNextRound;
-                if (isBreak) {
-                    formattedNextRound = formatRoundTimes(currentAndNextRound[0], isBreak);
-                } else {
-                    formattedNextRound = formatRoundTimes(currentAndNextRound[1], isBreak);
-                }
+            if (currentAndNextRound[1]) {
+                const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
+                setNextRound(formattedNextRound);
+            }
+
+            if (isBreak) {
+                const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
                 setNextRound(formattedNextRound);
             }
 
