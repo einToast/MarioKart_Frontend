@@ -108,15 +108,15 @@ const App: React.FC = () => {
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
-                                    <IonIcon aria-hidden="true" icon={homeOutline} />
+                                    <IonIcon aria-hidden="true" icon={homeOutline} title="Spielplan" />
                                 </IonTabButton>
                                 {(!matchPlanCreated || finalPlanCreated || gamesToPlay >= 2) && (
                                     <IonTabButton tab="tab2" href="/tab2">
-                                        <IonIcon aria-hidden="true" icon={barChartOutline} />
+                                        <IonIcon aria-hidden="true" icon={barChartOutline} title="Rangliste" />
                                     </IonTabButton>
                                 )}
                                 <IonTabButton tab="tab3" href="/tab3">
-                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} />
+                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} title="Details" />
                                 </IonTabButton>
                             </IonTabBar>
                         </IonTabs>
