@@ -40,6 +40,8 @@ export interface RoundHeaderProps {
 export interface UseRoundDataReturn {
     currentRound: RoundReturnDTO | BreakReturnDTO | null;
     nextRound: RoundReturnDTO | BreakReturnDTO | null;
+    teamsNotInCurrentRound: TeamReturnDTO[];
+    teamsNotInNextRound: TeamReturnDTO[];
     noGames: boolean;
     error: string | null;
     refreshRounds: () => Promise<void>;
@@ -49,6 +51,7 @@ export interface GameListProps {
     games: GameReturnDTO[];
     user: User | null;
     viewType: 'all' | 'personal';
+    teamsNotInRound: TeamReturnDTO[];
 }
 
 export interface RoundDisplayProps {
@@ -57,6 +60,7 @@ export interface RoundDisplayProps {
     user: User | null;
     viewType: 'all' | 'personal';
     noGames?: boolean;
+    teamsNotInRound: TeamReturnDTO[];
 }
 
 export interface SurveyAdminListItemProps {

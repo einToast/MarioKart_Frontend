@@ -1,15 +1,15 @@
 import axios from 'axios';
+import apiClient from "./config/apiClient";
+import { API_BASE_URL } from './config/constants';
 import {
-    RoundReturnDTO,
+    BreakInputDTO,
+    BreakReturnDTO,
     GameReturnDTO,
+    PointsInputDTO,
     PointsReturnDTO,
     RoundInputDTO,
-    PointsInputDTO,
-    BreakReturnDTO,
-    BreakInputDTO
+    RoundReturnDTO
 } from './config/dto';
-import { API_BASE_URL } from './config/constants';
-import apiClient from "./config/apiClient";
 
 const BASE_URL = `${API_BASE_URL}/match_plan`;
 
@@ -19,7 +19,7 @@ export const getRounds = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Runden konnten nicht geladen werden');
@@ -35,7 +35,7 @@ export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Runden konnten nicht geladen werden');
@@ -51,9 +51,9 @@ export const getRoundById = async (roundId: number): Promise<RoundReturnDTO> => 
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Runde konnte nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Runde konnte nicht geladen werden');
@@ -69,7 +69,7 @@ export const getGamesByRoundId = async (roundId: number): Promise<GameReturnDTO[
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Spiele konnten nicht geladen werden');
@@ -85,7 +85,7 @@ export const getGames = async (): Promise<GameReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Spiele konnten nicht geladen werden');
@@ -101,9 +101,9 @@ export const getGameById = async (gameId: number): Promise<GameReturnDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Spiel konnte nicht geladen werden');
@@ -119,7 +119,7 @@ export const getPoints = async (): Promise<PointsReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Punkte konnten nicht geladen werden');
@@ -135,7 +135,7 @@ export const getBreak = async (): Promise<BreakReturnDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Pausen konnten nicht geladen werden');
@@ -151,7 +151,7 @@ export const checkMatchPlan = async (): Promise<boolean> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Spielplan konnte nicht überprüft werden');
@@ -167,7 +167,7 @@ export const checkFinalPlan = async (): Promise<boolean> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Finale konnte nicht überprüft werden');
@@ -183,9 +183,9 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 409){
+            if (error.response?.status === 409) {
                 throw new Error('Spielplan existiert bereits');
-            } else if (error.response?.status === 404){
+            } else if (error.response?.status === 404) {
                 throw new Error('Nicht genügend Teams vorhanden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
@@ -203,9 +203,9 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 409){
+            if (error.response?.status === 409) {
                 throw new Error('Finale existiert bereits');
-            } else if (error.response?.status === 404){
+            } else if (error.response?.status === 404) {
                 throw new Error('Nicht genügend Teams vorhanden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
@@ -219,17 +219,17 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
     }
 };
 
-export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): Promise<RoundReturnDTO> => {
+export const updateRoundPlayed = async (roundId: number, round: RoundInputDTO): Promise<RoundReturnDTO> => {
     try {
         const response = await apiClient.put<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}`, round);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 409){
+            if (error.response?.status === 409) {
                 throw new Error('Pause wurde noch nicht beendet');
-            } else if (error.response?.status === 404){
+            } else if (error.response?.status === 404) {
                 throw new Error('Runde konnte nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Runde konnte nicht aktualisiert werden');
@@ -239,15 +239,15 @@ export const updateRoundPlayed = async (roundId: number,round: RoundInputDTO): P
     }
 };
 
-export const updatePoints = async (roundId: number, gameId:number, teamId:number, points: PointsInputDTO): Promise<PointsReturnDTO> => {
+export const updatePoints = async (roundId: number, gameId: number, teamId: number, points: PointsInputDTO): Promise<PointsReturnDTO> => {
     try {
         const response = await apiClient.put<PointsReturnDTO>(`${BASE_URL}/rounds/${roundId}/games/${gameId}/teams/${teamId}/points`, points);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Punkte konnten nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Punkte konnten nicht aktualisiert werden');
@@ -263,9 +263,9 @@ export const updateBreak = async (aBreak: BreakInputDTO): Promise<BreakReturnDTO
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Pause konnte nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Pause konnte nicht aktualisiert werden');
@@ -280,7 +280,7 @@ export const deleteMatchPlan = async (): Promise<void> => {
         await apiClient.delete(`${BASE_URL}/create/match_plan`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Spielplan konnte nicht gelöscht werden');
@@ -295,7 +295,7 @@ export const deleteFinalPlan = async (): Promise<void> => {
         await apiClient.delete(`${BASE_URL}/create/final_plan`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Finale konnte nicht gelöscht werden');

@@ -1,17 +1,17 @@
-import {API_BASE_URL} from "./config/constants";
-import {AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO} from "./config/dto";
-import apiClient from "./config/apiClient";
 import axios from "axios";
+import apiClient from "./config/apiClient";
+import { API_BASE_URL } from "./config/constants";
+import { AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "./config/dto";
 
 const BASE_URL = `${API_BASE_URL}/survey`;
 
 export const getQuestions = async (): Promise<QuestionReturnDTO[]> => {
-    try{
+    try {
         const response = await apiClient.get<QuestionReturnDTO[]>(`${BASE_URL}`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Fragen konnten nicht geladen werden');
@@ -27,7 +27,7 @@ export const getVisibleQuestions = async (): Promise<QuestionReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Fragen konnten nicht geladen werden');
@@ -43,9 +43,9 @@ export const getQuestion = async (questionId: number): Promise<QuestionReturnDTO
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
+            if (error.response?.status === 404) {
                 throw new Error('Frage konnte nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Frage konnte nicht geladen werden');
@@ -61,9 +61,7 @@ export const getAnswersOfQuestion = async (questionId: number): Promise<AnswerRe
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404){
-                throw new Error('Frage konnte nicht gefunden werden');
-            } else if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Frage konnte nicht geladen werden');
@@ -79,9 +77,9 @@ export const createQuestion = async (question: QuestionInputDTO): Promise<Questi
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else if (error.response?.status === 400){
+            } else if (error.response?.status === 400) {
                 throw new Error('Frage konnte nicht erstellt werden');
             } else {
                 throw new Error('Frage konnte nicht erstellt werden');
@@ -97,7 +95,11 @@ export const submitAnswer = async (answer: AnswerInputDTO): Promise<AnswerReturn
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 409) {
+                throw new Error('Frage kann nicht beantwortet werden');
+            } else if (error.response?.status === 404) {
+                throw new Error('Frage nicht gefunden');
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Antwort konnte nicht übermittelt werden');
@@ -112,7 +114,7 @@ export const deleteQuestions = async (): Promise<void> => {
         await apiClient.delete(`${BASE_URL}`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Fragen konnten nicht gelöscht werden');
@@ -127,7 +129,7 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
         await apiClient.delete(`${BASE_URL}/${questionId}`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401){
+            if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Frage konnte nicht gelöscht werden');
@@ -143,8 +145,12 @@ export const updateQuestion = async (questionId: number, question: QuestionInput
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401) {
+            if (error.response?.status === 404) {
+                throw new Error('Frage nicht gefunden');
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 400) {
+                throw new Error('Fragentyp wird nicht unterstützt');
             } else {
                 throw new Error('Frage konnte nicht aktualisiert werden');
             }

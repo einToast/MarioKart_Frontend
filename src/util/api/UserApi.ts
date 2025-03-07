@@ -1,15 +1,15 @@
 import axios from 'axios';
+import apiClient from "./config/apiClient";
+import { API_BASE_URL } from "./config/constants";
 import {
     AuthenticationRequestDTO,
     AuthenticationResponseDTO,
+    UpdateUserDTO,
+    UserCreationDTO,
     UserDTO,
     UserPasswordsDTO,
-    UserTokenDTO,
-    UserCreationDTO,
-    UpdateUserDTO
+    UserTokenDTO
 } from './config/dto';
-import {API_BASE_URL} from "./config/constants";
-import apiClient from "./config/apiClient";
 
 const BASE_URL = `${API_BASE_URL}/users`;
 
@@ -37,9 +37,9 @@ export const registerUserPassword = async (userPasswords: UserPasswordsDTO, toke
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
                 throw new Error('Token nicht gefunden');
-            } else  if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Token ist abgelaufen');
-            } else if (error.response?.status === 400){
+            } else if (error.response?.status === 400) {
                 throw new Error('Passwörter stimmen nicht überein');
             } else {
                 throw new Error('Registrierung fehlgeschlagen');
@@ -104,11 +104,11 @@ export const updateUser = async (id: number, updateUser: UpdateUserDTO): Promise
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
                 throw new Error('Nutzer nicht gefunden');
-            } else if (error.response?.status === 401){
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else if (error.response?.status === 400){
+            } else if (error.response?.status === 400) {
                 throw new Error('Fehlerhafte Anfrage');
-            } else{
+            } else {
                 throw new Error('Nutzer konnte nicht aktualisiert werden');
             }
         }
