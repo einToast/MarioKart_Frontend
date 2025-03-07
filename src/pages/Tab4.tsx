@@ -1,14 +1,8 @@
-import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import {
-    heart, medalOutline, megaphoneOutline, pizzaOutline,
-    playOutline,
-    playSkipForwardOutline
-} from "ionicons/icons";
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import QRCodeComponent from "../components/QRCodeComponent";
 import { getTournamentOpen } from "../util/service/teamRegisterService";
 import './Tab3.css';
 

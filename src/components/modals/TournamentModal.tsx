@@ -98,7 +98,7 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
     }, [showModal]);
 
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal()}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal(changeType)}>
             <IonContent>
                 <h4>{changeType} {secondaryMessage}</h4>
                 <p dangerouslySetInnerHTML={{ __html: message.replace('...', secondaryMessage) }}></p>
@@ -107,11 +107,11 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
                 }
 
                 <div className={"playedContainer"}>
-                    <IonButton className={"secondary round"} onClick={() => closeModal()}
+                    <IonButton className={"secondary round"} onClick={() => closeModal(changeType)}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                closeModal();
+                                closeModal(changeType);
                             }
                         }}
                     >

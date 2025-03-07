@@ -1,7 +1,7 @@
 import React from 'react';
-import {RoundReturnDTO} from '../../util/api/config/dto';
-import {RoundDisplayProps} from '../../util/api/config/interfaces';
-import {GameList} from './GameList';
+import { RoundReturnDTO } from '../../util/api/config/dto';
+import { RoundDisplayProps } from '../../util/api/config/interfaces';
+import { GameList } from './GameList';
 
 export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     round,

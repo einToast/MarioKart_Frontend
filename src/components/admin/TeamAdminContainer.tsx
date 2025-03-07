@@ -2,20 +2,12 @@ import { IonToast } from '@ionic/react';
 import React, { useState } from 'react';
 import { errorToastColor, successToastColor } from '../../util/api/config/constants';
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { TeamModalResult } from "../../util/api/config/interfaces";
+import { TeamAdminContainerProps, TeamModalResult } from "../../util/api/config/interfaces";
 import { changeTeam } from '../../util/service/adminService';
 import { getUser } from '../../util/service/loginService';
 import TeamChangeModal from '../modals/TeamChangeModal';
 import TeamDeleteModal from '../modals/TeamDeleteModal';
 import TeamAdminListItem from './TeamAdminListItem';
-
-interface TeamAdminContainerProps {
-    teams: TeamReturnDTO[];
-    matchplanCreated: boolean;
-    setModalClosed: (modalClosed: boolean) => void;
-    getTeams: () => void;
-    modalClosed: boolean;
-}
 
 const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     teams,

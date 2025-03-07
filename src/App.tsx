@@ -40,12 +40,12 @@ import { WebSocketProvider } from "./components/WebSocketContext";
 import Control from "./pages/admin/Control";
 import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
+import Tab4 from './pages/Tab4';
 import './theme/main.css';
 import { User } from "./util/api/config/interfaces";
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
 import { getUser } from "./util/service/loginService";
-import Tab4 from './pages/Tab4';
 
 setupIonicReact();
 

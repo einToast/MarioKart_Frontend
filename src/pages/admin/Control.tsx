@@ -35,7 +35,7 @@ const Control: React.FC = () => {
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
-    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: { id: 0, startTime: '', endTime: '', finalGame: false, played: false } });
+    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: { id: 0, roundNumber: 0, startTime: '', endTime: '', finalGame: false, played: false } });
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);

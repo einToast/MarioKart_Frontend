@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
@@ -115,6 +115,17 @@ const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyMod
                     </IonButton>
                 </div>
             </IonContent>
+            <IonToast
+                isOpen={showToast}
+                onDidDismiss={() => setShowToast(false)}
+                message={error}
+                duration={3000}
+                className={user ? 'tab-toast' : ''}
+                cssClass="toast"
+                style={{
+                    '--toast-background': toastColor
+                }}
+            />
         </IonModal>
 
     );

@@ -76,3 +76,18 @@ export interface TeamAdminListItemProps {
     onOpenChangeModal: (team: TeamReturnDTO) => void;
     onOpenDeleteModal: (team: TeamReturnDTO) => void;
 }
+
+export interface SurveyAdminContainerProps {
+    surveys: QuestionReturnDTO[];
+    getQuestions: () => void;
+    handleModalClose: (result: SurveyModalResult) => void;
+}
+
+
+export interface TeamAdminContainerProps {
+    teams: TeamReturnDTO[];
+    matchplanCreated: boolean;
+    setModalClosed: (modalClosed: boolean) => void;
+    getTeams: () => void;
+    modalClosed: boolean;
+}
