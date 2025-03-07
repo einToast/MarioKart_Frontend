@@ -38,9 +38,20 @@ const Tab4: React.FC = () => {
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Wie wird gespielt?
+                        So wird gespielt
                     </LinearGradient>
                 </h1>
+                <h2>Spielregeln</h2>
+                <ul>
+                    <li>Es treten 4 Teams gegeneinander an</li>
+                    <li>Es wird im Versus-Rennen gespielt</li>
+                    <li>Alle Fahrer fahren im Standard-Kart</li>
+                    <li>Die Geschwindigkeit beträgt 100ccm</li>
+                    <li>Es wird mit Standardeinstellungen gespielt</li>
+                    <li>Die Streckenauswahl ist zufällig</li>
+                    <li>Die Teams fahren 4 Rennen gegeneinander</li>
+                </ul>
+                <h2>Steuerung</h2>
                 <h3>Pro Controller</h3>
                 <div>
                     <img src={"/media/procon_how_to_play.jpg"} alt="pro controller" />
@@ -49,6 +60,7 @@ const Tab4: React.FC = () => {
                 <div>
                     <img src={"/media/joycon_how_to_play.jpg"} alt="joycon" />
                 </div>
+                <div style={{ marginBottom: "10px" }}></div>
             </IonContent>
         </IonPage>
     );
