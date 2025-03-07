@@ -8,6 +8,7 @@ import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
+import QRCodeComponent from "../components/QRCodeComponent";
 import { getTournamentOpen } from "../util/service/teamRegisterService";
 import './Tab3.css';
 
@@ -75,6 +76,16 @@ const Tab3: React.FC = () => {
                     <div>
                         <IonIcon aria-hidden="true" icon={medalOutline} />
                         <p><span>21:00</span> Siegerehrung</p>
+                    </div>
+                </div>
+                <br />
+                <h3>QR-Code für die Webseite</h3>
+                <div className={"progressContainer"}>
+                    {/* <div>
+                        <p>Gebt diesen QR-Code gerne an Leute weiter, die noch nicht den Link zu dieser Seite haben.</p>
+                    </div> */}
+                    <div>
+                        <QRCodeComponent />
                     </div>
                 </div>
                 {/*<h3>Organisatoren</h3>*/}
