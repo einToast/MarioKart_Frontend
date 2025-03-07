@@ -160,6 +160,24 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </div>
                         </>
                     }
+                    {(questionType === QuestionType.TEAM) &&
+                        <div className="borderContainer multipleSelect">
+                            <div>
+                                <p>Teamauswahl</p>
+                                <IonItem className={"item-background-color"}>
+                                    <select
+                                        value={finalTeamsOnly ? 'true' : 'false'}
+                                        onChange={(e) => setFinalTeamsOnly(e.target.value === 'true')}
+                                        className="item-background-color"
+                                        disabled
+                                    >
+                                        <option value="false">Alle Teams</option>
+                                        <option value="true">Nur Finalteams</option>
+                                    </select>
+                                </IonItem>
+                            </div>
+                        </div>
+                    }
                 </form>
                 <div className={"playedContainer"}>
 
