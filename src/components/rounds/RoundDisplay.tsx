@@ -8,7 +8,8 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     title,
     user,
     viewType,
-    noGames = false
+    noGames = false,
+    teamsNotInRound
 }) => {
     if (noGames) {
         return (
@@ -41,6 +42,7 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
                     games={(round as RoundReturnDTO).games || []}
                     user={user}
                     viewType={viewType}
+                    teamsNotInRound={teamsNotInRound}
                 />
             )}
         </div>

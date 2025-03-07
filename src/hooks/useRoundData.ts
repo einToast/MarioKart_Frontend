@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { BreakReturnDTO, RoundReturnDTO } from '../util/api/config/dto';
+import { BreakReturnDTO, RoundReturnDTO, TeamReturnDTO } from '../util/api/config/dto';
 import { UseRoundDataReturn } from '../util/api/config/interfaces';
-import { getBothCurrentRounds } from '../util/service/dashboardService';
+import { getBothCurrentRounds, getTeamsInPause } from '../util/service/dashboardService';
 import { getTournamentOpen } from '../util/service/teamRegisterService';
 
 export const useRoundData = (): UseRoundDataReturn => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
     const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
+    const [teamsNotInCurrentRound, setTeamsNotInCurrentRound] = useState<TeamReturnDTO[]>([]);
+    const [teamsNotInNextRound, setTeamsNotInNextRound] = useState<TeamReturnDTO[]>([]);
     const [noGames, setNoGames] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -22,6 +24,8 @@ export const useRoundData = (): UseRoundDataReturn => {
                 const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
                 if ("breakEnded" in formattedCurrentRound) {
                     isBreak = true;
+                } else {
+                    setTeamsNotInCurrentRound(await getTeamsInPause(formattedCurrentRound.id));
                 }
                 setCurrentRound(formattedCurrentRound);
                 setNoGames(false);
@@ -33,6 +37,7 @@ export const useRoundData = (): UseRoundDataReturn => {
             if (currentAndNextRound[1]) {
                 const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
                 setNextRound(formattedNextRound);
+                setTeamsNotInNextRound(await getTeamsInPause(formattedNextRound.id));
             }
 
             if (isBreak) {
@@ -70,6 +75,8 @@ export const useRoundData = (): UseRoundDataReturn => {
     return {
         currentRound,
         nextRound,
+        teamsNotInCurrentRound,
+        teamsNotInNextRound,
         noGames,
         error,
         refreshRounds

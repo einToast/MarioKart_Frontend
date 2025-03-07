@@ -25,6 +25,8 @@ const Tab1: React.FC = () => {
     const {
         currentRound,
         nextRound,
+        teamsNotInCurrentRound,
+        teamsNotInNextRound,
         noGames,
         error,
         refreshRounds
@@ -83,6 +85,7 @@ const Tab1: React.FC = () => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         noGames={noGames}
+                        teamsNotInRound={teamsNotInCurrentRound}
                     />
 
                     <RoundDisplay
@@ -91,6 +94,7 @@ const Tab1: React.FC = () => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         noGames={noGames}
+                        teamsNotInRound={teamsNotInNextRound}
                     />
                 </div>
             </IonContent>

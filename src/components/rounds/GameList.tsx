@@ -3,8 +3,9 @@ import { GameReturnDTO } from '../../util/api/config/dto';
 import { GameListProps } from '../../util/api/config/interfaces';
 import RoundComponentAll from './RoundComponentAll';
 import RoundComponentSwiper from './RoundComponentSwiper';
+import PauseComponentSwiper from './PauseComponentSwiper';
 
-export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => {
+export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {
         return games.map(game => {
             const hasLoggedInCharacter = game.teams?.some(team =>
@@ -60,6 +61,12 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => 
                     />
                 );
             })}
+            {viewType === 'all' && teamsNotInRound.length > 0 && (
+                <PauseComponentSwiper
+                    teams={teamsNotInRound}
+                    user={user}
+                />
+            )}
         </>
     );
 }; 

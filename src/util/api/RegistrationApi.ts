@@ -171,14 +171,32 @@ export const getCharacterByName = async (name: string): Promise<CharacterReturnD
     }
 };
 
+export const getTeamsNotInRound = async (roundId: number): Promise<TeamReturnDTO[]> => {
+    try {
+        const response = await apiClient.get<TeamReturnDTO[]>(`${BASE_URL}/notInRound/${roundId}`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Teams konnten nicht geladen werden');
+            }
+        }
+        throw error;
+    }
+};
+
 export const addTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> => {
     try {
         const response = await apiClient.post<TeamReturnDTO>(BASE_URL, team);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404) {
-                throw new Error('Token nicht gefunden');
+            if (error.response?.status === 409) {
+                throw new Error('Registrierung ist nicht möglich');
+            } else if (error.response?.status === 404) {
+                throw new Error('Charakter nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Token ist abgelaufen');
             } else if (error.response?.status === 400) {
@@ -216,7 +234,9 @@ export const deleteAllTeams = async (): Promise<void> => {
         await apiClient.delete(BASE_URL);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401) {
+            if (error.response?.status === 409) {
+                throw new Error('Matchplan wurde bereits erstellt');
+            } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Teams konnten nicht gelöscht werden');
@@ -231,7 +251,9 @@ export const deleteTeam = async (id: number): Promise<void> => {
         await apiClient.delete(`${BASE_URL}/${id}`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404) {
+            if (error.response?.status === 409) {
+                throw new Error('Matchplan wurde bereits erstellt');
+            } else if (error.response?.status === 404) {
                 throw new Error('Team nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');

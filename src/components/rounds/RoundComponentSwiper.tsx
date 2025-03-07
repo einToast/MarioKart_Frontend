@@ -4,7 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 import { GameReturnDTO } from "../../util/api/config/dto";
 import { User } from '../../util/api/config/interfaces';
-import TeamComponent4 from "./Team4";
+import TeamComponent4 from "./TeamComponent4";
 
 const RoundComponentSwiper: React.FC<{ game: GameReturnDTO, user: User | null, switchColor: string }> = ({ game, user, switchColor }) => {
     if (!game || !game.teams) return null;
