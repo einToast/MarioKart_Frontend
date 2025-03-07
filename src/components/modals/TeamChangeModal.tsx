@@ -74,7 +74,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                             type="text"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
-                            placeholder="Frage eingeben"
+                            placeholder="Name eingeben"
                             required
                         />
                     </div>

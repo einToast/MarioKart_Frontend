@@ -1,8 +1,8 @@
 import React from 'react';
 import { GameReturnDTO } from '../../util/api/config/dto';
 import { GameListProps } from '../../util/api/config/interfaces';
-import RoundComponentAll from '../RoundComponentAll';
-import RoundComponentSwiper from '../RoundComponentSwiper';
+import RoundComponentAll from './RoundComponentAll';
+import RoundComponentSwiper from './RoundComponentSwiper';
 
 export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {

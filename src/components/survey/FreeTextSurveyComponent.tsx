@@ -12,7 +12,7 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { getUser } from "../../util/service/loginService";
 import { registerAnswer } from "../../util/service/surveyService";
 
-const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
+const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
 
     const [text, setText] = useState<string>('');
     const [error, setError] = useState<string>('Error');
@@ -100,4 +100,4 @@ const FreeTextCard: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccord
     );
 };
 
-export default React.memo(FreeTextCard);
+export default React.memo(FreeTextSurveyComponent);

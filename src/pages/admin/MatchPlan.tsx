@@ -9,6 +9,7 @@ import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { createTeamMatchPlan, getRegisteredTeams } from "../../util/service/adminService";
@@ -23,6 +24,7 @@ const MatchPlan: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [modalClosed, setModalClosed] = useState(false);
 
     const user = getUser();
     const history = useHistory();
@@ -41,7 +43,7 @@ const MatchPlan: React.FC = () => {
             setToastColor(errorToastColor);
             setShowToast(true);
         });
-    }, [location]);
+    }, [modalClosed, location]);
 
     const handleMatchPlanCreation = async () => {
         try {
@@ -87,21 +89,14 @@ const MatchPlan: React.FC = () => {
 
                 <div className={"flexContainer"} style={{ paddingBottom: "50px" }}>
                     {teams ? (
-                        teams
-                            .map(team => (
-                                <div key={team.id}
-                                    className={`teamContainer`}>
-                                    <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character?.characterName}.png`}
-                                            alt={team.character?.characterName}
-                                            className={"iconTeam"} />
-                                    </div>
-                                    <div>
-                                        <p>{team.teamName}</p>
-                                        {/*<p className={"punkte"}>{team.finalPoints} Punkte</p>*/}
-                                    </div>
-                                </div>
-                            ))
+                        <TeamAdminContainer
+                            teams={teams}
+                            matchplanCreated={false}
+                            setModalClosed={setModalClosed}
+                            modalClosed={modalClosed}
+                            getTeams={getRegisteredTeams}
+                        />
+
                     ) : (
                         <p>loading...</p>
                     )}

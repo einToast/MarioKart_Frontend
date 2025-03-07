@@ -15,7 +15,7 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { getUser } from "../../util/service/loginService";
 import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
 
-const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamQuestion, toggleAccordion }) => {
+const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -27,7 +27,7 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
     const user = getUser();
 
     const getVote = async () => {
-        const voted = await getAnswer(teamQuestion.questionText + teamQuestion.id);
+        const voted = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
 
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
@@ -38,7 +38,7 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
 
     const handleSaveVote = async () => {
         try {
-            const voted = await registerAnswer(teamQuestion, vote);
+            const voted = await registerAnswer(multipleChoiceQuestion, vote);
             if (voted) {
                 getVote();
                 toggleAccordion();
@@ -53,7 +53,7 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
     }
 
     const handleVoteStatus = (vote: string | number) => {
-        if (!teamQuestion.active) {
+        if (!multipleChoiceQuestion.active) {
             setIndicator(statsChartOutline)
         } else if (vote === undefined || vote === -1) {
             setIndicator(megaphoneOutline)
@@ -63,9 +63,9 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
     }
 
     const showResults = async () => {
-        if (!teamQuestion.active) {
-            const answers = await getAnswers(teamQuestion.id);
-            const results = new Array(teamQuestion.options.length).fill(0);
+        if (!multipleChoiceQuestion.active) {
+            const answers = await getAnswers(multipleChoiceQuestion.id);
+            const results = new Array(multipleChoiceQuestion.options.length).fill(0);
             answers.forEach(answer => {
                 results[answer.multipleChoiceSelectedOption]++;
             });
@@ -75,14 +75,14 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
 
     useEffect(() => {
         getVote();
-        if (!teamQuestion.active) {
+        if (!multipleChoiceQuestion.active) {
             showResults();
         }
     }, []);
 
     return (
-        <IonAccordion value={teamQuestion.id.toString()} >
-            <IonItem slot="header" color="light" disabled={votedId !== -1 || !teamQuestion.active} onClick={showResults}
+        <IonAccordion value={multipleChoiceQuestion.id.toString()} >
+            <IonItem slot="header" color="light" disabled={votedId !== -1 || !multipleChoiceQuestion.active} onClick={showResults}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         showResults();
@@ -90,16 +90,16 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
                 }}
             >
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{teamQuestion.questionText}</h3>
+                <h3 className="weiss">{multipleChoiceQuestion.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        teamQuestion.options.map((option, index: number) => {
+                        multipleChoiceQuestion.options.map((option, index: number) => {
                             return (
                                 <IonButton slot="start" shape="round"
-                                    className={!teamQuestion.active ? 'bsurvey' : ''}
+                                    className={!multipleChoiceQuestion.active ? 'bsurvey' : ''}
                                     onClick={votedId === -1 ? () => setVote(index) : undefined}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
@@ -112,7 +112,7 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
                                     key={index}
                                     disabled={!(vote == index || votedId == index) && votedId !== -1}
                                     style={{
-                                        pointerEvents: (votedId !== -1 || !teamQuestion.active) ? 'none' : 'auto',
+                                        pointerEvents: (votedId !== -1 || !multipleChoiceQuestion.active) ? 'none' : 'auto',
                                         opacity: vote == index || votedId == index ? 1 : 0.5,
                                         "--gradient-percentage": `${results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%`,
                                     }}
@@ -120,18 +120,18 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
                                 >
                                     <div className="button-content">
                                         <p>{option}</p>
-                                        {!teamQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
+                                        {!multipleChoiceQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
 
                                     </div>
                                 </IonButton>)
                         })
                     }
                 </div>
-                {teamQuestion.active && votedId === -1 && (
+                {multipleChoiceQuestion.active && votedId === -1 && (
                     <IonButton
                         className={"button"}
                         onClick={() => handleSaveVote()}
-                        disabled={!(votedId === -1) || !teamQuestion.active || vote === -1}
+                        disabled={!(votedId === -1) || !multipleChoiceQuestion.active || vote === -1}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 handleSaveVote();
@@ -157,4 +157,4 @@ const TeamCard: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () 
     );
 };
 
-export default React.memo(TeamCard);
+export default React.memo(MultipleChoiceSurveyComponent);

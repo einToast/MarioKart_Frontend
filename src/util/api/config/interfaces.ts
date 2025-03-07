@@ -1,4 +1,4 @@
-import { BreakReturnDTO, GameReturnDTO, RoundReturnDTO } from "./dto";
+import { BreakReturnDTO, GameReturnDTO, QuestionReturnDTO, RoundReturnDTO, TeamReturnDTO } from "./dto";
 
 export interface User {
     name: string | null;
@@ -57,4 +57,22 @@ export interface RoundDisplayProps {
     user: User | null;
     viewType: 'all' | 'personal';
     noGames?: boolean;
+}
+
+export interface SurveyAdminListItemProps {
+    survey: QuestionReturnDTO;
+    onToggleVisibility: (id: number) => void;
+    onToggleActive: (id: number) => void;
+    onOpenResultsModal: (survey: QuestionReturnDTO) => void;
+    onOpenChangeModal: (survey: QuestionReturnDTO) => void;
+    onOpenDeleteModal: (survey: QuestionReturnDTO) => void;
+}
+
+export interface TeamAdminListItemProps {
+    team: TeamReturnDTO;
+    matchplanCreated: boolean;
+    onToggleFinalParticipation: (team: TeamReturnDTO) => void;
+    onToggleActive: (team: TeamReturnDTO) => void;
+    onOpenChangeModal: (team: TeamReturnDTO) => void;
+    onOpenDeleteModal: (team: TeamReturnDTO) => void;
 }

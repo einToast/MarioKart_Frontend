@@ -13,7 +13,7 @@ import { saveGame } from "../../util/service/adminService";
 import { getUser } from "../../util/service/loginService";
 import { convertUmlauts } from "../../util/service/util";
 
-const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
+const PointsSurveyComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
     const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[0]?.id)?.points ?? 0);
     const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[1]?.id)?.points ?? 0);
     const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[2]?.id)?.points ?? 0);
@@ -128,4 +128,4 @@ const PointsCard: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boole
     );
 };
 
-export default React.memo(PointsCard);
+export default React.memo(PointsSurveyComponent);

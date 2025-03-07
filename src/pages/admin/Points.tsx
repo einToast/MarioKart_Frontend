@@ -10,7 +10,7 @@ import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import PointsCard from "../../components/cards/PointsCard";
+import PointsCard from "../../components/survey/PointsSurveyComponent";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { RoundReturnDTO } from "../../util/api/config/dto";
 import { saveRound } from "../../util/service/adminService";
@@ -112,6 +112,7 @@ const Points: React.FC = () => {
                     <div>
                         {/* TODO: differentiate between round and final round */}
                         <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
+                            {/* TODO: replace selected with default value */}
                             {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
                                 return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.roundNumber}>Runde {round_number + 1}</option>
                             })}

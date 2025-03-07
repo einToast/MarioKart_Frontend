@@ -15,45 +15,31 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { getUser } from "../../util/service/loginService";
 import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
 
-const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion, toggleAccordion }) => {
+const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const [votes, setVotes] = useState<number[]>([]);
-    const [votedId, setVotedId] = useState<number[]>([-1]);
+    const [vote, setVote] = useState<number>(-1);
+    const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
     const [indicator, setIndicator] = useState<string>('');
 
     const user = getUser();
 
-    useEffect(() => {
-        getVote();
-        if (!checkBoxQuestion.active) {
-            showResults();
-        }
-    }, []);
-
     const getVote = async () => {
-        const vote = await getAnswer(checkBoxQuestion.questionText + checkBoxQuestion.id);
+        const voted = await getAnswer(teamQuestion.questionText + teamQuestion.id);
 
-        if (vote !== -1) {
-            if (typeof vote.answerId === 'string' && vote.answerId.includes(',')) {
-                setVotedId(vote.answerId.split(',').map(Number));
-            } else {
-                setVotedId([parseInt(vote.answerId)]);
-            }
-            handleVoteStatus(vote.answerId);
-        } else {
-            handleVoteStatus(-1);
+        if (voted !== -1) {
+            setVotedId(parseInt(voted.answerId));
+            handleVoteStatus(voted.answerId);
         }
-
 
     }
 
     const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(checkBoxQuestion, votes);
-            if (vote) {
+            const voted = await registerAnswer(teamQuestion, vote);
+            if (voted) {
                 getVote();
                 toggleAccordion();
             } else {
@@ -66,16 +52,8 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
         }
     }
 
-    const handleAddVote = async (index: number) => {
-        if (votes.includes(index)) {
-            setVotes(votes.filter(vote => vote !== index));
-        } else {
-            setVotes([...votes, index]);
-        }
-    }
-
     const handleVoteStatus = (vote: string | number) => {
-        if (!checkBoxQuestion.active) {
+        if (!teamQuestion.active) {
             setIndicator(statsChartOutline)
         } else if (vote === undefined || vote === -1) {
             setIndicator(megaphoneOutline)
@@ -85,22 +63,26 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
     }
 
     const showResults = async () => {
-        if (!checkBoxQuestion.active) {
-            const answers = await getAnswers(checkBoxQuestion.id);
-            const results = new Array(checkBoxQuestion.options.length).fill(0);
+        if (!teamQuestion.active) {
+            const answers = await getAnswers(teamQuestion.id);
+            const results = new Array(teamQuestion.options.length).fill(0);
             answers.forEach(answer => {
-                answer.checkboxSelectedOptions.forEach(option => {
-                    results[option]++;
-                });
+                results[answer.multipleChoiceSelectedOption]++;
             });
             setResults(results);
         }
-
     }
 
+    useEffect(() => {
+        getVote();
+        if (!teamQuestion.active) {
+            showResults();
+        }
+    }, []);
+
     return (
-        <IonAccordion value={checkBoxQuestion.id.toString()}>
-            <IonItem slot="header" color="light" disabled={!votedId.includes(-1) || !checkBoxQuestion.active} onClick={showResults}
+        <IonAccordion value={teamQuestion.id.toString()} >
+            <IonItem slot="header" color="light" disabled={votedId !== -1 || !teamQuestion.active} onClick={showResults}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         showResults();
@@ -108,57 +90,55 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
                 }}
             >
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{checkBoxQuestion.questionText}</h3>
+                <h3 className="weiss">{teamQuestion.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        checkBoxQuestion.options.map((option, index) => {
+                        teamQuestion.options.map((option, index: number) => {
                             return (
                                 <IonButton slot="start" shape="round"
-                                    className={!checkBoxQuestion.active ? 'bsurvey' : ''}
-                                    onClick={votedId.includes(-1) ? () => handleAddVote(index) : undefined}
+                                    className={!teamQuestion.active ? 'bsurvey' : ''}
+                                    onClick={votedId === -1 ? () => setVote(index) : undefined}
                                     tabIndex={0}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
-                                            if (votedId.includes(-1)) {
-                                                handleAddVote(index);
+                                            if (votedId === -1) {
+                                                setVote(index);
                                             }
                                         }
                                     }}
                                     key={index}
-
-                                    disabled={!(votes.includes(index) || votedId.includes(index)) && !votedId.includes(-1)}
+                                    disabled={!(vote == index || votedId == index) && votedId !== -1}
                                     style={{
-                                        pointerEvents: (!votedId.includes(-1) || !checkBoxQuestion.active) ? 'none' : 'auto',
-                                        opacity: votes.includes(index) || votedId.includes(index) ? 1 : 0.5,
+                                        pointerEvents: (votedId !== -1 || !teamQuestion.active) ? 'none' : 'auto',
+                                        opacity: vote == index || votedId == index ? 1 : 0.5,
                                         "--gradient-percentage": `${results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%`,
                                     }}
+
                                 >
                                     <div className="button-content">
                                         <p>{option}</p>
-                                        {!checkBoxQuestion.active && (
-                                            <p>{Math.round((results[index] / Math.max(results.reduce((a, b) => a + b), 1)) * 100)}%</p>
-                                        )}
+                                        {!teamQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
 
                                     </div>
                                 </IonButton>)
                         })
                     }
                 </div>
-                {checkBoxQuestion.active && votedId.includes(-1) && (
+                {teamQuestion.active && votedId === -1 && (
                     <IonButton
                         className={"button"}
                         onClick={() => handleSaveVote()}
-                        disabled={!votedId.includes(-1) || !checkBoxQuestion.active || votes.length === 0}
+                        disabled={!(votedId === -1) || !teamQuestion.active || vote === -1}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 handleSaveVote();
                             }
                         }}
                     >
-                        Antworten speichern
+                        Antwort speichern
                     </IonButton>
                 )}
             </div>
@@ -177,4 +157,4 @@ const CheckBoxCard: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccord
     );
 };
 
-export default React.memo(CheckBoxCard);
+export default React.memo(TeamSurveyComponent);

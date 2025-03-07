@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameReturnDTO, TeamReturnDTO } from "../util/api/config/dto";
+import { GameReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
 
 const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, switchColor: string }> = ({ team, game, switchColor }) => {
 

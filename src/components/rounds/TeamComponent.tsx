@@ -1,5 +1,5 @@
 import React from 'react';
-import { TeamReturnDTO } from '../util/api/config/dto';
+import { TeamReturnDTO } from '../../util/api/config/dto';
 
 const TeamComponent = ({ team, switchColor }: { team: TeamReturnDTO, switchColor: string }) => {
     const character = team.character?.characterName || [];

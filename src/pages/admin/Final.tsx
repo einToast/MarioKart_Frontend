@@ -5,17 +5,17 @@ import {
     IonPage,
     IonToast
 } from "@ionic/react";
-import { arrowBackOutline, arrowForwardOutline, removeCircleOutline } from 'ionicons/icons';
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import {
-    changeTeam,
     createTeamFinalPlan,
     getTeamTop4FinalRanked,
-    resetAllTeamFinalParticipation,
+    resetAllTeamFinalParticipation
 } from "../../util/service/adminService";
 import { checkToken, getUser } from "../../util/service/loginService";
 import "./Final.css";
@@ -27,24 +27,10 @@ const Final: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [modalClosed, setModalClosed] = useState(false);
     const user = getUser();
     const history = useHistory();
     const location = useLocation();
-
-    const handleTeamFinalRemove = async (team: TeamReturnDTO) => {
-        try {
-            const removedTeam = await changeTeam(team);
-            if (removedTeam) {
-                await getFinalTeams();
-            } else {
-                throw new TypeError('Team konnte nicht entfernt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
 
     const handleTeamsReset = async () => {
         try {
@@ -101,7 +87,7 @@ const Final: React.FC = () => {
             window.location.assign('/admin/login');
         }
         getFinalTeams();
-    }, [location]);
+    }, [modalClosed, location]);
 
     return (
         <IonPage>
@@ -126,29 +112,19 @@ const Final: React.FC = () => {
 
                 <div className={"teamFinalContainer"}>
                     {teams ? (
-                        teams
-                            .map(team => (
-                                // TODO: add image and points
-                                <div key={team.id} className={"teamFinal"}>
-                                    <h3>{team.teamName}</h3>
-                                    <IonIcon slot="end"
-                                        icon={removeCircleOutline}
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => handleTeamFinalRemove(team)}
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                handleTeamFinalRemove(team);
-                                            }
-                                        }}
-                                    ></IonIcon>
-                                </div>
-                            ))
+                        <TeamAdminContainer
+                            teams={teams}
+                            matchplanCreated={true}
+                            setModalClosed={setModalClosed}
+                            modalClosed={modalClosed}
+                            getTeams={getFinalTeams}
+                        />
                     ) : (
                         <p>loading...</p>
                     )
                     }
                 </div>
+                <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round secondary"}>

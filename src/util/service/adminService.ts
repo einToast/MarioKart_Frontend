@@ -73,6 +73,7 @@ export const saveGame = async (roundId: number, game: GameReturnDTO): Promise<Po
 }
 
 export const getTeamTop4FinalRanked = async (): Promise<TeamReturnDTO[]> => {
+    // TODO: calculate top 4 in backend
     return (await getTeamFinalRanked())
         .filter(team => team.finalReady)
         .slice(0, 4);

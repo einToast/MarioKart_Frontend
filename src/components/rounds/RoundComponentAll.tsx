@@ -1,6 +1,6 @@
 import React from 'react';
-import { GameReturnDTO } from "../util/api/config/dto";
-import { User } from '../util/api/config/interfaces';
+import { GameReturnDTO } from "../../util/api/config/dto";
+import { User } from '../../util/api/config/interfaces';
 import TeamComponent from './TeamComponent';
 
 const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, switchColor: string }> = ({ game, user, switchColor }) => {
