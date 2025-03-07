@@ -70,6 +70,7 @@ const Header: React.FC = () => {
                 )}
             </div>
             <a onClick={() => history.push('/survey')}
+                title="Umfragen"
                 style={{ cursor: "pointer" }}
                 tabIndex={0}
                 onKeyDown={(e) => {

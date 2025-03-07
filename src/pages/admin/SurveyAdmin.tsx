@@ -200,6 +200,7 @@ const surveyAdmin: React.FC = () => {
                                 <IonIcon
                                     slot="end"
                                     icon={statsChartOutline}
+                                    title="Ergebnisse anzeigen"
                                     onClick={() => handleOpenResultsModal(survey)}
                                     style={{ cursor: 'pointer', marginRight: '10px' }}
                                     tabIndex={0}
@@ -212,6 +213,7 @@ const surveyAdmin: React.FC = () => {
                                 <IonIcon
                                     slot="end"
                                     icon={createOutline}
+                                    title="Umfrage bearbeiten"
                                     onClick={() => handleOpenChangeModal(survey)}
                                     style={{ cursor: 'pointer' }}
                                     tabIndex={0}
@@ -224,10 +226,11 @@ const surveyAdmin: React.FC = () => {
                                 <IonIcon
                                     slot="end"
                                     icon={survey.visible ? eyeOutline : eyeOffOutline}
+                                    title={survey.visible ? "Umfrage unsichtbar machen" : "Umfrage sichtbar machen"}
                                     onClick={() => toggleVisibility(survey.id)}
                                     style={{ cursor: 'pointer' }}
                                     tabIndex={0}
-                                    onKeyDown={(e) => {
+                                    onKeyDown={(e) => { 
                                         if (e.key === 'Enter' || e.key === ' ') {
                                             toggleVisibility(survey.id);
                                         }
@@ -236,6 +239,7 @@ const surveyAdmin: React.FC = () => {
                                 <IonIcon
                                     slot="end"
                                     icon={survey.active ? chatboxEllipsesOutline : chatboxOutline}
+                                    title={survey.active ? "Teilnahme deaktivieren" : "Teilnahme aktivieren"}
                                     onClick={() => toggleActive(survey.id)}
                                     style={{ cursor: 'pointer' }}
                                     tabIndex={0}
@@ -260,6 +264,7 @@ const surveyAdmin: React.FC = () => {
                                 <IonIcon
                                     slot="end"
                                     icon={trashOutline}
+                                    title="Umfrage löschen"
                                     onClick={() => handleOpenDeleteModal(survey)}
                                     style={{ cursor: 'pointer' }}
                                     tabIndex={0}

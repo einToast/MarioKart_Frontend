@@ -160,22 +160,26 @@ const Teams: React.FC = () => {
 
                                         <IonIcon slot="end"
                                             icon={createOutline}
+                                            title="Team bearbeiten"
                                             style={{ cursor: "pointer" }}
                                             onClick={() => handleOpenChangeModal(team)}
                                         ></IonIcon>
                                         <IonIcon slot="end"
                                             icon={team.finalReady ? removeCircleOutline : addCircleOutline}
+                                            title={team.finalReady ? "Team nicht am Finale teilnehmen lassen" : "Team am Finale teilnehmen lassen"}
                                             style={{ cursor: "pointer" }}
                                             onClick={() => handleToggleFinalParticipation(team)}
                                         ></IonIcon>
                                         <IonIcon slot="end"
                                             icon={team.active ? eyeOutline : eyeOffOutline}
+                                            title={team.active ? "Team deaktivieren" : "Team aktivieren"}
                                             style={{ cursor: "pointer" }}
                                             onClick={() => handleToggleActive(team)}
                                         ></IonIcon>
                                         {(!matchplanCreated) && (
                                             <IonIcon slot="end"
                                                 icon={trashOutline}
+                                                title="Team löschen"
                                                 style={{ cursor: "pointer" }}
                                                 onClick={() => handleOpenDeleteModal(team)}
                                             ></IonIcon>
