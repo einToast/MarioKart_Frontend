@@ -38,7 +38,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             };
             setUser(user);
             props.setUser(user);
-            console.log("pushing to tab1");
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
@@ -49,8 +48,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         if (getUser()?.name) {
-            console.log("pushing to tab1");
-            history.push('/tab3');
+            history.push('/tab1');
         }
         const allTeams = getAllTeams();
         const tournamentOpen = getTournamentOpen();
