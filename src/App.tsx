@@ -84,7 +84,7 @@ const App: React.FC = () => {
                     {/* TODO: update with standard routes */}
                     {currentUser?.name ? (
                         <IonTabs>
-                            <IonRouterOutlet>
+                            <IonRouterOutlet animated={true} mode="ios">
                                 <Route exact path="/tab1" component={Tab1} />
                                 <Route exact path="/tab2" component={Tab2} />
                                 <Route exact path="/tab3" component={Tab3} />
@@ -126,7 +126,7 @@ const App: React.FC = () => {
                             </IonTabBar>
                         </IonTabs>
                     ) : (
-                        <IonRouterOutlet>
+                        <IonRouterOutlet animated={true} mode="ios">
                             <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
                             <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
                             <Route exact path="/admin/login" component={Login} />
@@ -141,7 +141,6 @@ const App: React.FC = () => {
                             <Route exact path="/admin">
                                 <Redirect to="/admin/dashboard" />
                             </Route>
-
                             <Route exact path="/">
                                 <Redirect to="/login" />
                             </Route>
