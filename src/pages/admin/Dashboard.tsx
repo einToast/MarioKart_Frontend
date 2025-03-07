@@ -132,6 +132,17 @@ const Dashboard: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
+                    <a onClick={() => history.push("/login")}
+                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                history.push('/login');
+                            }
+                        }}
+                    >
+                        Zurück zum Team Login
+                    </a>
                 </div>
             </IonContent>
             <IonToast
