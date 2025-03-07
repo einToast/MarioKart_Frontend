@@ -135,7 +135,8 @@ const Tab2: React.FC = () => {
                                         {final ? (
                                             <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         ) : (
-                                            ""
+                                            // TODO: update to show number of games played
+                                            <p className={"punkte"}>{team.finalPoints} Punkte</p>
                                         )}
 
                                     </div>
