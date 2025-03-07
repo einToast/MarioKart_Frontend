@@ -8,7 +8,7 @@ import {
     setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { barChartOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
+import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -45,6 +45,7 @@ import { User } from "./util/api/config/interfaces";
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
 import { getUser } from "./util/service/loginService";
+import Tab4 from './pages/Tab4';
 
 setupIonicReact();
 
@@ -87,6 +88,7 @@ const App: React.FC = () => {
                                 <Route exact path="/tab1" component={Tab1} />
                                 <Route exact path="/tab2" component={Tab2} />
                                 <Route exact path="/tab3" component={Tab3} />
+                                <Route exact path="/tab4" component={Tab4} />
                                 <Route exact path="/survey" component={Survey} />
 
                                 <Route exact path="/admin/login" component={Login} />
@@ -117,6 +119,9 @@ const App: React.FC = () => {
                                 )}
                                 <IonTabButton tab="tab3" href="/tab3">
                                     <IonIcon aria-hidden="true" icon={informationCircleOutline} title="Details" />
+                                </IonTabButton>
+                                <IonTabButton tab="tab4" href="/tab4">
+                                    <IonIcon aria-hidden="true" icon={gameControllerOutline} title="How to play" />
                                 </IonTabButton>
                             </IonTabBar>
                         </IonTabs>
