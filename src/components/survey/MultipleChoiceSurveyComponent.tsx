@@ -32,6 +32,8 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
+        } else {
+            handleVoteStatus(-1);
         }
 
     }
@@ -120,7 +122,9 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                                 >
                                     <div className="button-content">
                                         <p>{option}</p>
-                                        {!multipleChoiceQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
+                                        {!multipleChoiceQuestion.active && (
+                                            <p>{Math.round((results[index] / Math.max(results.reduce((a, b) => a + b), 1)) * 100)}%</p>
+                                        )}
 
                                     </div>
                                 </IonButton>)

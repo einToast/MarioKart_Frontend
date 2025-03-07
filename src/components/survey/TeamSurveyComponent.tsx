@@ -32,6 +32,8 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
+        } else {
+            handleVoteStatus(-1);
         }
 
     }
@@ -67,7 +69,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
             const answers = await getAnswers(teamQuestion.id);
             const results = new Array(teamQuestion.options.length).fill(0);
             answers.forEach(answer => {
-                results[answer.multipleChoiceSelectedOption]++;
+                results[answer.teamSelectedOption]++;
             });
             setResults(results);
         }
@@ -120,7 +122,9 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
                                 >
                                     <div className="button-content">
                                         <p>{option}</p>
-                                        {!teamQuestion.active && <p>{results[index] / Math.max(results.reduce((a, b) => a + b), 1) * 100}%</p>}
+                                        {!teamQuestion.active && (
+                                            <p>{Math.round((results[index] / Math.max(results.reduce((a, b) => a + b), 1)) * 100)}%</p>
+                                        )}
 
                                     </div>
                                 </IonButton>)
