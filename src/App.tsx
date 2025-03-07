@@ -10,7 +10,7 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import AdminDashboard from "./pages/admin/Dashboard";
 import Final from "./pages/admin/Final";
 import Login from "./pages/admin/Login";
@@ -54,28 +54,31 @@ const App: React.FC = () => {
     const [gamesToPlay, setGamesToPlay] = useState<number>(0);
     const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const user = getUser();
-        if (user?.name) {
-            setCurrentUser(user);
-        }
-        const matchplan = checkMatch();
-        const finalplan = checkFinal();
-        const rounds = getNumberOfUnplayedRounds();
-        matchplan.then(value => {
-            setMatchPlanCreated(value);
-        })
+        const initializeApp = async () => {
+            const user = getUser();
+            if (user?.name) {
+                setCurrentUser(user);
+                const [matchplanValue, finalplanValue, roundsValue] = await Promise.all([
+                    checkMatch(),
+                    checkFinal(),
+                    getNumberOfUnplayedRounds()
+                ]);
+                setMatchPlanCreated(matchplanValue);
+                setFinalPlanCreated(finalplanValue);
+                setGamesToPlay(roundsValue);
+            }
+            setIsLoading(false);
+        };
 
-        finalplan.then(value => {
-            setFinalPlanCreated(value);
-        })
-
-        rounds.then(value => {
-            setGamesToPlay(value);
-        })
-
+        initializeApp();
     }, []);
+
+    if (isLoading) {
+        return <IonApp><IonRouterOutlet></IonRouterOutlet></IonApp>;
+    }
 
     return (
         <IonApp>
@@ -85,28 +88,33 @@ const App: React.FC = () => {
                     {currentUser?.name ? (
                         <IonTabs>
                             <IonRouterOutlet>
-                                <Route exact path="/tab1" component={Tab1} />
-                                <Route exact path="/tab2" component={Tab2} />
-                                <Route exact path="/tab3" component={Tab3} />
-                                <Route exact path="/tab4" component={Tab4} />
-                                <Route exact path="/survey" component={Survey} />
+                                <Switch>
+                                    <Route exact path="/tab1" component={Tab1} />
+                                    <Route exact path="/tab2" component={Tab2} />
+                                    <Route exact path="/tab3" component={Tab3} />
+                                    <Route exact path="/tab4" component={Tab4} />
+                                    <Route exact path="/survey" component={Survey} />
 
-                                <Route exact path="/admin/login" component={Login} />
-                                <Route exact path="/admin/dashboard" component={AdminDashboard} />
-                                <Route exact path="/admin/points" component={AdminPoints} />
-                                <Route exact path="/admin/final" component={Final} />
-                                <Route exact path="/admin/results" component={AdminResults} />
-                                <Route exact path="/admin/matchplan" component={MatchPlan} />
-                                <Route exact path="/admin/control" component={Control} />
-                                <Route exact path="/admin/survey" component={AdminSurvey} />
-                                <Route exact path="/admin/teams" component={Teams} />
-                                <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
-                                <Route exact path="/">
-                                    <Redirect to="/tab1" />
-                                </Route>
-                                <Route exact path="/admin">
-                                    <Redirect to="/admin/dashboard" />
-                                </Route>
+                                    <Route exact path="/admin/login" component={Login} />
+                                    <Route exact path="/admin/dashboard" component={AdminDashboard} />
+                                    <Route exact path="/admin/points" component={AdminPoints} />
+                                    <Route exact path="/admin/final" component={Final} />
+                                    <Route exact path="/admin/results" component={AdminResults} />
+                                    <Route exact path="/admin/matchplan" component={MatchPlan} />
+                                    <Route exact path="/admin/control" component={Control} />
+                                    <Route exact path="/admin/survey" component={AdminSurvey} />
+                                    <Route exact path="/admin/teams" component={Teams} />
+                                    <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
+                                    <Route exact path="/admin">
+                                        <Redirect to="/admin/dashboard" />
+                                    </Route>
+                                    <Route exact path="/">
+                                        <Redirect to="/tab1" />
+                                    </Route>
+                                    <Route>
+                                        <Redirect to="/tab1" />
+                                    </Route>
+                                </Switch>
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
@@ -127,27 +135,31 @@ const App: React.FC = () => {
                         </IonTabs>
                     ) : (
                         <IonRouterOutlet>
-                            <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
-                            <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
-                            <Route exact path="/admin/login" component={Login} />
-                            <Route exact path="/admin/dashboard" component={AdminDashboard} />
-                            <Route exact path="/admin/points" component={AdminPoints} />
-                            <Route exact path="/admin/final" component={Final} />
-                            <Route exact path="/admin/results" component={AdminResults} />
-                            <Route exact path="/admin/matchplan" component={MatchPlan} />
-                            <Route exact path="/admin/control" component={Control} />
-                            <Route exact path="/admin/survey" component={AdminSurvey} />
-                            <Route exact path="/admin/teams" component={Teams} />
-                            <Route exact path="/admin">
-                                <Redirect to="/admin/dashboard" />
-                            </Route>
-
-                            <Route exact path="/">
-                                <Redirect to="/login" />
-                            </Route>
-                            <Route exact path="/healthcheck">
-                                <div>OK</div>
-                            </Route>
+                            <Switch>
+                                <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
+                                <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
+                                <Route exact path="/admin/login" component={Login} />
+                                <Route exact path="/admin/dashboard" component={AdminDashboard} />
+                                <Route exact path="/admin/points" component={AdminPoints} />
+                                <Route exact path="/admin/final" component={Final} />
+                                <Route exact path="/admin/results" component={AdminResults} />
+                                <Route exact path="/admin/matchplan" component={MatchPlan} />
+                                <Route exact path="/admin/control" component={Control} />
+                                <Route exact path="/admin/survey" component={AdminSurvey} />
+                                <Route exact path="/admin/teams" component={Teams} />
+                                <Route exact path="/admin">
+                                    <Redirect to="/admin/dashboard" />
+                                </Route>
+                                <Route exact path="/healthcheck">
+                                    <div>OK</div>
+                                </Route>
+                                <Route exact path="/">
+                                    <Redirect to="/login" />
+                                </Route>
+                                <Route>
+                                    <Redirect to="/login" />
+                                </Route>
+                            </Switch>
                         </IonRouterOutlet>
                     )}
                 </IonReactRouter>
