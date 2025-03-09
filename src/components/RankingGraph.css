@@ -1,0 +1,45 @@
+.ranking-container {
+    background: linear-gradient(var(--ion-color-bg01), var(--ion-color-bg02));
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ranking-button {
+    background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+    color: white !important;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 24px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+}
+
+.ranking-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(99, 81, 249, 0.3);
+}
+
+.ranking-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(99, 81, 249, 0.2);
+}
+
+/* Anpassungen für Chart.js */
+canvas {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+/* Team-Bilder Styling */
+.team-image {
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+    padding: 2px;
+}
