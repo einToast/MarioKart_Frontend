@@ -8,6 +8,7 @@ import {
     setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import '@ionic/react/css/core.css';
 import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
@@ -42,6 +43,7 @@ import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
 import Tab4 from './pages/Tab4';
 import './theme/main.css';
+import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
 import { checkFinal, checkMatch } from "./util/service/adminService";
 import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
@@ -84,7 +86,7 @@ const App: React.FC = () => {
                     {/* TODO: update with standard routes */}
                     {currentUser?.name ? (
                         <IonTabs>
-                            <IonRouterOutlet animated={false} mode="ios">
+                            <IonRouterOutlet animated={false} mode="md">
                                 <Route exact path="/tab1" component={Tab1} />
                                 <Route exact path="/tab2" component={Tab2} />
                                 <Route exact path="/tab3" component={Tab3} />
@@ -126,7 +128,7 @@ const App: React.FC = () => {
                             </IonTabBar>
                         </IonTabs>
                     ) : (
-                        <IonRouterOutlet animated={false} mode="ios">
+                        <IonRouterOutlet animated={false} mode="md">
                             <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
                             <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
                             <Route exact path="/admin/login" component={Login} />

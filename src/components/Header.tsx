@@ -20,7 +20,6 @@ const Header: React.FC = () => {
     const handleLogout = () => {
         removeUser();
         window.location.assign('/');
-        // history.push('/');
     };
 
     useEffect(() => {
