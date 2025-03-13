@@ -2,19 +2,21 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { AuthenticationRequestDTO } from "../api/config/dto";
 import { User } from "../api/config/interfaces";
-import { login } from "../api/UserApi";
+import { UserApi } from "../api";
 
 export const loginUser = async (username: string, password: string): Promise<void> => {
     const user: AuthenticationRequestDTO = {
         username: username,
         password: password
     }
-    const response = await login(user);
+    const response = await UserApi.login(user);
     setToken(response.accessToken);
 };
+
 export const setToken = (token: string): void => {
     Cookies.set('authToken', token, { expires: 1, sameSite: 'strict' });
 };
+
 export const getToken = (): string | null => {
     try {
         return Cookies.get('authToken') ?? null;
@@ -23,9 +25,11 @@ export const getToken = (): string | null => {
         return null;
     }
 };
+
 export const removeToken = (): void => {
     Cookies.remove('authToken');
 };
+
 const isTokenExpired = (token: string): boolean => {
     const decodedToken = jwtDecode(token);
     const expirationTimeInSeconds = decodedToken.exp;
@@ -38,6 +42,7 @@ const isTokenExpired = (token: string): boolean => {
 
     return expirationTimeInSeconds < currentDateTime;
 }
+
 export const checkToken = (): boolean => {
     const token = getToken();
     if (!token) {
@@ -59,7 +64,6 @@ export const getUser = (): User | null => {
     try {
         console.log(JSON.parse(Cookies.get('user') ?? '{}') as User);
         return JSON.parse(Cookies.get('user') ?? '{}') as User;
-
     } catch (e) {
         console.error('Error getting user:', e);
         return null;

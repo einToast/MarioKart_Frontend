@@ -9,18 +9,8 @@ import {
     TeamInputDTO,
     TeamReturnDTO
 } from "../api/config/dto";
-import {
-    checkFinalPlan,
-    checkMatchPlan,
-    createFinalPlan,
-    createMatchPlan,
-    deleteFinalPlan,
-    deleteMatchPlan, getBreak, updateBreak,
-    updatePoints,
-    updateRoundPlayed
-} from "../api/MatchPlanApi";
-import { deleteAllTeams, deleteTeam, getTeamsSortedByFinalPoints, updateTeam } from "../api/RegistrationApi";
-import { reset } from "../api/SettingsApi";
+
+import { MatchPlanApi, RegistrationApi, SettingsApi } from "../api";
 import { removeQuestions } from "./surveyService";
 import {
     getAllTeams,
@@ -38,7 +28,7 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
                 points: game.points?.find(point => point?.team?.id === team.id)?.points ?? 0,
             }
             try {
-                await updatePoints(round.id, game.id, team.id, pointInput);
+                await MatchPlanApi.updatePoints(round.id, game.id, team.id, pointInput);
             } catch (error) {
                 console.error('Error updating points:', error);
                 throw error;
@@ -49,7 +39,7 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
         played: round.played,
     }
     try {
-        return await updateRoundPlayed(round.id, roundInput);
+        return await MatchPlanApi.updateRoundPlayed(round.id, roundInput);
     } catch (error) {
         console.error('Error updating round played:', error);
         throw error;
@@ -63,7 +53,7 @@ export const saveGame = async (roundId: number, game: GameReturnDTO): Promise<Po
             points: game.points?.find(point => point?.team?.id === team.id)?.points ?? 0,
         }
         try {
-            points.push(await updatePoints(roundId, game.id, team.id, pointInput));
+            points.push(await MatchPlanApi.updatePoints(roundId, game.id, team.id, pointInput));
         } catch (error) {
             console.error('Error updating points:', error);
             throw error;
@@ -80,15 +70,15 @@ export const getTeamTop4FinalRanked = async (): Promise<TeamReturnDTO[]> => {
 }
 
 export const getTeamFinalRanked = async (): Promise<TeamReturnDTO[]> => {
-    return (await getTeamsSortedByFinalPoints());
+    return (await RegistrationApi.getTeamsSortedByFinalPoints());
 }
 
 export const getRegisteredTeams = async (): Promise<TeamReturnDTO[]> => {
-    return await getAllTeams()
+    return await getAllTeams();
 }
 
 export const getABreak = async (): Promise<BreakReturnDTO> => {
-    return await getBreak();
+    return await MatchPlanApi.getBreak();
 }
 
 export const changeTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> => {
@@ -100,7 +90,7 @@ export const changeTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> =>
     }
 
     try {
-        return await updateTeam(team.id, teamInput);
+        return await RegistrationApi.updateTeam(team.id, teamInput);
     } catch (error) {
         console.error('Error updating team:', error);
         throw error;
@@ -115,12 +105,11 @@ export const changeTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: 
         active: team.active,
     }
     try {
-        return await updateTeam(team.id, teamInput);
+        return await RegistrationApi.updateTeam(team.id, teamInput);
     } catch (error) {
         console.error('Error updating team:', error);
         throw error;
     }
-
 }
 
 export const changeBreak = async (roundId: number, breakDuration: number, breakEnded: boolean): Promise<BreakReturnDTO> => {
@@ -129,11 +118,11 @@ export const changeBreak = async (roundId: number, breakDuration: number, breakE
         breakDuration: breakDuration,
         breakEnded: breakEnded,
     }
-    return await updateBreak(aBreak);
+    return await MatchPlanApi.updateBreak(aBreak);
 }
 
 export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]> => {
-    const teams = await getTeamsSortedByFinalPoints();
+    const teams = await RegistrationApi.getTeamsSortedByFinalPoints();
     const updatedTeams: TeamReturnDTO[] = [];
 
     for (const team of teams) {
@@ -149,7 +138,7 @@ export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]>
             finalReady: true,
         }
         try {
-            updatedTeams.push(await updateTeam(team.id, teamInput));
+            updatedTeams.push(await RegistrationApi.updateTeam(team.id, teamInput));
         } catch (error) {
             console.error('Error updating team:', error);
             throw error;
@@ -160,39 +149,39 @@ export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]>
 }
 
 export const createTeamMatchPlan = async (): Promise<RoundReturnDTO[]> => {
-    return await createMatchPlan();
+    return await MatchPlanApi.createMatchPlan();
 }
 
 export const createTeamFinalPlan = async (): Promise<RoundReturnDTO[]> => {
-    return await createFinalPlan();
+    return await MatchPlanApi.createFinalPlan();
 }
 
 export const checkMatch = async (): Promise<boolean> => {
-    return await checkMatchPlan();
+    return await MatchPlanApi.checkMatchPlan();
 }
 
 export const checkFinal = async (): Promise<boolean> => {
-    return await checkFinalPlan();
+    return await MatchPlanApi.checkFinalPlan();
 }
 
 export const removeTeam = async (team: TeamReturnDTO): Promise<void> => {
-    return await deleteTeam(team.id);
+    return await RegistrationApi.deleteTeam(team.id);
 }
 
 export const deleteTeams = async (): Promise<void> => {
-    return await deleteAllTeams();
+    return await RegistrationApi.deleteAllTeams();
 }
 
 export const deleteMatch = async (): Promise<void> => {
-    return await deleteMatchPlan();
+    return await MatchPlanApi.deleteMatchPlan();
 }
 
 export const deleteFinal = async (): Promise<void> => {
-    return await deleteFinalPlan();
+    return await MatchPlanApi.deleteFinalPlan();
 }
 
 export const resetEverything = async (): Promise<void> => {
-    return await reset();
+    return await SettingsApi.reset();
 }
 
 export const changeService = async (deleteType: ChangeType): Promise<void> => {
@@ -221,6 +210,4 @@ export const changeService = async (deleteType: ChangeType): Promise<void> => {
         default:
             throw new Error('Error');
     }
-
-
 }

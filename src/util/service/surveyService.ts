@@ -1,22 +1,14 @@
 import Cookies from "js-cookie";
-import {
-    createQuestion,
-    deleteQuestion, deleteQuestions,
-    getAnswersOfQuestion,
-    getQuestions,
-    getVisibleQuestions,
-    submitAnswer,
-    updateQuestion
-} from "../api/SurveyApi";
 import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
+import { SurveyApi } from "../api";
 import { QuestionType } from "./util";
 
 export const getCurrentQuestions = async (): Promise<QuestionReturnDTO[]> => {
-    return getVisibleQuestions();
+    return SurveyApi.getVisibleQuestions();
 }
 
 export const getAllQuestions = async (): Promise<QuestionReturnDTO[]> => {
-    return getQuestions();
+    return SurveyApi.getQuestions();
 }
 
 export const submitQuestion = async (question: string, questionType: QuestionType, options: string[], finalTeamsOnly: boolean): Promise<QuestionReturnDTO> => {
@@ -36,7 +28,7 @@ export const submitQuestion = async (question: string, questionType: QuestionTyp
         live: false,
         finalTeamsOnly: finalTeamsOnly
     }
-    return createQuestion(questionInput);
+    return SurveyApi.createQuestion(questionInput);
 }
 
 export const changeQuestion = async (question: QuestionReturnDTO): Promise<QuestionReturnDTO> => {
@@ -56,11 +48,11 @@ export const changeQuestion = async (question: QuestionReturnDTO): Promise<Quest
         live: question.live,
         finalTeamsOnly: question.finalTeamsOnly
     }
-    return updateQuestion(question.id, questionInput);
+    return SurveyApi.updateQuestion(question.id, questionInput);
 }
 
 export const getAnswers = async (questionId: number): Promise<AnswerReturnDTO[]> => {
-    return getAnswersOfQuestion(questionId);
+    return SurveyApi.getAnswersOfQuestion(questionId);
 }
 
 export const registerAnswer = async (question: QuestionReturnDTO, vote: string | number | number[]): Promise<AnswerReturnDTO> => {
@@ -88,8 +80,7 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: string |
         teamSelectedOption: teamSelectedOption
     }
 
-
-    const response = await submitAnswer(answer);
+    const response = await SurveyApi.submitAnswer(answer);
 
     await setAnswer(question.questionText + question.id, typeof vote === 'number' ? vote : Number(Array.isArray(vote) ? vote[0] : vote));
 
@@ -97,7 +88,6 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: string |
 }
 
 export const setAnswer = async (questionString: string, answer: number): Promise<void> => {
-
     const answerCookie: AnswerCookieDTO = {
         answerId: answer.toString(),
     }
@@ -113,9 +103,9 @@ export const getAnswer = async (questionString: string): Promise<AnswerCookieDTO
 }
 
 export const removeQuestion = async (question: QuestionReturnDTO): Promise<void> => {
-    return await deleteQuestion(question.id);
+    return await SurveyApi.deleteQuestion(question.id);
 }
 
 export const removeQuestions = async (): Promise<void> => {
-    return await deleteQuestions();
+    return await SurveyApi.deleteQuestions();
 }

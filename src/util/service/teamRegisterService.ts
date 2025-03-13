@@ -1,17 +1,16 @@
 import { CharacterReturnDTO, TeamInputDTO, TeamReturnDTO, TournamentDTO } from "../api/config/dto";
-import { addTeam, getAvailableCharacters, getCharacters, getTeams } from "../api/RegistrationApi";
-import { getSettings, updateSettings } from "../api/SettingsApi";
+import { RegistrationApi, SettingsApi } from "../api";
 
 export const getAllCharacters = async (): Promise<CharacterReturnDTO[]> => {
-    return await getCharacters();
+    return await RegistrationApi.getCharacters();
 }
 
 export const getAllAvailableCharacters = async (): Promise<CharacterReturnDTO[]> => {
-    return await getAvailableCharacters();
+    return await RegistrationApi.getAvailableCharacters();
 }
 
 export const getAllTeams = async (): Promise<TeamReturnDTO[]> => {
-    return await getTeams();
+    return await RegistrationApi.getTeams();
 }
 
 export const createTeam = async (teamName: string, characterName: string): Promise<TeamReturnDTO> => {
@@ -28,33 +27,29 @@ export const createTeam = async (teamName: string, characterName: string): Promi
         active: true
     };
 
-    return await addTeam(team);
+    return await RegistrationApi.addTeam(team);
 }
 
 export const getRegistrationOpen = async (): Promise<boolean> => {
-    const tournament = await getSettings();
+    const tournament = await SettingsApi.getSettings();
     return tournament.registrationOpen ?? false;
 }
 
 export const getTournamentOpen = async (): Promise<boolean> => {
-    const tournament = await getSettings();
+    const tournament = await SettingsApi.getSettings();
     return tournament.tournamentOpen ?? false;
 }
 
 export const updateRegistrationOpen = async (registrationOpen: boolean): Promise<TournamentDTO> => {
-    // const tournament = await getSettings();
-    // tournament.registrationOpen = registrationOpen;
     const tournament: TournamentDTO = {
         registrationOpen: registrationOpen
     }
-    return await updateSettings(tournament);
+    return await SettingsApi.updateSettings(tournament);
 }
 
 export const updateTournamentOpen = async (tournamentOpen: boolean): Promise<TournamentDTO> => {
-    // const tournament = await getSettings();
-    // tournament.tournamentOpen = tournamentOpen;
     const tournament: TournamentDTO = {
         tournamentOpen: tournamentOpen
     }
-    return await updateSettings(tournament);
+    return await SettingsApi.updateSettings(tournament);
 }
