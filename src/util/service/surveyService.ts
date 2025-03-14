@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
-import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
 import { SurveyApi } from "../api";
+import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionInputDTO, QuestionReturnDTO } from "../api/config/dto";
 import { QuestionType } from "./util";
 
 export const getCurrentQuestions = async (): Promise<QuestionReturnDTO[]> => {
@@ -55,7 +55,7 @@ export const getAnswers = async (questionId: number): Promise<AnswerReturnDTO[]>
     return SurveyApi.getAnswersOfQuestion(questionId);
 }
 
-export const registerAnswer = async (question: QuestionReturnDTO, vote: string | number | number[]): Promise<AnswerReturnDTO> => {
+export const registerAnswer = async (question: QuestionReturnDTO, vote: string | number | number[], teamId: number): Promise<AnswerReturnDTO> => {
     if (!question.active) {
         throw new Error('Die Umfrage ist bereits beendet');
     } else if (vote === '') {
@@ -80,7 +80,7 @@ export const registerAnswer = async (question: QuestionReturnDTO, vote: string |
         teamSelectedOption: teamSelectedOption
     }
 
-    const response = await SurveyApi.submitAnswer(answer);
+    const response = await SurveyApi.submitAnswer(answer, teamId);
 
     await setAnswer(question.questionText + question.id, typeof vote === 'number' ? vote : Number(Array.isArray(vote) ? vote[0] : vote));
 

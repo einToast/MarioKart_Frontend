@@ -40,7 +40,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
 
     const handleSaveVote = async () => {
         try {
-            const voted = await registerAnswer(teamQuestion, vote);
+            const voted = await registerAnswer(teamQuestion, vote, user?.teamId || -1);
             if (voted) {
                 getVote();
                 toggleAccordion();

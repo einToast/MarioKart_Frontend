@@ -40,7 +40,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
 
     const handleSaveVote = async () => {
         try {
-            const voted = await registerAnswer(multipleChoiceQuestion, vote);
+            const voted = await registerAnswer(multipleChoiceQuestion, vote, user?.teamId || -1);
             if (voted) {
                 getVote();
                 toggleAccordion();

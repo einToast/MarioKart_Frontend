@@ -9,6 +9,7 @@ import {
 export interface User {
   name: string | null;
   character: string | null;
+  teamId?: number;
 }
 
 export interface LoginProps {

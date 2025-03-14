@@ -34,7 +34,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         if (selectedTeam) {
             const user: User = {
                 name: selectedTeam.teamName,
-                character: selectedTeam.character?.characterName || ''
+                character: selectedTeam.character?.characterName || '',
+                teamId: selectedTeam.id
             };
             setUser(user);
             props.setUser(user);

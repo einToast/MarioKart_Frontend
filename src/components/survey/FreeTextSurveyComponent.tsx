@@ -25,7 +25,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
 
     const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(freeTextQuestion, text);
+            const vote = await registerAnswer(freeTextQuestion, text, user?.teamId || -1);
             if (vote) {
                 setText('');
                 toggleAccordion();

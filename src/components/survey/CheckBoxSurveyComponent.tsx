@@ -52,7 +52,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
 
     const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(checkBoxQuestion, votes);
+            const vote = await registerAnswer(checkBoxQuestion, votes, user?.teamId || -1);
             if (vote) {
                 getVote();
                 toggleAccordion();
