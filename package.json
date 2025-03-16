@@ -60,7 +60,7 @@
     "terser": "^5.39.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.26.1",
-    "vite": "^6.2.1",
+    "vite": "^6.2.2",
     "vite-plugin-pwa": "^0.21.1",
     "vitest": "^3.0.8"
   },
