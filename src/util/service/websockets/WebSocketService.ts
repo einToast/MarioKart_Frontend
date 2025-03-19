@@ -1,7 +1,7 @@
 // src/services/WebSocketService.ts
 import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
-import { WS_BASE_URL } from "../api/config/constants";
+import { WS_BASE_URL } from "../../api/config/constants";
 
 class WebSocketService {
     private static instance: WebSocketService;
