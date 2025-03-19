@@ -8,9 +8,9 @@ import FreeTextCard from "../components/survey/FreeTextSurveyComponent";
 import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyComponent";
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import { QuestionReturnDTO } from "../util/api/config/dto";
+import { PublicSettingsService, PublicSurveyService } from '../util/service';
 import { QuestionType } from "../util/service/util";
 import './Survey.css';
-import { PublicSettingsService, PublicSurveyService } from '../util/service';
 
 const Survey: React.FC = () => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);

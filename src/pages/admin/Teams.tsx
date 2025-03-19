@@ -14,7 +14,7 @@ import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { PublicScheduleService } from "../../util/service";
-import { AdminRegistrationService, PublicRegistrationService } from "../../util/service/registration";
+import { AdminRegistrationService } from "../../util/service/registration";
 import { PublicUserService } from "../../util/service/user";
 import "./Final.css";
 

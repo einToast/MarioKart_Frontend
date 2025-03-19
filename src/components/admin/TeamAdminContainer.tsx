@@ -21,6 +21,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
         character: { id: -1, characterName: '' },
         groupPoints: 0,
         finalPoints: 0,
+        numberOfGamesPlayed: 0,
         active: false,
         finalReady: false
     });

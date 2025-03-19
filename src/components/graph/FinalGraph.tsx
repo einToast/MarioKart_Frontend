@@ -1,29 +1,30 @@
 import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { TeamGraphProps } from "../util/api/config/interfaces";
+import { TeamGraphProps } from "../../util/api/config/interfaces";
 import './RankingGraph.css';
 
 Chart.register(...registerables);
 
-const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
-    const chartRef = useRef<ChartJS<"bar">>();
+const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
+    const chartRef = useRef<ChartJS<"bar">>(null);
     const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
-    const [revealedIcons, setRevealedIcons] = useState<string[]>([]);
-    const [revealedLabels, setRevealedLabels] = useState<string[]>([]);
+    const [data, setData] = useState<number[]>([]);
     const [revealedColors, setRevealedColors] = useState<string[]>([]);
     const [step, setStep] = useState(0);
+    const [displayOrder, setDisplayOrder] = useState<number[]>([]);
 
-    // Fisher-Yates Shuffle Algorithmus entfernen
-    // const shuffleArray = React.useCallback((array: number[]) => {
-    //     const newArray = [...array];
-    //     for (let i = newArray.length - 1; i > 0; i--) {
-    //         const j = Math.floor(Math.random() * (i + 1));
-    //         [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    //     }
-    //     return newArray;
-    // }, []);
+    // Fisher-Yates Shuffle Algorithmus
+    const shuffleArray = React.useCallback((array: number[]) => {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
+    }, []);
 
+    // Memoize sortierte Teams und abgeleitete Daten
     const sortedTeamsData = React.useMemo(() => {
         const sorted = [...teams].sort((a, b) => b.finalPoints - a.finalPoints);
 
@@ -63,30 +64,26 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         };
     }, [teams]);
 
-    // Initialisierung
+    // Initialisierung mit zufälliger Reihenfolge
     useEffect(() => {
-        // Initialisiere alle Icons mit missingno
-        setRevealedIcons(Array(sortedTeamsData.teams.length).fill('/media/missingno.png'));
-        // Initialisiere Labels mit Platzierungen
-        setRevealedLabels(Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
+        const indices = Array.from({ length: sortedTeamsData.teams.length }, (_, i) => i);
+        const shuffledIndices = shuffleArray(indices);
+        setDisplayOrder(shuffledIndices);
+        setData(sortedTeamsData.initialData);
         setRevealedColors(Array(sortedTeamsData.teams.length).fill('#6351F9'));
         setStep(0);
-    }, [sortedTeamsData]);
+    }, [sortedTeamsData, shuffleArray]);
 
     // Bilder vorladen
     useEffect(() => {
         const preloadImages = async () => {
-            const missingno = new Image();
-            missingno.src = '/media/missingno.png';
-            const loadImages = [...sortedTeamsData.icons.map((src) => {
+            const loadImages = sortedTeamsData.icons.map((src) => {
                 return new Promise<HTMLImageElement>((resolve) => {
                     const img = new Image();
                     img.src = src;
                     img.onload = () => resolve(img);
                 });
-            }), new Promise<HTMLImageElement>((resolve) => {
-                missingno.onload = () => resolve(missingno);
-            })];
+            });
             const images = await Promise.all(loadImages);
             setLoadedImages(images);
         };
@@ -98,31 +95,69 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     // Optimierte revealNext Funktion
     const revealNext = React.useCallback(() => {
         const totalGroups = sortedTeamsData.pointGroups.length;
-        const maxSteps = totalGroups;
+        const maxSteps = (totalGroups - 1) * 2 + 1;
 
         if (step < maxSteps) {
-            const currentGroupIndex = totalGroups - 1 - step;
+            const currentGroupIndex = totalGroups - 1 - Math.floor(step / 2);
+            const isColorStep = step % 2 === 1;
             const currentGroup = sortedTeamsData.pointGroups[currentGroupIndex];
 
-            // Icons und Namen enthüllen
-            setRevealedIcons(prev => {
-                const newIcons = [...prev];
-                currentGroup.forEach(teamIndex => {
-                    newIcons[teamIndex] = sortedTeamsData.icons[teamIndex];
+            if (currentGroupIndex === 0) {
+                // Erste Gruppe (Gold)
+                setData(prev => {
+                    const newData = [...prev];
+                    currentGroup.forEach(teamIndex => {
+                        newData[teamIndex] = sortedTeamsData.finalData[teamIndex];
+                    });
+                    return newData;
                 });
-                return newIcons;
-            });
-            setRevealedLabels(prev => {
-                const newLabels = [...prev];
-                currentGroup.forEach(teamIndex => {
-                    newLabels[teamIndex] = sortedTeamsData.labels[teamIndex];
-                });
-                return newLabels;
-            });
-
+            } else {
+                if (!isColorStep) {
+                    // Alle Balken der aktuellen Gruppe auf das nächste Level bringen
+                    const nextHeight = sortedTeamsData.finalData[currentGroup[0]];
+                    setData(prev => {
+                        const newData = [...prev];
+                        currentGroup.forEach(teamIndex => {
+                            newData[teamIndex] = nextHeight;
+                        });
+                        for (let i = currentGroupIndex - 1; i >= 0; i--) {
+                            sortedTeamsData.pointGroups[i].forEach(teamIndex => {
+                                newData[teamIndex] = nextHeight;
+                            });
+                        }
+                        return newData;
+                    });
+                    // Wenn der erste alleine ist, direkt die Farbe setzen
+                    if (sortedTeamsData.isFirstPlaceAlone && step === maxSteps - 3) {
+                        setRevealedColors(prev => {
+                            const newColors = [...prev];
+                            currentGroup.forEach(teamIndex => {
+                                newColors[teamIndex] = colors[0]; // Gold
+                            });
+                            return newColors;
+                        });
+                    }
+                } else {
+                    // Farbe der aktuellen Gruppe ändern
+                    setRevealedColors(prev => {
+                        const newColors = [...prev];
+                        currentGroup.forEach(teamIndex => {
+                            const rank = sortedTeamsData.ranks[teamIndex];
+                            if (rank <= 3) {
+                                // Erste drei Plätze bekommen Medaillenfarben
+                                newColors[teamIndex] = colors[rank - 1];
+                            } else {
+                                // Alle anderen bekommen grau
+                                newColors[teamIndex] = colors[3];
+                            }
+                        });
+                        return newColors;
+                    });
+                }
+            }
             setStep(s => s + 1);
         }
-    }, [step, sortedTeamsData]);
+    }, [step, colors, sortedTeamsData]);
 
     // Event-Listener für Tastendruck
     useEffect(() => {
@@ -135,31 +170,31 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         return () => window.removeEventListener("keydown", handleKeyPress);
     }, [revealNext]);
 
-    // Angepasstes chartData
+    // Memoize Chart Data mit geshuffelter Reihenfolge
     const chartData = React.useMemo(() => ({
-        labels: revealedLabels,
+        labels: displayOrder.map(i => sortedTeamsData.labels[i]),
         datasets: [{
             label: "Ranking",
-            data: sortedTeamsData.finalData,
-            backgroundColor: '#6351F9',
+            data: displayOrder.map(i => data[i]),
+            backgroundColor: displayOrder.map(i => revealedColors[i]),
             borderColor: "transparent",
             borderWidth: 0,
             borderRadius: 10,
             borderSkipped: false,
         }],
-    }), [revealedLabels, sortedTeamsData.finalData]);
+    }), [data, revealedColors, sortedTeamsData.labels, displayOrder]);
 
-    // Angepasstes drawImages
     const drawImages = React.useCallback((chart: ChartJS<"bar">, ctx: CanvasRenderingContext2D) => {
         const meta = chart.getDatasetMeta(0);
-        if (!meta.data) return;
+        if (!meta.data || loadedImages.length === 0) return;
 
         const chartArea = chart.chartArea;
         ctx.save();
         ctx.clearRect(chartArea.left, 0, chartArea.right - chartArea.left, chartArea.top);
 
         meta.data.forEach((bar, index) => {
-            const iconPath = revealedIcons[index];
+            const originalIndex = displayOrder[index];
+            const iconPath = sortedTeamsData.icons[originalIndex];
             const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
 
@@ -169,7 +204,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                 ctx.drawImage(img, x - 20, y, 40, 40);
             }
 
-            const score = Math.round(sortedTeamsData.finalData[index]);
+            const score = Math.round(data[originalIndex]);
             if (score > 0) {
                 ctx.save();
                 ctx.fillStyle = '#ffffff';
@@ -181,7 +216,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             }
         });
         ctx.restore();
-    }, [loadedImages, revealedIcons, sortedTeamsData.finalData]);
+    }, [loadedImages, data, displayOrder, sortedTeamsData.icons]);
 
     // Memoize Chart Options
     const options: ChartOptions<"bar"> = React.useMemo(() => ({
@@ -263,4 +298,4 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     );
 };
 
-export default GroupGraph;
+export default FinalGraph;

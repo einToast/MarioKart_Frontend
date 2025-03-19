@@ -16,7 +16,7 @@ import TournamentModal from "../../components/modals/TournamentModal";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { PublicScheduleService, PublicSettingsService, PublicUserService } from "../../util/service";
+import { AdminScheduleService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
 
 
@@ -26,7 +26,7 @@ const Control: React.FC = () => {
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
-    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: { id: 0, roundNumber: 0, startTime: '', endTime: '', finalGame: false, played: false } });
+    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
@@ -45,7 +45,7 @@ const Control: React.FC = () => {
     }
 
     const handleOpenBreakModal = () => {
-        const breakData = PublicScheduleService.getBreak();
+        const breakData = AdminScheduleService.getBreak();
         breakData.then((result) => {
             setBreak(result);
             setShowBreakModal(true);

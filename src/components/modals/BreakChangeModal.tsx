@@ -10,8 +10,7 @@ import {
     RoundReturnDTO
 } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { AdminScheduleService, PublicScheduleService, PublicUserService } from '../../util/service';
-
+import { AdminScheduleService, PublicUserService } from '../../util/service';
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
@@ -56,7 +55,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
 
     const getRounds = async () => {
         try {
-            const rounds = await PublicScheduleService.getRounds();
+            const rounds = await AdminScheduleService.getRounds();
             setRounds(rounds);
         } catch (error) {
             setError(error.message);

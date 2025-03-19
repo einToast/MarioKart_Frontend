@@ -1,13 +1,15 @@
 import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { TeamGraphProps } from "../util/api/config/interfaces";
+import { TeamGraphProps } from "../../util/api/config/interfaces";
 import './RankingGraph.css';
 
 Chart.register(...registerables);
 
-const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
-    const chartRef = useRef<ChartJS<"bar">>();
+const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
+    const chartRef = useRef<ChartJS<"bar">>(null);
+    const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     // Memoize sortierte Teams und Daten
     const sortedTeamsData = React.useMemo(() => {
@@ -34,6 +36,22 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         };
     }, [teams]);
 
+    // Bilder vorladen
+    useEffect(() => {
+        const preloadImages = async () => {
+            const loadImages = sortedTeamsData.icons.map((src) => {
+                return new Promise<HTMLImageElement>((resolve) => {
+                    const img = new Image();
+                    img.src = src;
+                    img.onload = () => resolve(img);
+                });
+            });
+            const images = await Promise.all(loadImages);
+            setLoadedImages(images);
+        };
+        preloadImages();
+    }, [sortedTeamsData.icons]);
+
     const chartData = React.useMemo(() => ({
         labels: sortedTeamsData.labels,
         datasets: [{
@@ -51,19 +69,40 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         const meta = chart.getDatasetMeta(0);
         if (!meta.data) return;
 
+        const chartArea = chart.chartArea;
+        ctx.save();
+        ctx.clearRect(chartArea.left, 0, chartArea.right - chartArea.left, chartArea.top);
+
+        const isMobile = window.innerWidth < 768;
+
         meta.data.forEach((bar, index) => {
-            const score = sortedTeamsData.finalData[index];
-            if (score > 0) {
-                ctx.save();
-                ctx.fillStyle = '#ffffff';
-                ctx.font = '800 20px Poppins';
-                ctx.textAlign = 'center';
-                const textY = bar.y + 30;
-                ctx.fillText(score.toString(), bar.x, textY);
-                ctx.restore();
+            // Icon zeichnen
+            const iconPath = sortedTeamsData.icons[index];
+            const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
+            const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
+            if (img) {
+                const x = bar.x;
+                const y = bar.y - (isMobile ? 20 : 40);
+                const size = isMobile ? 30 : 40;
+                ctx.drawImage(img, x - size / 2, y, size, size);
+            }
+
+            // Punktzahl nur auf Desktop anzeigen
+            if (!isMobile) {
+                const score = sortedTeamsData.finalData[index];
+                if (score > 0) {
+                    ctx.save();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '800 20px Poppins';
+                    ctx.textAlign = 'center';
+                    const textY = bar.y + 30;
+                    ctx.fillText(score.toString(), bar.x, textY);
+                    ctx.restore();
+                }
             }
         });
-    }, [sortedTeamsData.finalData]);
+        ctx.restore();
+    }, [loadedImages, sortedTeamsData.icons, sortedTeamsData.finalData]);
 
     useEffect(() => {
         const chart = chartRef.current;
@@ -101,6 +140,7 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                 beginAtZero: true,
                 max: Math.max(...sortedTeamsData.finalData) + Math.max(...sortedTeamsData.finalData) * 0.2,
                 ticks: {
+                    display: !isMobile,
                     color: '#ffffff',
                     font: {
                         family: 'Poppins',
@@ -125,6 +165,7 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                     display: false
                 },
                 ticks: {
+                    display: !isMobile,
                     color: '#ffffff',
                     font: {
                         family: 'Poppins',
@@ -142,7 +183,21 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                 enabled: false
             }
         }
-    }), [sortedTeamsData.finalData, drawImages]);
+    }), [sortedTeamsData.finalData, drawImages, isMobile]);
+
+    // Angepasster Effect für Responsive-Handling
+    useEffect(() => {
+        const handleResize = () => {
+            const mobile = window.innerWidth < 768;
+            setIsMobile(mobile);
+            if (chartRef.current) {
+                chartRef.current.update();
+            }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     return (
         <div className="ranking-container">
@@ -153,4 +208,4 @@ const StaticFinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     );
 };
 
-export default StaticFinalGraph;
+export default StaticTeamGraph;

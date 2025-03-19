@@ -67,7 +67,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
     const showResults = async () => {
         if (!teamQuestion.active) {
             const results = await PublicSurveyService.getStatisticsOfQuestion(teamQuestion.id);
-            
+
             setResults(results);
         }
     }

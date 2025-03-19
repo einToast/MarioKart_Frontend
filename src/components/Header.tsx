@@ -3,8 +3,8 @@ import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
 import characters from "../util/api/config/characters";
-import './Header.css';
 import { PublicUserService } from '../util/service';
+import './Header.css';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);

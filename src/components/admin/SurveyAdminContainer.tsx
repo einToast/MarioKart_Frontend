@@ -10,7 +10,6 @@ import SurveyDeleteModal from '../modals/SurveyDeleteModal';
 import SurveyModal from '../modals/SurveyModal';
 import SurveyAdminListItem from './SurveyAdminListItem';
 
-
 const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
     surveys,
     getQuestions,

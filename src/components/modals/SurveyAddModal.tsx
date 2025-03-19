@@ -7,7 +7,6 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 
-
 const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void }> = ({ showModal, closeModal }) => {
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);

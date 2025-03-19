@@ -1,8 +1,8 @@
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { PublicUserApi } from "../../../api";
 import { AuthenticationRequestDTO } from "../../../api/config/dto";
 import { User } from "../../../api/config/interfaces";
-import { PublicUserApi } from "../../../api";
-import { jwtDecode } from "jwt-decode";
-import Cookies from "js-cookie";
 
 export const login = async (username: string, password: string): Promise<void> => {
     const user: AuthenticationRequestDTO = {

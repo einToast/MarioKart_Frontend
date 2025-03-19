@@ -12,7 +12,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, AdminScheduleService, PublicRegistrationService, PublicUserService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService, PublicUserService } from "../../util/service";
 import "./Final.css";
 
 const Final: React.FC = () => {
@@ -46,7 +46,7 @@ const Final: React.FC = () => {
     }
 
     const getFinalTeams = async () => {
-        const teamNames = PublicRegistrationService.getTeamTop4FinalRanked();
+        const teamNames = AdminRegistrationService.getFinalTeams();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {

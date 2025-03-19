@@ -1,5 +1,5 @@
-import { BreakReturnDTO, RoundReturnDTO } from "../../../api/config/dto";
 import { AdminScheduleApi } from "../../../api";
+import { BreakReturnDTO, RoundReturnDTO } from "../../../api/config/dto";
 
 
 export const getRounds = async (): Promise<RoundReturnDTO[]> => {

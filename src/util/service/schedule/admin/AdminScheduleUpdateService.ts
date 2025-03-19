@@ -1,5 +1,5 @@
-import { BreakInputDTO, BreakReturnDTO, GameReturnDTO, PointsInputDTO, PointsReturnDTO, RoundInputDTO, RoundReturnDTO } from "../../../api/config/dto";
 import { AdminScheduleApi } from "../../../api";
+import { BreakInputDTO, BreakReturnDTO, GameReturnDTO, PointsInputDTO, PointsReturnDTO, RoundInputDTO, RoundReturnDTO } from "../../../api/config/dto";
 
 export const updateRoundPlayed = async (roundId: number, played: boolean): Promise<RoundReturnDTO> => {
     const roundInput: RoundInputDTO = {
