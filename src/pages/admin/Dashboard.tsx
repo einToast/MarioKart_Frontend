@@ -12,8 +12,7 @@ import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
 import { errorToastColor } from "../../util/api/config/constants";
-import { checkFinal, checkMatch } from "../../util/service/adminService";
-import { checkToken, getUser, removeToken } from "../../util/service/loginService";
+import { PublicScheduleService, PublicUserService } from "../../util/service";
 
 const Dashboard: React.FC = () => {
 
@@ -24,22 +23,22 @@ const Dashboard: React.FC = () => {
     const [showToast, setShowToast] = useState(false);
 
     // TODO: user into useEffect (in every page)
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     const handleLogout = () => {
-        removeToken();
+        PublicUserService.removeToken();
         history.push('/admin/login');
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const match = checkMatch();
-        const final = checkFinal();
+        const match = PublicScheduleService.isMatchPlanCreated();
+        const final = PublicScheduleService.isFinalPlanCreated();
 
         match.then((result) => {
             setIsMatchPlan(result);

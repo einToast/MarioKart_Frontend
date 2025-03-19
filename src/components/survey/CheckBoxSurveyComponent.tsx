@@ -12,8 +12,7 @@ import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { getUser } from "../../util/service/loginService";
-import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
+import { PublicSurveyService, PublicUserService } from "../../util/service";
 
 const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -24,7 +23,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
     const [indicator, setIndicator] = useState<string>('');
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     useEffect(() => {
         getVote();
@@ -34,7 +33,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
     }, []);
 
     const getVote = async () => {
-        const vote = await getAnswer(checkBoxQuestion.questionText + checkBoxQuestion.id);
+        const vote = await PublicSurveyService.getAnswerCookie(checkBoxQuestion.questionText + checkBoxQuestion.id);
 
         if (vote !== -1) {
             if (typeof vote.answerId === 'string' && vote.answerId.includes(',')) {
@@ -52,7 +51,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
 
     const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(checkBoxQuestion, votes, user?.teamId || -1);
+            const vote = await PublicSurveyService.submitAnswer(checkBoxQuestion, votes, user?.teamId || -1);
             if (vote) {
                 getVote();
                 toggleAccordion();
@@ -86,13 +85,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
 
     const showResults = async () => {
         if (!checkBoxQuestion.active) {
-            const answers = await getAnswers(checkBoxQuestion.id);
-            const results = new Array(checkBoxQuestion.options.length).fill(0);
-            answers.forEach(answer => {
-                answer.checkboxSelectedOptions.forEach(option => {
-                    results[option]++;
-                });
-            });
+            const results = await PublicSurveyService.getStatisticsOfQuestion(checkBoxQuestion.id);
             setResults(results);
         }
 

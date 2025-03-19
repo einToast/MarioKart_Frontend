@@ -5,10 +5,7 @@ import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
-import { checkFinal, checkMatch } from "../util/service/adminService";
-import { getNumberOfUnplayedRounds, getTeamsRanked } from "../util/service/dashboardService";
-import { getUser } from "../util/service/loginService";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
+import { PublicRegistrationService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../util/service";
 import './Tab2.css';
 // TODO: when last round use Props to tell it App.tsx
 const Tab2: React.FC = () => {
@@ -18,31 +15,21 @@ const Tab2: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const [final, setFinal] = useState<boolean>(false);
     const [roundsToPlay, setRoundsToPlay] = useState<number>(8);
     const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const location = useLocation();
     const history = useHistory();
 
     const getRanking = async () => {
-        const finalCheck = checkFinal();
 
-        const teamsRanked = getTeamsRanked();
+        const teamsRanked = PublicRegistrationService.getTeamsSortedByGroupPoints();
 
-        const matchplan = checkMatch();
-        const finalplan = checkFinal();
-        const rounds = getNumberOfUnplayedRounds();
-
-        finalCheck.then((result) => {
-            setFinal(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
+        const matchplan = PublicScheduleService.isMatchPlanCreated();
+        const finalplan = PublicScheduleService.isFinalPlanCreated();
+        const rounds = PublicScheduleService.getNumberOfRoundsUnplayed();
 
         teamsRanked.then((response) => {
             setTeams(response);
@@ -77,7 +64,7 @@ const Tab2: React.FC = () => {
 
         getRanking();
 
-        const tournamentOpen = getTournamentOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {
@@ -124,15 +111,15 @@ const Tab2: React.FC = () => {
                     {teams ? (
                         teams
                             .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character?.characterName ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character?.characterName}.png`} alt={team.character?.characterName}
+                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
                                             className={"iconTeam"} />
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
                                         <p className={"punkte"}>{index + 1}. Platz</p>
-                                        {final ? (
+                                        {finalPlanCreated ? (
                                             <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         ) : (
                                             // TODO: update to show number of games played

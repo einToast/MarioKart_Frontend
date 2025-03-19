@@ -9,20 +9,19 @@ import React, { useState } from "react";
 import "../../pages/admin/Points.css";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
-import { saveGame } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
+import { AdminScheduleService, PublicUserService } from "../../util/service";
 import { convertUmlauts } from "../../util/service/util";
 
-const PointsSurveyComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
-    const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[0]?.id)?.points ?? 0);
-    const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[1]?.id)?.points ?? 0);
-    const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[2]?.id)?.points ?? 0);
-    const [pointsFour, setPointsFour] = useState<number>(game.points?.find(point => point.team?.id === game.teams?.[3]?.id)?.points ?? 0);
+const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
+    const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team.id === game.teams[0].id)?.points ?? 0);
+    const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team.id === game.teams[1].id)?.points ?? 0);
+    const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team.id === game.teams[2].id)?.points ?? 0);
+    const [pointsFour, setPointsFour] = useState<number>(game.points?.find(point => point.team.id === game.teams[3].id)?.points ?? 0);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
         const newValue = parseInt(event.target.value);
@@ -42,7 +41,7 @@ const PointsSurveyComponent: React.FC<{ game: GameReturnDTO, roundId: number, is
 
     const handleSavePoints = async () => {
         try {
-            const newPoints = await saveGame(roundId, game);
+            const newPoints = await AdminScheduleService.saveGame(roundId, game);
             if (newPoints) {
                 setError('Spiel erfolgreich gespeichert');
                 setToastColor(successToastColor)
@@ -70,33 +69,33 @@ const PointsSurveyComponent: React.FC<{ game: GameReturnDTO, roundId: number, is
                         <input
                             type={"number"}
                             value={pointsOne}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[0]?.id) ?? {} as PointsReturnDTO, e, 0)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[0]?.id) ?? {} as PointsReturnDTO, e, 0)}
                         />
-                        <img src={`/characters/${game.teams?.[0]?.character?.characterName}.png`} alt="Character" />
+                        <img src={`/characters/${game.teams[0]?.character.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsTwo}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[1]?.id) ?? {} as PointsReturnDTO, e, 1)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[1]?.id) ?? {} as PointsReturnDTO, e, 1)}
                         />
-                        <img src={`/characters/${game.teams?.[1]?.character?.characterName}.png`} alt="Character" />
+                        <img src={`/characters/${game.teams[1]?.character.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsThree}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[2]?.id) ?? {} as PointsReturnDTO, e, 2)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[2]?.id) ?? {} as PointsReturnDTO, e, 2)}
                         />
-                        <img src={`/characters/${game.teams?.[2]?.character?.characterName}.png`} alt="Character" />
+                        <img src={`/characters/${game.teams[2]?.character.characterName}.png`} alt="Character" />
                     </div>
                     <div className={"characterInput"}>
                         <input
                             type={"number"}
                             value={pointsFour}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team?.id === game.teams?.[3]?.id) ?? {} as PointsReturnDTO, e, 3)}
+                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[3]?.id) ?? {} as PointsReturnDTO, e, 3)}
                         />
-                        <img src={`/characters/${game.teams?.[3]?.character?.characterName}.png`} alt="Character" />
+                        <img src={`/characters/${game.teams[3]?.character.characterName}.png`} alt="Character" />
                     </div>
                 </div>
                 <IonButton slot="start" shape="round" onClick={handleSavePoints}
@@ -128,4 +127,4 @@ const PointsSurveyComponent: React.FC<{ game: GameReturnDTO, roundId: number, is
     );
 };
 
-export default React.memo(PointsSurveyComponent);
+export default React.memo(PointsComponent);

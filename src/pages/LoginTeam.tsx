@@ -13,10 +13,10 @@ import characters from "../util/api/config/characters";
 import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { LoginProps, User } from '../util/api/config/interfaces';
-import { getUser, setUser } from "../util/service/loginService";
-import { getAllTeams, getTournamentOpen } from "../util/service/teamRegisterService";
+import { PublicRegistrationService } from "../util/service/registration";
+import { PublicSettingsService } from "../util/service/settings";
+import { PublicUserService } from "../util/service/user";
 import './RegisterTeam.css';
-
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
@@ -30,14 +30,14 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     const handleLogin = () => {
         // TODO: refactor this
-        const selectedTeam = teams?.find(team => team.teamName === teamName);
+        const selectedTeam = teams.find(team => team.teamName === teamName);
         if (selectedTeam) {
             const user: User = {
                 name: selectedTeam.teamName,
-                character: selectedTeam.character?.characterName || '',
+                character: selectedTeam.character.characterName || '',
                 teamId: selectedTeam.id
             };
-            setUser(user);
+            PublicUserService.setUser(user);
             props.setUser(user);
             history.push('/tab1');
         } else {
@@ -48,11 +48,11 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        if (getUser()?.name) {
+        if (PublicUserService.getUser()?.name) {
             history.push('/tab1');
         }
-        const allTeams = getAllTeams();
-        const tournamentOpen = getTournamentOpen();
+        const allTeams = PublicRegistrationService.getTeams();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         allTeams.then((response) => {
             setTeams(response);
@@ -93,7 +93,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 {teams && teams.map((team) => (
                                     <option key={team.teamName}
                                         value={team.teamName}
-                                        style={{ backgroundImage: `url(/characters/${team.character?.characterName}.png)` }}
+                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.png)` }}
                                     >
                                         {team.teamName}
                                     </option>
@@ -101,7 +101,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </select>
                             {teamName && (
                                 <div className="selected-character">
-                                    {[teams.find(team => team.teamName === teamName)?.character?.characterName].map((character) => (
+                                    {[teams.find(team => team.teamName === teamName)?.character.characterName].map((character) => (
                                         character && characters.includes(character) &&
                                         <img
                                             src={`/characters/${character}.png`}
@@ -140,6 +140,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     {/*    Team registrieren*/}
                     {/*</a>*/}
                 </div>
+                {/* TODO: Refactor into own file */}
                 <IonToast
                     isOpen={showToast}
                     onDidDismiss={() => setShowToast(false)}

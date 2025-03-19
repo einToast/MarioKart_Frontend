@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
+import { PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab4: React.FC = () => {
@@ -18,7 +18,7 @@ const Tab4: React.FC = () => {
     };
 
     useEffect(() => {
-        const tournamentOpen = getTournamentOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {

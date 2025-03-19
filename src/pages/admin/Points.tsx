@@ -10,12 +10,10 @@ import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import PointsCard from "../../components/survey/PointsSurveyComponent";
+import PointsComponent from "../../components/admin/PointsComponent";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { RoundReturnDTO } from "../../util/api/config/dto";
-import { saveRound } from "../../util/service/adminService";
-import { getAllRounds, getRound } from "../../util/service/dashboardService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { AdminScheduleService, PublicUserService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
@@ -31,12 +29,12 @@ const Points: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     const getSelectedRound = (id: number) => {
-        const round = getRound(id);
+        const round = AdminScheduleService.getRoundById(id);
         round.then((round) => {
             round.games = round.games?.sort((a, b) => a.id - b.id) || [];
             setRound(round);
@@ -47,7 +45,7 @@ const Points: React.FC = () => {
 
     const handleSavePoints = async () => {
         try {
-            const savedRound = await saveRound(round);
+            const savedRound = await AdminScheduleService.saveRound(round);
 
             if (savedRound) {
                 setError('Runde erfolgreich gespeichert');
@@ -64,11 +62,11 @@ const Points: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const rounds = getAllRounds();
+        const rounds = AdminScheduleService.getRounds();
         rounds.then((rounds) => {
             rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
             getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
@@ -125,9 +123,9 @@ const Points: React.FC = () => {
                             <p className="timeStamp">{round.startTime.split('T')[1].slice(0, 5)} - {round.endTime.split('T')[1].slice(0, 5)}</p>
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
-                            {round.games?.map((game) => (
-                                game.teams = game.teams?.sort((a, b) => a.id - b.id) || [],
-                                <PointsCard
+                            {round.games.map((game) => (
+                                game.teams = game.teams.sort((a, b) => a.id - b.id) || [],
+                                <PointsComponent
                                     key={game.id}
                                     game={game}
                                     roundId={round.id}

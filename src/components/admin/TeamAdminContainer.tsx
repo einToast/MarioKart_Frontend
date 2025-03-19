@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { errorToastColor, successToastColor } from '../../util/api/config/constants';
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamAdminContainerProps, TeamModalResult } from "../../util/api/config/interfaces";
-import { changeTeam } from '../../util/service/adminService';
-import { getUser } from '../../util/service/loginService';
+import { AdminRegistrationService, PublicUserService } from '../../util/service';
 import TeamChangeModal from '../modals/TeamChangeModal';
 import TeamDeleteModal from '../modals/TeamDeleteModal';
 import TeamAdminListItem from './TeamAdminListItem';
@@ -30,12 +29,12 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     const [error, setError] = useState<string>('');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleToggleFinalParticipation = async (team: TeamReturnDTO) => {
         try {
             team.finalReady = !team.finalReady;
-            const removedTeam = await changeTeam(team);
+            const removedTeam = await AdminRegistrationService.updateTeam(team);
             if (removedTeam) {
                 await getTeams();
             } else {
@@ -54,7 +53,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
             if (!team.active) {
                 team.finalReady = false;
             }
-            const removedTeam = await changeTeam(team);
+            const removedTeam = await AdminRegistrationService.updateTeam(team);
             if (removedTeam) {
                 await getTeams();
             } else {

@@ -8,24 +8,21 @@ export interface RoundReturnDTO {
     endTime: string;
     finalGame: boolean;
     played: boolean;
-    games?: GameReturnDTO[];
+    games: GameReturnDTO[];
     breakTime?: BreakReturnDTO;
 }
 
 export interface GameReturnDTO {
     id: number;
     switchGame: string;
-    round?: RoundReturnDTO;
-    teams?: TeamReturnDTO[];
-    points?: PointsReturnDTO[];
+    teams: TeamReturnDTO[];
+    points: PointsReturnDTO[] | null;
 }
 
 export interface PointsReturnDTO {
     id: number;
     points: number;
-    team?: TeamReturnDTO;
-    game?: GameReturnDTO;
-
+    team: TeamReturnDTO;
 }
 
 export interface BreakReturnDTO {
@@ -39,13 +36,12 @@ export interface BreakReturnDTO {
 export interface TeamReturnDTO {
     id: number;
     teamName: string;
-    character?: CharacterReturnDTO;
+    character: CharacterReturnDTO;
     finalReady: boolean;
     active: boolean;
     groupPoints: number;
     finalPoints: number;
-    games?: GameReturnDTO[];
-    gamesPlayed?: number;
+    numberOfGamesPlayed: number;
 }
 
 export interface TeamInputDTO {
@@ -58,8 +54,6 @@ export interface TeamInputDTO {
 export interface CharacterReturnDTO {
     id: number;
     characterName: string;
-    team?: TeamReturnDTO;
-
 }
 
 export interface RoundInputDTO {
@@ -126,13 +120,11 @@ export interface AnswerCookieDTO {
 export interface AuthenticationRequestDTO {
     username: string;
     password: string;
-
 }
 
 export interface AuthenticationResponseDTO {
     accessToken: string;
     user: UserDTO;
-
 }
 
 export interface UserDTO {
@@ -140,25 +132,3 @@ export interface UserDTO {
     isAdmin: boolean;
     ID: number;
 }
-
-export interface UserPasswordsDTO {
-    password: string;
-    passwordConfirm: string;
-
-}
-
-export interface UserTokenDTO {
-    token: string;
-    expiresAt: string;
-    user: UserDTO;
-
-}
-
-export interface UserCreationDTO {
-    username: string;
-    isAdmin: boolean;
-
-}
-
-export type UpdateUserDTO = object;
-

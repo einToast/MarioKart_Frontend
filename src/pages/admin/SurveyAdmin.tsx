@@ -11,8 +11,7 @@ import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { checkToken, getUser } from "../../util/service/loginService";
-import { getAllQuestions } from "../../util/service/surveyService";
+import { AdminSurveyService, PublicUserService } from "../../util/service";
 import "./SurveyAdmin.css";
 
 const SurveyAdmin: React.FC = () => {
@@ -23,14 +22,14 @@ const SurveyAdmin: React.FC = () => {
     const [modalClosed, setModalClosed] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
 
     const getQuestions = async () => {
         try {
-            const questions = await getAllQuestions();
+            const questions = await AdminSurveyService.getQuestions();
             setSurveys(questions);
         } catch (error) {
             setError(error.message);
@@ -58,7 +57,7 @@ const SurveyAdmin: React.FC = () => {
 
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
         getQuestions();

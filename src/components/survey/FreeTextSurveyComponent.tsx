@@ -9,8 +9,7 @@ import "../../pages/admin/Points.css";
 import '../../pages/Survey.css';
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { getUser } from "../../util/service/loginService";
-import { registerAnswer } from "../../util/service/surveyService";
+import { PublicSurveyService, PublicUserService } from "../../util/service";
 
 const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
 
@@ -20,12 +19,12 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
 
     const handleSaveVote = async () => {
         try {
-            const vote = await registerAnswer(freeTextQuestion, text, user?.teamId || -1);
+            const vote = await PublicSurveyService.submitAnswer(freeTextQuestion, text, user?.teamId || -1);
             if (vote) {
                 setText('');
                 toggleAccordion();

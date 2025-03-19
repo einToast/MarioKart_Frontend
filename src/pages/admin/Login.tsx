@@ -10,11 +10,11 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import { errorToastColor } from "../../util/api/config/constants";
-import { checkToken, getUser, loginUser } from "../../util/service/loginService";
+import { PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 
 const Login: React.FC = () => {
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string>('Error');
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            await loginUser(username, password);
+            await PublicUserService.login(username, password);
             setUsername('');
             setPassword('');
             history.push('/admin/dashboard');
@@ -39,7 +39,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (checkToken()) {
+            if (PublicUserService.checkToken()) {
                 history.push('/admin/dashboard');
             }
         }

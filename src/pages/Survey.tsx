@@ -8,10 +8,9 @@ import FreeTextCard from "../components/survey/FreeTextSurveyComponent";
 import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyComponent";
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import { QuestionReturnDTO } from "../util/api/config/dto";
-import { getAnswer, getCurrentQuestions } from "../util/service/surveyService";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
 import { QuestionType } from "../util/service/util";
 import './Survey.css';
+import { PublicSettingsService, PublicSurveyService } from '../util/service';
 
 const Survey: React.FC = () => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
@@ -23,11 +22,11 @@ const Survey: React.FC = () => {
 
 
     const getQuestions = async () => {
-        const questions = getCurrentQuestions();
+        const questions = PublicSurveyService.getVisibleQuestions();
 
         questions.then(async (questions) => {
             const questionsWithAnswers = await Promise.all(questions.map(async (question) => {
-                const answers = await getAnswer(question.questionText + question.id);
+                const answers = await PublicSurveyService.getAnswerCookie(question.questionText + question.id);
                 return {
                     ...question,
                     isAnswered: (answers !== -1 && question.questionType !== QuestionType.FREE_TEXT),
@@ -66,7 +65,7 @@ const Survey: React.FC = () => {
     useEffect(() => {
         getQuestions();
 
-        const tournamentOpen = getTournamentOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {

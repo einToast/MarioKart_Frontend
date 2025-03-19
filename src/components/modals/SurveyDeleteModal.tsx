@@ -6,9 +6,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { removeQuestion } from "../../util/service/surveyService";
-
+import { AdminSurveyService, PublicUserService } from '../../util/service';
 
 const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
@@ -16,11 +14,11 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleDeletion = async () => {
         try {
-            await removeQuestion(question);
+            await AdminSurveyService.deleteQuestion(question);
             closeModal({ surveyDeleted: true });
         } catch (error) {
             setError(error.message);

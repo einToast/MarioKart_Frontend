@@ -10,8 +10,7 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { getTeamTop4FinalRanked } from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { PublicRegistrationService, PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
@@ -22,16 +21,16 @@ const Results: React.FC = () => {
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
-
-        const teamNames = getTeamTop4FinalRanked();
+        // TODO: update???
+        const teamNames = PublicRegistrationService.getTeamTop4FinalRanked();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -69,7 +68,7 @@ const Results: React.FC = () => {
                                 <div key={team.id}
                                     className={`teamContainer`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/media/${team.character?.characterName}.png`} alt={team.character?.characterName}
+                                        <img src={`/characters/media/${team.character.characterName}.png`} alt={team.character.characterName}
                                             className={"iconTeam"} />
                                     </div>
                                     <div>

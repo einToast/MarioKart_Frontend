@@ -5,8 +5,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { getAnswers } from "../../util/service/surveyService";
+import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 
 const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
@@ -17,49 +16,26 @@ const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyMod
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const getAnswersToQuestion = async () => {
         try {
-            const questionAnswers = await getAnswers(question.id);
-            if (questionAnswers) {
-                countAnswers(questionAnswers);
+            if (question.questionType === QuestionType.FREE_TEXT) {
+                const questionAnswers = await AdminSurveyService.getAnswersOfQuestion(question.id);
+                const numberOfAnswers = await AdminSurveyService.getNumberOfAnswers(question.id);
+                setAnswers(questionAnswers);
+                setTotalAnswers(numberOfAnswers);
             } else {
-                throw new TypeError('Antworten konnten nicht geladen werden');
+                const questionAnswers = await AdminSurveyService.getStatisticsOfQuestion(question.id);
+                const numberOfAnswers = await AdminSurveyService.getNumberOfAnswers(question.id);
+                setAnswersCount(questionAnswers);
+                setTotalAnswers(numberOfAnswers);
             }
         } catch (error) {
             setError(error.message);
             setToastColor(errorToastColor);
             setShowToast(true);
         }
-    }
-
-    const countAnswers = (answers: AnswerReturnDTO[]) => {
-        if (question.questionType === QuestionType.MULTIPLE_CHOICE) {
-            const count = new Array(question.options.length).fill(0);
-            answers.forEach(answer => {
-                count[answer.multipleChoiceSelectedOption]++;
-            });
-            setAnswersCount(count);
-        } else if (question.questionType === QuestionType.FREE_TEXT) {
-            setAnswers(answers);
-            setAnswersCount([answers.length]);
-        } else if (question.questionType === QuestionType.CHECKBOX) {
-            const count = new Array(question.options.length).fill(0);
-            answers.forEach(answer => {
-                answer.checkboxSelectedOptions.forEach(option => {
-                    count[option]++;
-                });
-            });
-            setAnswersCount(count);
-        } else if (question.questionType === QuestionType.TEAM) {
-            const count = new Array(question.options.length).fill(0);
-            answers.forEach(answer => {
-                count[answer.teamSelectedOption]++;
-            });
-            setAnswersCount(count);
-        }
-        setTotalAnswers(answers.length);
     }
 
     useEffect(() => {

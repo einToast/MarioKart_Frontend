@@ -8,13 +8,13 @@ import PauseComponentSwiper from './PauseComponentSwiper';
 export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {
         return games.map(game => {
-            const hasLoggedInCharacter = game.teams?.some(team =>
-                team.character?.characterName === user?.character
+            const hasLoggedInCharacter = game.teams.some(team =>
+                team.character.characterName === user?.character
             ) || false;
 
             if (hasLoggedInCharacter && game.teams) {
                 const loggedInTeamIndex = game.teams.findIndex(team =>
-                    team.character?.characterName === user?.character
+                    team.character.characterName === user?.character
                 );
                 if (loggedInTeamIndex !== -1) {
                     const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
@@ -28,7 +28,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
 
     const filteredGames = viewType === 'personal'
         ? games.filter(game =>
-            game.teams?.some(team => team.character?.characterName === user?.character) || false
+            game.teams.some(team => team.character.characterName === user?.character) || false
         )
         : games;
 
@@ -62,6 +62,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
                 );
             })}
             {viewType === 'all' && teamsNotInRound.length > 0 && (
+                // TODO: Own Team first
                 <PauseComponentSwiper
                     teams={teamsNotInRound}
                     user={user}

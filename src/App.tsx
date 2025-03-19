@@ -45,9 +45,7 @@ import Tab4 from './pages/Tab4';
 import './theme/main.css';
 import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
-import { checkFinal, checkMatch } from "./util/service/adminService";
-import { getNumberOfUnplayedRounds } from "./util/service/dashboardService";
-import { getUser } from "./util/service/loginService";
+import { PublicScheduleService, PublicUserService } from './util/service';
 
 setupIonicReact();
 
@@ -58,13 +56,14 @@ const App: React.FC = () => {
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     useEffect(() => {
-        const user = getUser();
+        const user = PublicUserService.getUser();
         if (user?.name) {
             setCurrentUser(user);
         }
-        const matchplan = checkMatch();
-        const finalplan = checkFinal();
-        const rounds = getNumberOfUnplayedRounds();
+        const matchplan = PublicScheduleService.isMatchPlanCreated();
+        const finalplan = PublicScheduleService.isFinalPlanCreated();
+        // TODO: update to 2Roundleft
+        const rounds = PublicScheduleService.getNumberOfRoundsUnplayed();
         matchplan.then(value => {
             setMatchPlanCreated(value);
         })

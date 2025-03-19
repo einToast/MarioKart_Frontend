@@ -9,7 +9,7 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
+import { PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab3: React.FC = () => {
@@ -24,7 +24,7 @@ const Tab3: React.FC = () => {
     };
 
     useEffect(() => {
-        const tournamentOpen = getTournamentOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {

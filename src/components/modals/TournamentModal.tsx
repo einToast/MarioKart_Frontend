@@ -4,9 +4,7 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
-import { changeService } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
-import { getRegistrationOpen, getTournamentOpen } from "../../util/service/teamRegisterService";
+import { AdminSettingsService, PublicSettingsService, PublicUserService } from '../../util/service';
 import { ChangeType } from "../../util/service/util";
 
 const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: ChangeType) => void, changeType: ChangeType }> = ({ showModal, closeModal, changeType }) => {
@@ -20,11 +18,11 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
 
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleChange = async () => {
         try {
-            await changeService(changeType);
+            await AdminSettingsService.changeService(changeType);
             closeModal(changeType);
         } catch (error) {
             setError(error.message);
@@ -74,8 +72,8 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
 
 
     useEffect(() => {
-        const registrationOpen = getRegistrationOpen();
-        const tournamentOpen = getTournamentOpen();
+        const registrationOpen = PublicSettingsService.getRegistrationOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         registrationOpen.then((response) => {
             setIsRegistrationOpen(response);
@@ -98,7 +96,7 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
     }, [showModal]);
 
     return (
-        <IonModal isOpen={showModal} onDidDismiss={() => closeModal(changeType)}>
+        <IonModal isOpen={showModal} onDidDismiss={() => closeModal()}>
             <IonContent>
                 <h4>{changeType} {secondaryMessage}</h4>
                 <p dangerouslySetInnerHTML={{ __html: message.replace('...', secondaryMessage) }}></p>
@@ -107,11 +105,11 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
                 }
 
                 <div className={"playedContainer"}>
-                    <IonButton className={"secondary round"} onClick={() => closeModal(changeType)}
+                    <IonButton className={"secondary round"} onClick={() => closeModal()}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                closeModal(changeType);
+                                closeModal();
                             }
                         }}
                     >

@@ -12,12 +12,7 @@ import { LinearGradient } from "react-text-gradients";
 import characters from "../util/api/config/characters";
 import { errorToastColor } from "../util/api/config/constants";
 import { LoginProps, User } from '../util/api/config/interfaces';
-import { setUser } from "../util/service/loginService";
-import {
-    createTeam,
-    getAllAvailableCharacters,
-    getRegistrationOpen, getTournamentOpen
-} from "../util/service/teamRegisterService";
+import { PublicRegistrationService, PublicSettingsService, PublicUserService } from "../util/service";
 import './RegisterTeam.css';
 
 
@@ -39,7 +34,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     const getCharacterNames = () => {
-        const allCharacters = getAllAvailableCharacters()
+        const allCharacters = PublicRegistrationService.getAvailableCharacters()
 
         allCharacters.then((response) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
@@ -51,8 +46,8 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        const registrationOpen = getRegistrationOpen();
-        const tournamentOpen = getTournamentOpen();
+        const registrationOpen = PublicSettingsService.getRegistrationOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         registrationOpen.then((response) => {
             if (!response) {
@@ -79,15 +74,15 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     const handleLogin = async () => {
         try {
-            const team = await createTeam(teamName, selectedCharacter);
+            const team = await PublicRegistrationService.registerTeam(teamName, selectedCharacter);
 
             if (team) {
                 const user: User = {
                     name: team.teamName,
-                    character: team.character?.characterName || '',
+                    character: team.character.characterName || '',
                     teamId: team.id
                 };
-                setUser(user);
+                PublicUserService.setUser(user);
                 props.setUser(user);
                 history.push('/tab1');
             } else {

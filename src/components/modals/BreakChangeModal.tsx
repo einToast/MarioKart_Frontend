@@ -10,9 +10,8 @@ import {
     RoundReturnDTO
 } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { changeBreak } from "../../util/service/adminService";
-import { getAllRounds } from "../../util/service/dashboardService";
-import { getUser } from "../../util/service/loginService";
+import { AdminScheduleService, PublicScheduleService, PublicUserService } from '../../util/service';
+
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
@@ -24,7 +23,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const resetBreak = () => {
         setBreakDuration(0);
@@ -33,7 +32,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
 
     const handleChange = async () => {
         try {
-            const newTeam = await changeBreak(beforeRound, breakDuration, breakEnded);
+            const newTeam = await AdminScheduleService.updateBreak(beforeRound, breakDuration, breakEnded);
 
             if (newTeam) {
                 resetBreak();
@@ -57,7 +56,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
 
     const getRounds = async () => {
         try {
-            const rounds = await getAllRounds();
+            const rounds = await PublicScheduleService.getRounds();
             setRounds(rounds);
         } catch (error) {
             setError(error.message);

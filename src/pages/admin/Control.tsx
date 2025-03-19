@@ -16,16 +16,7 @@ import TournamentModal from "../../components/modals/TournamentModal";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import {
-    checkFinal,
-    checkMatch,
-    getABreak
-} from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
-import {
-    getRegistrationOpen,
-    getTournamentOpen
-} from "../../util/service/teamRegisterService";
+import { PublicScheduleService, PublicSettingsService, PublicUserService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
 
 
@@ -44,7 +35,7 @@ const Control: React.FC = () => {
     const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
@@ -54,7 +45,7 @@ const Control: React.FC = () => {
     }
 
     const handleOpenBreakModal = () => {
-        const breakData = getABreak();
+        const breakData = PublicScheduleService.getBreak();
         breakData.then((result) => {
             setBreak(result);
             setShowBreakModal(true);
@@ -67,7 +58,6 @@ const Control: React.FC = () => {
 
     const closeModal = (changeT: ChangeType) => {
         setModalClosed(prev => !prev);
-
         if (typeof changeT !== 'string') {
             return;
         }
@@ -75,6 +65,7 @@ const Control: React.FC = () => {
         setToastColor(successToastColor);
         switch (changeT) {
             case ChangeType.TOURNAMENT:
+                // TODO: better way to handle this
                 setError('Das Turnier wurde ' + (isTournamentOpen ? 'geschlossen' : 'geöffnet'));
                 break;
             case ChangeType.REGISTRATION:
@@ -114,14 +105,14 @@ const Control: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const match = checkMatch();
-        const final = checkFinal();
-        const registration = getRegistrationOpen();
-        const tournament = getTournamentOpen();
+        const match = PublicScheduleService.isMatchPlanCreated();
+        const final = PublicScheduleService.isFinalPlanCreated();
+        const registration = PublicSettingsService.getRegistrationOpen();
+        const tournament = PublicSettingsService.getTournamentOpen();
 
         match.then((result) => {
             setIsMatchPlan(result);

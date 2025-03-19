@@ -6,9 +6,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
-import { changeTeamNameAndCharacter } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
-import { getAllAvailableCharacters } from "../../util/service/teamRegisterService";
+import { AdminRegistrationService, PublicRegistrationService, PublicUserService } from '../../util/service';
 
 const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
 
@@ -19,7 +17,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const resetTeam = () => {
         setTeamName('');
@@ -27,7 +25,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
 
     const handleChange = async () => {
         try {
-            const newTeam = await changeTeamNameAndCharacter(team, teamName, character);
+            const newTeam = await AdminRegistrationService.updateTeamNameAndCharacter(team, teamName, character);
 
             if (newTeam) {
                 resetTeam();
@@ -44,7 +42,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
     };
 
     const getCharacterNames = () => {
-        const allCharacters = getAllAvailableCharacters()
+        const allCharacters = PublicRegistrationService.getAvailableCharacters();
 
         allCharacters.then((response) => {
             setAvailableCharacters(response.map(character => character.characterName));
@@ -57,7 +55,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
 
     useEffect(() => {
         setTeamName(team.teamName);
-        setCharacter(team.character?.characterName || '');
+        setCharacter(team.character.characterName || '');
         getCharacterNames();
     }, [showModal]);
 

@@ -12,8 +12,8 @@ import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { getUser } from "../../util/service/loginService";
-import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
+import { PublicSurveyService, PublicUserService } from "../../util/service";
+
 
 const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -24,10 +24,10 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
     const [indicator, setIndicator] = useState<string>('');
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const getVote = async () => {
-        const voted = await getAnswer(teamQuestion.questionText + teamQuestion.id);
+        const voted = await PublicSurveyService.getAnswerCookie(teamQuestion.questionText + teamQuestion.id);
 
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
@@ -40,7 +40,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
 
     const handleSaveVote = async () => {
         try {
-            const voted = await registerAnswer(teamQuestion, vote, user?.teamId || -1);
+            const voted = await PublicSurveyService.submitAnswer(teamQuestion, vote, user?.teamId || -1);
             if (voted) {
                 getVote();
                 toggleAccordion();
@@ -66,11 +66,8 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
 
     const showResults = async () => {
         if (!teamQuestion.active) {
-            const answers = await getAnswers(teamQuestion.id);
-            const results = new Array(teamQuestion.options.length).fill(0);
-            answers.forEach(answer => {
-                results[answer.teamSelectedOption]++;
-            });
+            const results = await PublicSurveyService.getStatisticsOfQuestion(teamQuestion.id);
+            
             setResults(results);
         }
     }

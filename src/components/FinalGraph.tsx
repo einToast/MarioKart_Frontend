@@ -56,7 +56,7 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             teams: sorted,
             initialData: Array(sorted.length).fill(0),
             finalData: sorted.map(team => team.finalPoints),
-            icons: sorted.map(team => `/characters/${team.character?.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
             labels: sorted.map(team => team.teamName),
             pointGroups: [[0], ...pointGroups],
             ranks: ranks,
@@ -195,7 +195,7 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         meta.data.forEach((bar, index) => {
             const originalIndex = displayOrder[index];
             const iconPath = sortedTeamsData.icons[originalIndex];
-            const iconName = decodeURIComponent(iconPath?.split('/')?.pop() || '');
+            const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
 
             if (img) {

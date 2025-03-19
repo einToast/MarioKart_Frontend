@@ -6,8 +6,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
-import { removeTeam } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
+import { AdminRegistrationService, PublicUserService } from '../../util/service';
 
 const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
 
@@ -15,11 +14,11 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleDeletion = async () => {
         try {
-            await removeTeam(team);
+            await AdminRegistrationService.deleteTeam(team);
             closeModal({ teamDeleted: true });
         } catch (error) {
             setError(error.message);

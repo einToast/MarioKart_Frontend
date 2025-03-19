@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { errorToastColor } from '../../util/api/config/constants';
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyAdminContainerProps } from "../../util/api/config/interfaces";
-import { getUser } from '../../util/service/loginService';
-import { changeQuestion } from '../../util/service/surveyService';
+import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import SurveyChangeModal from '../modals/SurveyChangeModal';
 import SurveyDeleteModal from '../modals/SurveyDeleteModal';
@@ -33,7 +32,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
     const [error, setError] = useState('');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleToggleVisibility = async (id: number) => {
         try {
@@ -43,7 +42,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
             }
             question.visible = !question.visible;
             question.active = question.visible
-            const updatedQuestion = await changeQuestion(question);
+            const updatedQuestion = await AdminSurveyService.updateQuestion(question);
             if (updatedQuestion) {
                 getQuestions();
             } else {
@@ -63,7 +62,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                 throw new TypeError('Frage nicht gefunden');
             }
             question.active = !question.active;
-            const updatedQuestion = await changeQuestion(question);
+            const updatedQuestion = await AdminSurveyService.updateQuestion(question);
             if (updatedQuestion) {
                 getQuestions();
             } else {

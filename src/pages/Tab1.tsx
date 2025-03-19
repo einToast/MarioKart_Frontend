@@ -6,21 +6,21 @@ import './Tab1.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { errorToastColor } from "../util/api/config/constants";
-import { getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
-import { getUser } from "../util/service/loginService";
+// import { getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
 
 import { useLocation } from "react-router";
 import { RoundDisplay } from "../components/rounds/RoundDisplay";
 import { RoundHeader } from "../components/rounds/RoundHeader";
 import { useRoundData } from "../hooks/useRoundData";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
+import { PublicUserService } from '../util/service';
 
 const Tab1: React.FC = () => {
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const location = useLocation();
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const {
         currentRound,
@@ -42,7 +42,7 @@ const Tab1: React.FC = () => {
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
-        setSelectedGamesOption(event.target.value);
+        PublicUserService.setSelectedGamesOption(event.target.value);
     };
 
     const handleRefresh = (event: CustomEvent) => {
@@ -61,7 +61,7 @@ const Tab1: React.FC = () => {
     }, [selectedOption]);
 
     useEffect(() => {
-        setSelectedOption(getSelectedGamesOption() || 'Deine Spiele');
+        setSelectedOption(PublicUserService.getSelectedGamesOption() || 'Deine Spiele');
     }, [location]);
 
     return (

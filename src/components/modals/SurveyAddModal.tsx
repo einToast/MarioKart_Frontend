@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { submitQuestion } from "../../util/service/surveyService";
+import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
+
 
 const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void }> = ({ showModal, closeModal }) => {
     const [questionText, setQuestionText] = useState('');
@@ -18,7 +18,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
     const [showToast, setShowToast] = useState<boolean>(false);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleOptionChange = (index, value) => {
         const newOptions = [...options];
@@ -48,7 +48,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
 
     const handleSubmit = async () => {
         try {
-            const newQuestion = await submitQuestion(questionText, questionType, options, finalTeamsOnly);
+            const newQuestion = await AdminSurveyService.createQuestion(questionText, questionType, options, finalTeamsOnly);
 
             if (newQuestion) {
                 resetQuestion();

@@ -5,10 +5,8 @@ import "../../pages/admin/SurveyAdmin.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { changeQuestion } from "../../util/service/surveyService";
+import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
-
 
 const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
@@ -21,7 +19,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [showToast, setShowToast] = useState<boolean>(false);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const handleQuestionTypeChange = (e) => {
         setQuestionType(e.target.value);
@@ -63,7 +61,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             question.questionType = questionType;
             question.options = options;
             question.finalTeamsOnly = finalTeamsOnly;
-            const newQuestion = await changeQuestion(question);
+            const newQuestion = await AdminSurveyService.updateQuestion(question);
 
             if (newQuestion) {
                 resetQuestion();

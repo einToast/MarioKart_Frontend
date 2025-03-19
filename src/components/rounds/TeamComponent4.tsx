@@ -8,13 +8,13 @@ const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, switc
         <div className={`${classColor}`}>
             <div className={`imageContainer ${classColor}`} >
                 <div className="round">
-                    {game.teams?.map(team => {
+                    {game.teams.map(team => {
                         return (
                             <img
-                                src={`/characters/${team.character?.characterName}.png`}
+                                src={`/characters/${team.character.characterName}.png`}
                                 alt="teamcharacter"
                                 className="iconTeam"
-                                key={team.character?.characterName}
+                                key={team.character.characterName}
                             />
                         )
                     })}

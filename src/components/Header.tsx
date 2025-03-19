@@ -3,14 +3,14 @@ import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
 import characters from "../util/api/config/characters";
-import { getUser, removeUser } from "../util/service/loginService";
 import './Header.css';
+import { PublicUserService } from '../util/service';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
 
     const toggleDropdown = () => {
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
     };
 
     const handleLogout = () => {
-        removeUser();
+        PublicUserService.removeUser();
         window.location.assign('/');
     };
 

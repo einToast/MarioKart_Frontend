@@ -12,8 +12,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { createTeamMatchPlan, getRegisteredTeams } from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { AdminScheduleService, PublicRegistrationService, PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
@@ -26,16 +25,16 @@ const MatchPlan: React.FC = () => {
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const teamNames = getRegisteredTeams();
+        const teamNames = PublicRegistrationService.getTeams();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -48,7 +47,7 @@ const MatchPlan: React.FC = () => {
     const handleMatchPlanCreation = async () => {
         try {
             setButtonDisabled(true);
-            const newRounds = await createTeamMatchPlan();
+            const newRounds = await AdminScheduleService.createMatchPlan();
             if (newRounds) {
                 setError('Spielplan erfolgreich erstellt');
                 setToastColor(successToastColor);
@@ -94,7 +93,7 @@ const MatchPlan: React.FC = () => {
                             matchplanCreated={false}
                             setModalClosed={setModalClosed}
                             modalClosed={modalClosed}
-                            getTeams={getRegisteredTeams}
+                            getTeams={PublicRegistrationService.getTeams}
                         />
 
                     ) : (

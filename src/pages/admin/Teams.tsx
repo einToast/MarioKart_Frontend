@@ -13,11 +13,9 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import {
-    checkMatch,
-    getTeamFinalRanked
-} from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { PublicScheduleService } from "../../util/service";
+import { AdminRegistrationService, PublicRegistrationService } from "../../util/service/registration";
+import { PublicUserService } from "../../util/service/user";
 import "./Final.css";
 
 const Teams: React.FC = () => {
@@ -28,12 +26,12 @@ const Teams: React.FC = () => {
     const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     const getFinalTeams = async () => {
-        const teamNames = getTeamFinalRanked();
+        const teamNames = AdminRegistrationService.getTeamsSortedByFinalPoints();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -44,10 +42,10 @@ const Teams: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
-        const matchplan = checkMatch();
+        const matchplan = PublicScheduleService.isMatchPlanCreated();
 
         getFinalTeams();
 

@@ -12,8 +12,8 @@ import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
 import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { getUser } from "../../util/service/loginService";
-import { getAnswer, getAnswers, registerAnswer } from "../../util/service/surveyService";
+import { PublicSurveyService, PublicUserService } from "../../util/service";
+
 
 const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
     const [error, setError] = useState<string>('Error');
@@ -24,10 +24,10 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
     const [indicator, setIndicator] = useState<string>('');
 
-    const user = getUser();
+    const user = PublicUserService.getUser();
 
     const getVote = async () => {
-        const voted = await getAnswer(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
+        const voted = await PublicSurveyService.getAnswerCookie(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
 
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
@@ -40,7 +40,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
 
     const handleSaveVote = async () => {
         try {
-            const voted = await registerAnswer(multipleChoiceQuestion, vote, user?.teamId || -1);
+            const voted = await PublicSurveyService.submitAnswer(multipleChoiceQuestion, vote, user?.teamId || -1);
             if (voted) {
                 getVote();
                 toggleAccordion();
@@ -66,11 +66,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
 
     const showResults = async () => {
         if (!multipleChoiceQuestion.active) {
-            const answers = await getAnswers(multipleChoiceQuestion.id);
-            const results = new Array(multipleChoiceQuestion.options.length).fill(0);
-            answers.forEach(answer => {
-                results[answer.multipleChoiceSelectedOption]++;
-            });
+            const results = await PublicSurveyService.getStatisticsOfQuestion(multipleChoiceQuestion.id);
             setResults(results);
         }
     }

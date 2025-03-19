@@ -12,12 +12,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import {
-    createTeamFinalPlan,
-    getTeamTop4FinalRanked,
-    resetAllTeamFinalParticipation
-} from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { AdminRegistrationService, AdminScheduleService, PublicRegistrationService, PublicUserService } from "../../util/service";
 import "./Final.css";
 
 const Final: React.FC = () => {
@@ -28,13 +23,13 @@ const Final: React.FC = () => {
     const [showToast, setShowToast] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
-    const user = getUser();
+    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
     const handleTeamsReset = async () => {
         try {
-            const teams = await resetAllTeamFinalParticipation();
+            const teams = await AdminRegistrationService.resetAllTeamFinalParticipation();
             if (teams) {
                 setError('Teams zurückgesetzt');
                 setToastColor(successToastColor);
@@ -51,7 +46,7 @@ const Final: React.FC = () => {
     }
 
     const getFinalTeams = async () => {
-        const teamNames = getTeamTop4FinalRanked();
+        const teamNames = PublicRegistrationService.getTeamTop4FinalRanked();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -64,7 +59,7 @@ const Final: React.FC = () => {
     const handleFinalCreation = async () => {
         try {
             setButtonDisabled(true);
-            const final = await createTeamFinalPlan();
+            const final = await AdminScheduleService.createFinalPlan();
             if (final) {
                 setError('Finale erfolgreich erstellt');
                 setToastColor(successToastColor);
@@ -83,7 +78,7 @@ const Final: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
         getFinalTeams();

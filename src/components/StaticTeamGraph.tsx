@@ -30,7 +30,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         return {
             teams: sorted,
             finalData: sorted.map(team => team.finalPoints),
-            icons: sorted.map(team => `/characters/${team.character?.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
             labels: sorted.map(team => team.teamName),
             ranks: ranks
         };
@@ -78,7 +78,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         meta.data.forEach((bar, index) => {
             // Icon zeichnen
             const iconPath = sortedTeamsData.icons[index];
-            const iconName = decodeURIComponent(iconPath?.split('/')?.pop() || '');
+            const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
             if (img) {
                 const x = bar.x;

@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { BreakReturnDTO, RoundReturnDTO, TeamReturnDTO } from '../util/api/config/dto';
 import { UseRoundDataReturn } from '../util/api/config/interfaces';
-import { getBothCurrentRounds, getTeamsInPause } from '../util/service/dashboardService';
-import { getTournamentOpen } from '../util/service/teamRegisterService';
+import { PublicRegistrationService, PublicScheduleService, PublicSettingsService } from '../util/service';
 
 export const useRoundData = (): UseRoundDataReturn => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
@@ -17,7 +16,7 @@ export const useRoundData = (): UseRoundDataReturn => {
 
     const refreshRounds = async () => {
         try {
-            const currentAndNextRound = await getBothCurrentRounds();
+            const currentAndNextRound = await PublicScheduleService.getCurrentRounds();
             let isBreak = false;
 
             if (currentAndNextRound[0]) {
@@ -25,7 +24,7 @@ export const useRoundData = (): UseRoundDataReturn => {
                 if ("breakEnded" in formattedCurrentRound) {
                     isBreak = true;
                 } else {
-                    setTeamsNotInCurrentRound(await getTeamsInPause(formattedCurrentRound.id));
+                    setTeamsNotInCurrentRound(await PublicRegistrationService.getTeamsNotInRound(formattedCurrentRound.id));
                 }
                 setCurrentRound(formattedCurrentRound);
                 setNoGames(false);
@@ -37,7 +36,7 @@ export const useRoundData = (): UseRoundDataReturn => {
             if (currentAndNextRound[1]) {
                 const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
                 setNextRound(formattedNextRound);
-                setTeamsNotInNextRound(await getTeamsInPause(formattedNextRound.id));
+                setTeamsNotInNextRound(await PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id));
             }
 
             if (isBreak) {
@@ -45,7 +44,7 @@ export const useRoundData = (): UseRoundDataReturn => {
                 setNextRound(formattedNextRound);
             }
 
-            const tournamentOpen = await getTournamentOpen();
+            const tournamentOpen = await PublicSettingsService.getTournamentOpen();
             if (!tournamentOpen) {
                 history.push('/admin');
             }

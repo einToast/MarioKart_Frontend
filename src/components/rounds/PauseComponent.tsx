@@ -2,7 +2,7 @@ import React from 'react';
 import { TeamReturnDTO } from '../../util/api/config/dto';
 
 const PauseComponent = ({ team }: { team: TeamReturnDTO }) => {
-    const character = team.character?.characterName || [];
+    const character = team.character.characterName || [];
 
     return (
         <div className="gelb">

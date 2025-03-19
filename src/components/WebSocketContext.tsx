@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useEffect } from 'react';
-import WebSocketService from "../util/service/WebSocketService";
+import WebSocketService from "../util/service/websockets/WebSocketService";
 
 // Erstelle den WebSocketContext
 const WebSocketContext = createContext<WebSocketService | null>(null);

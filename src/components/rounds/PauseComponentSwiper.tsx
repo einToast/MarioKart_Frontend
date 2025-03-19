@@ -19,7 +19,7 @@ const PauseComponentSwiper: React.FC<{ teams: TeamReturnDTO[], user: User | null
 
                     teams.map((team, index) => {
                         return (
-                            <SwiperSlide key={index} className={`${teams.some(t => t.character?.characterName === user?.character) ? 'loggedIn' : ''}`}
+                            <SwiperSlide key={index} className={`${teams.some(t => t.character.characterName === user?.character) ? 'loggedIn' : ''}`}
                                 style={{ opacity: team.active ? 1 : 0.5 }}>
                                 <PauseComponent team={team} key={index} />
                             </SwiperSlide>
