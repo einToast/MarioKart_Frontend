@@ -1,9 +1,9 @@
 import axios from 'axios';
-import apiClient from "../config/apiClient";
-import { API_BASE_URL } from '../config/constants';
-import { TournamentDTO } from "../config/dto";
+import apiClient, { ApiPath } from "../../config/apiClient";
+import { API_BASE_URL } from '../../config/constants';
+import { TournamentDTO } from "../../config/dto";
 
-const BASE_URL = `${API_BASE_URL}/settings`;
+const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'SETTINGS')}`;
 
 export const getSettings = async (): Promise<TournamentDTO> => {
     try {

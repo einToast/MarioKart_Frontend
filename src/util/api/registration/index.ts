@@ -1,6 +1,4 @@
-// Re-export all Registration API functions
-export * from './RegistrationCreateApi';
-export * from './RegistrationDeleteApi';
-export * from './RegistrationReadApi';
-export * from './RegistrationUpdateApi';
+// Re-export all Registration API modules
+export * as AdminRegistrationApi from './admin';
+export * as PublicRegistrationApi from './public';
 

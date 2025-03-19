@@ -1,6 +1,4 @@
-// Re-export all Survey API functions
-export * from './SurveyCreateApi';
-export * from './SurveyDeleteApi';
-export * from './SurveyReadApi';
-export * from './SurveyUpdateApi';
+// Export Admin and Public Survey APIs
+export * as AdminSurveyApi from './admin';
+export * as PublicSurveyApi from './public';
 

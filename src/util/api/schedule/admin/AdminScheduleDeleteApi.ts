@@ -1,8 +1,8 @@
 import axios from 'axios';
-import apiClient from "../config/apiClient";
-import { API_BASE_URL } from '../config/constants';
+import apiClient, { ApiPath } from "../../config/apiClient";
+import { API_BASE_URL } from '../../config/constants';
 
-const BASE_URL = `${API_BASE_URL}/match_plan`;
+const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('ADMIN', 'SCHEDULE')}`;
 
 export const deleteMatchPlan = async (): Promise<void> => {
     try {
@@ -11,9 +11,8 @@ export const deleteMatchPlan = async (): Promise<void> => {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else {
-                throw new Error('Spielplan konnte nicht gelöscht werden');
             }
+            throw new Error('Spielplan konnte nicht gelöscht werden');
         }
         throw error;
     }
@@ -26,9 +25,8 @@ export const deleteFinalPlan = async (): Promise<void> => {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
-            } else {
-                throw new Error('Finale konnte nicht gelöscht werden');
             }
+            throw new Error('Finalrunden konnten nicht gelöscht werden');
         }
         throw error;
     }

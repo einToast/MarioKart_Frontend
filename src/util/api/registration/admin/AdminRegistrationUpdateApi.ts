@@ -1,9 +1,9 @@
 import axios from 'axios';
-import apiClient from "../config/apiClient";
-import { API_BASE_URL } from '../config/constants';
-import { TeamInputDTO, TeamReturnDTO } from '../config/dto';
+import apiClient, { ApiPath } from "../../config/apiClient";
+import { API_BASE_URL } from '../../config/constants';
+import { TeamInputDTO, TeamReturnDTO } from '../../config/dto';
 
-const BASE_URL = `${API_BASE_URL}/teams`;
+const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('ADMIN', 'REGISTRATION')}`;
 
 export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamReturnDTO> => {
     try {
@@ -17,9 +17,8 @@ export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamRe
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 400) {
                 throw new Error('Fehlerhafte Anfrage');
-            } else {
-                throw new Error('Team konnte nicht aktualisiert werden');
             }
+            throw new Error('Team konnte nicht aktualisiert werden');
         }
         throw error;
     }

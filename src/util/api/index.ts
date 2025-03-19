@@ -1,17 +1,19 @@
 // Main API exports file
 // Re-export all domain-specific API modules
 
-// Match Plan API
-export * as MatchPlanApi from './match_plan';
+// Schedule API
+export * from './schedule';
 
 // Survey API
-export * as SurveyApi from './survey';
+export * from './survey';
 
 // Registration API
-export * as RegistrationApi from './registration';
+export * from './registration';
 
 // User API
-export * as UserApi from './user';
+export * from './user';
 
 // Settings API
-export * as SettingsApi from './settings';
+export * from './settings';
+
+
