@@ -17,7 +17,7 @@ const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, swit
                 return (
                     <div
                         key={team.id}
-                        className={`teamContainer ${user?.character === team.character.characterName ? 'userTeam' : ''} ${switchColor} slide`}
+                        className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''} ${switchColor} slide`}
                         style={{ opacity: team.active ? 1 : 0.5 }}
                     >
                         <TeamComponent team={team} switchColor={switchColor} />

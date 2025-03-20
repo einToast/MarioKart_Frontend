@@ -9,12 +9,12 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
     const sortGamesForUser = (games: GameReturnDTO[]) => {
         return games.map(game => {
             const hasLoggedInCharacter = game.teams.some(team =>
-                team.character.characterName === user?.character
+                team.id === user?.teamId
             ) || false;
 
             if (hasLoggedInCharacter && game.teams) {
                 const loggedInTeamIndex = game.teams.findIndex(team =>
-                    team.character.characterName === user?.character
+                    team.id === user?.teamId
                 );
                 if (loggedInTeamIndex !== -1) {
                     const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
@@ -28,7 +28,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
 
     const filteredGames = viewType === 'personal'
         ? games.filter(game =>
-            game.teams.some(team => team.character.characterName === user?.character) || false
+            game.teams.some(team => team.id === user?.teamId) || false
         )
         : games;
 
@@ -62,7 +62,6 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
                 );
             })}
             {viewType === 'all' && teamsNotInRound.length > 0 && (
-                // TODO: Own Team first
                 <PauseComponentSwiper
                     teams={teamsNotInRound}
                     user={user}
