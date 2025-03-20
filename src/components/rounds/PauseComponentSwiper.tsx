@@ -7,6 +7,18 @@ import PauseComponent from './PauseComponent';
 
 const PauseComponentSwiper: React.FC<{ teams: TeamReturnDTO[], user: User | null }> = ({ teams, user }) => {
 
+    const teamsWithOwnTeamFirst = teams.map(team => {
+        const hasLoggedInCharacter = team.id === user?.teamId;
+        return {
+            ...team,
+            isLoggedIn: hasLoggedInCharacter
+        };
+    }).sort((a, b) => {
+        if (a.isLoggedIn && !b.isLoggedIn) return -1;
+        if (!a.isLoggedIn && b.isLoggedIn) return 1;
+        return 0;
+    }
+    );
     return (
         <div className="roundContainer">
             <Swiper
@@ -16,10 +28,9 @@ const PauseComponentSwiper: React.FC<{ teams: TeamReturnDTO[], user: User | null
                 slidesPerView={1}
             >
                 {
-
-                    teams.map((team, index) => {
+                    teamsWithOwnTeamFirst.map((team, index) => {
                         return (
-                            <SwiperSlide key={index} className={`${teams.some(t => t.character.characterName === user?.character) ? 'loggedIn' : ''}`}
+                            <SwiperSlide key={index} className={`${teams.some(t => t.id === user?.teamId) ? 'loggedIn' : ''}`}
                                 style={{ opacity: team.active ? 1 : 0.5 }}>
                                 <PauseComponent team={team} key={index} />
                             </SwiperSlide>
