@@ -10,7 +10,8 @@ import TeamAdminListItem from './TeamAdminListItem';
 
 const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     teams,
-    matchplanCreated,
+    matchPlanCreated,
+    finalPlanCreated,
     setModalClosed,
     getTeams,
     modalClosed
@@ -98,7 +99,8 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
                         <TeamAdminListItem
                             key={team.id}
                             team={team}
-                            matchplanCreated={matchplanCreated}
+                            matchPlanCreated={matchPlanCreated}
+                            finalPlanCreated={finalPlanCreated}
                             onToggleFinalParticipation={handleToggleFinalParticipation}
                             onToggleActive={handleToggleActive}
                             onOpenChangeModal={handleOpenChangeModal}

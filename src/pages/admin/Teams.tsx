@@ -21,6 +21,7 @@ import "./Final.css";
 const Teams: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [matchplanCreated, setMatchplanCreated] = useState<boolean>(false);
+    const [finalplanCreated, setFinalplanCreated] = useState<boolean>(false);
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -46,11 +47,20 @@ const Teams: React.FC = () => {
             window.location.assign('/admin/login');
         }
         const matchplan = PublicScheduleService.isMatchPlanCreated();
+        const finalplan = PublicScheduleService.isFinalPlanCreated();
 
         getFinalTeams();
 
         matchplan.then((response) => {
             setMatchplanCreated(response);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+
+        finalplan.then((response) => {
+            setFinalplanCreated(response);
         }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
@@ -72,7 +82,8 @@ const Teams: React.FC = () => {
 
                 <TeamAdminContainer
                     teams={teams}
-                    matchplanCreated={matchplanCreated}
+                    matchPlanCreated={matchplanCreated}
+                    finalPlanCreated={finalplanCreated}
                     setModalClosed={setModalClosed}
                     modalClosed={modalClosed}
                     getTeams={getFinalTeams}
