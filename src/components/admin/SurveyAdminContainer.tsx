@@ -5,9 +5,10 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyAdminContainerProps } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
+import SurveyAnswerModal from '../modals/SurveyAnswerModal';
 import SurveyChangeModal from '../modals/SurveyChangeModal';
 import SurveyDeleteModal from '../modals/SurveyDeleteModal';
-import SurveyModal from '../modals/SurveyModal';
+import SurveyStatisticsModal from '../modals/SurveyStatisticsModal';
 import SurveyAdminListItem from './SurveyAdminListItem';
 
 const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
@@ -27,7 +28,8 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
     });
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [showResultsModal, setShowResultsModal] = useState(false);
+    const [showAnswerModal, setShowAnswerModal] = useState(false);
+    const [showStatisticsModal, setShowStatisticsModal] = useState(false);
     const [error, setError] = useState('');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -74,9 +76,9 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
         }
     }
 
-    const handleOpenResultsModal = (question: QuestionReturnDTO) => {
+    const handleOpenAnswerModal = (question: QuestionReturnDTO) => {
         setSelectedQuestion(question);
-        setShowResultsModal(true);
+        setShowAnswerModal(true);
     };
 
     const handleOpenChangeModal = (question: QuestionReturnDTO) => {
@@ -89,12 +91,15 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
         setShowDeleteModal(true);
     };
 
+    const handleOpenStatisticsModal = (question: QuestionReturnDTO) => {
+        setSelectedQuestion(question);
+        setShowStatisticsModal(true);
+    };
+
 
 
     return (
         <>
-
-
             <h3>Aktuelle Abstimmungen</h3>
             <div className="currentSurveyContainer">
                 {surveys.map(survey => (
@@ -103,7 +108,8 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                         survey={survey}
                         onToggleVisibility={handleToggleVisibility}
                         onToggleActive={handleToggleActive}
-                        onOpenResultsModal={handleOpenResultsModal}
+                        onOpenAnswerModal={handleOpenAnswerModal}
+                        onOpenStatisticsModal={handleOpenStatisticsModal}
                         onOpenChangeModal={handleOpenChangeModal}
                         onOpenDeleteModal={handleOpenDeleteModal}
                     />
@@ -126,10 +132,18 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                 }}
                 question={selectedQuestion}
             />
-            <SurveyModal
-                showModal={showResultsModal}
+            <SurveyAnswerModal
+                showModal={showAnswerModal}
                 closeModal={(result) => {
-                    setShowResultsModal(false);
+                    setShowAnswerModal(false);
+                    handleModalClose(result);
+                }}
+                question={selectedQuestion}
+            />
+            <SurveyStatisticsModal
+                showModal={showStatisticsModal}
+                closeModal={(result) => {
+                    setShowStatisticsModal(false);
                     handleModalClose(result);
                 }}
                 question={selectedQuestion}

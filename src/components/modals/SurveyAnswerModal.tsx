@@ -8,7 +8,7 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 
-const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
+const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
     const [totalAnswers, setTotalAnswers] = useState<number>(0);
@@ -107,4 +107,4 @@ const SurveyModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyMod
     );
 };
 
-export default SurveyModal;
+export default SurveyAnswerModal;

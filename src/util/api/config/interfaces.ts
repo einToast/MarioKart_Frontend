@@ -1,3 +1,5 @@
+import React from "react";
+
 import {
   BreakReturnDTO,
   GameReturnDTO,
@@ -73,14 +75,16 @@ export interface SurveyAdminListItemProps {
   survey: QuestionReturnDTO;
   onToggleVisibility: (id: number) => void;
   onToggleActive: (id: number) => void;
-  onOpenResultsModal: (survey: QuestionReturnDTO) => void;
+  onOpenAnswerModal: (survey: QuestionReturnDTO) => void;
+  onOpenStatisticsModal: (survey: QuestionReturnDTO) => void;
   onOpenChangeModal: (survey: QuestionReturnDTO) => void;
   onOpenDeleteModal: (survey: QuestionReturnDTO) => void;
 }
 
 export interface TeamAdminListItemProps {
   team: TeamReturnDTO;
-  matchplanCreated: boolean;
+  matchPlanCreated: boolean;
+  finalPlanCreated: boolean;
   onToggleFinalParticipation: (team: TeamReturnDTO) => void;
   onToggleActive: (team: TeamReturnDTO) => void;
   onOpenChangeModal: (team: TeamReturnDTO) => void;
@@ -95,7 +99,8 @@ export interface SurveyAdminContainerProps {
 
 export interface TeamAdminContainerProps {
   teams: TeamReturnDTO[];
-  matchplanCreated: boolean;
+  matchPlanCreated: boolean;
+  finalPlanCreated: boolean;
   setModalClosed: (modalClosed: boolean) => void;
   getTeams: () => void;
   modalClosed: boolean;
@@ -103,4 +108,9 @@ export interface TeamAdminContainerProps {
 
 export interface TeamGraphProps {
   teams: TeamReturnDTO[];
+}
+
+export interface QuestionGraphProps {
+  question: QuestionReturnDTO;
+  answers: number[];
 }

@@ -1,8 +1,8 @@
 import { IonIcon } from "@ionic/react";
 import {
+    barChartOutline,
     chatboxEllipsesOutline,
     chatboxOutline,
-    createOutline,
     eyeOffOutline,
     eyeOutline,
     statsChartOutline,
@@ -10,12 +10,14 @@ import {
 } from "ionicons/icons";
 import React from 'react';
 import { SurveyAdminListItemProps } from "../../util/api/config/interfaces";
+import { QuestionType } from "../../util/service";
 
 const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
     survey,
     onToggleVisibility,
     onToggleActive,
-    onOpenResultsModal,
+    onOpenAnswerModal,
+    onOpenStatisticsModal,
     onOpenChangeModal,
     onOpenDeleteModal
 }) => {
@@ -27,28 +29,30 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                     slot="end"
                     icon={statsChartOutline}
                     title="Ergebnisse anzeigen"
-                    onClick={() => onOpenResultsModal(survey)}
+                    onClick={() => onOpenAnswerModal(survey)}
                     style={{ cursor: 'pointer', marginRight: '10px' }}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            onOpenResultsModal(survey);
+                            onOpenAnswerModal(survey);
                         }
                     }}
                 />
-                <IonIcon
-                    slot="end"
-                    icon={createOutline}
-                    title="Umfrage bearbeiten"
-                    onClick={() => onOpenChangeModal(survey)}
-                    style={{ cursor: 'pointer' }}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            onOpenChangeModal(survey);
-                        }
-                    }}
-                />
+                {survey.questionType !== QuestionType.FREE_TEXT && (
+                    <IonIcon
+                        slot="end"
+                        icon={barChartOutline}
+                        title="Graph anzeigen"
+                        onClick={() => onOpenStatisticsModal(survey)}
+                        style={{ cursor: 'pointer', marginRight: '10px' }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                onOpenStatisticsModal(survey);
+                            }
+                        }}
+                    />
+                )}
                 <IonIcon
                     slot="end"
                     icon={survey.visible ? eyeOutline : eyeOffOutline}
