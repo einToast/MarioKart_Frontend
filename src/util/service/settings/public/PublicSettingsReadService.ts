@@ -14,3 +14,8 @@ export const getTournamentOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
     return tournament.tournamentOpen ?? false;
 }
+
+export const getMaxGamesCount = async (): Promise<number> => {
+    const tournament = await getSettings();
+    return tournament.maxGamesCount ?? 0;
+}

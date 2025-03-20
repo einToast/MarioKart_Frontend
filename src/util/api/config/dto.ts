@@ -73,6 +73,7 @@ export interface BreakInputDTO {
 export interface TournamentDTO {
     tournamentOpen?: boolean;
     registrationOpen?: boolean;
+    maxGamesCount?: number;
 }
 
 export interface QuestionInputDTO {

@@ -11,13 +11,14 @@ import './Tab2.css';
 const Tab2: React.FC = () => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [userCharacter, setUserCharacter] = useState<string | null>(null);
+    const [maxNumberOfGames, setMaxNumberOfGames] = useState<number>(0);
+    const [isRoundsUnplayedLessThanTwo, setIsRoundsUnplayedLessThanTwo] = useState<boolean>(false);
+    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
+    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
+
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-    const [roundsToPlay, setRoundsToPlay] = useState<number>(8);
-    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
-    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     const user = PublicUserService.getUser();
     const location = useLocation();
@@ -29,8 +30,10 @@ const Tab2: React.FC = () => {
 
         const matchplan = PublicScheduleService.isMatchPlanCreated();
         const finalplan = PublicScheduleService.isFinalPlanCreated();
-        const rounds = PublicScheduleService.getNumberOfRoundsUnplayed();
+        const isRoundsLessTwo = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
+        const maxGames = PublicSettingsService.getMaxGamesCount();
 
+        //TODO: catch error everywhere
         teamsRanked.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -41,14 +44,34 @@ const Tab2: React.FC = () => {
 
         matchplan.then(value => {
             setMatchPlanCreated(value);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
         })
 
         finalplan.then(value => {
             setFinalPlanCreated(value);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
         })
 
-        rounds.then(value => {
-            setRoundsToPlay(value);
+        isRoundsLessTwo.then(value => {
+            setIsRoundsUnplayedLessThanTwo(value);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        })
+
+        maxGames.then(value => {
+            setMaxNumberOfGames(value);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
         })
     }
 
@@ -60,7 +83,6 @@ const Tab2: React.FC = () => {
     };
 
     useEffect(() => {
-        setUserCharacter(user?.character ?? null);
 
         getRanking();
 
@@ -79,13 +101,13 @@ const Tab2: React.FC = () => {
     }, [location]);
 
     useEffect(() => {
-        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+        if (matchPlanCreated && !finalPlanCreated && isRoundsUnplayedLessThanTwo) {
             changeLocation();
         }
-    }, [matchPlanCreated, finalPlanCreated, roundsToPlay]);
+    }, [matchPlanCreated, finalPlanCreated, isRoundsUnplayedLessThanTwo]);
 
     const changeLocation = () => {
-        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+        if (matchPlanCreated && !finalPlanCreated && isRoundsUnplayedLessThanTwo) {
             setError("Die Statistiken können momentan nicht angezeigt werden.");
             setToastColor(errorToastColor);
             setShowToast(true);
@@ -111,7 +133,7 @@ const Tab2: React.FC = () => {
                     {teams ? (
                         teams
                             .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character.characterName ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
                                         <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
                                             className={"iconTeam"} />
@@ -122,8 +144,7 @@ const Tab2: React.FC = () => {
                                         {finalPlanCreated ? (
                                             <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         ) : (
-                                            // TODO: update to show number of games played
-                                            <p className={"punkte"}>{team.finalPoints} Punkte</p>
+                                            <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>
                                         )}
 
                                     </div>
