@@ -1,4 +1,4 @@
-import { IonAccordionGroup, IonContent, IonPage } from '@ionic/react';
+import { IonAccordionGroup, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
@@ -61,6 +61,13 @@ const Survey: React.FC = () => {
         setOpenAccordions([])
     }
 
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            getQuestions();
+            event.detail.complete();
+        }, 500);
+    };
+
 
     useEffect(() => {
         getQuestions();
@@ -79,6 +86,9 @@ const Survey: React.FC = () => {
         <IonPage>
             <Header></Header>
             <IonContent fullscreen>
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent refreshingSpinner="circles" />
+                </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Abstimmungen
