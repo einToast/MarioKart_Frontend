@@ -12,7 +12,8 @@ import { TeamAdminListItemProps } from "../../util/api/config/interfaces";
 
 const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
     team,
-    matchplanCreated,
+    matchPlanCreated,
+    finalPlanCreated,
     onToggleFinalParticipation,
     onToggleActive,
     onOpenChangeModal,
@@ -40,21 +41,26 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
                     style={{ cursor: "pointer" }}
                     onClick={() => onOpenChangeModal(team)}
                 />
-                <IonIcon
-                    slot="end"
-                    icon={team.finalReady ? removeCircleOutline : addCircleOutline}
-                    title={team.finalReady ? "Team nicht am Finale teilnehmen lassen" : "Team am Finale teilnehmen lassen"}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => onToggleFinalParticipation(team)}
-                />
-                <IonIcon
-                    slot="end"
-                    icon={team.active ? eyeOutline : eyeOffOutline}
-                    title={team.active ? "Team deaktivieren" : "Team aktivieren"}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => onToggleActive(team)}
-                />
-                {!matchplanCreated && (
+                {!finalPlanCreated && (
+                    <>
+                        <IonIcon
+                            slot="end"
+                            icon={team.finalReady ? removeCircleOutline : addCircleOutline}
+                            title={team.finalReady ? "Team nicht am Finale teilnehmen lassen" : "Team am Finale teilnehmen lassen"}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => onToggleFinalParticipation(team)}
+                        />
+                        <IonIcon
+                            slot="end"
+                            icon={team.active ? eyeOutline : eyeOffOutline}
+                            title={team.active ? "Team deaktivieren" : "Team aktivieren"}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => onToggleActive(team)}
+                        />
+                    </>
+                )}
+
+                {!matchPlanCreated && (
                     <IonIcon
                         slot="end"
                         icon={trashOutline}

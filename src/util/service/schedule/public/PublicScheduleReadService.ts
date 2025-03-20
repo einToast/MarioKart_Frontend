@@ -22,3 +22,8 @@ export const isNumberOfRoundsUnplayedLessThanTwo = async (): Promise<boolean> =>
     return rounds < 2;
 }
 
+export const isNumberOfRoundsUnplayedZero = async (): Promise<boolean> => {
+    const rounds = await getNumberOfRoundsUnplayed();
+    return rounds === 0;
+}
+
