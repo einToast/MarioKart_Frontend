@@ -8,10 +8,10 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     title,
     user,
     viewType,
-    noGames = false,
     teamsNotInRound
 }) => {
-    if (noGames) {
+
+    if (!round) {
         return (
             <div>
                 <div className="timeContainer">
@@ -20,10 +20,6 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
                 <p>Keine Spiele gefunden.</p>
             </div>
         );
-    }
-
-    if (!round) {
-        return null;
     }
 
     const isBreak = 'breakEnded' in round;

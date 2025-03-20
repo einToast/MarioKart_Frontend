@@ -9,7 +9,6 @@ export const useRoundData = (): UseRoundDataReturn => {
     const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
     const [teamsNotInCurrentRound, setTeamsNotInCurrentRound] = useState<TeamReturnDTO[]>([]);
     const [teamsNotInNextRound, setTeamsNotInNextRound] = useState<TeamReturnDTO[]>([]);
-    const [noGames, setNoGames] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
     const history = useHistory();
@@ -27,9 +26,6 @@ export const useRoundData = (): UseRoundDataReturn => {
                     setTeamsNotInCurrentRound(await PublicRegistrationService.getTeamsNotInRound(formattedCurrentRound.id));
                 }
                 setCurrentRound(formattedCurrentRound);
-                setNoGames(false);
-            } else {
-                setNoGames(true);
             }
 
 
@@ -76,7 +72,6 @@ export const useRoundData = (): UseRoundDataReturn => {
         nextRound,
         teamsNotInCurrentRound,
         teamsNotInNextRound,
-        noGames,
         error,
         refreshRounds
     };

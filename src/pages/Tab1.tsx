@@ -27,7 +27,6 @@ const Tab1: React.FC = () => {
         nextRound,
         teamsNotInCurrentRound,
         teamsNotInNextRound,
-        noGames,
         error,
         refreshRounds
     } = useRoundData();
@@ -84,7 +83,6 @@ const Tab1: React.FC = () => {
                         title={selectedOption === 'Alle Spiele' ? 'Aktuelle Spiele' : 'Aktuelles Spiel'}
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
-                        noGames={noGames}
                         teamsNotInRound={teamsNotInCurrentRound}
                     />
 
@@ -93,7 +91,6 @@ const Tab1: React.FC = () => {
                         title={selectedOption === 'Alle Spiele' ? 'Nächste Spiele' : 'Nächstes Spiel'}
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
-                        noGames={noGames}
                         teamsNotInRound={teamsNotInNextRound}
                     />
                 </div>
