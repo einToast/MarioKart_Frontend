@@ -50,8 +50,9 @@ import { PublicScheduleService, PublicUserService } from './util/service';
 setupIonicReact();
 
 const App: React.FC = () => {
+    // TODO: Props in Tabs to tell it App.tsx
     const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [gamesToPlay, setGamesToPlay] = useState<number>(0);
+    const [isRoundsUnplayedLessThanTwo, setIsRoundsUnplayedLessThanTwo] = useState<boolean>(false);
     const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
@@ -62,8 +63,7 @@ const App: React.FC = () => {
         }
         const matchplan = PublicScheduleService.isMatchPlanCreated();
         const finalplan = PublicScheduleService.isFinalPlanCreated();
-        // TODO: update to 2Roundleft
-        const rounds = PublicScheduleService.getNumberOfRoundsUnplayed();
+        const rounds = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
         matchplan.then(value => {
             setMatchPlanCreated(value);
         })
@@ -73,7 +73,7 @@ const App: React.FC = () => {
         })
 
         rounds.then(value => {
-            setGamesToPlay(value);
+            setIsRoundsUnplayedLessThanTwo(value) 
         })
 
     }, []);
@@ -113,7 +113,7 @@ const App: React.FC = () => {
                                 <IonTabButton tab="tab1" href="/tab1">
                                     <IonIcon aria-hidden="true" icon={homeOutline} title="Spielplan" />
                                 </IonTabButton>
-                                {(!matchPlanCreated || finalPlanCreated || gamesToPlay >= 2) && (
+                                {(!matchPlanCreated || finalPlanCreated || !isRoundsUnplayedLessThanTwo) && (
                                     <IonTabButton tab="tab2" href="/tab2">
                                         <IonIcon aria-hidden="true" icon={barChartOutline} title="Rangliste" />
                                     </IonTabButton>

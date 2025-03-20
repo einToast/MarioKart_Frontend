@@ -17,3 +17,8 @@ export const isFinalPlanCreated = async (): Promise<boolean> => {
     return PublicScheduleApi.isFinalPlanCreated();
 }
 
+export const isNumberOfRoundsUnplayedLessThanTwo = async (): Promise<boolean> => {
+    const rounds = await getNumberOfRoundsUnplayed();
+    return rounds < 2;
+}
+
