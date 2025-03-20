@@ -18,6 +18,8 @@ const Dashboard: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isRoundsUnplayedZero, setIsRoundsUnplayedZero] = useState<boolean>(false);
+
     const [error, setError] = useState<string>('Error');
     const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
@@ -39,6 +41,7 @@ const Dashboard: React.FC = () => {
 
         const match = PublicScheduleService.isMatchPlanCreated();
         const final = PublicScheduleService.isFinalPlanCreated();
+        const isRoundsZero = PublicScheduleService.isNumberOfRoundsUnplayedZero();
 
         match.then((result) => {
             setIsMatchPlan(result);
@@ -50,6 +53,14 @@ const Dashboard: React.FC = () => {
 
         final.then((result) => {
             setIsFinalPlan(result);
+        }).catch((error) => {
+            setError(error.message);
+            setToastColor(errorToastColor);
+            setShowToast(true);
+        });
+
+        isRoundsZero.then((result) => {
+            setIsRoundsUnplayedZero(result);
         }).catch((error) => {
             setError(error.message);
             setToastColor(errorToastColor);
@@ -97,10 +108,14 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {isFinalPlan ?
+                        {isMatchPlan && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
                                 <div>
-                                    <p>Endergebnis</p>
+                                    {isFinalPlan ?
+                                        <p>Endergebnis</p>
+                                        :
+                                        <p>Zwischenergebnis</p>
+                                    }
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>

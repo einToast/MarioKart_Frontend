@@ -25,7 +25,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     // }, []);
 
     const sortedTeamsData = React.useMemo(() => {
-        const sorted = [...teams].sort((a, b) => b.finalPoints - a.finalPoints);
+        const sorted = [...teams].sort((a, b) => b.groupPoints - a.groupPoints);
 
         // Gruppiere Teams nach Punktzahl und bestimme ihre Platzierung
         const pointGroups: number[][] = [];
@@ -36,7 +36,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
         sorted.forEach((team, index) => {
             if (index === 0) return;
-            if (team.finalPoints === sorted[currentGroup[0]].finalPoints) {
+            if (team.groupPoints === sorted[currentGroup[0]].groupPoints) {
                 currentGroup.push(index);
                 ranks[index] = currentRank;
             } else {
@@ -49,12 +49,12 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         pointGroups.push(currentGroup);
 
         // Überprüfe, ob der erste Platz alleine ist
-        const isFirstPlaceAlone = sorted.length === 0 || sorted[1].finalPoints < sorted[0].finalPoints;
+        const isFirstPlaceAlone = sorted.length === 0 || sorted[1].groupPoints < sorted[0].groupPoints;
 
         return {
             teams: sorted,
             initialData: Array(sorted.length).fill(0),
-            finalData: sorted.map(team => team.finalPoints),
+            finalData: sorted.map(team => team.groupPoints),
             icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
             labels: sorted.map(team => team.teamName),
             pointGroups: [[0], ...pointGroups],
