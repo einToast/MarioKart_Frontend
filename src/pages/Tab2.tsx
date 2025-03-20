@@ -7,6 +7,7 @@ import { errorToastColor } from "../util/api/config/constants";
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { PublicRegistrationService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../util/service";
 import './Tab2.css';
+import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 // TODO: when last round use Props to tell it App.tsx
 const Tab2: React.FC = () => {
 
@@ -129,6 +130,11 @@ const Tab2: React.FC = () => {
                         Rangliste
                     </LinearGradient>
                 </h1>
+                { finalPlanCreated ? (
+                    <StaticTeamGraph teams={teams} />
+                ) : (
+                    <></>
+                )}
                 <div className={"flexContainer"}>
                     {teams ? (
                         teams

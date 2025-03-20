@@ -13,14 +13,14 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
     // Memoize sortierte Teams und Daten
     const sortedTeamsData = React.useMemo(() => {
-        const sorted = [...teams].sort((a, b) => b.finalPoints - a.finalPoints);
+        const sorted = [...teams].sort((a, b) => b.groupPoints - a.groupPoints);
 
         // Neue Ranks-Berechnung
         const ranks: number[] = [];
         sorted.forEach((team, index) => {
             if (index === 0) {
                 ranks[index] = 1;
-            } else if (sorted[index - 1].finalPoints === team.finalPoints) {
+            } else if (sorted[index - 1].groupPoints === team.groupPoints) {
                 ranks[index] = ranks[index - 1];
             } else {
                 ranks[index] = index + 1;
@@ -29,7 +29,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
         return {
             teams: sorted,
-            finalData: sorted.map(team => team.finalPoints),
+            finalData: sorted.map(team => team.groupPoints),
             icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
             labels: sorted.map(team => team.teamName),
             ranks: ranks
