@@ -58,7 +58,7 @@ const App: React.FC = () => {
 
     useEffect(() => {
         const user = PublicUserService.getUser();
-        if (user?.name) {
+        if (user?.teamId) {
             setCurrentUser(user);
         }
         const matchplan = PublicScheduleService.isMatchPlanCreated();
@@ -83,7 +83,7 @@ const App: React.FC = () => {
             <WebSocketProvider>
                 <IonReactRouter>
                     {/* TODO: update with standard routes */}
-                    {currentUser?.name ? (
+                    {currentUser?.teamId ? (
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
                                 <Route exact path="/tab1" component={Tab1} />

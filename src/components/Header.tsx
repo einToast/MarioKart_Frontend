@@ -46,7 +46,7 @@ const Header: React.FC = () => {
                 }}
             >
                 <IonAvatar>
-                    {user && user.character && characters.includes(user.character) &&
+                    {user && user.character &&
                         <img src={`/characters/${user.character}.png`} alt={user.character}
                             className="iconTeam" />
                     }

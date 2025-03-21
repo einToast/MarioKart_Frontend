@@ -19,7 +19,7 @@ import './RegisterTeam.css';
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [teamName, setTeamName] = useState('');
+    const [teamId, setTeamId] = useState<string>("-1");
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
     const [isError, setIsError] = useState<boolean>(true);
@@ -28,12 +28,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     const handleLogin = () => {
         // TODO: refactor this
-        const selectedTeam = teams.find(team => team.teamName === teamName);
+        const selectedTeam = teams.find(team => team.id === Number(teamId));
         if (selectedTeam) {
             const user: User = {
+                character: selectedTeam.character.characterName,
+                teamId: selectedTeam.id,
                 name: selectedTeam.teamName,
-                character: selectedTeam.character.characterName || '',
-                teamId: selectedTeam.id
             };
             PublicUserService.setUser(user);
             props.setUser(user);
@@ -86,32 +86,28 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <div className="loginContainer">
                         {/* TODO: teamId instead of teamName */}
                         <div className="borderContainer selectCharacter">
-                            <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value="">Select Team</option>
+                            <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
+                                <option value={-1}>Select Team</option>
                                 {teams && teams.map((team) => (
-                                    <option key={team.teamName}
-                                        value={team.teamName}
+                                    <option key={team.id}
+                                        value={team.id}
                                         style={{ backgroundImage: `url(/characters/${team.character.characterName}.png)` }}
                                     >
                                         {team.teamName}
                                     </option>
                                 ))}
                             </select>
-                            {teamName && (
+                            {teamId && (
                                 <div className="selected-character">
-                                    {/* TODO: what are characters */}
-                                    {[teams.find(team => team.teamName === teamName)?.character.characterName].map((character) => (
-                                        character && characters.includes(character) &&
+                                    {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
                                             src={`/characters/${character}.png`}
                                             alt={`${character} character`}
                                             key={character}
                                         />
-                                    ))
-                                    }
+                                    ))}
                                 </div>
-                            )
-                            }
+                            )}
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
                             tabIndex={0}
@@ -122,7 +118,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             }}
                         >
                             <div>
-                                <p>Zum Team {teamName} anmelden</p>
+                                <p>Zum Team {teams.find(team => team.id === Number(teamId))?.teamName} anmelden</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>

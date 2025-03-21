@@ -9,9 +9,9 @@ import {
 } from "./dto";
 
 export interface User {
-  name: string | null;
   character: string | null;
-  teamId?: number;
+  teamId: number;
+  name: string | null;
 }
 
 export interface LoginProps {
