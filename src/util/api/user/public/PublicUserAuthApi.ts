@@ -1,9 +1,8 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { API_BASE_URL } from "../../config/constants";
 import { AuthenticationRequestDTO, AuthenticationResponseDTO } from '../../config/dto';
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'USER')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'USER');
 
 export const login = async (request: AuthenticationRequestDTO): Promise<AuthenticationResponseDTO> => {
     try {
