@@ -1,3 +1,3 @@
-export * from './PublicSurveyCreateAnswerApi';
+export * from './PublicSurveyCreateApi';
 export * from './PublicSurveyReadApi';
 
