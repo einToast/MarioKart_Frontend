@@ -42,18 +42,3 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
         throw error;
     }
 };
-
-export const addBreak = async (breakData: BreakInputDTO): Promise<BreakReturnDTO> => {
-    try {
-        const response = await apiClient.post<BreakReturnDTO>(`${BASE_URL}/break`, breakData);
-        return response.data;
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
-            }
-            throw new Error('Pause konnte nicht erstellt werden');
-        }
-        throw error;
-    }
-};

@@ -8,7 +8,3 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
 export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
     return await AdminScheduleApi.createFinalPlan();
 }
-// TODO: Check if even needed
-export const addBreak = async (breakTime: BreakInputDTO): Promise<BreakReturnDTO> => {
-    return await AdminScheduleApi.addBreak(breakTime);
-}
