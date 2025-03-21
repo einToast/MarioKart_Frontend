@@ -3,6 +3,7 @@ import {
     barChartOutline,
     chatboxEllipsesOutline,
     chatboxOutline,
+    createOutline,
     eyeOffOutline,
     eyeOutline,
     statsChartOutline,
@@ -53,6 +54,18 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                         }}
                     />
                 )}
+                <IonIcon
+                    slot="end"
+                    icon={createOutline}
+                    onClick={() => onOpenChangeModal(survey)}
+                    style={{ cursor: 'pointer' }}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            onOpenChangeModal(survey);
+                        }
+                    }}
+                />
                 <IonIcon
                     slot="end"
                     icon={survey.visible ? eyeOutline : eyeOffOutline}

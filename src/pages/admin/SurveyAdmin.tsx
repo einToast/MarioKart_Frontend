@@ -1,4 +1,4 @@
-import { IonContent, IonIcon, IonPage, IonToast } from "@ionic/react";
+import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import {
     addCircleOutline,
     arrowBackOutline
@@ -8,7 +8,7 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import SurveyAdminContainer from "../../components/admin/SurveyAdminContainer";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import Toast from "../../components/Toast";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from "../../util/service";
@@ -16,11 +16,13 @@ import "./SurveyAdmin.css";
 
 const SurveyAdmin: React.FC = () => {
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
-    const [error, setError] = useState<string | null>(null);
-    const [toastColor, setToastColor] = useState<string | null>(null);
-    const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
+
+
+    const [error, setError] = useState<string>("Error");
+    const [isError, setIsError] = useState<boolean>(true);
+    const [showToast, setShowToast] = useState(false);
 
     const user = PublicUserService.getUser();
     const history = useHistory();
@@ -33,7 +35,6 @@ const SurveyAdmin: React.FC = () => {
             setSurveys(questions);
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -42,15 +43,15 @@ const SurveyAdmin: React.FC = () => {
         setModalClosed(prev => !prev);
         if (result.surveyCreated) {
             setError('Umfrage erfolgreich erstellt');
-            setToastColor(successToastColor);
+            setIsError(false);
             setShowToast(true);
         } else if (result.surveyChanged) {
             setError('Umfrage erfolgreich geändert');
-            setToastColor(successToastColor);
+            setIsError(false);
             setShowToast(true);
         } else if (result.surveyDeleted) {
             setError('Umfrage erfolgreich gelöscht');
-            setToastColor(successToastColor);
+            setIsError(false);
             setShowToast(true);
         }
     };
@@ -109,16 +110,11 @@ const SurveyAdmin: React.FC = () => {
                     }}
                 />
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
-                message={error ?? undefined}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonPage>
     );

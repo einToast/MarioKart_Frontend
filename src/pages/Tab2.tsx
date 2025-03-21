@@ -1,13 +1,14 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
-import { errorToastColor } from "../util/api/config/constants";
+import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { PublicRegistrationService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../util/service";
 import './Tab2.css';
-import StaticTeamGraph from '../components/graph/StaticTeamGraph';
+
 // TODO: when last round use Props to tell it App.tsx
 const Tab2: React.FC = () => {
 
@@ -18,7 +19,6 @@ const Tab2: React.FC = () => {
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const user = PublicUserService.getUser();
@@ -39,7 +39,6 @@ const Tab2: React.FC = () => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -47,7 +46,6 @@ const Tab2: React.FC = () => {
             setMatchPlanCreated(value);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         })
 
@@ -55,7 +53,6 @@ const Tab2: React.FC = () => {
             setFinalPlanCreated(value);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         })
 
@@ -63,7 +60,6 @@ const Tab2: React.FC = () => {
             setIsRoundsUnplayedLessThanTwo(value);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         })
 
@@ -71,7 +67,6 @@ const Tab2: React.FC = () => {
             setMaxNumberOfGames(value);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         })
     }
@@ -95,7 +90,6 @@ const Tab2: React.FC = () => {
             }
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -110,7 +104,6 @@ const Tab2: React.FC = () => {
     const changeLocation = () => {
         if (matchPlanCreated && !finalPlanCreated && isRoundsUnplayedLessThanTwo) {
             setError("Die Statistiken können momentan nicht angezeigt werden.");
-            setToastColor(errorToastColor);
             setShowToast(true);
             history.push('/tab1');
         }
@@ -130,7 +123,7 @@ const Tab2: React.FC = () => {
                         Rangliste
                     </LinearGradient>
                 </h1>
-                { finalPlanCreated ? (
+                {finalPlanCreated ? (
                     <StaticTeamGraph teams={teams} />
                 ) : (
                     <></>
@@ -161,16 +154,11 @@ const Tab2: React.FC = () => {
                     )}
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     );

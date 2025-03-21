@@ -1,7 +1,8 @@
 import {
     IonAccordion,
-    IonButton, IonIcon,
-    IonItem, IonToast
+    IonButton,
+    IonIcon,
+    IonItem,
 } from "@ionic/react";
 import {
     checkmarkCircleOutline,
@@ -10,17 +11,16 @@ import {
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { PublicSurveyService, PublicUserService } from "../../util/service";
+import Toast from '../Toast';
 
 const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion, toggleAccordion }) => {
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
     const [votes, setVotes] = useState<number[]>([]);
     const [votedId, setVotedId] = useState<number[]>([-1]);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
     const user = PublicUserService.getUser();
@@ -45,8 +45,6 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
         } else {
             handleVoteStatus(-1);
         }
-
-
     }
 
     const handleSaveVote = async () => {
@@ -60,7 +58,6 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -88,7 +85,6 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
             const results = await PublicSurveyService.getStatisticsOfQuestion(checkBoxQuestion.id);
             setResults(results);
         }
-
     }
 
     return (
@@ -155,16 +151,11 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
                     </IonButton>
                 )}
             </div>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonAccordion>
     );

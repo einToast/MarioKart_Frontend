@@ -2,8 +2,7 @@ import {
     IonButton,
     IonContent,
     IonIcon,
-    IonPage,
-    IonToast
+    IonPage
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
@@ -13,12 +12,11 @@ import '../RegisterTeam.css';
 
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import TournamentModal from "../../components/modals/TournamentModal";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import Toast from "../../components/Toast";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
 import { AdminScheduleService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
-
 
 const Control: React.FC = () => {
 
@@ -30,10 +28,11 @@ const Control: React.FC = () => {
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
+
+    const [error, setError] = useState<string>('Error');
+    const [isError, setIsError] = useState<boolean>(true);
+    const [showToast, setShowToast] = useState(false);
 
     const user = PublicUserService.getUser();
     const history = useHistory();
@@ -51,7 +50,7 @@ const Control: React.FC = () => {
             setShowBreakModal(true);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }
@@ -62,7 +61,7 @@ const Control: React.FC = () => {
             return;
         }
 
-        setToastColor(successToastColor);
+        setIsError(false);
         switch (changeT) {
             case ChangeType.TOURNAMENT:
                 // TODO: better way to handle this
@@ -88,7 +87,7 @@ const Control: React.FC = () => {
                 break;
             default:
                 setError('Error');
-                setToastColor(errorToastColor);
+                setIsError(true);
                 break;
         }
         setShowToast(true);
@@ -98,8 +97,8 @@ const Control: React.FC = () => {
         setModalClosed(prev => !prev);
 
         if (changeBreak.breakChanged) {
-            setToastColor(successToastColor);
             setError('Die Pause wurde geändert');
+            setIsError(false);
             setShowToast(true);
         }
     }
@@ -118,7 +117,7 @@ const Control: React.FC = () => {
             setIsMatchPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
 
@@ -126,7 +125,7 @@ const Control: React.FC = () => {
             setIsFinalPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
 
@@ -134,7 +133,7 @@ const Control: React.FC = () => {
             setIsRegistrationOpen(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
 
@@ -142,7 +141,7 @@ const Control: React.FC = () => {
             setIsTournamentOpen(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
 
@@ -302,16 +301,11 @@ const Control: React.FC = () => {
                     aBreak={aBreak}
                 />
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonPage>
     );

@@ -2,24 +2,25 @@ import {
     IonAccordion,
     IonButton,
     IonIcon,
-    IonItem, IonToast
+    IonItem
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import "../../pages/admin/Points.css";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
 import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
 import { AdminScheduleService, PublicUserService } from "../../util/service";
 import { convertUmlauts } from "../../util/service/util";
+import Toast from "../Toast";
 
 const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
     const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team.id === game.teams[0].id)?.points ?? 0);
     const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team.id === game.teams[1].id)?.points ?? 0);
     const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team.id === game.teams[2].id)?.points ?? 0);
     const [pointsFour, setPointsFour] = useState<number>(game.points?.find(point => point.team.id === game.teams[3].id)?.points ?? 0);
+
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
     const user = PublicUserService.getUser();
 
@@ -44,14 +45,14 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
             const newPoints = await AdminScheduleService.saveGame(roundId, game);
             if (newPoints) {
                 setError('Spiel erfolgreich gespeichert');
-                setToastColor(successToastColor)
+                setIsError(false);
                 setShowToast(true);
             } else {
                 throw new TypeError('Spiel konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         }
 
@@ -112,16 +113,11 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                     </div>
                 </IonButton>
             </div>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonAccordion>
     );

@@ -1,7 +1,8 @@
 import {
     IonAccordion,
-    IonButton, IonIcon,
-    IonItem, IonToast
+    IonButton,
+    IonIcon,
+    IonItem,
 } from "@ionic/react";
 import {
     checkmarkCircleOutline,
@@ -10,18 +11,16 @@ import {
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { PublicSurveyService, PublicUserService } from "../../util/service";
-
+import Toast from '../Toast';
 
 const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamQuestion, toggleAccordion }) => {
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
     const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
     const user = PublicUserService.getUser();
@@ -49,7 +48,6 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -143,16 +141,11 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
                     </IonButton>
                 )}
             </div>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonAccordion>
     );

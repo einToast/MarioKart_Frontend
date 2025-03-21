@@ -2,19 +2,17 @@ import {
     IonButton,
     IonContent,
     IonIcon,
-    IonPage,
-    IonToast
+    IonPage
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import Toast from "../components/Toast";
 import characters from "../util/api/config/characters";
-import { errorToastColor } from "../util/api/config/constants";
 import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicRegistrationService, PublicSettingsService, PublicUserService } from "../util/service";
 import './RegisterTeam.css';
-
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -22,7 +20,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const location = useLocation();
@@ -40,7 +37,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
     };
@@ -55,7 +51,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -65,7 +60,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
         getCharacterNames();
@@ -90,7 +84,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
             getCharacterNames();
         }
@@ -172,16 +165,11 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     </a>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                // className={ user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     )

@@ -3,13 +3,12 @@ import {
     IonContent,
     IonIcon,
     IonPage,
-    IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import { errorToastColor } from "../../util/api/config/constants";
+import Toast from '../../components/Toast';
 import { PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 
@@ -17,12 +16,11 @@ const Login: React.FC = () => {
     const user = PublicUserService.getUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const history = useHistory();
-
 
     const handleLogin = async () => {
         try {
@@ -32,7 +30,6 @@ const Login: React.FC = () => {
             history.push('/admin/dashboard');
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     };
@@ -45,6 +42,7 @@ const Login: React.FC = () => {
         }
         fetchData();
     }, []);
+
 
     return (
         <IonPage>
@@ -119,19 +117,13 @@ const Login: React.FC = () => {
                         Zurück zum Team Login
                     </a>
                 </div>
-                <IonToast
-                    isOpen={showToast}
-                    onDidDismiss={() => setShowToast(false)}
-                    message={error}
-                    duration={3000}
-                    className={user ? 'tab-toast' : ''}
-                    cssClass="toast"
-                    style={{
-                        '--toast-background': toastColor
-                    }}
-                />
-
             </IonContent>
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
+            />
         </IonPage>
     );
 };

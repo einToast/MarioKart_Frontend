@@ -1,19 +1,19 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
+import Toast from '../Toast';
 
 const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
     const [totalAnswers, setTotalAnswers] = useState<number>(0);
+
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const user = PublicUserService.getUser();
@@ -33,13 +33,12 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
 
     useEffect(() => {
-        getAnswersToQuestion();
+        if (showModal) getAnswersToQuestion();
     }, [showModal]);
 
     //TODO: publish survey & add to survey Container
@@ -91,16 +90,11 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
 

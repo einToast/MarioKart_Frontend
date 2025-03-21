@@ -1,10 +1,9 @@
-import { IonToast } from '@ionic/react';
 import React, { useState } from 'react';
-import { errorToastColor } from '../../util/api/config/constants';
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyAdminContainerProps } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
+import Toast from '../Toast';
 import SurveyAnswerModal from '../modals/SurveyAnswerModal';
 import SurveyChangeModal from '../modals/SurveyChangeModal';
 import SurveyDeleteModal from '../modals/SurveyDeleteModal';
@@ -30,9 +29,10 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showAnswerModal, setShowAnswerModal] = useState(false);
     const [showStatisticsModal, setShowStatisticsModal] = useState(false);
+
     const [error, setError] = useState('');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+
     const user = PublicUserService.getUser();
 
     const handleToggleVisibility = async (id: number) => {
@@ -51,7 +51,6 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     };
@@ -71,7 +70,6 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         }
     }
@@ -148,19 +146,14 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                 }}
                 question={selectedQuestion}
             />
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
-                message={error ?? undefined}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </>
     );
 };
 
-export default SurveyAdminContainer; 
+export default SurveyAdminContainer;

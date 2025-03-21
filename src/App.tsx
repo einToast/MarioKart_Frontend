@@ -63,7 +63,7 @@ const App: React.FC = () => {
         }
         const matchplan = PublicScheduleService.isMatchPlanCreated();
         const finalplan = PublicScheduleService.isFinalPlanCreated();
-        const rounds = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
+        const isRoundsLessTwo = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
         matchplan.then(value => {
             setMatchPlanCreated(value);
         })
@@ -72,8 +72,8 @@ const App: React.FC = () => {
             setFinalPlanCreated(value);
         })
 
-        rounds.then(value => {
-            setIsRoundsUnplayedLessThanTwo(value) 
+        isRoundsLessTwo.then(value => {
+            setIsRoundsUnplayedLessThanTwo(value)
         })
 
     }, []);

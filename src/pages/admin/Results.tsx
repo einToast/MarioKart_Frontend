@@ -1,8 +1,7 @@
 import {
     IonContent,
     IonIcon,
-    IonPage,
-    IonToast
+    IonPage
 } from "@ionic/react";
 import { arrowBackOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
@@ -10,19 +9,17 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import FinalGraph from "../../components/graph/FinalGraph";
 import GroupGraph from "../../components/graph/GroupGraph";
-import { errorToastColor } from "../../util/api/config/constants";
+import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { AdminRegistrationService, PublicScheduleService, PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
-
 
 const Results: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const user = PublicUserService.getUser();
@@ -40,7 +37,6 @@ const Results: React.FC = () => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -48,7 +44,6 @@ const Results: React.FC = () => {
             setIsFinalPlan(result);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -83,20 +78,14 @@ const Results: React.FC = () => {
                     )}
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
-    )
-        ;
+    );
 };
 
 export default Results;

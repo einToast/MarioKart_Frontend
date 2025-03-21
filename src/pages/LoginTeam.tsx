@@ -3,14 +3,12 @@ import {
     IonContent,
     IonIcon,
     IonPage,
-    IonToast
 } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import characters from "../util/api/config/characters";
-import { errorToastColor } from "../util/api/config/constants";
+import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicRegistrationService } from "../util/service/registration";
@@ -23,8 +21,8 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamName, setTeamName] = useState('');
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
     const location = useLocation();
 
@@ -42,7 +40,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         }
     };
@@ -58,6 +56,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
+            setIsError(true);
             setShowToast(true);
         });
 
@@ -67,12 +66,10 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             }
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }, [location]);
-
-
 
     return (
         <IonPage>
@@ -87,6 +84,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <p>Melde dich zu deinem bereits bestehenden (registrierten) Team an. Wenn es bislang nicht in der
                         Liste auftaucht, lade neu oder registriere dein Team.</p>
                     <div className="loginContainer">
+                        {/* TODO: teamId instead of teamName */}
                         <div className="borderContainer selectCharacter">
                             <select value={teamName} onChange={(e) => setTeamName(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value="">Select Team</option>
@@ -101,6 +99,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </select>
                             {teamName && (
                                 <div className="selected-character">
+                                    {/* TODO: what are characters */}
                                     {[teams.find(team => team.teamName === teamName)?.character.characterName].map((character) => (
                                         character && characters.includes(character) &&
                                         <img
@@ -140,16 +139,11 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     {/*    Team registrieren*/}
                     {/*</a>*/}
                 </div>
-                {/* TODO: Refactor into own file */}
-                <IonToast
-                    isOpen={showToast}
-                    onDidDismiss={() => setShowToast(false)}
+                <Toast
                     message={error}
-                    duration={3000}
-                    cssClass="toast"
-                    style={{
-                        '--toast-background': toastColor
-                    }}
+                    showToast={showToast}
+                    setShowToast={setShowToast}
+                    isError={isError}
                 />
             </IonContent>
         </IonPage>

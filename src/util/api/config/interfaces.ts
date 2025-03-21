@@ -51,7 +51,7 @@ export interface UseRoundDataReturn {
   nextRound: RoundReturnDTO | BreakReturnDTO | null;
   teamsNotInCurrentRound: TeamReturnDTO[];
   teamsNotInNextRound: TeamReturnDTO[];
-  error: string | null;
+  error: string;
   refreshRounds: () => Promise<void>;
 }
 

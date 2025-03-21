@@ -9,7 +9,7 @@ export const useRoundData = (): UseRoundDataReturn => {
     const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
     const [teamsNotInCurrentRound, setTeamsNotInCurrentRound] = useState<TeamReturnDTO[]>([]);
     const [teamsNotInNextRound, setTeamsNotInNextRound] = useState<TeamReturnDTO[]>([]);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<string>("Error");
 
     const history = useHistory();
 

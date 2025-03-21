@@ -1,18 +1,19 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicUserService } from '../../util/service';
 import QuestionGraph from '../graph/QuestionGraph';
+import Toast from '../Toast';
 
 const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
     const [answersCount, setAnswersCount] = useState<number[]>([]);
+
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
+    console.log(showToast);
 
     const user = PublicUserService.getUser();
 
@@ -24,13 +25,13 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
             setAnswersCount(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
     }
 
     useEffect(() => {
-        getAnswersToQuestion();
+        if (showModal) getAnswersToQuestion();
+
     }, [showModal]);
 
     return (
@@ -40,10 +41,16 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
                 <QuestionGraph question={question} answers={answersCount} />
                 <br></br>
                 <div className={"playedContainer"}>
-                    <IonButton onClick={() => closeModal({ surveyResults: false })} className={"round"}
+                    <IonButton
+                        onClick={() => {
+                            closeModal({ surveyResults: false });
+                            setShowToast(false)
+                        }}
+                        className={"round"}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
+                                setShowToast(false);
                                 closeModal({ surveyResults: false });
                             }
                         }}
@@ -55,16 +62,11 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
 

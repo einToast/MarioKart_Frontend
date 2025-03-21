@@ -1,16 +1,16 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import './Tab1.css';
 
 import 'swiper/css';
 import 'swiper/css/navigation';
-import { errorToastColor } from "../util/api/config/constants";
 // import { getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
 
 import { useLocation } from "react-router";
 import { RoundDisplay } from "../components/rounds/RoundDisplay";
 import { RoundHeader } from "../components/rounds/RoundHeader";
+import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
 import { PublicUserService } from '../util/service';
@@ -18,6 +18,7 @@ import { PublicUserService } from '../util/service';
 const Tab1: React.FC = () => {
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
     const location = useLocation();
     const user = PublicUserService.getUser();
@@ -96,17 +97,12 @@ const Tab1: React.FC = () => {
                 </div>
             </IonContent>
 
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
-                message={error || 'Ein Fehler ist aufgetreten'}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': errorToastColor
-                }}
-            />
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
+            ></Toast>
         </IonPage>
     );
 };

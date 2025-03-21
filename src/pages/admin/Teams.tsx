@@ -1,8 +1,7 @@
 import {
     IonContent,
     IonIcon,
-    IonPage,
-    IonToast
+    IonPage
 } from "@ionic/react";
 import {
     arrowBackOutline
@@ -11,7 +10,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
-import { errorToastColor } from "../../util/api/config/constants";
+import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { PublicScheduleService } from "../../util/service";
 import { AdminRegistrationService } from "../../util/service/registration";
@@ -22,10 +21,10 @@ const Teams: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [matchplanCreated, setMatchplanCreated] = useState<boolean>(false);
     const [finalplanCreated, setFinalplanCreated] = useState<boolean>(false);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
+
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState(false);
 
     const user = PublicUserService.getUser();
     const history = useHistory();
@@ -37,7 +36,6 @@ const Teams: React.FC = () => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
     }
@@ -55,7 +53,6 @@ const Teams: React.FC = () => {
             setMatchplanCreated(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -63,7 +60,6 @@ const Teams: React.FC = () => {
             setFinalplanCreated(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
@@ -89,16 +85,11 @@ const Teams: React.FC = () => {
                     getTeams={getFinalTeams}
                 />
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     );

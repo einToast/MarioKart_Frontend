@@ -1,9 +1,8 @@
-import { IonToast } from '@ionic/react';
 import React, { useState } from 'react';
-import { errorToastColor, successToastColor } from '../../util/api/config/constants';
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamAdminContainerProps, TeamModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, PublicUserService } from '../../util/service';
+import Toast from '../Toast';
 import TeamChangeModal from '../modals/TeamChangeModal';
 import TeamDeleteModal from '../modals/TeamDeleteModal';
 import TeamAdminListItem from './TeamAdminListItem';
@@ -28,9 +27,11 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     });
     const [showChangeModal, setShowChangeModal] = useState<boolean>(false);
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+
     const [error, setError] = useState<string>('');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
+    const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState<boolean>(false);
+
     const user = PublicUserService.getUser();
 
     const handleToggleFinalParticipation = async (team: TeamReturnDTO) => {
@@ -44,7 +45,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         }
     }
@@ -63,7 +64,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         }
     }
@@ -82,11 +83,11 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
         setModalClosed(!modalClosed);
         if (result.teamChanged) {
             setError('Team wurde geändert');
-            setToastColor(successToastColor);
+            setIsError(false);
             setShowToast(true);
         } else if (result.teamDeleted) {
             setError('Team wurde entfernt');
-            setToastColor(successToastColor);
+            setIsError(false);
             setShowToast(true);
         }
     };
@@ -128,19 +129,14 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
                     team={selectedTeam}
                 />
             </div>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </>
     );
 };
 
-export default TeamAdminContainer; 
+export default TeamAdminContainer;

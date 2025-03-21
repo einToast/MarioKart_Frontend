@@ -4,19 +4,18 @@ import {
     IonCheckbox,
     IonContent,
     IonIcon,
-    IonPage, IonToast
+    IonPage
 } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import PointsComponent from "../../components/admin/PointsComponent";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import Toast from '../../components/Toast';
 import { RoundReturnDTO } from "../../util/api/config/dto";
 import { AdminScheduleService, PublicUserService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
-
 
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
@@ -26,8 +25,8 @@ const Points: React.FC = () => {
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
     const user = PublicUserService.getUser();
     const history = useHistory();
@@ -49,14 +48,14 @@ const Points: React.FC = () => {
 
             if (savedRound) {
                 setError('Runde erfolgreich gespeichert');
-                setToastColor(successToastColor)
+                setIsError(false);
                 setShowToast(true);
             } else {
                 throw new TypeError('Runde konnte nicht gespeichert werden');
             }
         } catch (error) {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         }
     };
@@ -74,7 +73,7 @@ const Points: React.FC = () => {
             setNumberOfFinalRounds(rounds.filter(round => round.finalGame).length);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }, [location]);
@@ -163,16 +162,11 @@ const Points: React.FC = () => {
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonPage>
     );
