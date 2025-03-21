@@ -1,17 +1,12 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { API_BASE_URL } from "../../config/constants";
 import { AnswerInputDTO, AnswerReturnDTO } from "../../config/dto";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'SURVEY');
 
 export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Promise<AnswerReturnDTO> => {
     try {
-        const response = await apiClient.post(`${BASE_URL}/answer`, answer, {
-            headers: {
-                "X-Team-ID": teamId.toString(),
-            },
-        });
+        const response = await apiClient.post(`${BASE_URL}/answer`, answer);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
