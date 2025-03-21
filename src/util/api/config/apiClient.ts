@@ -2,7 +2,10 @@ import axios from 'axios';
 import { PublicUserService } from '../../service';
 
 // Create an Axios instance
-const apiClient = axios.create();
+const apiClient = axios.create({
+    withCredentials: true,
+    // TODO: base URL?
+});
 
 // Add a request interceptor
 apiClient.interceptors.request.use(
