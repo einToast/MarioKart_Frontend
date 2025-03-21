@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from "../../config/constants";
 import { AnswerInputDTO, AnswerReturnDTO } from "../../config/dto";
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'SURVEY')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'SURVEY');
 
 export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Promise<AnswerReturnDTO> => {
     try {

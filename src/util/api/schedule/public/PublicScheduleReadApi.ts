@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from '../../config/constants';
 import { RoundReturnDTO } from '../../config/dto';
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'SCHEDULE')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'SCHEDULE');
 
 export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
     try {

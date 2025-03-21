@@ -2,7 +2,7 @@ import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from '../../config/constants';
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('ADMIN', 'SCHEDULE')}`;
+const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
 export const deleteMatchPlan = async (): Promise<void> => {
     try {

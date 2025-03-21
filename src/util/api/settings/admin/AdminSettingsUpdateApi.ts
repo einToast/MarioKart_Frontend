@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from '../../config/constants';
 import { TournamentDTO } from "../../config/dto";
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('ADMIN', 'SETTINGS')}`;
+const BASE_URL = ApiPath.createPath('ADMIN', 'SETTINGS');
 
 export const updateSettings = async (updateSettings: TournamentDTO): Promise<TournamentDTO> => {
     try {

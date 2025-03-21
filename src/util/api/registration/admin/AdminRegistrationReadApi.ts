@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from '../../config/constants';
 import { TeamReturnDTO } from '../../config/dto';
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('ADMIN', 'REGISTRATION')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'REGISTRATION');
 //TODO: update error messages
 export const getTeamsSortedByGroupPoints = async (): Promise<TeamReturnDTO[]> => {
     try {

@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from "../../config/constants";
 import { QuestionReturnDTO } from "../../config/dto";
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'SURVEY')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'SURVEY');
 
 export const getVisibleQuestions = async (): Promise<QuestionReturnDTO[]> => {
     try {

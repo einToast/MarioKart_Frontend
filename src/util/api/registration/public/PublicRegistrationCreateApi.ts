@@ -3,7 +3,7 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 import { API_BASE_URL } from '../../config/constants';
 import { TeamInputDTO, TeamReturnDTO } from '../../config/dto';
 
-const BASE_URL = `${API_BASE_URL}${ApiPath.createPath('PUBLIC', 'REGISTRATION')}`;
+const BASE_URL = ApiPath.createPath('PUBLIC', 'REGISTRATION');
 
 export const registerTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> => {
     try {
