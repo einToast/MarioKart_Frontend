@@ -4,7 +4,7 @@ import { TeamInputDTO, TeamReturnDTO } from "../../../api/config/dto";
 export const updateTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> => {
     const teamInput: TeamInputDTO = {
         teamName: team.teamName,
-        characterName: team.character.characterName ?? team.teamName,
+        characterName: team.character.characterName,
         finalReady: team.finalReady,
         active: team.active,
     }
