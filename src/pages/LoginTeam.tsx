@@ -27,7 +27,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const location = useLocation();
 
     const handleLogin = () => {
-        // TODO: refactor this
         const selectedTeam = teams.find(team => team.id === Number(teamId));
         if (selectedTeam) {
             const user: User = {
@@ -84,7 +83,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <p>Melde dich zu deinem bereits bestehenden (registrierten) Team an. Wenn es bislang nicht in der
                         Liste auftaucht, lade neu oder registriere dein Team.</p>
                     <div className="loginContainer">
-                        {/* TODO: teamId instead of teamName */}
                         <div className="borderContainer selectCharacter">
                             <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value={-1}>Select Team</option>

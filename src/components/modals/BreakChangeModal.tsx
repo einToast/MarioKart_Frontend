@@ -64,7 +64,6 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
         if (showModal) getRounds();
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ breakChanged: false })}>
             <IonContent>

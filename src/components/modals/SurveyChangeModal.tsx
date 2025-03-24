@@ -85,7 +85,6 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyChanged: false })}>
             <IonContent>

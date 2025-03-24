@@ -57,7 +57,6 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
         if (showModal) getCharacterNames();
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamChanged: false })}>
             <IonContent>
