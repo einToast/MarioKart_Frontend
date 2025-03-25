@@ -1,14 +1,14 @@
+import { IonRouterOutlet } from '@ionic/react';
 import React from 'react';
-import { IonRouterOutlet, IonRoute } from '@ionic/react';
-import { Route, Redirect } from 'react-router-dom';
+import { Redirect, Route } from 'react-router-dom';
 
 // Import aller Admin-Komponenten
-import AdminDashboard from './Dashboard';
-import AdminPoints from './Points';
-import Final from './Final';
-import AdminResults from './Results';
-import MatchPlan from './MatchPlan';
 import Control from './Control';
+import AdminDashboard from './Dashboard';
+import Final from './Final';
+import MatchPlan from './MatchPlan';
+import AdminPoints from './Points';
+import AdminResults from './Results';
 import AdminSurvey from './SurveyAdmin';
 import Teams from './Teams';
 
