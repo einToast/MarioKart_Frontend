@@ -20,20 +20,22 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
 
     const user = PublicUserService.getUser();
 
-    const handleSaveVote = async () => {
-        try {
-            const vote = await PublicSurveyService.submitAnswer(freeTextQuestion, text, user?.teamId || -1);
-            if (vote) {
-                setText('');
-                toggleAccordion();
-            } else {
-                throw new TypeError('Vote konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const handleSaveVote = () => {
+        PublicSurveyService.submitAnswer(freeTextQuestion, text, user?.teamId || -1)
+            .then(savedVote => {
+                if (savedVote) {
+                    setText('');
+                    toggleAccordion();
+                } else {
+                    setError('Vote konnte nicht gespeichert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const handleVoteStatus = () => {
         if (!freeTextQuestion.active) {

@@ -27,25 +27,28 @@ const Final: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const handleTeamsReset = async () => {
-        try {
-            const teams = await AdminRegistrationService.resetAllTeamFinalParticipation();
-            if (teams) {
-                setError('Teams zurückgesetzt');
-                setIsError(false);
+    const handleTeamsReset = () => {
+        AdminRegistrationService.resetAllTeamFinalParticipation()
+            .then(teams => {
+                if (teams) {
+                    setError('Teams zurückgesetzt');
+                    setIsError(false);
+                    setShowToast(true);
+                    return getFinalTeams();
+                } else {
+                    setError('Teams konnten nicht zurückgesetzt werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
-                await getFinalTeams();
-            } else {
-                throw new TypeError('Teams konnten nicht zurückgesetzt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        }
+            });
     }
 
-    const getFinalTeams = async () => {
+    const getFinalTeams = () => {
         const teamNames = AdminRegistrationService.getFinalTeams();
         teamNames.then((response) => {
             setTeams(response);
@@ -56,25 +59,29 @@ const Final: React.FC = () => {
         });
     }
 
-    const handleFinalCreation = async () => {
-        try {
-            setButtonDisabled(true);
-            const final = await AdminScheduleService.createFinalPlan();
-            if (final) {
-                setError('Finale erfolgreich erstellt');
-                setIsError(false);
+    const handleFinalCreation = () => {
+        setButtonDisabled(true);
+        AdminScheduleService.createFinalPlan()
+            .then(final => {
+                if (final) {
+                    setError('Finale erfolgreich erstellt');
+                    setIsError(false);
+                    setShowToast(true);
+                    history.push('/admin/dashboard');
+                } else {
+                    setError('Finale konnte nicht erstellt werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
-                history.push('/admin/dashboard');
-            } else {
-                throw new TypeError('Finale konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        } finally {
-            setButtonDisabled(false);
-        }
+            })
+            .finally(() => {
+                setButtonDisabled(false);
+            });
     }
 
     useEffect(() => {
@@ -143,7 +150,7 @@ const Final: React.FC = () => {
                             ></IonIcon>
                         </div>
                     </IonButton>
-                    {/* TODO: fix, does not work properly */}
+                    {/* TODO: fix, does not work properly, idk */}
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleFinalCreation}
                             tabIndex={0}

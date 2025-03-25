@@ -15,15 +15,16 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
 
     const user = PublicUserService.getUser();
 
-    const handleDeletion = async () => {
-        try {
-            await AdminRegistrationService.deleteTeam(team);
-            closeModal({ teamDeleted: true });
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const handleDelete = () => {
+        AdminRegistrationService.deleteTeam(team)
+            .then(() => {
+                return closeModal({ teamDeleted: true });
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamDeleted: false })}>
@@ -46,11 +47,11 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton className={"round"} onClick={handleDeletion}
+                    <IonButton className={"round"} onClick={handleDelete}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                handleDeletion();
+                                handleDelete();
                             }
                         }}
                     >

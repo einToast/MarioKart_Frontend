@@ -18,24 +18,35 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     const user = PublicUserService.getUser();
 
-    const getAnswersToQuestion = async () => {
-        try {
-            if (question.questionType === QuestionType.FREE_TEXT) {
-                const questionAnswers = await AdminSurveyService.getAnswersOfQuestion(question.id);
-                const numberOfAnswers = await AdminSurveyService.getNumberOfAnswers(question.id);
-                setAnswers(questionAnswers);
-                setTotalAnswers(numberOfAnswers);
-            } else {
-                const questionAnswers = await AdminSurveyService.getStatisticsOfQuestion(question.id);
-                const numberOfAnswers = await AdminSurveyService.getNumberOfAnswers(question.id);
-                setAnswersCount(questionAnswers);
-                setTotalAnswers(numberOfAnswers);
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
+    const getAnswersToQuestion = () => {
+        if (question.questionType === QuestionType.FREE_TEXT) {
+            Promise.all([
+                AdminSurveyService.getAnswersOfQuestion(question.id),
+                AdminSurveyService.getNumberOfAnswers(question.id)
+            ])
+                .then(([answers, total]) => {
+                    setAnswers(answers);
+                    setTotalAnswers(total);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
+        } else {
+            Promise.all([
+                AdminSurveyService.getStatisticsOfQuestion(question.id),
+                AdminSurveyService.getNumberOfAnswers(question.id)
+            ])
+                .then(([statistics, total]) => {
+                    setAnswersCount(statistics);
+                    setTotalAnswers(total);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
         }
-    }
+    };
 
     useEffect(() => {
         if (showModal) getAnswersToQuestion();

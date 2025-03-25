@@ -21,7 +21,6 @@ const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
-    const [numberOfFinalRounds, setNumberOfFinalRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
@@ -42,22 +41,24 @@ const Points: React.FC = () => {
         });
     };
 
-    const handleSavePoints = async () => {
-        try {
-            const savedRound = await AdminScheduleService.saveRound(round);
-
-            if (savedRound) {
-                setError('Runde erfolgreich gespeichert');
-                setIsError(false);
+    const handleSavePoints = () => {
+        AdminScheduleService.saveRound(round)
+            .then(savedRound => {
+                if (savedRound) {
+                    setError('Runde erfolgreich gespeichert');
+                    setIsError(false);
+                } else {
+                    setError('Runde konnte nicht gespeichert werden');
+                    setIsError(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+            })
+            .finally(() => {
                 setShowToast(true);
-            } else {
-                throw new TypeError('Runde konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        }
+            });
     };
 
     useEffect(() => {
@@ -70,7 +71,6 @@ const Points: React.FC = () => {
             rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
             getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
             setNumberOfRounds(rounds.length);
-            setNumberOfFinalRounds(rounds.filter(round => round.finalGame).length);
         }).catch((error) => {
             setError(error.message);
             setIsError(true);

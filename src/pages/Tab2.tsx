@@ -25,50 +25,25 @@ const Tab2: React.FC = () => {
     const location = useLocation();
     const history = useHistory();
 
-    const getRanking = async () => {
-
-        const teamsRanked = PublicRegistrationService.getTeamsSortedByGroupPoints();
-
-        const matchplan = PublicScheduleService.isMatchPlanCreated();
-        const finalplan = PublicScheduleService.isFinalPlanCreated();
-        const isRoundsLessTwo = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
-        const maxGames = PublicSettingsService.getMaxGamesCount();
-
-        //TODO: catch error everywhere
-        teamsRanked.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        matchplan.then(value => {
-            setMatchPlanCreated(value);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        })
-
-        finalplan.then(value => {
-            setFinalPlanCreated(value);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        })
-
-        isRoundsLessTwo.then(value => {
-            setIsRoundsUnplayedLessThanTwo(value);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        })
-
-        maxGames.then(value => {
-            setMaxNumberOfGames(value);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        })
+    const getRanking = () => {
+        Promise.all([
+            PublicRegistrationService.getTeamsSortedByGroupPoints(),
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo(),
+            PublicSettingsService.getMaxGamesCount()
+        ])
+            .then(([teams, matchPlan, finalPlan, roundsLessTwo, maxGames]) => {
+                setTeams(teams);
+                setMatchPlanCreated(matchPlan);
+                setFinalPlanCreated(finalPlan);
+                setIsRoundsUnplayedLessThanTwo(roundsLessTwo);
+                setMaxNumberOfGames(maxGames);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }
 
     const handleRefresh = (event: CustomEvent) => {

@@ -40,22 +40,24 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
         points.points = newValue;
     };
 
-    const handleSavePoints = async () => {
-        try {
-            const newPoints = await AdminScheduleService.saveGame(roundId, game);
-            if (newPoints) {
-                setError('Spiel erfolgreich gespeichert');
-                setIsError(false);
+    const handleSavePoints = () => {
+        AdminScheduleService.saveGame(roundId, game)
+            .then(newPoints => {
+                if (newPoints) {
+                    setError('Spiel erfolgreich gespeichert');
+                    setIsError(false);
+                } else {
+                    setError('Das Spiel konnte nicht gespeichert werden.');
+                    setIsError(true);
+                }
+            })
+            .catch(error => {
+                setError(`Fehler beim Speichern: ${error.message}`);
+                setIsError(true);
+            })
+            .finally(() => {
                 setShowToast(true);
-            } else {
-                throw new TypeError('Spiel konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        }
-
+            });
     }
 
     return (

@@ -37,31 +37,20 @@ const Dashboard: React.FC = () => {
             window.location.assign('/admin/login');
         }
 
-        const match = PublicScheduleService.isMatchPlanCreated();
-        const final = PublicScheduleService.isFinalPlanCreated();
-        const isRoundsZero = PublicScheduleService.isNumberOfRoundsUnplayedZero();
-
-        match.then((result) => {
-            setIsMatchPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        final.then((result) => {
-            setIsFinalPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        isRoundsZero.then((result) => {
-            setIsRoundsUnplayedZero(result);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedZero()
+        ])
+            .then(([matchPlan, finalPlan, roundsZero]) => {
+                setIsMatchPlan(matchPlan);
+                setIsFinalPlan(finalPlan);
+                setIsRoundsUnplayedZero(roundsZero);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }, [location]);
 
 

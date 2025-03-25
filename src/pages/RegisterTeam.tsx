@@ -41,53 +41,51 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         });
     };
 
+
     useEffect(() => {
-        const registrationOpen = PublicSettingsService.getRegistrationOpen();
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        registrationOpen.then((response) => {
-            if (!response) {
-                history.push('/login');
-            }
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        tournamentOpen.then((response) => {
-            if (!response) {
-                history.push('/admin');
-            }
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-        getCharacterNames();
+        Promise.all([
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen(),
+            getCharacterNames()
+        ])
+            .then(([registrationOpen, tournamentOpen, _]) => {
+                if (!registrationOpen) {
+                    history.push('/login');
+                }
+                if (!tournamentOpen) {
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }, [location]);
 
 
-    const handleLogin = async () => {
-        try {
-            const team = await PublicRegistrationService.registerTeam(teamName, selectedCharacter);
-
-            if (team) {
-                const user: User = {
-                    name: team.teamName,
-                    character: team.character.characterName || '',
-                    teamId: team.id
-                };
-                PublicUserService.setUser(user);
-                props.setUser(user);
-                history.push('/tab1');
-            } else {
-                throw new Error("Team konnte nicht erstellt werden");
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-            getCharacterNames();
-        }
-    }
+    const handleLogin = () => {
+        PublicRegistrationService.registerTeam(teamName, selectedCharacter)
+            .then(team => {
+                if (team) {
+                    const user: User = {
+                        name: team.teamName,
+                        character: team.character.characterName || '',
+                        teamId: team.id
+                    };
+                    PublicUserService.setUser(user);
+                    props.setUser(user);
+                    history.push('/tab1');
+                } else {
+                    setError('Team konnte nicht registriert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+                getCharacterNames();
+            });
+    };
 
 
     return (

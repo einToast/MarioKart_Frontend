@@ -30,22 +30,19 @@ const Results: React.FC = () => {
         if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
-        // TODO: update???
-        const teamNames = AdminRegistrationService.getFinalTeams();
-        const final = PublicScheduleService.isFinalPlanCreated();
-        teamNames.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        final.then((result) => {
-            setIsFinalPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
+        
+        Promise.all([
+            AdminRegistrationService.getFinalTeams(),
+            PublicScheduleService.isFinalPlanCreated()
+        ])
+            .then(([teams, finalPlan]) => {
+                setTeams(teams);
+                setIsFinalPlan(finalPlan);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
 
     }, [location]);
 

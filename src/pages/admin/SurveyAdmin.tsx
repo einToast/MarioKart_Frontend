@@ -29,15 +29,16 @@ const SurveyAdmin: React.FC = () => {
     const location = useLocation();
 
 
-    const getQuestions = async () => {
-        try {
-            const questions = await AdminSurveyService.getQuestions();
-            setSurveys(questions);
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const getQuestions = () => {
+        AdminSurveyService.getQuestions()
+            .then(questions => {
+                setSurveys(questions);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const handleModalClose = (result: SurveyModalResult) => {
         setModalClosed(prev => !prev);

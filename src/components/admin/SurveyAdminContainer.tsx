@@ -35,44 +35,58 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
 
     const user = PublicUserService.getUser();
 
-    const handleToggleVisibility = async (id: number) => {
-        try {
-            const question = surveys.find(survey => survey.id === id);
-            if (!question) {
-                throw new TypeError('Frage nicht gefunden');
-            }
-            question.visible = !question.visible;
-            question.active = question.visible
-            const updatedQuestion = await AdminSurveyService.updateQuestion(question);
-            if (updatedQuestion) {
-                getQuestions();
-            } else {
-                throw new TypeError('Sichtbarkeit konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
+    const handleToggleVisibility = (id: number) => {
+        const question = surveys.find(survey => survey.id === id);
+
+        if (!question) {
+            setError('Frage nicht gefunden');
             setShowToast(true);
+            return;
         }
+
+        question.visible = !question.visible;
+        question.active = question.visible;
+
+        AdminSurveyService.updateQuestion(question)
+            .then(response => {
+                if (response) {
+                    return getQuestions();
+                } else {
+                    setError('Frage konnte nicht aktualisiert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
-    const handleToggleActive = async (id: number) => {
-        try {
-            const question = surveys.find(survey => survey.id === id);
-            if (!question) {
-                throw new TypeError('Frage nicht gefunden');
-            }
-            question.active = !question.active;
-            const updatedQuestion = await AdminSurveyService.updateQuestion(question);
-            if (updatedQuestion) {
-                getQuestions();
-            } else {
-                throw new TypeError('Aktivität konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
+    const handleToggleActive = (id: number) => {
+        const question = surveys.find(survey => survey.id === id);
+
+        if (!question) {
+            setError('Frage nicht gefunden');
             setShowToast(true);
+            return;
         }
-    }
+
+        question.active = !question.active;
+
+        AdminSurveyService.updateQuestion(question)
+            .then(updatedQuestion => {
+                if (updatedQuestion) {
+                    return getQuestions();
+                } else {
+                    setError('Aktivität konnte nicht geändert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const handleOpenAnswerModal = (question: QuestionReturnDTO) => {
         setSelectedQuestion(question);

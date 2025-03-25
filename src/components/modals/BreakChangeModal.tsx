@@ -25,37 +25,38 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
         setBeforeRound(0);
     }
 
-    const handleChange = async () => {
-        try {
-            const newTeam = await AdminScheduleService.updateBreak(beforeRound, breakDuration, breakEnded);
-
-            if (newTeam) {
-                resetBreak();
-                closeModal({ breakChanged: true });
-            } else {
-                throw new TypeError('Pause konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminScheduleService.updateBreak(beforeRound, breakDuration, breakEnded)
+            .then(newBreak => {
+                if (newBreak) {
+                    resetBreak();
+                    return closeModal({ breakChanged: true });
+                } else {
+                    setError('Pause konnte nicht geändert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     const enterBreak = async () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
         setBeforeRound(aBreak.round?.id || -1);
-    }
+    };
 
-    const getRounds = async () => {
-        try {
-            const rounds = await AdminScheduleService.getRounds();
-            setRounds(rounds);
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
+    const getRounds = () => {
+        AdminScheduleService.getRounds()
+            .then(rounds => {
+                setRounds(rounds);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }
 
 

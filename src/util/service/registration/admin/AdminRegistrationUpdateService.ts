@@ -9,12 +9,8 @@ export const updateTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> =>
         active: team.active,
     }
 
-    try {
-        return await AdminRegistrationApi.updateTeam(team.id, teamInput);
-    } catch (error) {
-        console.error('Error updating team:', error);
-        throw error;
-    }
+    return await AdminRegistrationApi.updateTeam(team.id, teamInput);
+
 }
 
 export const updateTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: string, characterName: string): Promise<TeamReturnDTO> => {
@@ -24,12 +20,7 @@ export const updateTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: 
         finalReady: team.finalReady,
         active: team.active,
     }
-    try {
-        return await AdminRegistrationApi.updateTeam(team.id, teamInput);
-    } catch (error) {
-        console.error('Error updating team:', error);
-        throw error;
-    }
+    return await AdminRegistrationApi.updateTeam(team.id, teamInput);
 }
 
 // TODO: Into Backend?
@@ -45,12 +36,7 @@ export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]>
             characterName: team.character.characterName ?? team.teamName,
             finalReady: true,
         }
-        try {
-            updatedTeams.push(await AdminRegistrationApi.updateTeam(team.id, teamInput));
-        } catch (error) {
-            console.error('Error updating team:', error);
-            throw error;
-        }
+        updatedTeams.push(await AdminRegistrationApi.updateTeam(team.id, teamInput));
     }
 
     return updatedTeams;

@@ -7,6 +7,7 @@ import CheckBoxCard from "../components/survey/CheckBoxSurveyComponent";
 import FreeTextCard from "../components/survey/FreeTextSurveyComponent";
 import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyComponent";
 import TeamCard from '../components/survey/TeamSurveyComponent';
+import Toast from '../components/Toast';
 import { QuestionReturnDTO } from "../util/api/config/dto";
 import { PublicSettingsService, PublicSurveyService } from '../util/service';
 import { QuestionType } from "../util/service/util";
@@ -17,42 +18,42 @@ const Survey: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]);
 
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
+
     const history = useHistory();
     const location = useLocation();
 
 
-    const getQuestions = async () => {
-        const questions = PublicSurveyService.getVisibleQuestions();
+    const getQuestions = () => {
+        return PublicSurveyService.getVisibleQuestions()
+            .then(async questions => {
+                const questionsWithAnswers = await Promise.all(
+                    questions.map(question => 
+                        PublicSurveyService.getAnswerCookie(question.questionText + question.id)
+                            .then(answers => ({
+                                ...question,
+                                isAnswered: (answers !== -1 && question.questionType !== QuestionType.FREE_TEXT)
+                            }))
+                    )
+                );
 
-        questions.then(async (questions) => {
-            const questionsWithAnswers = await Promise.all(questions.map(async (question) => {
-                const answers = await PublicSurveyService.getAnswerCookie(question.questionText + question.id);
-                return {
-                    ...question,
-                    isAnswered: (answers !== -1 && question.questionType !== QuestionType.FREE_TEXT),
-                }
-            }));
-            questionsWithAnswers.sort((a, b) => {
-                if (a.active !== b.active) {
-                    return a.active ? -1 : 1;
-                }
+                questionsWithAnswers.sort((a, b) => {
+                    if (a.active !== b.active) return a.active ? -1 : 1;
+                    if (a.isAnswered !== b.isAnswered) return a.isAnswered ? 1 : -1;
+                    if (a.questionType === QuestionType.FREE_TEXT && b.questionType !== QuestionType.FREE_TEXT) return 1;
+                    if (b.questionType === QuestionType.FREE_TEXT && a.questionType !== QuestionType.FREE_TEXT) return -1;
+                    return 0;
+                });
 
-                if (a.isAnswered !== b.isAnswered) {
-                    return a.isAnswered ? 1 : -1;
-                }
-
-                if (a.questionType === QuestionType.FREE_TEXT && b.questionType !== QuestionType.FREE_TEXT) {
-                    return a.isAnswered ? 1 : 1;
-                }
-                if (b.questionType === QuestionType.FREE_TEXT && a.questionType !== QuestionType.FREE_TEXT) {
-                    return b.isAnswered ? -1 : -1;
-                }
-
-                return 0;
+                setCurrentQuestions(questionsWithAnswers);
+                return questionsWithAnswers;
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+                throw error;
             });
-
-            setCurrentQuestions(questionsWithAnswers);
-        });
     };
 
 
@@ -70,16 +71,19 @@ const Survey: React.FC = () => {
 
 
     useEffect(() => {
-        getQuestions();
-
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        tournamentOpen.then((response) => {
-            if (!response) {
-                history.push('/admin');
-            }
-        })
-
+        Promise.all([
+            getQuestions(),
+            PublicSettingsService.getTournamentOpen()
+        ])
+            .then(([_, tournamentOpen]) => {
+                if (!tournamentOpen) {
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }, [location]);
 
     return (
@@ -130,8 +134,13 @@ const Survey: React.FC = () => {
                 ) : (
                     <p>Gerade finden keine Abstimmungen statt.</p>
                 )}
-
             </IonContent>
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
+            />
         </IonPage>
     );
 };

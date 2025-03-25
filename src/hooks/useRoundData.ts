@@ -14,39 +14,54 @@ export const useRoundData = (): UseRoundDataReturn => {
     const history = useHistory();
 
     const refreshRounds = async () => {
-        try {
-            const currentAndNextRound = await PublicScheduleService.getCurrentRounds();
-            let isBreak = false;
+        return PublicScheduleService.getCurrentRounds()
+            .then(currentAndNextRound => {
+                let isBreak = false;
 
-            if (currentAndNextRound[0]) {
-                const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
-                if ("breakEnded" in formattedCurrentRound) {
-                    isBreak = true;
-                } else {
-                    setTeamsNotInCurrentRound(await PublicRegistrationService.getTeamsNotInRound(formattedCurrentRound.id));
+                if (currentAndNextRound[0]) {
+                    const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
+                    if ("breakEnded" in formattedCurrentRound) {
+                        isBreak = true;
+                        setCurrentRound(formattedCurrentRound);
+                    } else {
+                        Promise.all([
+                            PublicRegistrationService.getTeamsNotInRound(formattedCurrentRound.id),
+                            Promise.resolve(formattedCurrentRound)
+                        ])
+                            .then(([teamsNotInRound, round]) => {
+                                setTeamsNotInCurrentRound(teamsNotInRound);
+                                setCurrentRound(round);
+                            });
+                    }
                 }
-                setCurrentRound(formattedCurrentRound);
-            }
 
+                if (currentAndNextRound[1]) {
+                    const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
+                    Promise.all([
+                        PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id),
+                        Promise.resolve(formattedNextRound)
+                    ])
+                        .then(([teamsNotInRound, round]) => {
+                            setTeamsNotInNextRound(teamsNotInRound);
+                            setNextRound(round);
+                        });
+                }
 
-            if (currentAndNextRound[1]) {
-                const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
-                setNextRound(formattedNextRound);
-                setTeamsNotInNextRound(await PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id));
-            }
+                if (isBreak) {
+                    const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
+                    setNextRound(formattedNextRound);
+                }
 
-            if (isBreak) {
-                const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
-                setNextRound(formattedNextRound);
-            }
-
-            const tournamentOpen = await PublicSettingsService.getTournamentOpen();
-            if (!tournamentOpen) {
-                history.push('/admin');
-            }
-        } catch (err) {
-            setError(err.message);
-        }
+                return PublicSettingsService.getTournamentOpen();
+            })
+            .then(tournamentOpen => {
+                if (!tournamentOpen) {
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+            });
     };
 
     const formatRoundTimes = (round: RoundReturnDTO, isBreak: boolean): RoundReturnDTO | BreakReturnDTO => {

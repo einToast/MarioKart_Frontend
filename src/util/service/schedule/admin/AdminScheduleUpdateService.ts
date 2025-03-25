@@ -41,20 +41,16 @@ export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> 
     return await updateRoundPlayed(round.id, round.played);
 }
 
+// into Backend?
 export const saveGame = async (roundId: number, game: GameReturnDTO): Promise<PointsReturnDTO[]> => {
     const points: PointsReturnDTO[] = [];
     for (const team of game.teams ?? []) {
-        try {
-            points.push(await updatePoints(
-                roundId,
-                game.id,
-                team.id,
-                game.points?.find(point => point?.team.id === team.id)?.points ?? 0
-            ));
-        } catch (error) {
-            console.error('Error updating points:', error);
-            throw error;
-        }
+        points.push(await updatePoints(
+            roundId,
+            game.id,
+            team.id,
+            game.points?.find(point => point?.team.id === team.id)?.points ?? 0
+        ));
     }
     return points;
 }

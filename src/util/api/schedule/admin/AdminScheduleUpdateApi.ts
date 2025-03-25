@@ -4,7 +4,6 @@ import { BreakInputDTO, BreakReturnDTO, PointsInputDTO, PointsReturnDTO, RoundIn
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
-// TODO: error handling when backend is updated
 export const updateRoundPlayed = async (roundId: number, round: RoundInputDTO): Promise<RoundReturnDTO> => {
     try {
         const response = await apiClient.put<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}`, round);

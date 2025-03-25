@@ -20,7 +20,6 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
     const getAnswersToQuestion = async () => {
         const questionAnswers = AdminSurveyService.getStatisticsOfQuestion(question.id);
 
-        // TODO: everywhere async .then instead of await with try/catch
         questionAnswers.then((response) => {
             setAnswersCount(response);
         }).catch((error) => {

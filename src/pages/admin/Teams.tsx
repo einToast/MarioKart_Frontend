@@ -30,7 +30,7 @@ const Teams: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const getFinalTeams = async () => {
+    const getFinalTeams = () => {
         const teamNames = AdminRegistrationService.getTeamsSortedByFinalPoints();
         teamNames.then((response) => {
             setTeams(response);
@@ -44,24 +44,21 @@ const Teams: React.FC = () => {
         if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
-        const matchplan = PublicScheduleService.isMatchPlanCreated();
-        const finalplan = PublicScheduleService.isFinalPlanCreated();
 
-        getFinalTeams();
 
-        matchplan.then((response) => {
-            setMatchplanCreated(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        finalplan.then((response) => {
-            setFinalplanCreated(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            getFinalTeams()
+        ])
+            .then(([matchPlan, finalPlan, _]) => {
+                setMatchplanCreated(matchPlan);
+                setFinalplanCreated(finalPlan);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
 
     }, [modalClosed, location]);
 

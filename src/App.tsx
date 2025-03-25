@@ -39,9 +39,6 @@ import '@ionic/react/css/typography.css';
 import './theme/variables.css';
 
 import { WebSocketProvider } from "./components/WebSocketContext";
-import Control from "./pages/admin/Control";
-import MatchPlan from "./pages/admin/MatchPlan";
-import Teams from './pages/admin/Teams';
 import './theme/main.css';
 import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
@@ -61,20 +58,16 @@ const App: React.FC = () => {
         if (user?.teamId) {
             setCurrentUser(user);
         }
-        const matchplan = PublicScheduleService.isMatchPlanCreated();
-        const finalplan = PublicScheduleService.isFinalPlanCreated();
-        const isRoundsLessTwo = PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo();
-        matchplan.then(value => {
-            setMatchPlanCreated(value);
-        })
 
-        finalplan.then(value => {
-            setFinalPlanCreated(value);
-        })
-
-        isRoundsLessTwo.then(value => {
-            setIsRoundsUnplayedLessThanTwo(value)
-        })
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            setMatchPlanCreated(matchPlanValue);
+            setFinalPlanCreated(finalPlanValue);
+            setIsRoundsUnplayedLessThanTwo(roundsLessTwoValue);
+        });
 
     }, []);
 
@@ -82,7 +75,6 @@ const App: React.FC = () => {
         <IonApp>
             <WebSocketProvider>
                 <IonReactRouter>
-                    {/* TODO: update with standard routes */}
                     {currentUser?.teamId ? (
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">

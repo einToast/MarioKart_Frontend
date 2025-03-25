@@ -15,15 +15,16 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     const user = PublicUserService.getUser();
 
-    const handleDeletion = async () => {
-        try {
-            await AdminSurveyService.deleteQuestion(question);
-            closeModal({ surveyDeleted: true });
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const handleDelete = () => {
+        AdminSurveyService.deleteQuestion(question)
+            .then(() => {
+                return closeModal({ surveyDeleted: true });
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyDeleted: false })}>
@@ -46,11 +47,11 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton className={"round"} onClick={handleDeletion}
+                    <IonButton className={"round"} onClick={handleDelete}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                handleDeletion();
+                                handleDelete();
                             }
                         }}
                     >

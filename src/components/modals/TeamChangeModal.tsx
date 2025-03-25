@@ -23,21 +23,21 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
         setTeamName('');
     }
 
-    const handleChange = async () => {
-        try {
-            const newTeam = await AdminRegistrationService.updateTeamNameAndCharacter(team, teamName, character);
-
-            if (newTeam) {
-                resetTeam();
-                closeModal({ teamChanged: true });
-            } else {
-                throw new TypeError('Team konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminRegistrationService.updateTeamNameAndCharacter(team, teamName, character)
+            .then(updatedTeam => {
+                if (updatedTeam) {
+                    resetTeam();
+                    return closeModal({ teamChanged: true });
+                } else {
+                    setError('Team konnte nicht aktualisiert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     const getCharacterNames = () => {

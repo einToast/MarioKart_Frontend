@@ -20,15 +20,16 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
 
     const user = PublicUserService.getUser();
 
-    const handleChange = async () => {
-        try {
-            await AdminSettingsService.changeService(changeType);
-            closeModal(changeType);
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const handleChange = () => {
+        AdminSettingsService.changeService(changeType)
+            .then(() => {
+                return closeModal(changeType);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const changeMessage = () => {
         const message_template = "Willst du wirklich <span>___</span> ...?";
@@ -71,25 +72,20 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
 
 
     useEffect(() => {
-        const registrationOpen = PublicSettingsService.getRegistrationOpen();
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        registrationOpen.then((response) => {
-            setIsRegistrationOpen(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
-        tournamentOpen.then((response) => {
-            setIsTournamentOpen(response);
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
+        Promise.all([
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen()
+        ])
+            .then(([registrationOpen, tournamentOpen]) => {
+                setIsRegistrationOpen(registrationOpen);
+                setIsTournamentOpen(tournamentOpen);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
 
         changeMessage();
-
     }, [showModal]);
 
     return (

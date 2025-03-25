@@ -22,16 +22,17 @@ const Login: React.FC = () => {
 
     const history = useHistory();
 
-    const handleLogin = async () => {
-        try {
-            await PublicUserService.login(username, password);
-            setUsername('');
-            setPassword('');
-            history.push('/admin/dashboard');
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
+    const handleLogin = () => {
+        PublicUserService.login(username, password)
+            .then(() => {
+                setUsername('');
+                setPassword('');
+                history.push('/admin/dashboard');
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     useEffect(() => {

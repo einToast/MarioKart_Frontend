@@ -47,19 +47,21 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
         }
     }
 
-    const handleSaveVote = async () => {
-        try {
-            const vote = await PublicSurveyService.submitAnswer(checkBoxQuestion, votes, user?.teamId || -1);
-            if (vote) {
-                getVote();
-                toggleAccordion();
-            } else {
-                throw new TypeError('Vote konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
+    const handleSaveVote = () => {
+        PublicSurveyService.submitAnswer(checkBoxQuestion, votes, user?.teamId || -1)
+            .then(vote => {
+                if (vote) {
+                    getVote();
+                    toggleAccordion();
+                } else {
+                    setError('Vote konnte nicht gespeichert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }
 
     const handleAddVote = async (index: number) => {

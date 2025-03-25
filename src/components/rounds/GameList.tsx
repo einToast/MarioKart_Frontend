@@ -46,6 +46,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
             {sortedGames.map(game => {
                 const switchColor = game.switchGame;
                 return viewType === 'all' ? (
+                    // TODO: sort swiper by games with user first, same for PauseComponentSwiper 
                     <RoundComponentSwiper
                         key={game.id}
                         game={game}

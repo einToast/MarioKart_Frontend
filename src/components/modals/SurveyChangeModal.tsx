@@ -55,25 +55,28 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         setNumberOfOptions(4);
     }
 
-    const handleChange = async () => {
-        try {
-            question.questionText = questionText;
-            question.questionType = questionType;
-            question.options = options;
-            question.finalTeamsOnly = finalTeamsOnly;
-            const newQuestion = await AdminSurveyService.updateQuestion(question);
-
-            if (newQuestion) {
-                resetQuestion();
-                closeModal({ surveyChanged: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminSurveyService.updateQuestion({
+            ...question,
+            questionText: questionText,
+            questionType: questionType,
+            options: options,
+            finalTeamsOnly: finalTeamsOnly,
+            active: question.active,
+            visible: question.visible,
+        })
+            .then(updatedQuestion => {
+                if (updatedQuestion) {
+                    resetQuestion();
+                    return closeModal({ surveyChanged: true });
+                }
+                setError('Umfrage konnte nicht aktualisiert werden');
+                setShowToast(true);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     useEffect(() => {

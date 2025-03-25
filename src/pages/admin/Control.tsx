@@ -24,7 +24,7 @@ const Control: React.FC = () => {
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
-    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
+    const [aBreak, setABreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
@@ -46,7 +46,7 @@ const Control: React.FC = () => {
     const handleOpenBreakModal = () => {
         const breakData = AdminScheduleService.getBreak();
         breakData.then((result) => {
-            setBreak(result);
+            setABreak(result);
             setShowBreakModal(true);
         }).catch((error) => {
             setError(error.message);
@@ -64,7 +64,6 @@ const Control: React.FC = () => {
         setIsError(false);
         switch (changeT) {
             case ChangeType.TOURNAMENT:
-                // TODO: better way to handle this
                 setError('Das Turnier wurde ' + (isTournamentOpen ? 'geschlossen' : 'geöffnet'));
                 break;
             case ChangeType.REGISTRATION:
@@ -108,42 +107,23 @@ const Control: React.FC = () => {
             window.location.assign('/admin/login');
         }
 
-        const match = PublicScheduleService.isMatchPlanCreated();
-        const final = PublicScheduleService.isFinalPlanCreated();
-        const registration = PublicSettingsService.getRegistrationOpen();
-        const tournament = PublicSettingsService.getTournamentOpen();
-
-        match.then((result) => {
-            setIsMatchPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
-
-        final.then((result) => {
-            setIsFinalPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
-
-        registration.then((result) => {
-            setIsRegistrationOpen(result);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
-
-        tournament.then((result) => {
-            setIsTournamentOpen(result);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen(),
+        ])
+            .then(([matchPlan, finalPlan, registrationOpen, tournamentOpen]) => {
+                setIsMatchPlan(matchPlan);
+                setIsFinalPlan(finalPlan);
+                setIsRegistrationOpen(registrationOpen);
+                setIsTournamentOpen(tournamentOpen);
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
 
     }, [modalClosed, location]);
 

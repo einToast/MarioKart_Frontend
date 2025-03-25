@@ -34,39 +34,47 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
 
     const user = PublicUserService.getUser();
 
-    const handleToggleFinalParticipation = async (team: TeamReturnDTO) => {
-        try {
-            team.finalReady = !team.finalReady;
-            const removedTeam = await AdminRegistrationService.updateTeam(team);
-            if (removedTeam) {
-                await getTeams();
-            } else {
-                throw new TypeError('Finalteilnahme konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        }
+    const handleToggleFinalParticipation = (team: TeamReturnDTO) => {
+        team.finalReady = !team.finalReady;
+
+        AdminRegistrationService.updateTeam(team)
+            .then(updatedTeam => {
+                if (updatedTeam) {
+                    return getTeams();
+                } else {
+                    setError('Finalteilnahme konnte nicht geändert werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
     }
 
-    const handleToggleActive = async (team: TeamReturnDTO) => {
-        try {
-            team.active = !team.active;
-            if (!team.active) {
-                team.finalReady = false;
-            }
-            const removedTeam = await AdminRegistrationService.updateTeam(team);
-            if (removedTeam) {
-                await getTeams();
-            } else {
-                throw new TypeError('Aktivität konnte nicht geändert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
+    const handleToggleActive = (team: TeamReturnDTO) => {
+        team.active = !team.active;
+        if (!team.active) {
+            team.finalReady = false;
         }
+
+        AdminRegistrationService.updateTeam(team)
+            .then(updatedTeam => {
+                if (updatedTeam) {
+                    return getTeams();
+                } else {
+                    setError('Aktivität konnte nicht geändert werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
     }
 
     const handleOpenChangeModal = (team: TeamReturnDTO) => {

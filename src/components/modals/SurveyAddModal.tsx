@@ -45,20 +45,26 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
         closeModal({ surveyCreated: false });
     }
 
-    const handleSubmit = async () => {
-        try {
-            const newQuestion = await AdminSurveyService.createQuestion(questionText, questionType, options, finalTeamsOnly);
-
-            if (newQuestion) {
-                resetQuestion();
-                closeModal({ surveyCreated: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
+    const handleSubmit = () => {
+        AdminSurveyService.createQuestion(
+            questionText,
+            questionType,
+            options,
+            finalTeamsOnly
+        )
+            .then(newQuestion => {
+                if (newQuestion) {
+                    resetQuestion();
+                    return closeModal({ surveyCreated: true });
+                } else {
+                    setError('Umfrage konnte nicht erstellt werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     return (

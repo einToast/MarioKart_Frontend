@@ -43,27 +43,30 @@ const MatchPlan: React.FC = () => {
         });
     }, [modalClosed, location]);
 
-    const handleMatchPlanCreation = async () => {
-        try {
-            setButtonDisabled(true);
-            const newRounds = await AdminScheduleService.createMatchPlan();
-            if (newRounds) {
-                setError('Spielplan erfolgreich erstellt');
-                setIsError(false);
+    const handleMatchPlanCreation = () => {
+        setButtonDisabled(true);
+        AdminScheduleService.createMatchPlan()
+            .then(newRounds => {
+                if (newRounds) {
+                    setError('Spielplan erfolgreich erstellt');
+                    setIsError(false);
+                    setShowToast(true);
+                    history.push('/admin/dashboard');
+                } else {
+                    setError('Spielplan konnte nicht erstellt werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
-                history.push('/admin/dashboard');
-            } else {
-                throw new TypeError('Spielplan konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        } finally {
-            setButtonDisabled(false);
-        }
-
-    }
+            })
+            .finally(() => {
+                setButtonDisabled(false);
+            });
+    };
 
     return (
         <IonPage>

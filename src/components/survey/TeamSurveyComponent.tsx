@@ -37,20 +37,22 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
 
     }
 
-    const handleSaveVote = async () => {
-        try {
-            const voted = await PublicSurveyService.submitAnswer(teamQuestion, vote, user?.teamId || -1);
-            if (voted) {
-                getVote();
-                toggleAccordion();
-            } else {
-                throw new TypeError('Vote konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setShowToast(true);
-        }
-    }
+    const handleSaveVote = () => {
+        PublicSurveyService.submitAnswer(teamQuestion, vote, user?.teamId || -1)
+            .then(savedVote => {
+                if (savedVote) {
+                    getVote();
+                    toggleAccordion();
+                } else {
+                    setError('Vote konnte nicht gespeichert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const handleVoteStatus = (vote: string | number) => {
         if (!teamQuestion.active) {
