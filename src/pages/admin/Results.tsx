@@ -1,8 +1,4 @@
-import {
-    IonContent,
-    IonIcon,
-    IonPage
-} from "@ionic/react";
+import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -11,7 +7,8 @@ import FinalGraph from "../../components/graph/FinalGraph";
 import GroupGraph from "../../components/graph/GroupGraph";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, PublicScheduleService, PublicUserService } from "../../util/service";
+import { AdminRegistrationService, PublicScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
@@ -26,7 +23,7 @@ const Results: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 

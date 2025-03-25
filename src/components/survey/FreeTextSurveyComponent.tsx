@@ -1,22 +1,17 @@
-import {
-    IonAccordion,
-    IonButton,
-    IonIcon,
-    IonItem,
-} from "@ionic/react";
+import { IonAccordion, IonButton, IonIcon, IonItem, } from "@ionic/react";
 import { megaphoneOutline, statsChartOutline } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
 import '../../pages/Survey.css';
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { PublicSurveyService, PublicUserService } from "../../util/service";
-import Toast from '../Toast';
 import { User } from "../../util/api/config/interfaces";
+import { PublicCookiesService, PublicSurveyService } from "../../util/service";
+import Toast from '../Toast';
 
 const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
     const [text, setText] = useState<string>('');
 
-    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
@@ -47,7 +42,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
     }
 
     useEffect(() => {
-        setUser(PublicUserService.getUser());
+        setUser(PublicCookiesService.getUser());
 
         handleVoteStatus();
     }, []);

@@ -1,12 +1,4 @@
-import {
-    IonApp,
-    IonIcon,
-    IonRouterOutlet,
-    IonTabBar,
-    IonTabButton,
-    IonTabs,
-    setupIonicReact
-} from '@ionic/react';
+import { IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import '@ionic/react/css/core.css';
 import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
@@ -14,19 +6,6 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 
 // Normale Imports für Hauptkomponenten
-import LoginToTeam from './pages/LoginTeam';
-import RegisterTeam from './pages/RegisterTeam';
-import Survey from "./pages/Survey";
-import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
-import Tab3 from './pages/Tab3';
-import Tab4 from './pages/Tab4';
-
-// Lazy-Import nur für die Login-Komponente und den Admin-Router
-const Login = lazy(() => import('./pages/admin/Login'));
-const AdminRouter = lazy(() => import('./pages/admin/AdminRouter'));
-
-import '@ionic/react/css/core.css';
 import '@ionic/react/css/display.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/float-elements.css';
@@ -36,13 +15,23 @@ import '@ionic/react/css/structure.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/typography.css';
+import LoginToTeam from './pages/LoginTeam';
+import RegisterTeam from './pages/RegisterTeam';
+import Survey from "./pages/Survey";
+import Tab1 from './pages/Tab1';
+import Tab2 from './pages/Tab2';
+import Tab3 from './pages/Tab3';
+import Tab4 from './pages/Tab4';
 import './theme/variables.css';
 
 import { WebSocketProvider } from "./components/WebSocketContext";
 import './theme/main.css';
-import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
-import { PublicScheduleService, PublicUserService } from './util/service';
+import { PublicCookiesService, PublicScheduleService } from './util/service';
+
+// Lazy-Import nur für die Login-Komponente und den Admin-Router
+const Login = lazy(() => import('./pages/admin/Login'));
+const AdminRouter = lazy(() => import('./pages/admin/AdminRouter'));
 
 setupIonicReact();
 
@@ -54,7 +43,7 @@ const App: React.FC = () => {
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     useEffect(() => {
-        const user = PublicUserService.getUser();
+        const user = PublicCookiesService.getUser();
         if (user?.teamId) {
             setCurrentUser(user);
         }

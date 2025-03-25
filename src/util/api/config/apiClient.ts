@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PublicUserService } from '../../service';
+import { PublicCookiesService } from '../../service';
 import { API_BASE_URL } from './constants';
 
 // Create an Axios instance
@@ -11,7 +11,7 @@ const apiClient = axios.create({
 // Add a request interceptor
 apiClient.interceptors.request.use(
     config => {
-        const token = PublicUserService.getToken();
+        const token = PublicCookiesService.getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }

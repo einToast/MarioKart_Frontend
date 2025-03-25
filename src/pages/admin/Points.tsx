@@ -1,11 +1,4 @@
-import {
-    IonAccordionGroup,
-    IonButton,
-    IonCheckbox,
-    IonContent,
-    IonIcon,
-    IonPage
-} from "@ionic/react";
+import { IonAccordionGroup, IonButton, IonCheckbox, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -13,7 +6,8 @@ import { LinearGradient } from "react-text-gradients";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
 import { RoundReturnDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicUserService } from "../../util/service";
+import { AdminScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
@@ -61,7 +55,7 @@ const Points: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 

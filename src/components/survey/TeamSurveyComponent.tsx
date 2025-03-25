@@ -1,27 +1,18 @@
-import {
-    IonAccordion,
-    IonButton,
-    IonIcon,
-    IonItem,
-} from "@ionic/react";
-import {
-    checkmarkCircleOutline,
-    megaphoneOutline,
-    statsChartOutline
-} from "ionicons/icons";
+import { IonAccordion, IonButton, IonIcon, IonItem, } from "@ionic/react";
+import { checkmarkCircleOutline, megaphoneOutline, statsChartOutline } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import "../../pages/admin/Points.css";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
-import { PublicSurveyService, PublicUserService } from "../../util/service";
-import Toast from '../Toast';
 import { User } from "../../util/api/config/interfaces";
+import { PublicCookiesService, PublicSurveyService } from "../../util/service";
+import Toast from '../Toast';
 
 const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamQuestion, toggleAccordion }) => {
     const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
 
-    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
@@ -74,7 +65,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
     }
 
     useEffect(() => {
-        setUser(PublicUserService.getUser());
+        setUser(PublicCookiesService.getUser());
 
         getVote();
         if (!teamQuestion.active) {

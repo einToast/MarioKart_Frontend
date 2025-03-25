@@ -1,9 +1,4 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -11,7 +6,8 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from '../../components/Toast';
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, AdminScheduleService, PublicUserService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import "./Final.css";
 
 const Final: React.FC = () => {
@@ -84,7 +80,7 @@ const Final: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
         getFinalTeams();

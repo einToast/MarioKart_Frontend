@@ -7,7 +7,8 @@ import Header from "../components/Header";
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { User } from '../util/api/config/interfaces';
-import { PublicRegistrationService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../util/service";
+import { PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
+import { PublicCookiesService } from '../util/service';
 import './Tab2.css';
 
 // TODO: when last round use Props to tell it App.tsx
@@ -19,7 +20,7 @@ const Tab2: React.FC = () => {
     const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
-    const [user, setUser] = useState<User | null>(PublicUserService.getUser());
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
@@ -55,7 +56,7 @@ const Tab2: React.FC = () => {
     };
 
     useEffect(() => {
-        setUser(PublicUserService.getUser());
+        setUser(PublicCookiesService.getUser());
     }, []);
 
     useEffect(() => {

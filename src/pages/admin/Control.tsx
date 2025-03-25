@@ -1,9 +1,4 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -15,7 +10,8 @@ import TournamentModal from "../../components/modals/TournamentModal";
 import Toast from "../../components/Toast";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { AdminScheduleService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../../util/service";
+import { AdminScheduleService, PublicScheduleService, PublicSettingsService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
 
 const Control: React.FC = () => {
@@ -102,7 +98,7 @@ const Control: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 

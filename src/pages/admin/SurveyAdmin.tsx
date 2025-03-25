@@ -1,8 +1,5 @@
 import { IonContent, IonIcon, IonPage } from "@ionic/react";
-import {
-    addCircleOutline,
-    arrowBackOutline
-} from 'ionicons/icons';
+import { addCircleOutline, arrowBackOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
@@ -11,7 +8,8 @@ import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import Toast from "../../components/Toast";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from "../../util/service";
+import { AdminSurveyService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import "./SurveyAdmin.css";
 
 const SurveyAdmin: React.FC = () => {
@@ -58,7 +56,7 @@ const SurveyAdmin: React.FC = () => {
 
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
         getQuestions();

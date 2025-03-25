@@ -1,15 +1,11 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
 import { PublicUserService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import '../RegisterTeam.css';
 
 const Login: React.FC = () => {
@@ -36,7 +32,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (PublicUserService.checkToken()) {
+            if (PublicCookiesService.checkToken()) {
                 history.push('/admin/dashboard');
             }
         }

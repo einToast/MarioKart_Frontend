@@ -1,9 +1,4 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -11,7 +6,8 @@ import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
 import Toast from "../../components/Toast";
-import { PublicScheduleService, PublicUserService } from "../../util/service";
+import { PublicScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 
 const Dashboard: React.FC = () => {
 
@@ -26,12 +22,12 @@ const Dashboard: React.FC = () => {
     const location = useLocation();
 
     const handleLogout = () => {
-        PublicUserService.removeToken();
+        PublicCookiesService.removeToken();
         history.push('/admin/login');
     }
 
     useEffect(() => {
-        if (!PublicUserService.checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 

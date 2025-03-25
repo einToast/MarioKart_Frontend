@@ -6,18 +6,17 @@ import './Tab1.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 // import { getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
-
 import { useLocation } from "react-router";
 import { RoundDisplay } from "../components/rounds/RoundDisplay";
 import { RoundHeader } from "../components/rounds/RoundHeader";
 import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
-import { PublicUserService } from '../util/service';
 import { User } from '../util/api/config/interfaces';
+import { PublicCookiesService } from '../util/service';
 
 const Tab1: React.FC = () => {
-    const [user, setUser] = useState<User | null>(PublicUserService.getUser());
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
 
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -37,7 +36,7 @@ const Tab1: React.FC = () => {
     const isConnected = useWebSocketConnection(refreshRounds);
 
     useEffect(() => {
-        setUser(PublicUserService.getUser());
+        setUser(PublicCookiesService.getUser());
     }, []);
 
     useEffect(() => {
@@ -48,7 +47,7 @@ const Tab1: React.FC = () => {
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
-        PublicUserService.setSelectedGamesOption(event.target.value);
+        PublicCookiesService.setSelectedGamesOption(event.target.value);
     };
 
     const handleRefresh = (event: CustomEvent) => {
@@ -67,7 +66,7 @@ const Tab1: React.FC = () => {
     }, [selectedOption]);
 
     useEffect(() => {
-        setSelectedOption(PublicUserService.getSelectedGamesOption() || 'Deine Spiele');
+        setSelectedOption(PublicCookiesService.getSelectedGamesOption() || 'Deine Spiele');
     }, [location]);
 
     return (

@@ -1,9 +1,4 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
@@ -11,9 +6,9 @@ import { LinearGradient } from "react-text-gradients";
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { LoginProps, User } from '../util/api/config/interfaces';
+import { PublicCookiesService } from "../util/service";
 import { PublicRegistrationService } from "../util/service/registration";
 import { PublicSettingsService } from "../util/service/settings";
-import { PublicUserService } from "../util/service/user";
 import './RegisterTeam.css';
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
@@ -34,7 +29,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                 teamId: selectedTeam.id,
                 name: selectedTeam.teamName,
             };
-            PublicUserService.setUser(user);
+            PublicCookiesService.setUser(user);
             props.setUser(user);
             history.push('/tab1');
         } else {
@@ -45,7 +40,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
-        if (PublicUserService.getUser()?.name) {
+        if (PublicCookiesService.getUser()?.name) {
             history.push('/tab1');
         }
         const allTeams = PublicRegistrationService.getTeams();

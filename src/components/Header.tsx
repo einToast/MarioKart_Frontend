@@ -2,13 +2,13 @@ import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
-import { PublicUserService } from '../util/service';
-import './Header.css';
 import { User } from '../util/api/config/interfaces';
+import { PublicCookiesService } from '../util/service';
+import './Header.css';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     const history = useHistory();
@@ -18,12 +18,12 @@ const Header: React.FC = () => {
     };
 
     const handleLogout = () => {
-        PublicUserService.removeUser();
+        PublicCookiesService.removeUser();
         window.location.assign('/');
     };
 
     useEffect(() => {
-        setUser(PublicUserService.getUser());
+        setUser(PublicCookiesService.getUser());
     }, []);
 
     useEffect(() => {
