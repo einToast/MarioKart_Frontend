@@ -14,14 +14,16 @@ import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
 import { PublicUserService } from '../util/service';
+import { User } from '../util/api/config/interfaces';
 
 const Tab1: React.FC = () => {
+    const [user, setUser] = useState<User | null>(PublicUserService.getUser());
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
+
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
     const location = useLocation();
-    const user = PublicUserService.getUser();
 
     const {
         currentRound,
@@ -33,6 +35,10 @@ const Tab1: React.FC = () => {
     } = useRoundData();
 
     const isConnected = useWebSocketConnection(refreshRounds);
+
+    useEffect(() => {
+        setUser(PublicUserService.getUser());
+    }, []);
 
     useEffect(() => {
         if (error) {

@@ -6,7 +6,7 @@ import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { BreakReturnDTO, RoundReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { AdminScheduleService, PublicUserService } from '../../util/service';
+import { AdminScheduleService } from '../../util/service';
 import Toast from '../Toast';
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
@@ -17,8 +17,6 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const resetBreak = () => {
         setBreakDuration(0);

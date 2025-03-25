@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from '../../util/service';
+import { AdminSurveyService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 
@@ -15,8 +15,6 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const getAnswersToQuestion = () => {
         if (question.questionType === QuestionType.FREE_TEXT) {

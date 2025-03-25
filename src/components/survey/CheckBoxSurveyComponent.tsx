@@ -14,18 +14,21 @@ import "../../pages/admin/Points.css";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { PublicSurveyService, PublicUserService } from "../../util/service";
 import Toast from '../Toast';
+import { User } from "../../util/api/config/interfaces";
 
 const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion, toggleAccordion }) => {
     const [votes, setVotes] = useState<number[]>([]);
     const [votedId, setVotedId] = useState<number[]>([-1]);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
+
+    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
-    const user = PublicUserService.getUser();
-
     useEffect(() => {
+        setUser(PublicUserService.getUser());
+
         getVote();
         if (!checkBoxQuestion.active) {
             showResults();

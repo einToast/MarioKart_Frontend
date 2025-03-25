@@ -24,7 +24,6 @@ const SurveyAdmin: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 

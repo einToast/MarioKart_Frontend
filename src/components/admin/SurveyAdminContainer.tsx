@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyAdminContainerProps } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from '../../util/service';
+import { AdminSurveyService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 import SurveyAnswerModal from '../modals/SurveyAnswerModal';
@@ -32,8 +32,6 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
 
     const [error, setError] = useState('');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleToggleVisibility = (id: number) => {
         const question = surveys.find(survey => survey.id === id);

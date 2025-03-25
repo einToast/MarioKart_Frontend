@@ -27,7 +27,6 @@ const Points: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
@@ -107,16 +106,16 @@ const Points: React.FC = () => {
                         </LinearGradient>
                     </h2>
                     <div>
-                        <select 
-                            name="round" 
-                            id="round" 
-                            value={round.roundNumber} 
+                        <select
+                            name="round"
+                            id="round"
+                            value={round.roundNumber}
                             onChange={(e) => getSelectedRound(parseInt(e.target.value))}
                         >
                             {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
                                 const roundNum = round_number + 1;
                                 const isFinalRound = round.roundNumber === roundNum && round.finalGame;
-                                
+
                                 return (
                                     <option value={roundNum} key={roundNum}>
                                         {isFinalRound ? 'Finale' : `Runde ${roundNum}`}

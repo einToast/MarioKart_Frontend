@@ -11,14 +11,15 @@ import '../../pages/Survey.css';
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { PublicSurveyService, PublicUserService } from "../../util/service";
 import Toast from '../Toast';
+import { User } from "../../util/api/config/interfaces";
 
 const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
     const [text, setText] = useState<string>('');
+
+    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
-
-    const user = PublicUserService.getUser();
 
     const handleSaveVote = () => {
         PublicSurveyService.submitAnswer(freeTextQuestion, text, user?.teamId || -1)
@@ -46,6 +47,8 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
     }
 
     useEffect(() => {
+        setUser(PublicUserService.getUser());
+
         handleVoteStatus();
     }, []);
 

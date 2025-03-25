@@ -5,15 +5,13 @@ import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
-import { AdminRegistrationService, PublicUserService } from '../../util/service';
+import { AdminRegistrationService } from '../../util/service';
 import Toast from '../Toast';
 
 const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleDelete = () => {
         AdminRegistrationService.deleteTeam(team)

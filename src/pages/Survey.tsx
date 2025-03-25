@@ -29,7 +29,7 @@ const Survey: React.FC = () => {
         return PublicSurveyService.getVisibleQuestions()
             .then(async questions => {
                 const questionsWithAnswers = await Promise.all(
-                    questions.map(question => 
+                    questions.map(question =>
                         PublicSurveyService.getAnswerCookie(question.questionText + question.id)
                             .then(answers => ({
                                 ...question,

@@ -5,7 +5,7 @@ import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
-import { AdminRegistrationService, PublicRegistrationService, PublicUserService } from '../../util/service';
+import { AdminRegistrationService, PublicRegistrationService } from '../../util/service';
 import Toast from '../Toast';
 
 const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
@@ -16,8 +16,6 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const resetTeam = () => {
         setTeamName('');

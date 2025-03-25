@@ -22,8 +22,6 @@ const Dashboard: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    // TODO: user into useEffect (in every page)
-    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 

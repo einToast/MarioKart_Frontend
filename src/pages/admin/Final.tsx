@@ -23,7 +23,6 @@ const Final: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 

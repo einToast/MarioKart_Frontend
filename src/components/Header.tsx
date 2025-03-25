@@ -2,15 +2,15 @@ import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
-import characters from "../util/api/config/characters";
 import { PublicUserService } from '../util/service';
 import './Header.css';
+import { User } from '../util/api/config/interfaces';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+    const [user, setUser] = useState<User|null>(PublicUserService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const user = PublicUserService.getUser();
     const history = useHistory();
 
     const toggleDropdown = () => {
@@ -21,6 +21,10 @@ const Header: React.FC = () => {
         PublicUserService.removeUser();
         window.location.assign('/');
     };
+
+    useEffect(() => {
+        setUser(PublicUserService.getUser());
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {

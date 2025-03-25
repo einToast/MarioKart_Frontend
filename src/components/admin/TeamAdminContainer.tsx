@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamAdminContainerProps, TeamModalResult } from "../../util/api/config/interfaces";
-import { AdminRegistrationService, PublicUserService } from '../../util/service';
+import { AdminRegistrationService } from '../../util/service';
 import Toast from '../Toast';
 import TeamChangeModal from '../modals/TeamChangeModal';
 import TeamDeleteModal from '../modals/TeamDeleteModal';
@@ -31,8 +31,6 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleToggleFinalParticipation = (team: TeamReturnDTO) => {
         team.finalReady = !team.finalReady;

@@ -3,7 +3,7 @@ import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from '../../util/service';
+import { AdminSurveyService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 
@@ -16,8 +16,6 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleOptionChange = (index, value) => {
         const newOptions = [...options];

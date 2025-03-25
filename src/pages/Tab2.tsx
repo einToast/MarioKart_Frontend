@@ -6,6 +6,7 @@ import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
+import { User } from '../util/api/config/interfaces';
 import { PublicRegistrationService, PublicScheduleService, PublicSettingsService, PublicUserService } from "../util/service";
 import './Tab2.css';
 
@@ -18,10 +19,10 @@ const Tab2: React.FC = () => {
     const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
+    const [user, setUser] = useState<User | null>(PublicUserService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = PublicUserService.getUser();
     const location = useLocation();
     const history = useHistory();
 
@@ -52,6 +53,10 @@ const Tab2: React.FC = () => {
             event.detail.complete();
         }, 500);
     };
+
+    useEffect(() => {
+        setUser(PublicUserService.getUser());
+    }, []);
 
     useEffect(() => {
 

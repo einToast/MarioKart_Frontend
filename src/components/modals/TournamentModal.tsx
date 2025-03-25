@@ -3,7 +3,7 @@ import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import { AdminSettingsService, PublicSettingsService, PublicUserService } from '../../util/service';
+import { AdminSettingsService, PublicSettingsService } from '../../util/service';
 import { ChangeType } from "../../util/service/util";
 import Toast from '../Toast';
 
@@ -17,8 +17,6 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleChange = () => {
         AdminSettingsService.changeService(changeType)

@@ -8,7 +8,7 @@ import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import "../../pages/admin/Points.css";
 import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicUserService } from "../../util/service";
+import { AdminScheduleService } from "../../util/service";
 import { convertUmlauts } from "../../util/service/util";
 import Toast from "../Toast";
 
@@ -21,8 +21,6 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
-
-    const user = PublicUserService.getUser();
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
         const newValue = parseInt(event.target.value);

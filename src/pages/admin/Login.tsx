@@ -13,7 +13,6 @@ import { PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 
 const Login: React.FC = () => {
-    const user = PublicUserService.getUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 

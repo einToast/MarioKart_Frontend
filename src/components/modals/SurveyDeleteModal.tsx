@@ -5,15 +5,13 @@ import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from '../../util/service';
+import { AdminSurveyService } from '../../util/service';
 import Toast from '../Toast';
 
 const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = PublicUserService.getUser();
 
     const handleDelete = () => {
         AdminSurveyService.deleteQuestion(question)

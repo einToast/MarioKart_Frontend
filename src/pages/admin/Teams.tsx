@@ -26,7 +26,6 @@ const Teams: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    const user = PublicUserService.getUser();
     const history = useHistory();
     const location = useLocation();
 
@@ -44,7 +43,6 @@ const Teams: React.FC = () => {
         if (!PublicUserService.checkToken()) {
             window.location.assign('/admin/login');
         }
-
 
         Promise.all([
             PublicScheduleService.isMatchPlanCreated(),

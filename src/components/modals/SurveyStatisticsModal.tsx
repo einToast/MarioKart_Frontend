@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicUserService } from '../../util/service';
+import { AdminSurveyService } from '../../util/service';
 import QuestionGraph from '../graph/QuestionGraph';
 import Toast from '../Toast';
 
@@ -14,8 +14,6 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     console.log(showToast);
-
-    const user = PublicUserService.getUser();
 
     const getAnswersToQuestion = async () => {
         const questionAnswers = AdminSurveyService.getStatisticsOfQuestion(question.id);
