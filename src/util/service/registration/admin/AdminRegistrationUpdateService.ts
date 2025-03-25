@@ -23,21 +23,6 @@ export const updateTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: 
     return await AdminRegistrationApi.updateTeam(team.id, teamInput);
 }
 
-// TODO: Into Backend?
-export const resetAllTeamFinalParticipation = async (): Promise<TeamReturnDTO[]> => {
-    const teams = await AdminRegistrationApi.getTeamsSortedByFinalPoints();
-    const updatedTeams: TeamReturnDTO[] = [];
-
-    for (const team of teams) {
-        if (team.finalReady || !team.active) continue;
-
-        const teamInput: TeamInputDTO = {
-            teamName: team.teamName,
-            characterName: team.character.characterName ?? team.teamName,
-            finalReady: true,
-        }
-        updatedTeams.push(await AdminRegistrationApi.updateTeam(team.id, teamInput));
-    }
-
-    return updatedTeams;
+export const resetEveryTeamFinalParticipation = async (): Promise<TeamReturnDTO[]> => {
+    return await AdminRegistrationApi.resetEveryTeamFinalParticipation();
 }
