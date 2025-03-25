@@ -94,7 +94,7 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {!isFinalPlan && isMatchPlan ?
+                        {!isFinalPlan && isMatchPlan && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
