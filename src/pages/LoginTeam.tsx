@@ -85,7 +85,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
                             <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value={-1}>Select Team</option>
+                                <option value={-1} hidden>Select Team</option>
                                 {teams && teams.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
@@ -95,7 +95,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     </option>
                                 ))}
                             </select>
-                            {teamId && (
+                            {teamId && teamId !== "-1" && (
                                 <div className="selected-character">
                                     {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
