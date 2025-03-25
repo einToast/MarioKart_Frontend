@@ -6,18 +6,14 @@ import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
-import { User } from '../util/api/config/interfaces';
-import { PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
-import { PublicCookiesService } from '../util/service';
+import { ShowTab2Props, User } from '../util/api/config/interfaces';
+import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab2.css';
 
-// TODO: when last round use Props to tell it App.tsx
-const Tab2: React.FC = () => {
+const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [maxNumberOfGames, setMaxNumberOfGames] = useState<number>(0);
-    const [isRoundsUnplayedLessThanTwo, setIsRoundsUnplayedLessThanTwo] = useState<boolean>(false);
-    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
@@ -30,16 +26,12 @@ const Tab2: React.FC = () => {
     const getRanking = () => {
         Promise.all([
             PublicRegistrationService.getTeamsSortedByGroupPoints(),
-            PublicScheduleService.isMatchPlanCreated(),
             PublicScheduleService.isFinalPlanCreated(),
-            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo(),
             PublicSettingsService.getMaxGamesCount()
         ])
-            .then(([teams, matchPlan, finalPlan, roundsLessTwo, maxGames]) => {
+            .then(([teams, finalPlan, maxGames]) => {
                 setTeams(teams);
-                setMatchPlanCreated(matchPlan);
                 setFinalPlanCreated(finalPlan);
-                setIsRoundsUnplayedLessThanTwo(roundsLessTwo);
                 setMaxNumberOfGames(maxGames);
             })
             .catch(error => {
@@ -48,9 +40,22 @@ const Tab2: React.FC = () => {
             });
     }
 
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
+        });
+    }
+
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
             getRanking();
+            updateShowTab2();
             event.detail.complete();
         }, 500);
     };
@@ -62,6 +67,7 @@ const Tab2: React.FC = () => {
     useEffect(() => {
 
         getRanking();
+        updateShowTab2();
 
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
@@ -77,13 +83,13 @@ const Tab2: React.FC = () => {
     }, [location]);
 
     useEffect(() => {
-        if (matchPlanCreated && !finalPlanCreated && isRoundsUnplayedLessThanTwo) {
+        if (!props.showTab2) {
             changeLocation();
         }
-    }, [matchPlanCreated, finalPlanCreated, isRoundsUnplayedLessThanTwo]);
+    }, [props.showTab2]);
 
     const changeLocation = () => {
-        if (matchPlanCreated && !finalPlanCreated && isRoundsUnplayedLessThanTwo) {
+        if (!props.showTab2) {
             setError("Die Statistiken können momentan nicht angezeigt werden.");
             setShowToast(true);
             history.push('/tab1');

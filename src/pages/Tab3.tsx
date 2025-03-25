@@ -9,21 +9,38 @@ import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
-import { PublicSettingsService } from "../util/service";
+import { ShowTab2Props } from '../util/api/config/interfaces';
+import { PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
-const Tab3: React.FC = () => {
+const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const history = useHistory();
     const location = useLocation();
 
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
+        });
+    }
+
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
+            updateShowTab2();
             event.detail.complete();
         }, 500);
     };
 
     useEffect(() => {
+
+        updateShowTab2();
+
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {

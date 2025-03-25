@@ -18,6 +18,11 @@ export interface LoginProps {
   setUser: (user: User) => void;
 }
 
+export interface ShowTab2Props {
+  showTab2: boolean;
+  setShowTab2: (show: boolean) => void;
+}
+
 export interface AdminUser {
   loggedIn: boolean;
   username: string;
@@ -113,4 +118,10 @@ export interface TeamGraphProps {
 export interface QuestionGraphProps {
   question: QuestionReturnDTO;
   answers: number[];
+}
+export interface ToastProps {
+  message: string;
+  showToast: boolean;
+  setShowToast: (show: boolean) => void;
+  isError?: boolean;
 }

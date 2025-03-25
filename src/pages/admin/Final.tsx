@@ -23,7 +23,7 @@ const Final: React.FC = () => {
     const location = useLocation();
 
     const handleTeamsReset = () => {
-        AdminRegistrationService.resetAllTeamFinalParticipation()
+        AdminRegistrationService.resetEveryTeamFinalParticipation()
             .then(teams => {
                 if (teams) {
                     setError('Teams zurückgesetzt');

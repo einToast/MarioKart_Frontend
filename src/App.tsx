@@ -26,7 +26,7 @@ import './theme/variables.css';
 
 import { WebSocketProvider } from "./components/WebSocketContext";
 import './theme/main.css';
-import { User } from "./util/api/config/interfaces";
+import { ShowTab2Props, User } from "./util/api/config/interfaces";
 import { PublicCookiesService, PublicScheduleService } from './util/service';
 
 // Lazy-Import nur für die Login-Komponente und den Admin-Router
@@ -38,9 +38,12 @@ setupIonicReact();
 const App: React.FC = () => {
     // TODO: Props in Tabs to tell it App.tsx
     const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [isRoundsUnplayedLessThanTwo, setIsRoundsUnplayedLessThanTwo] = useState<boolean>(false);
-    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
-    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
+    const [showTab2, setShowTab2] = useState<boolean>(true);
+
+    const showTab2Props: ShowTab2Props = {
+        showTab2: showTab2,
+        setShowTab2: setShowTab2,
+    };
 
     useEffect(() => {
         const user = PublicCookiesService.getUser();
@@ -53,9 +56,9 @@ const App: React.FC = () => {
             PublicScheduleService.isFinalPlanCreated(),
             PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
         ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
-            setMatchPlanCreated(matchPlanValue);
-            setFinalPlanCreated(finalPlanValue);
-            setIsRoundsUnplayedLessThanTwo(roundsLessTwoValue);
+            setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
         });
 
     }, []);
@@ -67,11 +70,11 @@ const App: React.FC = () => {
                     {currentUser?.teamId ? (
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
-                                <Route exact path="/tab1" component={Tab1} />
-                                <Route exact path="/tab2" component={Tab2} />
-                                <Route exact path="/tab3" component={Tab3} />
-                                <Route exact path="/tab4" component={Tab4} />
-                                <Route exact path="/survey" component={Survey} />
+                                <Route exact path="/tab1" component={() => <Tab1 {...showTab2Props}/>} />
+                                <Route exact path="/tab2" component={() => <Tab2 {...showTab2Props}/>} />
+                                <Route exact path="/tab3" component={() => <Tab3 {...showTab2Props}/>} />
+                                <Route exact path="/tab4" component={() => <Tab4 {...showTab2Props}/>} />
+                                <Route exact path="/survey" component={() => <Survey {...showTab2Props}/>} />
 
                                 <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
                                     <Route exact path="/admin/login" component={Login} />
@@ -89,7 +92,7 @@ const App: React.FC = () => {
                                 <IonTabButton tab="tab1" href="/tab1">
                                     <IonIcon aria-hidden="true" icon={homeOutline} title="Spielplan" />
                                 </IonTabButton>
-                                {(!matchPlanCreated || finalPlanCreated || !isRoundsUnplayedLessThanTwo) && (
+                                {showTab2 && (
                                     <IonTabButton tab="tab2" href="/tab2">
                                         <IonIcon aria-hidden="true" icon={barChartOutline} title="Rangliste" />
                                     </IonTabButton>

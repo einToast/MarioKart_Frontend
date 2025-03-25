@@ -3,19 +3,18 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import './Tab1.css';
 
+import { useLocation } from "react-router";
 import 'swiper/css';
 import 'swiper/css/navigation';
-// import { getSelectedGamesOption, setSelectedGamesOption } from "../util/service/dashboardService";
-import { useLocation } from "react-router";
 import { RoundDisplay } from "../components/rounds/RoundDisplay";
 import { RoundHeader } from "../components/rounds/RoundHeader";
 import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
-import { User } from '../util/api/config/interfaces';
-import { PublicCookiesService } from '../util/service';
+import { ShowTab2Props, User } from '../util/api/config/interfaces';
+import { PublicCookiesService, PublicScheduleService } from '../util/service';
 
-const Tab1: React.FC = () => {
+const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
 
@@ -35,8 +34,34 @@ const Tab1: React.FC = () => {
 
     const isConnected = useWebSocketConnection(refreshRounds);
 
+    const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedOption(event.target.value);
+        PublicCookiesService.setSelectedGamesOption(event.target.value);
+    };
+
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
+        });
+    }
+
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            refreshRounds();
+            updateShowTab2();
+            event.detail.complete();
+        }, 500);
+    };
+
     useEffect(() => {
         setUser(PublicCookiesService.getUser());
+        updateShowTab2();
     }, []);
 
     useEffect(() => {
@@ -44,18 +69,6 @@ const Tab1: React.FC = () => {
             setShowToast(true);
         }
     }, [error]);
-
-    const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedOption(event.target.value);
-        PublicCookiesService.setSelectedGamesOption(event.target.value);
-    };
-
-    const handleRefresh = (event: CustomEvent) => {
-        setTimeout(() => {
-            refreshRounds();
-            event.detail.complete();
-        }, 500);
-    };
 
     useEffect(() => {
         if (selectedOption === 'Alle Spiele') {
@@ -67,6 +80,7 @@ const Tab1: React.FC = () => {
 
     useEffect(() => {
         setSelectedOption(PublicCookiesService.getSelectedGamesOption() || 'Deine Spiele');
+        updateShowTab2();
     }, [location]);
 
     return (

@@ -9,11 +9,12 @@ import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyCompone
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import Toast from '../components/Toast';
 import { QuestionReturnDTO } from "../util/api/config/dto";
-import { PublicSettingsService, PublicSurveyService } from '../util/service';
+import { ShowTab2Props } from '../util/api/config/interfaces';
+import { PublicScheduleService, PublicSettingsService, PublicSurveyService } from '../util/service';
 import { QuestionType } from "../util/service/util";
 import './Survey.css';
 
-const Survey: React.FC = () => {
+const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]);
@@ -56,6 +57,17 @@ const Survey: React.FC = () => {
             });
     };
 
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
+        });
+    }
 
     const toggleAccordion = (id: string) => {
         setOpenAccordions([id]);
@@ -65,17 +77,20 @@ const Survey: React.FC = () => {
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
             getQuestions();
+            updateShowTab2();
             event.detail.complete();
         }, 500);
     };
 
 
     useEffect(() => {
+
         Promise.all([
             getQuestions(),
+            updateShowTab2(),
             PublicSettingsService.getTournamentOpen()
         ])
-            .then(([_, tournamentOpen]) => {
+            .then(([_, __, tournamentOpen]) => {
                 if (!tournamentOpen) {
                     history.push('/admin');
                 }
