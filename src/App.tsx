@@ -36,7 +36,6 @@ const AdminRouter = lazy(() => import('./pages/admin/AdminRouter'));
 setupIonicReact();
 
 const App: React.FC = () => {
-    // TODO: Props in Tabs to tell it App.tsx
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [showTab2, setShowTab2] = useState<boolean>(true);
 
