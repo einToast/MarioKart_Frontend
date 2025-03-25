@@ -107,11 +107,21 @@ const Points: React.FC = () => {
                         </LinearGradient>
                     </h2>
                     <div>
-                        {/* TODO: differentiate between round and final round */}
-                        <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
-                            {/* TODO: replace selected with default value */}
+                        <select 
+                            name="round" 
+                            id="round" 
+                            value={round.roundNumber} 
+                            onChange={(e) => getSelectedRound(parseInt(e.target.value))}
+                        >
                             {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
-                                return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.roundNumber}>Runde {round_number + 1}</option>
+                                const roundNum = round_number + 1;
+                                const isFinalRound = round.roundNumber === roundNum && round.finalGame;
+                                
+                                return (
+                                    <option value={roundNum} key={roundNum}>
+                                        {isFinalRound ? 'Finale' : `Runde ${roundNum}`}
+                                    </option>
+                                );
                             })}
                         </select>
                     </div>
