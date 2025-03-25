@@ -62,10 +62,10 @@
     "react-inject-env": "^2.1.0",
     "terser": "^5.39.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.1",
-    "vite": "^6.2.2",
-    "vite-plugin-pwa": "^0.21.1",
-    "vitest": "^3.0.8"
+    "typescript-eslint": "^8.28.0",
+    "vite": "^6.2.3",
+    "vite-plugin-pwa": "^0.21.2",
+    "vitest": "^3.0.9"
   },
   "description": "An Ionic project"
 }
