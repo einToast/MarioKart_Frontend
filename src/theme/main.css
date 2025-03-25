@@ -113,3 +113,18 @@ ion-tab-button.tab-selected {
     bottom: 60px !important;
     top: auto !important;
 }
+
+/* Styling für Lazy Loading Fallback */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  color: #6351F9;
+  background-color: #141535;
+  padding: 20px;
+}

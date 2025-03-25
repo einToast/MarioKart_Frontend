@@ -10,20 +10,21 @@ import {
 import { IonReactRouter } from '@ionic/react-router';
 import '@ionic/react/css/core.css';
 import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import AdminDashboard from "./pages/admin/Dashboard";
-import Final from "./pages/admin/Final";
-import Login from "./pages/admin/Login";
-import AdminPoints from "./pages/admin/Points";
-import AdminResults from "./pages/admin/Results";
-import AdminSurvey from "./pages/admin/SurveyAdmin";
+
+// Normale Imports für Hauptkomponenten
 import LoginToTeam from './pages/LoginTeam';
 import RegisterTeam from './pages/RegisterTeam';
 import Survey from "./pages/Survey";
 import Tab1 from './pages/Tab1';
 import Tab2 from './pages/Tab2';
 import Tab3 from './pages/Tab3';
+import Tab4 from './pages/Tab4';
+
+// Lazy-Import nur für die Login-Komponente und den Admin-Router
+const Login = lazy(() => import('./pages/admin/Login'));
+const AdminRouter = lazy(() => import('./pages/admin/AdminRouter'));
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/display.css';
@@ -41,7 +42,6 @@ import { WebSocketProvider } from "./components/WebSocketContext";
 import Control from "./pages/admin/Control";
 import MatchPlan from "./pages/admin/MatchPlan";
 import Teams from './pages/admin/Teams';
-import Tab4 from './pages/Tab4';
 import './theme/main.css';
 import './theme/variables.css';
 import { User } from "./util/api/config/interfaces";
@@ -92,21 +92,16 @@ const App: React.FC = () => {
                                 <Route exact path="/tab4" component={Tab4} />
                                 <Route exact path="/survey" component={Survey} />
 
-                                <Route exact path="/admin/login" component={Login} />
-                                <Route exact path="/admin/dashboard" component={AdminDashboard} />
-                                <Route exact path="/admin/points" component={AdminPoints} />
-                                <Route exact path="/admin/final" component={Final} />
-                                <Route exact path="/admin/results" component={AdminResults} />
-                                <Route exact path="/admin/matchplan" component={MatchPlan} />
-                                <Route exact path="/admin/control" component={Control} />
-                                <Route exact path="/admin/survey" component={AdminSurvey} />
-                                <Route exact path="/admin/teams" component={Teams} />
+                                <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
+                                    <Route exact path="/admin/login" component={Login} />
+                                    <Route path="/admin" component={AdminRouter} />
+                                </Suspense>
                                 <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
-                                <Route exact path="/">
-                                    <Redirect to="/tab1" />
-                                </Route>
                                 <Route exact path="/admin">
                                     <Redirect to="/admin/dashboard" />
+                                </Route>
+                                <Route exact path="/">
+                                    <Redirect to="/tab1" />
                                 </Route>
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
@@ -130,18 +125,10 @@ const App: React.FC = () => {
                         <IonRouterOutlet animated={false} mode="md">
                             <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
                             <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
-                            <Route exact path="/admin/login" component={Login} />
-                            <Route exact path="/admin/dashboard" component={AdminDashboard} />
-                            <Route exact path="/admin/points" component={AdminPoints} />
-                            <Route exact path="/admin/final" component={Final} />
-                            <Route exact path="/admin/results" component={AdminResults} />
-                            <Route exact path="/admin/matchplan" component={MatchPlan} />
-                            <Route exact path="/admin/control" component={Control} />
-                            <Route exact path="/admin/survey" component={AdminSurvey} />
-                            <Route exact path="/admin/teams" component={Teams} />
-                            <Route exact path="/admin">
-                                <Redirect to="/admin/dashboard" />
-                            </Route>
+                            <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
+                                <Route exact path="/admin/login" component={Login} />
+                                <Route path="/admin" component={AdminRouter} />
+                            </Suspense>
                             <Route exact path="/">
                                 <Redirect to="/login" />
                             </Route>
