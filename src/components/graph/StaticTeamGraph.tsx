@@ -78,6 +78,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         meta.data.forEach((bar, index) => {
             // Icon zeichnen
             const iconPath = sortedTeamsData.icons[index];
+            if (!iconPath) return;
             const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
             if (img) {

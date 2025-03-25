@@ -160,6 +160,8 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
         meta.data.forEach((bar, index) => {
             const iconPath = revealedIcons[index];
+            if (!iconPath) return;
+            
             const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
 
