@@ -10,8 +10,9 @@ export const deleteMatchPlan = async (): Promise<void> => {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spielplan konnte nicht gelöscht werden');
             }
-            throw new Error('Spielplan konnte nicht gelöscht werden');
         }
         throw error;
     }
@@ -24,8 +25,9 @@ export const deleteFinalPlan = async (): Promise<void> => {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Finalrunden konnten nicht gelöscht werden');
             }
-            throw new Error('Finalrunden konnten nicht gelöscht werden');
         }
         throw error;
     }

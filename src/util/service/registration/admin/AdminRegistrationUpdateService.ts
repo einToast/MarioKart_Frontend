@@ -17,7 +17,6 @@ export const updateTeam = async (team: TeamReturnDTO): Promise<TeamReturnDTO> =>
     }
 }
 
-// TODO: put together with updateTeam?
 export const updateTeamNameAndCharacter = async (team: TeamReturnDTO, teamName: string, characterName: string): Promise<TeamReturnDTO> => {
     const teamInput: TeamInputDTO = {
         teamName: teamName,

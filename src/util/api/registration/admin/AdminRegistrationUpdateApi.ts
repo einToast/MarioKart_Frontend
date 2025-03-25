@@ -15,9 +15,10 @@ export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamRe
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 400) {
-                throw new Error('Fehlerhafte Anfrage');
+                throw new Error('Charakter ist bereits vergeben');
+            } else {
+                throw new Error('Team konnte nicht aktualisiert werden');
             }
-            throw new Error('Team konnte nicht aktualisiert werden');
         }
         throw error;
     }

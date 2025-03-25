@@ -10,7 +10,11 @@ export const getRounds = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Runden konnten nicht geladen werden');
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runden konnten nicht geladen werden');
+            }
         }
         throw error;
     }
@@ -24,8 +28,11 @@ export const getRoundById = async (roundId: number): Promise<RoundReturnDTO> => 
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
                 throw new Error('Runde nicht gefunden');
+            } else if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Runde konnte nicht geladen werden');
             }
-            throw new Error('Runde konnte nicht geladen werden');
         }
         throw error;
     }
@@ -37,7 +44,11 @@ export const getBreak = async (): Promise<BreakReturnDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Pause konnte nicht geladen werden');
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Pause konnte nicht geladen werden');
+            }
         }
         throw error;
     }

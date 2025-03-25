@@ -42,8 +42,9 @@ export const updatePoints = async (
                 throw new Error('Eintrag nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Punkte konnten nicht aktualisiert werden');
             }
-            throw new Error('Punkte konnten nicht aktualisiert werden');
         }
         throw error;
     }
@@ -59,8 +60,9 @@ export const updateBreak = async (breakData: BreakInputDTO): Promise<BreakReturn
                 throw new Error('Pause nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Pause konnte nicht aktualisiert werden');
             }
-            throw new Error('Pause konnte nicht aktualisiert werden');
         }
         throw error;
     }

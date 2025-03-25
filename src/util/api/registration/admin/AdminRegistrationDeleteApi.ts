@@ -14,8 +14,9 @@ export const deleteTeam = async (id: number): Promise<void> => {
                 throw new Error('Team nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Team konnte nicht gelöscht werden');
             }
-            throw new Error('Team konnte nicht gelöscht werden');
         }
         throw error;
     }
@@ -30,8 +31,9 @@ export const deleteAllTeams = async (): Promise<void> => {
                 throw new Error('Matchplan wurde bereits erstellt');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Teams konnten nicht gelöscht werden');
             }
-            throw new Error('Teams konnten nicht gelöscht werden');
         }
         throw error;
     }

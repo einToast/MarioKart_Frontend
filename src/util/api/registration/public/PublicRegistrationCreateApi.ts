@@ -16,6 +16,8 @@ export const registerTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> =
                 throw new Error('Charakter nicht gefunden');
             } else if (error.response?.status === 400) {
                 throw new Error('Charakter schon registriert');
+            } else {
+                throw new Error('Registrierung fehlgeschlagen');
             }
         }
         throw error;

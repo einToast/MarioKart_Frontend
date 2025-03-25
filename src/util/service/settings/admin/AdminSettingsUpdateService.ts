@@ -10,12 +10,7 @@ export const updateSettings = async (tournament: TournamentDTO): Promise<Tournam
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
-// TODO: this is a duplicate of resetEverything
 export const reset = async (): Promise<void> => {
-    return await AdminSettingsApi.reset();
-}
-
-export const resetEverything = async (): Promise<void> => {
     return await AdminSettingsApi.reset();
 }
 
@@ -54,7 +49,7 @@ export const changeService = async (deleteType: ChangeType): Promise<void> => {
             await AdminScheduleService.deleteFinalPlan();
             break;
         case ChangeType.ALL:
-            await resetEverything();
+            await reset();
             break;
         default:
             throw new Error('Error');

@@ -10,11 +10,7 @@ export const getVisibleQuestions = async (): Promise<QuestionReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
-            } else {
-                throw new Error('Fragen konnten nicht geladen werden');
-            }
+            throw new Error('Fragen konnten nicht geladen werden');
         }
         throw error;
     }
@@ -30,8 +26,6 @@ export const getStatisticsOfQuestion = async (questionId: number): Promise<numbe
                 throw new Error('Frage nicht ausgewertet');
             } else if (error.response?.status === 404) {
                 throw new Error('Frage konnte nicht gefunden werden');
-            } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 400) {
                 throw new Error('Frage ist nicht auswertbar');
             } else {

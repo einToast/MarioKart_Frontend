@@ -10,7 +10,11 @@ export const getTeamsSortedByFinalPoints = async (): Promise<TeamReturnDTO[]> =>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Teams konnten nicht abgerufen werden');
+            }
         }
         throw error;
     }
@@ -22,7 +26,11 @@ export const getFinalTeams = async (): Promise<TeamReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Team konnte nicht abgerufen werden');
+            }
         }
         throw error;
     }

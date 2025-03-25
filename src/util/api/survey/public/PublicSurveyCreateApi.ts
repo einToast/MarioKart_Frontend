@@ -16,8 +16,6 @@ export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Prom
                 throw new Error("Frage kann nicht beantwortet werden");
             } else if (error.response?.status === 404) {
                 throw new Error("Frage nicht gefunden");
-            } else if (error.response?.status === 401) {
-                throw new Error("Nicht autorisierter Zugriff");
             } else if (error.response?.status === 400) {
                 throw new Error("Du bist nicht authentifiziert, bitte melde dich erneut an");
             } else {
