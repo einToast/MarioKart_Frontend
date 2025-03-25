@@ -7,7 +7,8 @@ import RoundComponentSwiper from './RoundComponentSwiper';
 
 export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {
-        return games.map(game => {
+
+        const gamesWithSortedTeams = games.map(game => {
             const hasLoggedInCharacter = game.teams.some(team =>
                 team.id === user?.teamId
             ) || false;
@@ -23,6 +24,12 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
             }
 
             return game;
+        });
+
+        return gamesWithSortedTeams.sort((a, b) => {
+            const aHasUser = a.teams.some(team => team.id === user?.teamId) ? 1 : 0;
+            const bHasUser = b.teams.some(team => team.id === user?.teamId) ? 1 : 0;
+            return bHasUser - aHasUser;
         });
     };
 
@@ -43,10 +50,15 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
 
     return (
         <>
+            {viewType === 'all' && teamsNotInRound.some(team => team.id === user?.teamId) && (
+                <PauseComponentSwiper
+                    teams={teamsNotInRound}
+                    user={user}
+                />
+            )}
             {sortedGames.map(game => {
                 const switchColor = game.switchGame;
                 return viewType === 'all' ? (
-                    // TODO: sort swiper by games with user first, same for PauseComponentSwiper 
                     <RoundComponentSwiper
                         key={game.id}
                         game={game}
@@ -62,7 +74,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
                     />
                 );
             })}
-            {viewType === 'all' && teamsNotInRound.length > 0 && (
+            {viewType === 'all' && !teamsNotInRound.some(team => team.id === user?.teamId) && teamsNotInRound.length > 0 && (
                 <PauseComponentSwiper
                     teams={teamsNotInRound}
                     user={user}
@@ -70,4 +82,4 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
             )}
         </>
     );
-}; 
+};
