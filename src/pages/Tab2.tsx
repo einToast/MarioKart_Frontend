@@ -1,83 +1,75 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonToast } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
-import { errorToastColor } from "../util/api/config/constants";
+import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
-import { checkFinal, checkMatch } from "../util/service/adminService";
-import { getNumberOfUnplayedRounds, getTeamsRanked } from "../util/service/dashboardService";
-import { getUser } from "../util/service/loginService";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
+import { ShowTab2Props, User } from '../util/api/config/interfaces';
+import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab2.css';
-// TODO: when last round use Props to tell it App.tsx
-const Tab2: React.FC = () => {
+
+const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [userCharacter, setUserCharacter] = useState<string | null>(null);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
-    const [final, setFinal] = useState<boolean>(false);
-    const [roundsToPlay, setRoundsToPlay] = useState<number>(8);
-    const [matchPlanCreated, setMatchPlanCreated] = useState<boolean>(false);
+    const [maxNumberOfGames, setMaxNumberOfGames] = useState<number>(0);
     const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
 
-    const user = getUser();
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
+
     const location = useLocation();
     const history = useHistory();
 
-    const getRanking = async () => {
-        const finalCheck = checkFinal();
+    const getRanking = () => {
+        Promise.all([
+            PublicRegistrationService.getTeamsSortedByGroupPoints(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicSettingsService.getMaxGamesCount()
+        ])
+            .then(([teams, finalPlan, maxGames]) => {
+                setTeams(teams);
+                setFinalPlanCreated(finalPlan);
+                setMaxNumberOfGames(maxGames);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    }
 
-        const teamsRanked = getTeamsRanked();
-
-        const matchplan = checkMatch();
-        const finalplan = checkFinal();
-        const rounds = getNumberOfUnplayedRounds();
-
-        finalCheck.then((result) => {
-            setFinal(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
         });
-
-        teamsRanked.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        matchplan.then(value => {
-            setMatchPlanCreated(value);
-        })
-
-        finalplan.then(value => {
-            setFinalPlanCreated(value);
-        })
-
-        rounds.then(value => {
-            setRoundsToPlay(value);
-        })
     }
 
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
             getRanking();
+            updateShowTab2();
             event.detail.complete();
         }, 500);
     };
 
     useEffect(() => {
-        setUserCharacter(user?.character ?? null);
+        setUser(PublicCookiesService.getUser());
+    }, []);
+
+    useEffect(() => {
 
         getRanking();
+        updateShowTab2();
 
-        const tournamentOpen = getTournamentOpen();
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {
@@ -85,22 +77,20 @@ const Tab2: React.FC = () => {
             }
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
 
     }, [location]);
 
     useEffect(() => {
-        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+        if (!props.showTab2) {
             changeLocation();
         }
-    }, [matchPlanCreated, finalPlanCreated, roundsToPlay]);
+    }, [props.showTab2]);
 
     const changeLocation = () => {
-        if (matchPlanCreated && !finalPlanCreated && roundsToPlay < 2) {
+        if (!props.showTab2) {
             setError("Die Statistiken können momentan nicht angezeigt werden.");
-            setToastColor(errorToastColor);
             setShowToast(true);
             history.push('/tab1');
         }
@@ -120,22 +110,27 @@ const Tab2: React.FC = () => {
                         Rangliste
                     </LinearGradient>
                 </h1>
+                {finalPlanCreated ? (
+                    <StaticTeamGraph teams={teams} />
+                ) : (
+                    <></>
+                )}
                 <div className={"flexContainer"}>
                     {teams ? (
                         teams
                             .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${userCharacter === team.character?.characterName ? 'userTeam' : ''}`}>
+                                <div key={team.id} className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''}`}>
                                     <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character?.characterName}.png`} alt={team.character?.characterName}
+                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
                                             className={"iconTeam"} />
                                     </div>
                                     <div>
                                         <p>{team.teamName}</p>
                                         <p className={"punkte"}>{index + 1}. Platz</p>
-                                        {final ? (
+                                        {finalPlanCreated ? (
                                             <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         ) : (
-                                            ""
+                                            <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>
                                         )}
 
                                     </div>
@@ -146,16 +141,11 @@ const Tab2: React.FC = () => {
                     )}
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     );

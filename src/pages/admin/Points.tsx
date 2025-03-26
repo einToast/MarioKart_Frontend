@@ -1,42 +1,31 @@
-import {
-    IonAccordionGroup,
-    IonButton,
-    IonCheckbox,
-    IonContent,
-    IonIcon,
-    IonPage, IonToast
-} from "@ionic/react";
+import { IonAccordionGroup, IonButton, IonCheckbox, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import PointsCard from "../../components/cards/PointsCard";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import PointsComponent from "../../components/admin/PointsComponent";
+import Toast from '../../components/Toast';
 import { RoundReturnDTO } from "../../util/api/config/dto";
-import { saveRound } from "../../util/service/adminService";
-import { getAllRounds, getRound } from "../../util/service/dashboardService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { AdminScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
-
 
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
-    const [numberOfFinalRounds, setNumberOfFinalRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
-    const user = getUser();
     const history = useHistory();
     const location = useLocation();
 
     const getSelectedRound = (id: number) => {
-        const round = getRound(id);
+        const round = AdminScheduleService.getRoundById(id);
         round.then((round) => {
             round.games = round.games?.sort((a, b) => a.id - b.id) || [];
             setRound(round);
@@ -45,38 +34,39 @@ const Points: React.FC = () => {
         });
     };
 
-    const handleSavePoints = async () => {
-        try {
-            const savedRound = await saveRound(round);
-
-            if (savedRound) {
-                setError('Runde erfolgreich gespeichert');
-                setToastColor(successToastColor)
+    const handleSavePoints = () => {
+        AdminScheduleService.saveRound(round)
+            .then(savedRound => {
+                if (savedRound) {
+                    setError('Runde erfolgreich gespeichert');
+                    setIsError(false);
+                } else {
+                    setError('Runde konnte nicht gespeichert werden');
+                    setIsError(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+            })
+            .finally(() => {
                 setShowToast(true);
-            } else {
-                throw new TypeError('Runde konnte nicht gespeichert werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
+            });
     };
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const rounds = getAllRounds();
+        const rounds = AdminScheduleService.getRounds();
         rounds.then((rounds) => {
             rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
             getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
             setNumberOfRounds(rounds.length);
-            setNumberOfFinalRounds(rounds.filter(round => round.finalGame).length);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }, [location]);
@@ -110,10 +100,21 @@ const Points: React.FC = () => {
                         </LinearGradient>
                     </h2>
                     <div>
-                        {/* TODO: differentiate between round and final round */}
-                        <select name="round" id="round" onChange={(e) => getSelectedRound(parseInt(e.target.value))}>
+                        <select
+                            name="round"
+                            id="round"
+                            value={round.roundNumber}
+                            onChange={(e) => getSelectedRound(parseInt(e.target.value))}
+                        >
                             {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
-                                return <option value={round_number + 1} key={round_number + 1} selected={round_number + 1 === round.roundNumber}>Runde {round_number + 1}</option>
+                                const roundNum = round_number + 1;
+                                const isFinalRound = round.roundNumber === roundNum && round.finalGame;
+
+                                return (
+                                    <option value={roundNum} key={roundNum}>
+                                        {isFinalRound ? 'Finale' : `Runde ${roundNum}`}
+                                    </option>
+                                );
                             })}
                         </select>
                     </div>
@@ -124,9 +125,9 @@ const Points: React.FC = () => {
                             <p className="timeStamp">{round.startTime.split('T')[1].slice(0, 5)} - {round.endTime.split('T')[1].slice(0, 5)}</p>
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
-                            {round.games?.map((game) => (
-                                game.teams = game.teams?.sort((a, b) => a.id - b.id) || [],
-                                <PointsCard
+                            {round.games.map((game) => (
+                                game.teams = game.teams.sort((a, b) => a.id - b.id) || [],
+                                <PointsComponent
                                     key={game.id}
                                     game={game}
                                     roundId={round.id}
@@ -164,16 +165,11 @@ const Points: React.FC = () => {
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonPage>
     );

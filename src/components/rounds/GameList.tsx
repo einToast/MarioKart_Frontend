@@ -1,19 +1,22 @@
 import React from 'react';
 import { GameReturnDTO } from '../../util/api/config/dto';
 import { GameListProps } from '../../util/api/config/interfaces';
-import RoundComponentAll from '../RoundComponentAll';
-import RoundComponentSwiper from '../RoundComponentSwiper';
+import PauseComponentAll from './PauseComponentAll';
+import PauseComponentSwiper from './PauseComponentSwiper';
+import RoundComponentAll from './RoundComponentAll';
+import RoundComponentSwiper from './RoundComponentSwiper';
 
-export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => {
+export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {
-        return games.map(game => {
-            const hasLoggedInCharacter = game.teams?.some(team =>
-                team.character?.characterName === user?.character
+
+        const gamesWithSortedTeams = games.map(game => {
+            const hasLoggedInCharacter = game.teams.some(team =>
+                team.id === user?.teamId
             ) || false;
 
             if (hasLoggedInCharacter && game.teams) {
                 const loggedInTeamIndex = game.teams.findIndex(team =>
-                    team.character?.characterName === user?.character
+                    team.id === user?.teamId
                 );
                 if (loggedInTeamIndex !== -1) {
                     const loggedInTeam = game.teams.splice(loggedInTeamIndex, 1);
@@ -23,11 +26,17 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => 
 
             return game;
         });
+
+        return gamesWithSortedTeams.sort((a, b) => {
+            const aHasUser = a.teams.some(team => team.id === user?.teamId) ? 1 : 0;
+            const bHasUser = b.teams.some(team => team.id === user?.teamId) ? 1 : 0;
+            return bHasUser - aHasUser;
+        });
     };
 
     const filteredGames = viewType === 'personal'
         ? games.filter(game =>
-            game.teams?.some(team => team.character?.characterName === user?.character) || false
+            game.teams.some(team => team.id === user?.teamId) || false
         )
         : games;
 
@@ -35,13 +44,28 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => 
 
 
     if (sortedGames.length === 0) {
-        return (
-            <p>Du hast kein Spiel.</p>
-        );
+        const teamOfUser = teamsNotInRound.find(team => team.id === user?.teamId);
+        if (teamOfUser) {
+            return (
+                <PauseComponentAll
+                    team={teamOfUser}
+                />
+            );
+        } else {
+            return (
+                <p>Du hast kein Spiel in dieser Runde.</p>
+            );
+        }
     }
 
     return (
         <>
+            {viewType === 'all' && teamsNotInRound.some(team => team.id === user?.teamId) && (
+                <PauseComponentSwiper
+                    teams={teamsNotInRound}
+                    user={user}
+                />
+            )}
             {sortedGames.map(game => {
                 const switchColor = game.switchGame;
                 return viewType === 'all' ? (
@@ -60,6 +84,12 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType }) => 
                     />
                 );
             })}
+            {viewType === 'all' && !teamsNotInRound.some(team => team.id === user?.teamId) && teamsNotInRound.length > 0 && (
+                <PauseComponentSwiper
+                    teams={teamsNotInRound}
+                    user={user}
+                />
+            )}
         </>
     );
-}; 
+};

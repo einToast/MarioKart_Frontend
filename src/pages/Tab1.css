@@ -79,34 +79,44 @@ body:not(.all-games-selected) .flexSpiel {
             }
         }
 
-        .imageContainer {
-            img {
-                left: 3px;
-            }
-
-            &.weiß:after {
-                background-color: #ECECEC !important;
-            }
-
-            &.grün:after {
-                background-color: #9DDAAA !important;
-            }
-
-            &.blau:after {
-                background-color: #9DAEDA !important;
-            }
-
-            &.rot:after {
-                background-color: #DA9DC9 !important;
+        &.gelb {
+            p:last-of-type {
+                color: #F5D76E !important;
             }
         }
-    }
 
-    .roundContainer {
-        gap: 10px;
-        display: flex;
-        flex-direction: column;
+    .imageContainer {
+        img {
+            left: 3px;
+        }
+
+        &.weiß:after {
+            background-color: #ECECEC !important;
+        }
+
+        &.grün:after {
+            background-color: #9DDAAA !important;
+        }
+
+        &.blau:after {
+            background-color: #9DAEDA !important;
+        }
+
+        &.rot:after {
+            background-color: #DA9DC9 !important;
+        }
+
+        &.gelb:after {
+            background-color: #F5D76E !important;
+        }
     }
+}
+
+.roundContainer {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+}
 }
 
 .all-games-selected .flexSpiel {
@@ -156,35 +166,51 @@ body:not(.all-games-selected) .flexSpiel {
             }
         }
 
+        .gelb {
+            p:last-of-type {
+                color: #F5D76E !important;
+            }
+        }
+
 
         &:last-of-type {
             margin-bottom: 0 !important;
         }
 
         .imageContainer {
+            .round {
+                img {
+                    width: 35px !important;
+                    position: absolute;
 
-            img {
-                width: 35px !important;
-                position: absolute;
+                    &:first-of-type {
+                        top: 50px;
+                        left: 35px;
+                    }
 
-                &:first-of-type {
-                    left: 35px;
-                    top: 50px;
+                    &:nth-child(2) {
+                        top: 25px;
+                        left: 85px;
+                    }
+
+                    &:nth-child(3) {
+                        top: 60px;
+                        left: 70px;
+                    }
+
+                    &:last-of-type {
+                        top: 15px;
+                        left: 50px;
+                    }
                 }
+            }
 
-                &:nth-child(2) {
-                    top: 25px;
-                    left: 85px;
-                }
-
-                &:nth-child(3) {
-                    top: 60px;
-                    left: 70px;
-                }
-
-                &:last-of-type {
-                    left: 50px;
-                    top: 15px;
+            .pause {
+                img {
+                    width: 55px !important;
+                    position: absolute;
+                    left: 55px;
+                    top: 28px;
                 }
             }
 
@@ -214,11 +240,14 @@ body:not(.all-games-selected) .flexSpiel {
             &.rot:after {
                 background-color: #DA9DC9 !important;
             }
+
+            &.gelb:after {
+                background-color: #F5D76E !important;
+            }
         }
+
     }
 }
-
-
 .roundContainer {
     padding-bottom: 15px;
 }
@@ -238,7 +267,6 @@ body:not(.all-games-selected) .flexSpiel {
         display: flex;
     }
 }
-
 
 
 

@@ -29,3 +29,4 @@ export enum ChangeType {
     FINAL_PLAN = "Finalspiele",
     ALL = "Anwendung"
 }
+

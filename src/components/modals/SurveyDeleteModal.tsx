@@ -1,33 +1,28 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { removeQuestion } from "../../util/service/surveyService";
-
+import { AdminSurveyService } from '../../util/service';
+import Toast from '../Toast';
 
 const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
-
-    const handleDeletion = async () => {
-        try {
-            await removeQuestion(question);
-            closeModal({ surveyDeleted: true });
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
+    const handleDelete = () => {
+        AdminSurveyService.deleteQuestion(question)
+            .then(() => {
+                return closeModal({ surveyDeleted: true });
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyDeleted: false })}>
@@ -50,11 +45,11 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton className={"round"} onClick={handleDeletion}
+                    <IonButton className={"round"} onClick={handleDelete}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                handleDeletion();
+                                handleDelete();
                             }
                         }}
                     >
@@ -66,16 +61,11 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

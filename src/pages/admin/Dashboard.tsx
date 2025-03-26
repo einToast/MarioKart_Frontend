@@ -1,62 +1,50 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-    IonToast
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
-import { errorToastColor } from "../../util/api/config/constants";
-import { checkFinal, checkMatch } from "../../util/service/adminService";
-import { checkToken, getUser, removeToken } from "../../util/service/loginService";
+import Toast from "../../components/Toast";
+import { PublicScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 
 const Dashboard: React.FC = () => {
 
     const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isRoundsUnplayedZero, setIsRoundsUnplayedZero] = useState<boolean>(false);
+
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
-    // TODO: user into useEffect (in every page)
-    const user = getUser();
     const history = useHistory();
     const location = useLocation();
 
     const handleLogout = () => {
-        removeToken();
+        PublicCookiesService.removeToken();
         history.push('/admin/login');
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const match = checkMatch();
-        const final = checkFinal();
-
-        match.then((result) => {
-            setIsMatchPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        final.then((result) => {
-            setIsFinalPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedZero()
+        ])
+            .then(([matchPlan, finalPlan, roundsZero]) => {
+                setIsMatchPlan(matchPlan);
+                setIsFinalPlan(finalPlan);
+                setIsRoundsUnplayedZero(roundsZero);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }, [location]);
 
 
@@ -89,7 +77,7 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {!isFinalPlan && isMatchPlan ?
+                        {!isFinalPlan && isMatchPlan && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
@@ -98,10 +86,14 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {isFinalPlan ?
+                        {isMatchPlan && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
                                 <div>
-                                    <p>Endergebnis</p>
+                                    {isFinalPlan ?
+                                        <p>Endergebnis</p>
+                                        :
+                                        <p>Zwischenergebnis</p>
+                                    }
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
@@ -132,18 +124,24 @@ const Dashboard: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
+                    <a onClick={() => history.push("/login")}
+                        style={{ cursor: "pointer", textDecoration: "underline" }}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                history.push('/login');
+                            }
+                        }}
+                    >
+                        Zurück zum Team Login
+                    </a>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     );

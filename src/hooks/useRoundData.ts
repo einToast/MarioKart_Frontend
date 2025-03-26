@@ -1,52 +1,67 @@
 import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import { BreakReturnDTO, RoundReturnDTO } from '../util/api/config/dto';
+import { BreakReturnDTO, RoundReturnDTO, TeamReturnDTO } from '../util/api/config/dto';
 import { UseRoundDataReturn } from '../util/api/config/interfaces';
-import { getBothCurrentRounds } from '../util/service/dashboardService';
-import { getTournamentOpen } from '../util/service/teamRegisterService';
+import { PublicRegistrationService, PublicScheduleService, PublicSettingsService } from '../util/service';
 
 export const useRoundData = (): UseRoundDataReturn => {
     const [currentRound, setCurrentRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
     const [nextRound, setNextRound] = useState<RoundReturnDTO | BreakReturnDTO | null>(null);
-    const [noGames, setNoGames] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const [teamsNotInCurrentRound, setTeamsNotInCurrentRound] = useState<TeamReturnDTO[]>([]);
+    const [teamsNotInNextRound, setTeamsNotInNextRound] = useState<TeamReturnDTO[]>([]);
+    const [error, setError] = useState<string>("");
 
     const history = useHistory();
 
     const refreshRounds = async () => {
-        try {
-            const currentAndNextRound = await getBothCurrentRounds();
-            let isBreak = false;
+        return PublicScheduleService.getCurrentRounds()
+            .then(currentAndNextRound => {
+                let isBreak = false;
 
-            if (currentAndNextRound[0]) {
-                const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
-                if ("breakEnded" in formattedCurrentRound) {
-                    isBreak = true;
+                if (currentAndNextRound[0]) {
+                    const formattedCurrentRound = formatRoundTimes(currentAndNextRound[0], isBreak);
+                    if ("breakEnded" in formattedCurrentRound) {
+                        isBreak = true;
+                        setCurrentRound(formattedCurrentRound);
+                    } else {
+                        Promise.all([
+                            PublicRegistrationService.getTeamsNotInRound(formattedCurrentRound.id),
+                            Promise.resolve(formattedCurrentRound)
+                        ])
+                            .then(([teamsNotInRound, round]) => {
+                                setTeamsNotInCurrentRound(teamsNotInRound);
+                                setCurrentRound(round);
+                            });
+                    }
                 }
-                setCurrentRound(formattedCurrentRound);
-                setNoGames(false);
-            } else {
-                setNoGames(true);
-            }
 
+                if (currentAndNextRound[1]) {
+                    const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
+                    Promise.all([
+                        PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id),
+                        Promise.resolve(formattedNextRound)
+                    ])
+                        .then(([teamsNotInRound, round]) => {
+                            setTeamsNotInNextRound(teamsNotInRound);
+                            setNextRound(round);
+                        });
+                }
 
-            if (currentAndNextRound[1]) {
-                const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
-                setNextRound(formattedNextRound);
-            }
+                if (isBreak) {
+                    const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
+                    setNextRound(formattedNextRound);
+                }
 
-            if (isBreak) {
-                const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
-                setNextRound(formattedNextRound);
-            }
-
-            const tournamentOpen = await getTournamentOpen();
-            if (!tournamentOpen) {
-                history.push('/admin');
-            }
-        } catch (err) {
-            setError(err.message);
-        }
+                return PublicSettingsService.getTournamentOpen();
+            })
+            .then(tournamentOpen => {
+                if (!tournamentOpen) {
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+            });
     };
 
     const formatRoundTimes = (round: RoundReturnDTO, isBreak: boolean): RoundReturnDTO | BreakReturnDTO => {
@@ -70,8 +85,9 @@ export const useRoundData = (): UseRoundDataReturn => {
     return {
         currentRound,
         nextRound,
-        noGames,
+        teamsNotInCurrentRound,
+        teamsNotInNextRound,
         error,
         refreshRounds
     };
-}; 
+};

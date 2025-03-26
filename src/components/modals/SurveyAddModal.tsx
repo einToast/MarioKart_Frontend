@@ -1,24 +1,21 @@
-import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonItem, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { submitQuestion } from "../../util/service/surveyService";
+import { AdminSurveyService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
+import Toast from '../Toast';
 
 const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void }> = ({ showModal, closeModal }) => {
     const [questionText, setQuestionText] = useState('');
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
     const [numberOfOptions, setNumberOfOptions] = useState(4);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
-    const user = getUser();
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const handleOptionChange = (index, value) => {
         const newOptions = [...options];
@@ -46,25 +43,28 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
         closeModal({ surveyCreated: false });
     }
 
-    const handleSubmit = async () => {
-        try {
-            const newQuestion = await submitQuestion(questionText, questionType, options, finalTeamsOnly);
-
-            if (newQuestion) {
-                resetQuestion();
-                closeModal({ surveyCreated: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-
+    const handleSubmit = () => {
+        AdminSurveyService.createQuestion(
+            questionText,
+            questionType,
+            options,
+            finalTeamsOnly
+        )
+            .then(newQuestion => {
+                if (newQuestion) {
+                    resetQuestion();
+                    return closeModal({ surveyCreated: true });
+                } else {
+                    setError('Umfrage konnte nicht erstellt werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={resetQuestion}>
             <IonContent>
@@ -204,16 +204,11 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

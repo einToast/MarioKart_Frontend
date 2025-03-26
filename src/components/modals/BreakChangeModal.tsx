@@ -1,18 +1,13 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { differenceInMinutes } from "date-fns";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
-import {
-    BreakReturnDTO,
-    RoundReturnDTO
-} from "../../util/api/config/dto";
+import { BreakReturnDTO, RoundReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import { changeBreak } from "../../util/service/adminService";
-import { getAllRounds } from "../../util/service/dashboardService";
-import { getUser } from "../../util/service/loginService";
+import { AdminScheduleService } from '../../util/service';
+import Toast from '../Toast';
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
 
@@ -21,58 +16,53 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     const [beforeRound, setBeforeRound] = useState<number>(0);
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState<boolean>(false);
-
-    const user = getUser();
 
     const resetBreak = () => {
         setBreakDuration(0);
         setBeforeRound(0);
     }
 
-    const handleChange = async () => {
-        try {
-            const newTeam = await changeBreak(beforeRound, breakDuration, breakEnded);
-
-            if (newTeam) {
-                resetBreak();
-                closeModal({ breakChanged: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminScheduleService.updateBreak(beforeRound, breakDuration, breakEnded)
+            .then(newBreak => {
+                if (newBreak) {
+                    resetBreak();
+                    return closeModal({ breakChanged: true });
+                } else {
+                    setError('Pause konnte nicht geändert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     const enterBreak = async () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
         setBeforeRound(aBreak.round?.id || -1);
-    }
+    };
 
-    const getRounds = async () => {
-        try {
-            const rounds = await getAllRounds();
-            setRounds(rounds);
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
+    const getRounds = () => {
+        AdminScheduleService.getRounds()
+            .then(rounds => {
+                setRounds(rounds);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     }
 
 
     useEffect(() => {
         enterBreak()
-        getRounds();
+        if (showModal) getRounds();
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ breakChanged: false })}>
             <IonContent>
@@ -144,16 +134,11 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

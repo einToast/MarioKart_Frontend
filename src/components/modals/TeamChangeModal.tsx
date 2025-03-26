@@ -1,67 +1,60 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import { TeamModalResult} from "../../util/api/config/interfaces";
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { changeTeamNameAndCharacter } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
-import { getAllAvailableCharacters } from "../../util/service/teamRegisterService";
+import { TeamModalResult } from "../../util/api/config/interfaces";
+import { AdminRegistrationService, PublicRegistrationService } from '../../util/service';
+import Toast from '../Toast';
 
 const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
 
     const [teamName, setTeamName] = useState<string>('');
     const [character, setCharacter] = useState<string>('');
     const [availableCharacters, setAvailableCharacters] = useState<string[]>([]);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
 
-    const user = getUser();
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const resetTeam = () => {
         setTeamName('');
     }
 
-    const handleChange = async () => {
-        try {
-            const newTeam = await changeTeamNameAndCharacter(team, teamName, character);
-
-            if (newTeam) {
-                resetTeam();
-                closeModal({ teamChanged: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminRegistrationService.updateTeamNameAndCharacter(team, teamName, character)
+            .then(updatedTeam => {
+                if (updatedTeam) {
+                    resetTeam();
+                    return closeModal({ teamChanged: true });
+                } else {
+                    setError('Team konnte nicht aktualisiert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     const getCharacterNames = () => {
-        const allCharacters = getAllAvailableCharacters()
+        const allCharacters = PublicRegistrationService.getAvailableCharacters();
 
         allCharacters.then((response) => {
             setAvailableCharacters(response.map(character => character.characterName));
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
     };
 
     useEffect(() => {
         setTeamName(team.teamName);
-        setCharacter(team.character?.characterName || '');
-        getCharacterNames();
+        setCharacter(team.character.characterName || '');
+        if (showModal) getCharacterNames();
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamChanged: false })}>
             <IonContent>
@@ -74,7 +67,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                             type="text"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
-                            placeholder="Frage eingeben"
+                            placeholder="Name eingeben"
                             required
                         />
                     </div>
@@ -129,16 +122,11 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

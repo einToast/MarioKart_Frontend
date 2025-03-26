@@ -1,37 +1,33 @@
-import { IonButton, IonContent, IonIcon, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
-import { changeService } from "../../util/service/adminService";
-import { getUser } from "../../util/service/loginService";
-import { getRegistrationOpen, getTournamentOpen } from "../../util/service/teamRegisterService";
+import { AdminSettingsService, PublicSettingsService } from '../../util/service';
 import { ChangeType } from "../../util/service/util";
+import Toast from '../Toast';
 
 const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: ChangeType) => void, changeType: ChangeType }> = ({ showModal, closeModal, changeType }) => {
 
     const [message, setMessage] = useState<string>('');
     const [secondaryMessage, setSecondaryMessage] = useState<string>('');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
-    const [error, setError] = useState<string>('Error');
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
 
 
-    const user = getUser();
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
 
-    const handleChange = async () => {
-        try {
-            await changeService(changeType);
-            closeModal(changeType);
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
+    const handleChange = () => {
+        AdminSettingsService.changeService(changeType)
+            .then(() => {
+                return closeModal(changeType);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
 
     const changeMessage = () => {
         const message_template = "Willst du wirklich <span>___</span> ...?";
@@ -74,27 +70,20 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
 
 
     useEffect(() => {
-        const registrationOpen = getRegistrationOpen();
-        const tournamentOpen = getTournamentOpen();
-
-        registrationOpen.then((response) => {
-            setIsRegistrationOpen(response);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        tournamentOpen.then((response) => {
-            setIsTournamentOpen(response);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
+        Promise.all([
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen()
+        ])
+            .then(([registrationOpen, tournamentOpen]) => {
+                setIsRegistrationOpen(registrationOpen);
+                setIsTournamentOpen(tournamentOpen);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
 
         changeMessage();
-
     }, [showModal]);
 
     return (
@@ -136,16 +125,11 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
                     </IonButton>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

@@ -1,14 +1,12 @@
-import { IonButton, IonContent, IonIcon, IonItem, IonModal, IonToast } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonItem, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { errorToastColor } from "../../util/api/config/constants";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { getUser } from "../../util/service/loginService";
-import { changeQuestion } from "../../util/service/surveyService";
+import { AdminSurveyService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
-
+import Toast from '../Toast';
 
 const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
 
@@ -16,12 +14,10 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [questionType, setQuestionType] = useState<QuestionType>(QuestionType.MULTIPLE_CHOICE);
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
     const [numberOfOptions, setNumberOfOptions] = useState(4);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState<boolean>(false);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
 
-    const user = getUser();
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
 
     const handleQuestionTypeChange = (e) => {
         setQuestionType(e.target.value);
@@ -57,26 +53,28 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         setNumberOfOptions(4);
     }
 
-    const handleChange = async () => {
-        try {
-            question.questionText = questionText;
-            question.questionType = questionType;
-            question.options = options;
-            question.finalTeamsOnly = finalTeamsOnly;
-            const newQuestion = await changeQuestion(question);
-
-            if (newQuestion) {
-                resetQuestion();
-                closeModal({ surveyChanged: true });
-            } else {
-                throw new TypeError('Umfrage konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-
+    const handleChange = () => {
+        AdminSurveyService.updateQuestion({
+            ...question,
+            questionText: questionText,
+            questionType: questionType,
+            options: options,
+            finalTeamsOnly: finalTeamsOnly,
+            active: question.active,
+            visible: question.visible,
+        })
+            .then(updatedQuestion => {
+                if (updatedQuestion) {
+                    resetQuestion();
+                    return closeModal({ surveyChanged: true });
+                }
+                setError('Umfrage konnte nicht aktualisiert werden');
+                setShowToast(true);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
     };
 
     useEffect(() => {
@@ -88,7 +86,6 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     }, [showModal]);
 
-    //TODO: publish survey & add to survey Container
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyChanged: false })}>
             <IonContent>
@@ -160,6 +157,24 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </div>
                         </>
                     }
+                    {(questionType === QuestionType.TEAM) &&
+                        <div className="borderContainer multipleSelect">
+                            <div>
+                                <p>Teamauswahl</p>
+                                <IonItem className={"item-background-color"}>
+                                    <select
+                                        value={finalTeamsOnly ? 'true' : 'false'}
+                                        onChange={(e) => setFinalTeamsOnly(e.target.value === 'true')}
+                                        className="item-background-color"
+                                        disabled
+                                    >
+                                        <option value="false">Alle Teams</option>
+                                        <option value="true">Nur Finalteams</option>
+                                    </select>
+                                </IonItem>
+                            </div>
+                        </div>
+                    }
                 </form>
                 <div className={"playedContainer"}>
 
@@ -194,16 +209,11 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonModal>
     );

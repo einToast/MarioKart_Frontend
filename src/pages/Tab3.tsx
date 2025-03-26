@@ -8,22 +8,40 @@ import React, { useEffect } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import { getTournamentOpen } from "../util/service/teamRegisterService";
+import QRCodeComponent from "../components/QRCodeComponent";
+import { ShowTab2Props } from '../util/api/config/interfaces';
+import { PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
-const Tab3: React.FC = () => {
+const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const history = useHistory();
     const location = useLocation();
 
+    const updateShowTab2 = () => {
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
+        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        }).catch(error => {
+            console.error("Error fetching schedule data:", error);
+        });
+    }
+
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
+            updateShowTab2();
             event.detail.complete();
         }, 500);
     };
 
     useEffect(() => {
-        const tournamentOpen = getTournamentOpen();
+
+        updateShowTab2();
+
+        const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {
@@ -75,6 +93,16 @@ const Tab3: React.FC = () => {
                     <div>
                         <IonIcon aria-hidden="true" icon={medalOutline} />
                         <p><span>21:00</span> Siegerehrung</p>
+                    </div>
+                </div>
+                <br />
+                <h3>QR-Code für die Webseite</h3>
+                <div className={"progressContainer"}>
+                    {/* <div>
+                        <p>Gebt diesen QR-Code gerne an Leute weiter, die noch nicht den Link zu dieser Seite haben.</p>
+                    </div> */}
+                    <div>
+                        <QRCodeComponent />
                     </div>
                 </div>
                 {/*<h3>Organisatoren</h3>*/}

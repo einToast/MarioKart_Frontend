@@ -1,10 +1,4 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-    IonToast
-} from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
@@ -13,21 +7,12 @@ import '../RegisterTeam.css';
 
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import TournamentModal from "../../components/modals/TournamentModal";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import Toast from "../../components/Toast";
 import { BreakReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
-import {
-    checkFinal,
-    checkMatch,
-    getABreak
-} from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
-import {
-    getRegistrationOpen,
-    getTournamentOpen
-} from "../../util/service/teamRegisterService";
+import { AdminScheduleService, PublicScheduleService, PublicSettingsService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
-
 
 const Control: React.FC = () => {
 
@@ -35,16 +20,16 @@ const Control: React.FC = () => {
     const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
-    const [aBreak, setBreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: { id: 0, startTime: '', endTime: '', finalGame: false, played: false } });
+    const [aBreak, setABreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
-    const user = getUser();
+    const [error, setError] = useState<string>('Error');
+    const [isError, setIsError] = useState<boolean>(true);
+    const [showToast, setShowToast] = useState(false);
+
     const history = useHistory();
     const location = useLocation();
 
@@ -54,25 +39,24 @@ const Control: React.FC = () => {
     }
 
     const handleOpenBreakModal = () => {
-        const breakData = getABreak();
+        const breakData = AdminScheduleService.getBreak();
         breakData.then((result) => {
-            setBreak(result);
+            setABreak(result);
             setShowBreakModal(true);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }
 
     const closeModal = (changeT: ChangeType) => {
         setModalClosed(prev => !prev);
-
         if (typeof changeT !== 'string') {
             return;
         }
 
-        setToastColor(successToastColor);
+        setIsError(false);
         switch (changeT) {
             case ChangeType.TOURNAMENT:
                 setError('Das Turnier wurde ' + (isTournamentOpen ? 'geschlossen' : 'geöffnet'));
@@ -97,7 +81,7 @@ const Control: React.FC = () => {
                 break;
             default:
                 setError('Error');
-                setToastColor(errorToastColor);
+                setIsError(true);
                 break;
         }
         setShowToast(true);
@@ -107,53 +91,34 @@ const Control: React.FC = () => {
         setModalClosed(prev => !prev);
 
         if (changeBreak.breakChanged) {
-            setToastColor(successToastColor);
             setError('Die Pause wurde geändert');
+            setIsError(false);
             setShowToast(true);
         }
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
 
-        const match = checkMatch();
-        const final = checkFinal();
-        const registration = getRegistrationOpen();
-        const tournament = getTournamentOpen();
-
-        match.then((result) => {
-            setIsMatchPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        final.then((result) => {
-            setIsFinalPlan(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        registration.then((result) => {
-            setIsRegistrationOpen(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        tournament.then((result) => {
-            setIsTournamentOpen(result);
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
+        Promise.all([
+            PublicScheduleService.isMatchPlanCreated(),
+            PublicScheduleService.isFinalPlanCreated(),
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen(),
+        ])
+            .then(([matchPlan, finalPlan, registrationOpen, tournamentOpen]) => {
+                setIsMatchPlan(matchPlan);
+                setIsFinalPlan(finalPlan);
+                setIsRegistrationOpen(registrationOpen);
+                setIsTournamentOpen(tournamentOpen);
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
 
     }, [modalClosed, location]);
 
@@ -311,16 +276,11 @@ const Control: React.FC = () => {
                     aBreak={aBreak}
                 />
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
             />
         </IonPage>
     );

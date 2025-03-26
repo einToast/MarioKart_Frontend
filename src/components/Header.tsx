@@ -2,15 +2,15 @@ import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from "react-router";
-import characters from "../util/api/config/characters";
-import { getUser, removeUser } from "../util/service/loginService";
+import { User } from '../util/api/config/interfaces';
+import { PublicCookiesService } from '../util/service';
 import './Header.css';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const user = getUser();
     const history = useHistory();
 
     const toggleDropdown = () => {
@@ -18,10 +18,13 @@ const Header: React.FC = () => {
     };
 
     const handleLogout = () => {
-        removeUser();
+        PublicCookiesService.removeUser();
         window.location.assign('/');
-        // history.push('/');
     };
+
+    useEffect(() => {
+        setUser(PublicCookiesService.getUser());
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -47,7 +50,7 @@ const Header: React.FC = () => {
                 }}
             >
                 <IonAvatar>
-                    {user && user.character && characters.includes(user.character) &&
+                    {user && user.character &&
                         <img src={`/characters/${user.character}.png`} alt={user.character}
                             className="iconTeam" />
                     }
@@ -70,6 +73,7 @@ const Header: React.FC = () => {
                 )}
             </div>
             <a onClick={() => history.push('/survey')}
+                title="Umfragen"
                 style={{ cursor: "pointer" }}
                 tabIndex={0}
                 onKeyDown={(e) => {

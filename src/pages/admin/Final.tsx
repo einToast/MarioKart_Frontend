@@ -1,107 +1,90 @@
-import {
-    IonButton,
-    IonContent,
-    IonIcon,
-    IonPage,
-    IonToast
-} from "@ionic/react";
-import { arrowBackOutline, arrowForwardOutline, removeCircleOutline } from 'ionicons/icons';
+import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
+import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
-import { errorToastColor, successToastColor } from "../../util/api/config/constants";
+import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
+import Toast from '../../components/Toast';
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import {
-    changeTeam,
-    createTeamFinalPlan,
-    getTeamTop4FinalRanked,
-    resetAllTeamFinalParticipation,
-} from "../../util/service/adminService";
-import { checkToken, getUser } from "../../util/service/loginService";
+import { AdminRegistrationService, AdminScheduleService } from "../../util/service";
+import { PublicCookiesService } from "../../util/service";
 import "./Final.css";
 
 const Final: React.FC = () => {
-
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
-    const [showToast, setShowToast] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
-    const user = getUser();
+    const [modalClosed, setModalClosed] = useState(false);
+
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
+
     const history = useHistory();
     const location = useLocation();
 
-    const handleTeamFinalRemove = async (team: TeamReturnDTO) => {
-        try {
-            const removedTeam = await changeTeam(team);
-            if (removedTeam) {
-                await getFinalTeams();
-            } else {
-                throw new TypeError('Team konnte nicht entfernt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
-    }
-
-    const handleTeamsReset = async () => {
-        try {
-            const teams = await resetAllTeamFinalParticipation();
-            if (teams) {
-                setError('Teams zurückgesetzt');
-                setToastColor(successToastColor);
+    const handleTeamsReset = () => {
+        AdminRegistrationService.resetEveryTeamFinalParticipation()
+            .then(teams => {
+                if (teams) {
+                    setError('Teams zurückgesetzt');
+                    setIsError(false);
+                    setShowToast(true);
+                    return getFinalTeams();
+                } else {
+                    setError('Teams konnten nicht zurückgesetzt werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
-                await getFinalTeams();
-            } else {
-                throw new TypeError('Teams konnten nicht zurückgesetzt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        }
+            });
     }
 
-    const getFinalTeams = async () => {
-        const teamNames = getTeamTop4FinalRanked();
+    const getFinalTeams = () => {
+        const teamNames = AdminRegistrationService.getFinalTeams();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
+            setIsError(true);
             setShowToast(true);
         });
     }
 
-    const handleFinalCreation = async () => {
-        try {
-            setButtonDisabled(true);
-            const final = await createTeamFinalPlan();
-            if (final) {
-                setError('Finale erfolgreich erstellt');
-                setToastColor(successToastColor);
+    const handleFinalCreation = () => {
+        setButtonDisabled(true);
+        AdminScheduleService.createFinalPlan()
+            .then(final => {
+                if (final) {
+                    setError('Finale erfolgreich erstellt');
+                    setIsError(false);
+                    setShowToast(true);
+                    history.push('/admin/dashboard');
+                } else {
+                    setError('Finale konnte nicht erstellt werden');
+                    setIsError(true);
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
-                history.push('/admin/dashboard');
-            } else {
-                throw new TypeError('Finale konnte nicht erstellt werden');
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        } finally {
-            setButtonDisabled(false);
-        }
+            })
+            .finally(() => {
+                setButtonDisabled(false);
+            });
     }
 
     useEffect(() => {
-        if (!checkToken()) {
+        if (!PublicCookiesService.checkToken()) {
             window.location.assign('/admin/login');
         }
         getFinalTeams();
-    }, [location]);
+    }, [modalClosed, location]);
 
     return (
         <IonPage>
@@ -126,29 +109,20 @@ const Final: React.FC = () => {
 
                 <div className={"teamFinalContainer"}>
                     {teams ? (
-                        teams
-                            .map(team => (
-                                // TODO: add image and points
-                                <div key={team.id} className={"teamFinal"}>
-                                    <h3>{team.teamName}</h3>
-                                    <IonIcon slot="end"
-                                        icon={removeCircleOutline}
-                                        style={{ cursor: "pointer" }}
-                                        onClick={() => handleTeamFinalRemove(team)}
-                                        tabIndex={0}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter' || e.key === ' ') {
-                                                handleTeamFinalRemove(team);
-                                            }
-                                        }}
-                                    ></IonIcon>
-                                </div>
-                            ))
+                        <TeamAdminContainer
+                            teams={teams}
+                            matchPlanCreated={true}
+                            finalPlanCreated={false}
+                            setModalClosed={setModalClosed}
+                            modalClosed={modalClosed}
+                            getTeams={getFinalTeams}
+                        />
                     ) : (
                         <p>loading...</p>
                     )
                     }
                 </div>
+                <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round secondary"}>
@@ -171,7 +145,7 @@ const Final: React.FC = () => {
                             ></IonIcon>
                         </div>
                     </IonButton>
-                    {/* TODO: fix, does not work properly */}
+                    {/* TODO: fix, does not work properly, idk */}
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleFinalCreation}
                             tabIndex={0}
@@ -193,18 +167,13 @@ const Final: React.FC = () => {
                         </div>
                     </IonButton>
                 </div>
+                <Toast
+                    message={error}
+                    showToast={showToast}
+                    setShowToast={setShowToast}
+                    isError={isError}
+                />
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
-                message={error}
-                duration={3000}
-                className={user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
-            />
         </IonPage>
     );
 };

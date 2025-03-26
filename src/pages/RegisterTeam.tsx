@@ -3,23 +3,18 @@ import {
     IonContent,
     IonIcon,
     IonPage,
-    IonToast
+    IonRefresher,
+    IonRefresherContent
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import Toast from "../components/Toast";
 import characters from "../util/api/config/characters";
-import { errorToastColor } from "../util/api/config/constants";
 import { LoginProps, User } from '../util/api/config/interfaces';
-import { setUser } from "../util/service/loginService";
-import {
-    createTeam,
-    getAllAvailableCharacters,
-    getRegistrationOpen, getTournamentOpen
-} from "../util/service/teamRegisterService";
+import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
-
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
@@ -27,7 +22,6 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const history = useHistory();
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
     const [error, setError] = useState<string>('Error');
-    const [toastColor, setToastColor] = useState<string>(errorToastColor);
     const [showToast, setShowToast] = useState(false);
 
     const location = useLocation();
@@ -38,72 +32,74 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     };
 
+    const handleLogin = () => {
+        PublicRegistrationService.registerTeam(teamName, selectedCharacter)
+            .then(team => {
+                if (team) {
+                    const user: User = {
+                        name: team.teamName,
+                        character: team.character.characterName || '',
+                        teamId: team.id
+                    };
+                    PublicCookiesService.setUser(user);
+                    props.setUser(user);
+                    history.push('/tab1');
+                } else {
+                    setError('Team konnte nicht registriert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+                getCharacterNames();
+            });
+    };
+
     const getCharacterNames = () => {
-        const allCharacters = getAllAvailableCharacters()
+        const allCharacters = PublicRegistrationService.getAvailableCharacters()
 
         allCharacters.then((response) => {
             setUpdatedCharacterNames(response.map(character => character.characterName));
         }).catch((error) => {
             setError(error.message);
-            setToastColor(errorToastColor);
             setShowToast(true);
         });
     };
 
-    useEffect(() => {
-        const registrationOpen = getRegistrationOpen();
-        const tournamentOpen = getTournamentOpen();
-
-        registrationOpen.then((response) => {
-            if (!response) {
-                history.push('/login');
-            }
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-
-        tournamentOpen.then((response) => {
-            if (!response) {
-                history.push('/admin');
-            }
-        }).catch((error) => {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
-        });
-        getCharacterNames();
-    }, [location]);
-
-
-    const handleLogin = async () => {
-        try {
-            const team = await createTeam(teamName, selectedCharacter);
-
-            if (team) {
-                const user: User = {
-                    name: team.teamName,
-                    character: team.character?.characterName || ''
-                };
-                setUser(user);
-                props.setUser(user);
-                history.push('/tab1');
-            } else {
-                throw new Error("Team konnte nicht erstellt werden");
-            }
-        } catch (error) {
-            setError(error.message);
-            setToastColor(errorToastColor);
-            setShowToast(true);
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
             getCharacterNames();
-        }
-    }
+            event.detail.complete();
+        }, 500);
+    };
 
+    useEffect(() => {
+        Promise.all([
+            PublicSettingsService.getRegistrationOpen(),
+            PublicSettingsService.getTournamentOpen(),
+            getCharacterNames()
+        ])
+            .then(([registrationOpen, tournamentOpen, _]) => {
+                if (!registrationOpen) {
+                    history.push('/login');
+                }
+                if (!tournamentOpen) {
+                    history.push('/admin');
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    }, [location]);
 
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent refreshingSpinner="circles" />
+                </IonRefresher>
                 <div className={"contentLogin"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
@@ -176,16 +172,11 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     </a>
                 </div>
             </IonContent>
-            <IonToast
-                isOpen={showToast}
-                onDidDismiss={() => setShowToast(false)}
+            <Toast
                 message={error}
-                duration={3000}
-                // className={ user ? 'tab-toast' : ''}
-                cssClass="toast"
-                style={{
-                    '--toast-background': toastColor
-                }}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={true}
             />
         </IonPage>
     )
