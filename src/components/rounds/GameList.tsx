@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameReturnDTO } from '../../util/api/config/dto';
 import { GameListProps } from '../../util/api/config/interfaces';
+import PauseComponentAll from './PauseComponentAll';
 import PauseComponentSwiper from './PauseComponentSwiper';
 import RoundComponentAll from './RoundComponentAll';
 import RoundComponentSwiper from './RoundComponentSwiper';
@@ -43,9 +44,18 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
 
 
     if (sortedGames.length === 0) {
-        return (
-            <p>Du hast kein Spiel.</p>
-        );
+        const teamOfUser = teamsNotInRound.find(team => team.id === user?.teamId);
+        if (teamOfUser) {
+            return (
+                <PauseComponentAll
+                    team={teamOfUser}
+                />
+            );
+        } else {
+            return (
+                <p>Du hast kein Spiel in dieser Runde.</p>
+            );
+        }
     }
 
     return (

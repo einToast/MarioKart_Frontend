@@ -79,6 +79,12 @@ body:not(.all-games-selected) .flexSpiel {
             }
         }
 
+        &.gelb {
+            p:last-of-type {
+                color: #F5D76E !important;
+            }
+        }
+
     .imageContainer {
         img {
             left: 3px;
@@ -98,6 +104,10 @@ body:not(.all-games-selected) .flexSpiel {
 
         &.rot:after {
             background-color: #DA9DC9 !important;
+        }
+
+        &.gelb:after {
+            background-color: #F5D76E !important;
         }
     }
 }
