@@ -2,7 +2,9 @@ import {
     IonButton,
     IonContent,
     IonIcon,
-    IonPage
+    IonPage,
+    IonRefresher,
+    IonRefresherContent
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +13,7 @@ import { LinearGradient } from "react-text-gradients";
 import Toast from "../components/Toast";
 import characters from "../util/api/config/characters";
 import { LoginProps, User } from '../util/api/config/interfaces';
-import { PublicRegistrationService, PublicSettingsService, PublicUserService } from "../util/service";
+import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
@@ -30,6 +32,30 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     };
 
+    const handleLogin = () => {
+        PublicRegistrationService.registerTeam(teamName, selectedCharacter)
+            .then(team => {
+                if (team) {
+                    const user: User = {
+                        name: team.teamName,
+                        character: team.character.characterName || '',
+                        teamId: team.id
+                    };
+                    PublicCookiesService.setUser(user);
+                    props.setUser(user);
+                    history.push('/tab1');
+                } else {
+                    setError('Team konnte nicht registriert werden');
+                    setShowToast(true);
+                }
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+                getCharacterNames();
+            });
+    };
+
     const getCharacterNames = () => {
         const allCharacters = PublicRegistrationService.getAvailableCharacters()
 
@@ -41,6 +67,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         });
     };
 
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            getCharacterNames();
+            event.detail.complete();
+        }, 500);
+    };
 
     useEffect(() => {
         Promise.all([
@@ -62,35 +94,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             });
     }, [location]);
 
-
-    const handleLogin = () => {
-        PublicRegistrationService.registerTeam(teamName, selectedCharacter)
-            .then(team => {
-                if (team) {
-                    const user: User = {
-                        name: team.teamName,
-                        character: team.character.characterName || '',
-                        teamId: team.id
-                    };
-                    PublicUserService.setUser(user);
-                    props.setUser(user);
-                    history.push('/tab1');
-                } else {
-                    setError('Team konnte nicht registriert werden');
-                    setShowToast(true);
-                }
-            })
-            .catch(error => {
-                setError(error.message);
-                setShowToast(true);
-                getCharacterNames();
-            });
-    };
-
-
     return (
         <IonPage>
             <IonContent fullscreen class="no-scroll">
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent refreshingSpinner="circles" />
+                </IonRefresher>
                 <div className={"contentLogin"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>

@@ -1,4 +1,4 @@
-import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
+import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent, } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from "react-router";
@@ -37,20 +37,30 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         }
     };
 
+    const getAllTeams = () => {
+        PublicRegistrationService.getTeams()
+            .then((response) => {
+                setTeams(response);
+            })
+            .catch((error) => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+    }
+
+    const handleRefresh = (event: CustomEvent) => {
+        setTimeout(() => {
+            getAllTeams();
+            event.detail.complete();
+        }, 500);
+    };
+
     useEffect(() => {
         if (PublicCookiesService.getUser()?.name) {
             history.push('/tab1');
         }
-        const allTeams = PublicRegistrationService.getTeams();
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        allTeams.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
 
         tournamentOpen.then((response) => {
             if (!response) {
@@ -61,11 +71,16 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             setIsError(true);
             setShowToast(true);
         });
+
+        getAllTeams();
     }, [location]);
 
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
+                <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
+                    <IonRefresherContent refreshingSpinner="circles" />
+                </IonRefresher>
                 <div className="contentLogin">
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
