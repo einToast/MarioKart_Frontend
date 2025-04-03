@@ -16,7 +16,7 @@
   "dependencies": {
     "@capacitor/app": "^7.0.1",
     "@capacitor/core": "^7.2.0",
-    "@capacitor/haptics": "^7.0.0",
+    "@capacitor/haptics": "^7.0.1",
     "@capacitor/keyboard": "^7.0.0",
     "@capacitor/status-bar": "^7.0.1",
     "@ionic/react": "^8.5.3",
