@@ -31,6 +31,10 @@
     font-display: swap;
 }
 
+body {
+    background-color: var(--ion-color-bg01);
+}
+
 * {
     font-family: "Tofino-Wide-Ultra";
     color: #ffffff !important;
