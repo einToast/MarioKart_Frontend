@@ -98,7 +98,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     return (
         <IonPage>
-            <Header></Header>
+            <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
