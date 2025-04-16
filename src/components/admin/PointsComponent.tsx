@@ -39,7 +39,8 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     };
 
     const handleSavePoints = () => {
-        AdminScheduleService.saveGame(roundId, game)
+        // AdminScheduleService.saveGame(roundId, game)
+        AdminScheduleService.saveGameDirect(game)
             .then(newPoints => {
                 if (newPoints) {
                     setError('Spiel erfolgreich gespeichert');

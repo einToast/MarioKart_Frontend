@@ -14,6 +14,7 @@ import "./Points.css";
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
+    const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); // Alle Runden speichern
     const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
@@ -35,7 +36,8 @@ const Points: React.FC = () => {
     };
 
     const handleSavePoints = () => {
-        AdminScheduleService.saveRound(round)
+        // AdminScheduleService.saveRound(round)
+        AdminScheduleService.saveRoundFull(round)
             .then(savedRound => {
                 if (savedRound) {
                     setError('Runde erfolgreich gespeichert');
@@ -59,9 +61,10 @@ const Points: React.FC = () => {
             window.location.assign('/admin/login');
         }
 
-        const rounds = AdminScheduleService.getRounds();
-        rounds.then((rounds) => {
+        const roundsPromise = AdminScheduleService.getRounds();
+        roundsPromise.then((rounds) => {
             rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
+            setRounds(rounds);
             getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
             setNumberOfRounds(rounds.length);
         }).catch((error) => {
@@ -106,16 +109,17 @@ const Points: React.FC = () => {
                             value={round.roundNumber}
                             onChange={(e) => getSelectedRound(parseInt(e.target.value))}
                         >
-                            {Array.from(Array(numberOfRounds).keys()).map((round_number) => {
-                                const roundNum = round_number + 1;
-                                const isFinalRound = round.roundNumber === roundNum && round.finalGame;
-
-                                return (
-                                    <option value={roundNum} key={roundNum}>
-                                        {isFinalRound ? 'Finale' : `Runde ${roundNum}`}
-                                    </option>
-                                );
-                            })}
+                            {(() => {
+                                let finalCount = 0;
+                                return rounds.map((r) => {
+                                    if (r.finalGame) finalCount++;
+                                    return (
+                                        <option value={r.roundNumber} key={r.roundNumber}>
+                                            {r.finalGame ? `Finale ${finalCount}` : `Runde ${r.roundNumber}`}
+                                        </option>
+                                    );
+                                });
+                            })()}
                         </select>
                     </div>
                 </div>

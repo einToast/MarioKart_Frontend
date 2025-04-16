@@ -1,6 +1,6 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { BreakInputDTO, BreakReturnDTO, PointsInputDTO, PointsReturnDTO, RoundInputDTO, RoundReturnDTO } from '../../config/dto';
+import { BreakInputDTO, BreakReturnDTO, GameInputFullDTO, GameReturnDTO, PointsInputDTO, PointsReturnDTO, RoundInputDTO, RoundInputFullDTO, RoundReturnDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
@@ -61,6 +61,44 @@ export const updateBreak = async (breakData: BreakInputDTO): Promise<BreakReturn
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
                 throw new Error('Pause konnte nicht aktualisiert werden');
+            }
+        }
+        throw error;
+    }
+};
+
+export const updateRoundFull = async (roundId: number, round: RoundInputFullDTO): Promise<RoundReturnDTO> => {
+    try {
+        const response = await apiClient.put<RoundReturnDTO>(`${BASE_URL}/rounds/${roundId}/full`, round);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404) {
+                throw new Error('Runde nicht gefunden');
+            } else if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 500) {
+                throw new Error('Serverfehler beim Speichern der Runde');
+            } else {
+                throw new Error('Runde konnte nicht aktualisiert werden');
+            }
+        }
+        throw error;
+    }
+};
+
+export const updateGame = async (gameId: number, game: GameInputFullDTO): Promise<GameReturnDTO> => {
+    try {
+        const response = await apiClient.put<GameReturnDTO>(`${BASE_URL}/games/${gameId}`, game);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response?.status === 404) {
+                throw new Error('Spiel nicht gefunden');
+            } else if (error.response?.status === 401) {
+                throw new Error('Nicht autorisierter Zugriff');
+            } else {
+                throw new Error('Spiel konnte nicht aktualisiert werden');
             }
         }
         throw error;
