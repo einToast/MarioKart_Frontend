@@ -36,7 +36,8 @@ const Points: React.FC = () => {
     };
 
     const handleSavePoints = () => {
-        AdminScheduleService.saveRound(round)
+        // AdminScheduleService.saveRound(round)
+        AdminScheduleService.saveRoundFull(round)
             .then(savedRound => {
                 if (savedRound) {
                     setError('Runde erfolgreich gespeichert');

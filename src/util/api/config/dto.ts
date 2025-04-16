@@ -1,6 +1,20 @@
 import { QuestionType } from "../../service/util";
 
 
+export interface RoundInputFullDTO {
+    played: boolean;
+    games: GameInputFullDTO[];
+}
+
+export interface GameInputFullDTO {
+    points: PointsInputFullDTO[];
+}
+
+export interface PointsInputFullDTO {
+    points: number;
+    team: TeamInputDTO;
+}
+
 export interface RoundReturnDTO {
     id: number;
     roundNumber: number;
