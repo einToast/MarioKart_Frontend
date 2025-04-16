@@ -46,7 +46,7 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     return (
         <IonPage>
-            <Header></Header>
+            <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
@@ -62,7 +62,7 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <ul>
                     <li>Es treten 4 Teams gegeneinander an</li>
                     <li>Es wird im Versus-Rennen gespielt</li>
-                    <li>Alle Fahrer fahren im Standard-Kart</li>
+                    <li>Alle Teams fahren im Standard-Kart</li>
                     <li>Die Geschwindigkeit beträgt 100ccm</li>
                     <li>Es wird mit Standardeinstellungen gespielt</li>
                     <li>Die Streckenauswahl ist zufällig</li>
