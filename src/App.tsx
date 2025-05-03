@@ -142,7 +142,13 @@ const App: React.FC = () => {
                                 <Route exact path="/admin/login" component={Login} />
                                 <Route path="/admin" component={AdminRouter} />
                             </Suspense>
-                            <Route exact path="/tab4" component={Tab4} />
+                            <Route
+                                exact
+                                path="/tab4"
+                                render={routeProps => (
+                                    <Tab4 {...showTab2Props} {...routeProps} />
+                                )}
+                            />
                             <Route exact path="/">
                                 <Redirect to="/login" />
                             </Route>

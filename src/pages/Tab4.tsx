@@ -68,20 +68,14 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     </LinearGradient>
                 </h1>
                 <br />
-                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+                <div className="video-wrapper">
                     <iframe
-                        src="https://youtu.be/3p25Jjj6UGA"
+                        src="https://www.youtube.com/embed/3p25Jjj6UGA?si=c4boLd7F1PqX2A7c"
+                        title="YouTube Video"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
-                        title="Mario Kart - Tutorial"
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%'
-                        }}
-                    ></iframe>
+                    />
+
                 </div>
                 <h2>Spielregeln</h2>
                 <ul>
