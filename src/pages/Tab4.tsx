@@ -1,16 +1,17 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
-import { ShowTab2Props } from '../util/api/config/interfaces';
-import { PublicScheduleService, PublicSettingsService } from "../util/service";
+import { ShowTab2Props, User } from '../util/api/config/interfaces';
+import { PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const history = useHistory();
     const location = useLocation();
+    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
 
     const updateShowTab2 = () => {
         Promise.all([
@@ -31,6 +32,8 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         }, 500);
     };
 
+    console.log(user)
+
     useEffect(() => {
 
         updateShowTab2();
@@ -46,7 +49,13 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     return (
         <IonPage>
-            <Header />
+            {user?.teamId ? (
+                <Header />
+            ) : (
+                <div >
+                    <br />
+                </div>
+            )}
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
@@ -58,6 +67,22 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         So wird gespielt
                     </LinearGradient>
                 </h1>
+                <br />
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+                    <iframe
+                        src="https://youtu.be/3p25Jjj6UGA"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="Mario Kart - Tutorial"
+                        style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%'
+                        }}
+                    ></iframe>
+                </div>
                 <h2>Spielregeln</h2>
                 <ul>
                     <li>Es treten 4 Teams gegeneinander an</li>

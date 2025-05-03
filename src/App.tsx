@@ -69,11 +69,41 @@ const App: React.FC = () => {
                     {currentUser?.teamId ? (
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
-                                <Route exact path="/tab1" component={() => <Tab1 {...showTab2Props}/>} />
-                                <Route exact path="/tab2" component={() => <Tab2 {...showTab2Props}/>} />
-                                <Route exact path="/tab3" component={() => <Tab3 {...showTab2Props}/>} />
-                                <Route exact path="/tab4" component={() => <Tab4 {...showTab2Props}/>} />
-                                <Route exact path="/survey" component={() => <Survey {...showTab2Props}/>} />
+                                <Route
+                                    exact
+                                    path="/tab1"
+                                    render={routeProps => (
+                                        <Tab1 {...showTab2Props} {...routeProps} />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/tab2"
+                                    render={routeProps => (
+                                        <Tab2 {...showTab2Props} {...routeProps} />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/tab3"
+                                    render={routeProps => (
+                                        <Tab3 {...showTab2Props} {...routeProps} />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/tab4"
+                                    render={routeProps => (
+                                        <Tab4 {...showTab2Props} {...routeProps} />
+                                    )}
+                                />
+                                <Route
+                                    exact
+                                    path="/survey"
+                                    render={routeProps => (
+                                        <Survey {...showTab2Props} {...routeProps} />
+                                    )}
+                                />
 
                                 <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
                                     <Route exact path="/admin/login" component={Login} />
@@ -112,9 +142,11 @@ const App: React.FC = () => {
                                 <Route exact path="/admin/login" component={Login} />
                                 <Route path="/admin" component={AdminRouter} />
                             </Suspense>
+                            <Route exact path="/tab4" component={Tab4} />
                             <Route exact path="/">
                                 <Redirect to="/login" />
                             </Route>
+
                             {/* <Route exact path={["/tab1", "/tab2", "/tab3", "/tab4", "/survey"]} component={() => <Redirect to="/login" />} /> */}
                             <Route exact path="/healthcheck">
                                 <div>OK</div>
