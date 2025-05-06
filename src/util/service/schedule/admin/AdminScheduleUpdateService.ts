@@ -41,6 +41,7 @@ export const saveRoundFull = async (round: RoundReturnDTO): Promise<RoundReturnD
         }) || [];
         
         return {
+            id: game.id,
             points: pointInputs
         };
     });
@@ -83,6 +84,7 @@ export const saveGameDirect = async (game: GameReturnDTO): Promise<GameReturnDTO
     })) || [];
     
     const gameInput: GameInputFullDTO = {
+        id: game.id,
         points: pointInputs
     };
 
