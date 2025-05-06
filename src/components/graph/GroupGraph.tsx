@@ -127,12 +127,16 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     // Event-Listener für Tastendruck
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
+            if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageDown" || event.key === "PageUp" ) {
+                event.preventDefault();
                 revealNext();
+            } else if (event.key === "F5") {
+                event.preventDefault();
             }
         };
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
+
     }, [revealNext]);
 
     // Angepasstes chartData
