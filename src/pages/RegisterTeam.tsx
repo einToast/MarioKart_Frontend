@@ -85,7 +85,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     history.push('/login');
                 }
                 if (!tournamentOpen) {
-                    history.push('/admin');
+                    history.push('/admin/login');
                 }
             })
             .catch(error => {
