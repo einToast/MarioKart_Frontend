@@ -11,7 +11,7 @@ import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { PublicScheduleService, PublicSettingsService } from "../util/service";
-import { NotificationService } from '../util/service/NotificationService';
+import { NotificationService } from '../util/service';
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {

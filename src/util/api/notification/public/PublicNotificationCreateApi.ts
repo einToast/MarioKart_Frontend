@@ -7,7 +7,7 @@ const BASE_URL = ApiPath.createPath('PUBLIC', 'NOTIFICATION');
 
 export const subscribe = async (subscriptionData: NotificationSubscriptionDTO): Promise<void> => {
     try {
-        await apiClient.post(`${BASE_URL}/send`, subscriptionData);
+        await apiClient.post(`${BASE_URL}/subscribe`, subscriptionData);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
