@@ -64,7 +64,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
         tournamentOpen.then((response) => {
             if (!response) {
-                history.push('/admin');
+                history.push('/admin/login');
             }
         }).catch((error) => {
             setError(error.message);

@@ -127,12 +127,17 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     // Event-Listener für Tastendruck
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight") {
+            const validKeys = new Set([" ", "Enter", "ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "PageDown", "PageUp"]);
+            if (validKeys.has(event.key)) {
+                event.preventDefault();
                 revealNext();
+            } else if (event.key === "F5") {
+                event.preventDefault();
             }
         };
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
+
     }, [revealNext]);
 
     // Angepasstes chartData
@@ -161,7 +166,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         meta.data.forEach((bar, index) => {
             const iconPath = revealedIcons[index];
             if (!iconPath) return;
-            
+
             const iconName = decodeURIComponent(iconPath.split('/').pop() || '');
             const img = loadedImages.find(img => decodeURIComponent(img.src).includes(iconName));
 

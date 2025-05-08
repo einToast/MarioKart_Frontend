@@ -1,5 +1,5 @@
 #Stage 1: Build
-FROM node:22-alpine AS build
+FROM node:22-slim AS build
 
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY . .
 RUN ionic build --prod
 
 #Stage 2: Run
-FROM node:22-alpine
+FROM node:22-slim
 
 WORKDIR /app
 
@@ -24,9 +24,10 @@ RUN npm install -g --ignore-scripts serve
 
 RUN npm install --ignore-scripts react-inject-env
 
-RUN apk add --no-cache curl
-
 EXPOSE 5000
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
+    CMD curl --fail http://localhost:5000/healthcheck || exit 1
 
 ENTRYPOINT ["sh", "-c"]
 CMD ["npx react-inject-env set -d dist && serve -s dist -l 5000"]

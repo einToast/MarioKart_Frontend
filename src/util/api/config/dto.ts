@@ -7,6 +7,7 @@ export interface RoundInputFullDTO {
 }
 
 export interface GameInputFullDTO {
+    id: number;
     points: PointsInputFullDTO[];
 }
 
