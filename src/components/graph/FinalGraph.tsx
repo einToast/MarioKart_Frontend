@@ -162,7 +162,8 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     // Event-Listener für Tastendruck
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.key === " " || event.key === "Enter" || event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageDown" || event.key === "PageUp") {
+            const validKeys = new Set([" ", "Enter", "ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "PageDown", "PageUp"]);
+            if (validKeys.has(event.key)) {
                 event.preventDefault();
                 revealNext();
             } else if (event.key === "F5") {
