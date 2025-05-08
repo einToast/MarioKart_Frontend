@@ -8,6 +8,15 @@ import pluginReact from "eslint-plugin-react";
 export default [
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { languageOptions: { globals: globals.browser } },
+  // START_MODIFICATION
+  // Configuration for the service worker file
+  {
+    files: ["public/firebase-messaging-sw.js"],
+    languageOptions: {
+      globals: globals.serviceworker
+    }
+  },
+  // END_MODIFICATION
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,

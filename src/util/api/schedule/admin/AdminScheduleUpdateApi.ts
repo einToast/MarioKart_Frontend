@@ -16,8 +16,11 @@ export const updateRoundPlayed = async (roundId: number, round: RoundInputDTO): 
                 throw new Error('Runde nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 500) {
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+            } else {
+                throw new Error('Runde konnte nicht aktualisiert werden');
             }
-            throw new Error('Runde konnte nicht aktualisiert werden');
         }
         throw error;
     }
@@ -59,6 +62,8 @@ export const updateBreak = async (breakData: BreakInputDTO): Promise<BreakReturn
                 throw new Error('Pause nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 500) {
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
                 throw new Error('Pause konnte nicht aktualisiert werden');
             }
@@ -73,12 +78,14 @@ export const updateRoundFull = async (roundId: number, round: RoundInputFullDTO)
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            if (error.response?.status === 404) {
+            if (error.response?.status === 409) {
+                throw new Error('Pause wurde noch nicht beendet');
+            } else if (error.response?.status === 404) {
                 throw new Error('Runde nicht gefunden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 500) {
-                throw new Error('Serverfehler beim Speichern der Runde');
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
                 throw new Error('Runde konnte nicht aktualisiert werden');
             }

@@ -16,6 +16,8 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
                 throw new Error('Nicht genügend Teams vorhanden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status ===  500) {
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
                 throw new Error('Spielplan konnte nicht erstellt werden');
             }
@@ -38,6 +40,8 @@ export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 400) {
                 throw new Error('Noch nicht alle Runden gespielt');
+            } else if (error.response?.status === 500) {
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
                 throw new Error('Finalrunden konnten nicht erstellt werden');
             }
