@@ -148,3 +148,10 @@ export interface UserDTO {
     isAdmin: boolean;
     ID: number;
 }
+
+export interface NotificationSubscriptionDTO {
+    endpoint: string;
+    p256dh: string;
+    auth: string;
+    teamId: number;
+}

@@ -1,7 +1,7 @@
-import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent, IonButton } from '@ionic/react';
 import {
     heart, medalOutline, megaphoneOutline, pizzaOutline,
-    playOutline,
+    playOutline, notificationsOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
 import React, { useEffect } from "react";
@@ -11,6 +11,7 @@ import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { PublicScheduleService, PublicSettingsService } from "../util/service";
+import { NotificationService } from '../util/service/NotificationService';
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
@@ -50,9 +51,38 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         })
     }, [location])
 
+    const enableNotifications = async () => {
+        try {
+            console.log('Starte Benachrichtigungsanfrage...');
+            const permissionGranted = await NotificationService.requestPermission();
+            console.log('Benachrichtigungserlaubnis:', permissionGranted);
+            
+            if (permissionGranted) {
+                const registration = await NotificationService.registerServiceWorker();
+                console.log('Service Worker Registration:', registration);
+                
+                if (registration) {
+                    const subscription = await NotificationService.subscribeToPushNotifications(registration);
+                    console.log('Push-Subscription:', subscription);
+                    
+                    if (subscription) {
+                        alert('Benachrichtigungen wurden erfolgreich aktiviert!');
+                    } else {
+                        alert('Fehler beim Aktivieren der Benachrichtigungen.');
+                    }
+                }
+            } else {
+                alert('Bitte erlauben Sie Benachrichtigungen in Ihren Browsereinstellungen.');
+            }
+        } catch (error) {
+            console.error('Fehler bei der Aktivierung der Benachrichtigungen:', error);
+            alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');
+        }
+    };
+
     return (
         <IonPage>
-            <Header></Header>
+            <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
@@ -141,12 +171,12 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <br />
 
                 <a
-                    onClick={() => history.push('/admin')}
+                    onClick={() => history.push('/admin/login')}
                     style={{ cursor: "pointer" }}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin');
+                            history.push('/admin/login');
                         }
                     }}
 
@@ -154,9 +184,18 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <u>Admin Login</u>
                 </a>
                 <br />
-                <a href="https://github.com/einToast/MarioKart_Backend">Source Code Backend</a>
-                <br />
-                <a href="https://github.com/einToast/MarioKart_Frontend">Source Code Frontend</a>
+                <a href="https://github.com/einToast/MarioKart_Deployment">Source Code</a>
+                <h3>Einstellungen</h3>
+                <div className="settings-container" style={{ padding: '0 16px' }}>
+                    <IonButton 
+                        expand="block"
+                        onClick={enableNotifications}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <IonIcon slot="start" icon={notificationsOutline} />
+                        Benachrichtigungen aktivieren
+                    </IonButton>
+                </div>
             </IonContent>
         </IonPage>
     );

@@ -30,6 +30,7 @@ export class ApiPath {
     };
 
     static readonly CONTROLLER = {
+        NOTIFICATION: 'notification',
         REGISTRATION: 'teams',
         SCHEDULE: 'schedule',
         SETTINGS: 'settings',
