@@ -1,3 +1,4 @@
+/* eslint-env serviceworker */
 self.addEventListener('push', (event) => {
     console.log('Push event empfangen');
     
