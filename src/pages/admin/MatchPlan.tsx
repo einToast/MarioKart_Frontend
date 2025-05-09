@@ -28,7 +28,7 @@ const MatchPlan: React.FC = () => {
             window.location.assign('/admin/login');
         }
 
-        const teamNames = PublicRegistrationService.getTeams();
+        const teamNames = PublicRegistrationService.getTeamsSortedByTeamName();
         teamNames.then((response) => {
             setTeams(response);
         }).catch((error) => {
@@ -91,7 +91,7 @@ const MatchPlan: React.FC = () => {
                             finalPlanCreated={false}
                             setModalClosed={setModalClosed}
                             modalClosed={modalClosed}
-                            getTeams={PublicRegistrationService.getTeams}
+                            getTeams={PublicRegistrationService.getTeamsSortedByTeamName}
                         />
 
                     ) : (

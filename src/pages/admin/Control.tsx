@@ -6,12 +6,12 @@ import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
+import NotificationModal from "../../components/modals/NotificationModal";
 import TournamentModal from "../../components/modals/TournamentModal";
 import Toast from "../../components/Toast";
-import { BreakReturnDTO } from "../../util/api/config/dto";
-import { BreakModalResult } from "../../util/api/config/interfaces";
-import { AdminScheduleService, PublicScheduleService, PublicSettingsService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { BreakReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
+import { BreakModalResult, NotificationModalResult } from "../../util/api/config/interfaces";
+import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
 
 const Control: React.FC = () => {
@@ -21,9 +21,11 @@ const Control: React.FC = () => {
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
     const [aBreak, setABreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
+    const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
@@ -49,6 +51,22 @@ const Control: React.FC = () => {
             setShowToast(true);
         });
     }
+
+    const handleOpenNotificationModal = () => {
+        const teams = AdminRegistrationService.getTeamsSortedByFinalPoints();
+        teams.then((result) => {
+            // sort by alphabetical order
+            setTeams(result.sort((a, b) => a.teamName.localeCompare(b.teamName)));
+            setShowNotificationModal(true);
+        }).catch((error) => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
+        });
+
+
+    }
+
 
     const closeModal = (changeT: ChangeType) => {
         setModalClosed(prev => !prev);
@@ -92,6 +110,15 @@ const Control: React.FC = () => {
 
         if (changeBreak.breakChanged) {
             setError('Die Pause wurde geändert');
+            setIsError(false);
+            setShowToast(true);
+        }
+    }
+
+    const closeNotificationModal = (notify: NotificationModalResult) => {
+        setModalClosed(prev => !prev);
+        if (notify.notificationSent) {
+            setError('Benachrichtigung wurde gesendet');
             setIsError(false);
             setShowToast(true);
         }
@@ -187,6 +214,19 @@ const Control: React.FC = () => {
                         </IonButton>
                     )
                     }
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenNotificationModal()}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenNotificationModal();
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>Benachrichtigung senden</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
                     {(!isMatchPlan &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TEAMS)}
                             tabIndex={0}
@@ -274,6 +314,14 @@ const Control: React.FC = () => {
                         closeBreakModal(changeBreak);
                     }}
                     aBreak={aBreak}
+                />
+                <NotificationModal
+                    showModal={showNotificationModal}
+                    closeModal={(notify) => {
+                        setShowNotificationModal(false)
+                        closeNotificationModal(notify);
+                    }}
+                    teams={teams}
                 />
             </IonContent>
             <Toast

@@ -7,7 +7,6 @@ export class NotificationService {
 
     static async requestPermission(): Promise<boolean> {
         if (!('Notification' in window)) {
-            console.log('Dieser Browser unterstützt keine Benachrichtigungen');
             return false;
         }
 
@@ -17,14 +16,12 @@ export class NotificationService {
 
     static async registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
         if (!('serviceWorker' in navigator)) {
-            console.log('Service Worker wird von diesem Browser nicht unterstützt');
             return null;
         }
 
         try {
             return await navigator.serviceWorker.register('/sw.js');
         } catch (err) {
-            console.error('Service Worker Registrierung fehlgeschlagen:', err);
             return null;
         }
     }
@@ -40,28 +37,21 @@ export class NotificationService {
             await this.sendSubscriptionToServer(subscription);
             return subscription;
         } catch (err) {
-            console.error('Push-Benachrichtigungen Anmeldung fehlgeschlagen:', err);
             return null;
         }
     }
 
     private static async getPublicKey(): Promise<Uint8Array> {
         if (!this.convertedVapidKey) {
-            try {
-                const response = await PublicNotificationApi.getPublicKey();
-            
-                
-                const vapidPublicKey = response
-                console.log('Erhaltener VAPID-Key:', vapidPublicKey);
-                
-                if (vapidPublicKey && !vapidPublicKey.includes('<!DOCTYPE html>')) {
-                    this.convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey.trim());
-                } else {
-                    throw new Error('Ungültiger Public Key vom Server erhalten');
-                }
-            } catch (error) {
-                console.error('Fehler beim Abrufen des Public Keys:', error);
-                throw error;
+            const response = await PublicNotificationApi.getPublicKey();
+
+
+            const vapidPublicKey = response
+
+            if (vapidPublicKey && !vapidPublicKey.includes('<!DOCTYPE html>')) {
+                this.convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey.trim());
+            } else {
+                throw new Error('Ungültiger Public Key vom Server erhalten');
             }
         }
         return this.convertedVapidKey;
@@ -74,8 +64,6 @@ export class NotificationService {
             auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
             teamId: PublicCookiesService.getUser()?.teamId || 0
         };
-
-        console.log('Sende Subscription an Server:', subscriptionData);
 
         await PublicNotificationApi.subscribe(subscriptionData);
     }

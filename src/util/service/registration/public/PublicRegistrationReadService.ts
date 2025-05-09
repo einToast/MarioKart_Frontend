@@ -9,6 +9,10 @@ export const getTeamsSortedByGroupPoints = async (): Promise<TeamReturnDTO[]> =>
     return await PublicRegistrationApi.getTeamsSortedByGroupPoints();
 }
 
+export const getTeamsSortedByTeamName = async (): Promise<TeamReturnDTO[]> => {
+    return await PublicRegistrationApi.getTeamsSortedByTeamName();
+}
+
 export const getTeamsNotInRound = async (roundId: number): Promise<TeamReturnDTO[]> => {
     return await PublicRegistrationApi.getTeamsNotInRound(roundId);
 }

@@ -1,9 +1,18 @@
 import { AdminNotificationApi } from "../../../api"
+import { NotificationRequestDTO } from "../../../api/config/dto"
 
 export const sendNotificationToAll = async (title: string, message: string): Promise<void> => {
-    return await AdminNotificationApi.sendNotificationToAll(title, message)
+    const notification: NotificationRequestDTO = {
+        title: title,
+        message: message
+    }
+    return await AdminNotificationApi.sendNotificationToAll(notification)
 }
 
 export const sendNotificationToTeam = async (teamId: number, title: string, message: string): Promise<void> => {
-    return await AdminNotificationApi.sendNotificationToTeam(teamId, title, message)
+    const notification: NotificationRequestDTO = {
+        title: title,
+        message: message
+    }
+    return await AdminNotificationApi.sendNotificationToTeam(teamId, notification)
 }

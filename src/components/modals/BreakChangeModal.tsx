@@ -66,7 +66,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ breakChanged: false })}>
             <IonContent>
-                <h4>Team</h4>
+                <h4>Break</h4>
                 <form onSubmit={handleChange}>
 
                     <div className="borderContainer">

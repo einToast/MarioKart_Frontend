@@ -1,21 +1,26 @@
-import { IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent, IonButton } from '@ionic/react';
+import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
-    heart, medalOutline, megaphoneOutline, pizzaOutline,
-    playOutline, notificationsOutline,
+    heart, medalOutline, megaphoneOutline,
+    notificationsOutline,
+    pizzaOutline,
+    playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
+import Toast from '../components/Toast';
 import { ShowTab2Props } from '../util/api/config/interfaces';
-import { PublicScheduleService, PublicSettingsService } from "../util/service";
-import { NotificationService } from '../util/service';
+import { NotificationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
     const history = useHistory();
     const location = useLocation();
 
@@ -53,30 +58,37 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const enableNotifications = async () => {
         try {
-            console.log('Starte Benachrichtigungsanfrage...');
             const permissionGranted = await NotificationService.requestPermission();
-            console.log('Benachrichtigungserlaubnis:', permissionGranted);
-            
+
             if (permissionGranted) {
                 const registration = await NotificationService.registerServiceWorker();
-                console.log('Service Worker Registration:', registration);
-                
+
                 if (registration) {
                     const subscription = await NotificationService.subscribeToPushNotifications(registration);
-                    console.log('Push-Subscription:', subscription);
-                    
+
                     if (subscription) {
-                        alert('Benachrichtigungen wurden erfolgreich aktiviert!');
+                        // alert('Benachrichtigungen wurden erfolgreich aktiviert!');
+                        setIsError(false);
+                        setError('Benachrichtigungen erfolgreich aktiviert!');
+                        setShowToast(true);
                     } else {
-                        alert('Fehler beim Aktivieren der Benachrichtigungen.');
+                        // alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
+                        setIsError(true);
+                        setError('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
+                        setShowToast(true);
                     }
                 }
             } else {
-                alert('Bitte erlauben Sie Benachrichtigungen in Ihren Browsereinstellungen.');
+                // alert('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                setIsError(true);
+                setError('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                setShowToast(true);
             }
         } catch (error) {
-            console.error('Fehler bei der Aktivierung der Benachrichtigungen:', error);
-            alert('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');
+            alert('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            setIsError(true);
+            setError('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            setShowToast(true);
         }
     };
 
@@ -164,6 +176,27 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 {/*    </div>*/}
                 {/*</div>*/}
                 {/*<div style={{textAlign: "center"}}>*/}
+
+                <h3>Einstellungen</h3>
+
+                <div className="settings-container" style={{ padding: '0 16px' }}>
+                    <IonButton
+                        expand="block"
+                        onClick={enableNotifications}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <IonIcon slot="start" icon={notificationsOutline} />
+                        Benachrichtigungen aktivieren
+                    </IonButton>
+                </div>
+                <div>
+                    Hinweise
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Aktiviere Benachrichtigung, um über deine nächste Runden, Pausen und Umfragen informiert zu werden.</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registierung fehlschlägt, lade die Seite bitte komplett neu.</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Benachrichtigungen funktionieren momementan nur mit Android problemlos. Unter iOS muss die Webseite als PWA hinzugefügt werden. (Share --{'>'} Add to Home Screen --{'>'} Add)</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhälst du eine Testbenachrichtigung</p>
+                </div>
+
                 <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
                 & Laurin <br />
 
@@ -185,18 +218,13 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </a>
                 <br />
                 <a href="https://github.com/einToast/MarioKart_Deployment">Source Code</a>
-                <h3>Einstellungen</h3>
-                <div className="settings-container" style={{ padding: '0 16px' }}>
-                    <IonButton 
-                        expand="block"
-                        onClick={enableNotifications}
-                        style={{ marginBottom: '16px' }}
-                    >
-                        <IonIcon slot="start" icon={notificationsOutline} />
-                        Benachrichtigungen aktivieren
-                    </IonButton>
-                </div>
             </IonContent>
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
+            />
         </IonPage>
     );
 };

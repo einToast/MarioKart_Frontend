@@ -4,30 +4,24 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 
 self.addEventListener('push', (event) => {
-    console.log('[SW] Push empfangen');
   
     let title = 'Mario Kart Turnier';
     let body = 'Mario Kart Turnier';
   
     try {
       const text = event.data?.text?.();
-      console.log('[SW] Nachricht als Text:', text);
   
       try {
         const data = JSON.parse(text);
-        console.log('[SW] JSON geparst:', data);
         title = data.title || title;
         body = data.body || body;
       } catch (err) {
-        console.warn('[SW] JSON-Parsing fehlgeschlagen:', err);
         body = text || body;
       }
     } catch (err) {
-      console.error('[SW] Fehler beim Lesen der Nachricht:', err);
       body = 'Neue Benachrichtigung erhalten';
     }
   
-    console.log('[SW] Notification Daten:', { title, body });
   
     const options = {
       body,
@@ -48,7 +42,6 @@ self.addEventListener('push', (event) => {
   });
   
   self.addEventListener('notificationclick', (event) => {
-    console.log('[SW] Notification click:', event);
     event.notification.close();
   
     if (event.action === 'explore') {

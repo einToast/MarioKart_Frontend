@@ -28,6 +28,18 @@ export const getTeamsSortedByGroupPoints = async (): Promise<TeamReturnDTO[]> =>
     }
 };
 
+export const getTeamsSortedByTeamName = async (): Promise<TeamReturnDTO[]> => {
+    try {
+        const response = await apiClient.get<TeamReturnDTO[]>(`${BASE_URL}/sortedByTeamName`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error('Teams konnten nicht geladen werden');
+        }
+        throw error;
+    }
+};
+
 export const getAvailableCharacters = async (): Promise<CharacterReturnDTO[]> => {
     try {
         const response = await apiClient.get<CharacterReturnDTO[]>(`${BASE_URL}/characters/available`);

@@ -8,6 +8,7 @@ import FreeTextCard from "../components/survey/FreeTextSurveyComponent";
 import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyComponent";
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import Toast from '../components/Toast';
+import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
 import { QuestionReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { PublicScheduleService, PublicSettingsService, PublicSurveyService } from '../util/service';
@@ -81,6 +82,8 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             event.detail.complete();
         }, 500);
     };
+
+    const isConnected = useWebSocketConnection('/topic/rounds', getQuestions);
 
 
     useEffect(() => {

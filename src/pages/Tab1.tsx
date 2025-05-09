@@ -32,7 +32,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         refreshRounds
     } = useRoundData();
 
-    const isConnected = useWebSocketConnection(refreshRounds);
+    const isConnected = useWebSocketConnection('/topic/rounds', refreshRounds);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);

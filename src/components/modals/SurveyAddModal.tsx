@@ -97,7 +97,6 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                                 value={key}
                                             >
                                                 {key}
-                                                {/*{console.log(key typeof QuestionType.MULTIPLE_CHOICE)}*/}
                                             </option>
                                         ))
                                     }
