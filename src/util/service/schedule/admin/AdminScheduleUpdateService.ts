@@ -33,26 +33,24 @@ export const saveRoundFull = async (round: RoundReturnDTO): Promise<RoundReturnD
                 finalReady: point.team.finalReady,
                 active: point.team.active
             };
-            
+
             return {
                 points: point.points,
                 team: teamInput
             };
         }) || [];
-        
+
         return {
             id: game.id,
             points: pointInputs
         };
     });
-    
+
     const roundInput: RoundInputFullDTO = {
         played: round.played,
         games: gameInputs
     };
 
-    console.log("RoundInputFullDTO", roundInput);
-    
     return await AdminScheduleApi.updateRoundFull(round.id, roundInput);
 }
 
@@ -82,14 +80,12 @@ export const saveGameDirect = async (game: GameReturnDTO): Promise<GameReturnDTO
             active: point.team.active
         }
     })) || [];
-    
+
     const gameInput: GameInputFullDTO = {
         id: game.id,
         points: pointInputs
     };
 
-    console.log("GameInputFullDTO", gameInput);
-    
     return await AdminScheduleApi.updateGame(game.id, gameInput);
 };
 

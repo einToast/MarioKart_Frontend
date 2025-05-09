@@ -32,8 +32,6 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         }, 500);
     };
 
-    console.log(user)
-
     useEffect(() => {
 
         updateShowTab2();
