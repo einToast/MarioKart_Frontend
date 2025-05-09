@@ -92,13 +92,15 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                     style={{ cursor: 'pointer' }}
                                 >
                                     {
-                                        Object.keys(QuestionType).map((key) => (
-                                            <option key={key}
-                                                value={key}
-                                            >
-                                                {key}
-                                            </option>
-                                        ))
+                                        Object.keys(QuestionType)
+                                            .filter(key => key !== 'TEAM')
+                                            .map((key) => (
+                                                <option key={key}
+                                                    value={key}
+                                                >
+                                                    {key}
+                                                </option>
+                                            ))
                                     }
                                 </select>
                             </IonItem>
