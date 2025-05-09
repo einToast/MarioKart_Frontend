@@ -54,3 +54,12 @@ export const getSelectedGamesOption = (): string | null => {
         return null;
     }
 };
+
+export const getNotificationsEnabled = (): boolean => {
+    try {
+        return JSON.parse(Cookies.get('notificationsEnabled') ?? 'false') as boolean;
+    } catch (e) {
+        console.error('Error getting notifications enabled:', e);
+        return false;
+    }
+};

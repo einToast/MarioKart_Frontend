@@ -1,7 +1,10 @@
 import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
     heart, medalOutline, megaphoneOutline,
+    notificationsCircle,
+    notificationsOffSharp,
     notificationsOutline,
+    notificationsSharp,
     pizzaOutline,
     playOutline,
     playSkipForwardOutline
@@ -13,14 +16,17 @@ import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
 import Toast from '../components/Toast';
 import { ShowTab2Props } from '../util/api/config/interfaces';
-import { NotificationService, PublicScheduleService, PublicSettingsService } from "../util/service";
+import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
+    const [notificationEnabled, setNotificationEnabled] = useState<boolean>(PublicCookiesService.getNotificationsEnabled());
+
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
+
     const history = useHistory();
     const location = useLocation();
 
@@ -39,6 +45,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const handleRefresh = (event: CustomEvent) => {
         setTimeout(() => {
             updateShowTab2();
+            setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
             event.detail.complete();
         }, 500);
     };
@@ -46,6 +53,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     useEffect(() => {
 
         updateShowTab2();
+        setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
 
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
@@ -71,6 +79,8 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         setIsError(false);
                         setError('Benachrichtigungen erfolgreich aktiviert!');
                         setShowToast(true);
+                        PublicCookiesService.setNotificationsEnabled(true);
+                        setNotificationEnabled(true);
                     } else {
                         // alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
                         setIsError(true);
@@ -184,9 +194,10 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         expand="block"
                         onClick={enableNotifications}
                         style={{ marginBottom: '16px' }}
+                        disabled={notificationEnabled}
                     >
-                        <IonIcon slot="start" icon={notificationsOutline} />
-                        Benachrichtigungen aktivieren
+                        <IonIcon slot="start" icon={notificationEnabled ? notificationsSharp : notificationsOutline} />
+                        {notificationEnabled ? 'Benachrichtigungen aktiviert' : 'Benachrichtigungen aktivieren'}
                     </IonButton>
                 </div>
                 <div>
