@@ -43,19 +43,15 @@ export class NotificationService {
 
     private static async getPublicKey(): Promise<Uint8Array> {
         if (!this.convertedVapidKey) {
-            try {
-                const response = await PublicNotificationApi.getPublicKey();
+            const response = await PublicNotificationApi.getPublicKey();
 
 
-                const vapidPublicKey = response
+            const vapidPublicKey = response
 
-                if (vapidPublicKey && !vapidPublicKey.includes('<!DOCTYPE html>')) {
-                    this.convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey.trim());
-                } else {
-                    throw new Error('Ungültiger Public Key vom Server erhalten');
-                }
-            } catch (error) {
-                throw error;
+            if (vapidPublicKey && !vapidPublicKey.includes('<!DOCTYPE html>')) {
+                this.convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey.trim());
+            } else {
+                throw new Error('Ungültiger Public Key vom Server erhalten');
             }
         }
         return this.convertedVapidKey;
