@@ -22,7 +22,7 @@ export class NotificationService {
         }
 
         try {
-            return await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+            return await navigator.serviceWorker.register('/sw.js');
         } catch (err) {
             console.error('Service Worker Registrierung fehlgeschlagen:', err);
             return null;

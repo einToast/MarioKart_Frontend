@@ -11,7 +11,7 @@ export default [
   // START_MODIFICATION
   // Configuration for the service worker file
   {
-    files: ["public/firebase-messaging-sw.js"],
+    files: ["public/sw.js"],
     languageOptions: {
       globals: globals.serviceworker
     }
