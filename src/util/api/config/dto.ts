@@ -155,3 +155,8 @@ export interface NotificationSubscriptionDTO {
     auth: string;
     teamId: number;
 }
+
+export interface NotificationRequestDTO {
+    title: string;
+    message: string;
+}

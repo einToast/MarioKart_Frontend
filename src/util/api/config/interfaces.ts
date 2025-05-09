@@ -45,6 +45,10 @@ export interface BreakModalResult {
   breakChanged?: boolean;
 }
 
+export interface NotificationModalResult {
+  notificationSent?: boolean;
+}
+
 export interface RoundHeaderProps {
   title: string;
   onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;

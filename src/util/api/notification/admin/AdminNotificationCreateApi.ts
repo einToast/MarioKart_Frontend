@@ -1,14 +1,13 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
+import { NotificationRequestDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'NOTIFICATION');
 
-export const sendNotificationToAll = async (title: string, message: string): Promise<void> => {
+export const sendNotificationToAll = async (notification: NotificationRequestDTO): Promise<void> => {
+    console.log('sendNotificationToAll', notification);
     try {
-        await apiClient.post(`${BASE_URL}/send`, {
-            title,
-            message
-        });
+        await apiClient.post(`${BASE_URL}/send`, notification);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
@@ -23,12 +22,11 @@ export const sendNotificationToAll = async (title: string, message: string): Pro
     }
 };
 
-export const sendNotificationToTeam = async (teamId: number, title: string, message: string): Promise<void> => {
+export const sendNotificationToTeam = async (teamId: number, notification: NotificationRequestDTO): Promise<void> => {
+    console.log('sendNotificationToTeam', teamId, notification);
+    
     try {
-        await apiClient.post(`${BASE_URL}/send/${teamId}`, {
-            title,
-            message
-        });
+        await apiClient.post(`${BASE_URL}/send/${teamId}`, notification);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
