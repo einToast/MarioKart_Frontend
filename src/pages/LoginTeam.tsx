@@ -38,7 +38,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     const getAllTeams = () => {
-        PublicRegistrationService.getTeams()
+        PublicRegistrationService.getTeamsSortedByTeamName()
             .then((response) => {
                 setTeams(response);
             })
