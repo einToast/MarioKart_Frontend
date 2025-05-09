@@ -6,17 +6,21 @@ import {
     playOutline,
     playSkipForwardOutline
 } from "ionicons/icons";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
+import Toast from '../components/Toast';
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { NotificationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
+    const [error, setError] = useState<string>('Error');
+    const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
     const history = useHistory();
     const location = useLocation();
 
@@ -63,16 +67,28 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     const subscription = await NotificationService.subscribeToPushNotifications(registration);
 
                     if (subscription) {
-                        alert('Benachrichtigungen wurden erfolgreich aktiviert!');
+                        // alert('Benachrichtigungen wurden erfolgreich aktiviert!');
+                        setIsError(false);
+                        setError('Benachrichtigungen erfolgreich aktiviert!');
+                        setShowToast(true);
                     } else {
-                        alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite nochmal komplett neu.');
+                        // alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
+                        setIsError(true);
+                        setError('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
+                        setShowToast(true);
                     }
                 }
             } else {
-                alert('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                // alert('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                setIsError(true);
+                setError('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                setShowToast(true);
             }
         } catch (error) {
-            alert('Es ist ein Fehler aufgetreten. Bitte lade die Seite nochmal komplett neu.');
+            alert('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            setIsError(true);
+            setError('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            setShowToast(true);
         }
     };
 
@@ -203,6 +219,12 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <br />
                 <a href="https://github.com/einToast/MarioKart_Deployment">Source Code</a>
             </IonContent>
+            <Toast
+                message={error}
+                showToast={showToast}
+                setShowToast={setShowToast}
+                isError={isError}
+            />
         </IonPage>
     );
 };
