@@ -11,8 +11,8 @@ import { PublicCookiesService } from "../../util/service";
 
 const Dashboard: React.FC = () => {
 
-    const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
-    const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isSchedule, setIsSchedule] = useState<boolean>(false);
+    const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
     const [isRoundsUnplayedZero, setIsRoundsUnplayedZero] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
@@ -32,13 +32,13 @@ const Dashboard: React.FC = () => {
         }
 
         Promise.all([
-            PublicScheduleService.isMatchPlanCreated(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isScheduleCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             PublicScheduleService.isNumberOfRoundsUnplayedZero()
         ])
-            .then(([matchPlan, finalPlan, roundsZero]) => {
-                setIsMatchPlan(matchPlan);
-                setIsFinalPlan(finalPlan);
+            .then(([schedule, finalSchedule, roundsZero]) => {
+                setIsSchedule(schedule);
+                setIsFinalSchedule(finalSchedule);
                 setIsRoundsUnplayedZero(roundsZero);
             })
             .catch(error => {
@@ -59,7 +59,7 @@ const Dashboard: React.FC = () => {
                     </h2>
                     <h1>Dashboard</h1>
                     <div className={"adminDashboard"}>
-                        {isMatchPlan ?
+                        {isSchedule ?
                             <IonButton slot="start" onClick={() => history.push('/admin/points')}>
                                 <div>
                                     <p>Punkte eintragen</p>
@@ -68,8 +68,8 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {!isMatchPlan ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/matchplan')}>
+                        {!isSchedule ?
+                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/schedule')}>
                                 <div>
                                     <p>Spielplan erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {!isFinalPlan && isMatchPlan && isRoundsUnplayedZero ?
+                        {!isFinalSchedule && isSchedule && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
@@ -86,10 +86,10 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        {isMatchPlan && isRoundsUnplayedZero ?
+                        {isSchedule && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
                                 <div>
-                                    {isFinalPlan ?
+                                    {isFinalSchedule ?
                                         <p>Endergebnis</p>
                                         :
                                         <p>Zwischenergebnis</p>

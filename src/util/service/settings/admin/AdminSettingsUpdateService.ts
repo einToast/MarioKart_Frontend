@@ -42,11 +42,11 @@ export const changeService = async (deleteType: ChangeType): Promise<void> => {
         case ChangeType.TEAMS:
             await AdminRegistrationService.deleteAllTeams();
             break;
-        case ChangeType.MATCH_PLAN:
-            await AdminScheduleService.deleteMatchPlan();
+        case ChangeType.SCHEDULE:
+            await AdminScheduleService.deleteSchedule();
             break;
-        case ChangeType.FINAL_PLAN:
-            await AdminScheduleService.deleteFinalPlan();
+        case ChangeType.FINAL_SCHEDULE:
+            await AdminScheduleService.deleteFinalSchedule();
             break;
         case ChangeType.ALL:
             await reset();

@@ -49,11 +49,11 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: Chan
                 setMessage(message_template.replace('___', 'alle Teams'));
                 setSecondaryMessage('löschen');
                 break;
-            case ChangeType.MATCH_PLAN:
+            case ChangeType.SCHEDULE:
                 setMessage(message_template.replace('___', 'den Spielplan'));
                 setSecondaryMessage('löschen');
                 break;
-            case ChangeType.FINAL_PLAN:
+            case ChangeType.FINAL_SCHEDULE:
                 setMessage(message_template.replace('___', 'die Finalspiele'));
                 setSecondaryMessage('löschen');
                 break;

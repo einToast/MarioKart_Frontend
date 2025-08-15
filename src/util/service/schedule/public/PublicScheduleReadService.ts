@@ -9,12 +9,12 @@ export const getNumberOfRoundsUnplayed = async (): Promise<number> => {
     return PublicScheduleApi.getNumberOfRoundsUnplayed();
 }
 
-export const isMatchPlanCreated = async (): Promise<boolean> => {
-    return PublicScheduleApi.isMatchPlanCreated();
+export const isScheduleCreated = async (): Promise<boolean> => {
+    return PublicScheduleApi.isScheduleCreated();
 }
 
-export const isFinalPlanCreated = async (): Promise<boolean> => {
-    return PublicScheduleApi.isFinalPlanCreated();
+export const isFinalScheduleCreated = async (): Promise<boolean> => {
+    return PublicScheduleApi.isFinalScheduleCreated();
 }
 
 export const isNumberOfRoundsUnplayedLessThanTwo = async (): Promise<boolean> => {

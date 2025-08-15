@@ -6,7 +6,7 @@ import { Redirect, Route } from 'react-router-dom';
 import Control from './Control';
 import AdminDashboard from './Dashboard';
 import Final from './Final';
-import MatchPlan from './MatchPlan';
+import Schedule from './Schedule';
 import AdminPoints from './Points';
 import AdminResults from './Results';
 import AdminSurvey from './SurveyAdmin';
@@ -19,7 +19,7 @@ const AdminRouter: React.FC = () => {
       <Route exact path="/admin/points" component={AdminPoints} />
       <Route exact path="/admin/final" component={Final} />
       <Route exact path="/admin/results" component={AdminResults} />
-      <Route exact path="/admin/matchplan" component={MatchPlan} />
+      <Route exact path="/admin/schedule" component={Schedule} />
       <Route exact path="/admin/control" component={Control} />
       <Route exact path="/admin/survey" component={AdminSurvey} />
       <Route exact path="/admin/teams" component={Teams} />

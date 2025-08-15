@@ -14,7 +14,7 @@ import "./Points.css";
 
 const Results: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
@@ -29,11 +29,11 @@ const Results: React.FC = () => {
 
         Promise.all([
             AdminRegistrationService.getFinalTeams(),
-            PublicScheduleService.isFinalPlanCreated()
+            PublicScheduleService.isFinalScheduleCreated()
         ])
-            .then(([teams, finalPlan]) => {
+            .then(([teams, finalSchedule]) => {
                 setTeams(teams);
-                setIsFinalPlan(finalPlan);
+                setIsFinalSchedule(finalSchedule);
             })
             .catch(error => {
                 setError(error.message);
@@ -59,12 +59,12 @@ const Results: React.FC = () => {
                 </div>
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        {isFinalPlan ? 'Endergebnis' : 'Zwischenergebnis'}
+                        {isFinalSchedule ? 'Endergebnis' : 'Zwischenergebnis'}
                     </LinearGradient>
                 </h2>
 
                 <div className={"flexContainer"}>
-                    {isFinalPlan ? (
+                    {isFinalSchedule ? (
                         <FinalGraph teams={teams} />
                     ) : (
                         <GroupGraph teams={teams} />

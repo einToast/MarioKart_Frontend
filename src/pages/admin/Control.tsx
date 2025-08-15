@@ -16,13 +16,13 @@ import { ChangeType } from "../../util/service/util";
 
 const Control: React.FC = () => {
 
-    const [isMatchPlan, setIsMatchPlan] = useState<boolean>(false);
-    const [isFinalPlan, setIsFinalPlan] = useState<boolean>(false);
+    const [isSchedule, setIsSchedule] = useState<boolean>(false);
+    const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
     const [aBreak, setABreak] = useState<BreakReturnDTO>({ id: 0, startTime: '', endTime: '', breakEnded: false, round: undefined });
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.MATCH_PLAN);
+    const [deleteType, setDeleteType] = useState<ChangeType>(ChangeType.SCHEDULE);
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
     const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
@@ -88,10 +88,10 @@ const Control: React.FC = () => {
             case ChangeType.TEAMS:
                 setError('Alle Teams wurden gelöscht');
                 break;
-            case ChangeType.MATCH_PLAN:
+            case ChangeType.SCHEDULE:
                 setError('Der Spielplan wurde gelöscht');
                 break;
-            case ChangeType.FINAL_PLAN:
+            case ChangeType.FINAL_SCHEDULE:
                 setError('Alle Finalspiele wurden gelöscht');
                 break;
             case ChangeType.ALL:
@@ -130,14 +130,14 @@ const Control: React.FC = () => {
         }
 
         Promise.all([
-            PublicScheduleService.isMatchPlanCreated(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isScheduleCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             PublicSettingsService.getRegistrationOpen(),
             PublicSettingsService.getTournamentOpen(),
         ])
-            .then(([matchPlan, finalPlan, registrationOpen, tournamentOpen]) => {
-                setIsMatchPlan(matchPlan);
-                setIsFinalPlan(finalPlan);
+            .then(([schedule, finalSchedule, registrationOpen, tournamentOpen]) => {
+                setIsSchedule(schedule);
+                setIsFinalSchedule(finalSchedule);
                 setIsRegistrationOpen(registrationOpen);
                 setIsTournamentOpen(tournamentOpen);
             })
@@ -169,7 +169,7 @@ const Control: React.FC = () => {
                     </LinearGradient>
                 </h2>
                 <div className={"adminDashboard"}>
-                    {(isMatchPlan &&
+                    {(isSchedule &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenBreakModal()}
                             tabIndex={0}
                             onKeyDown={(e) => {
@@ -198,7 +198,7 @@ const Control: React.FC = () => {
                         </div>
                     </IonButton>
 
-                    {(!isMatchPlan &&
+                    {(!isSchedule &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.REGISTRATION)}
                             tabIndex={0}
                             onKeyDown={(e) => {
@@ -227,7 +227,7 @@ const Control: React.FC = () => {
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    {(!isMatchPlan &&
+                    {(!isSchedule &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TEAMS)}
                             tabIndex={0}
                             onKeyDown={(e) => {
@@ -242,12 +242,12 @@ const Control: React.FC = () => {
                             </div>
                         </IonButton>
                     )}
-                    {((isMatchPlan && !isFinalPlan) &&
-                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.MATCH_PLAN)}
+                    {((isSchedule && !isFinalSchedule) &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.SCHEDULE)}
                             tabIndex={0}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
-                                    handleOpenModal(ChangeType.MATCH_PLAN);
+                                    handleOpenModal(ChangeType.SCHEDULE);
                                 }
                             }}
                         >
@@ -257,12 +257,12 @@ const Control: React.FC = () => {
                             </div>
                         </IonButton>
                     )}
-                    {(isFinalPlan &&
-                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.FINAL_PLAN)}
+                    {(isFinalSchedule &&
+                        <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.FINAL_SCHEDULE)}
                             tabIndex={0}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
-                                    handleOpenModal(ChangeType.FINAL_PLAN);
+                                    handleOpenModal(ChangeType.FINAL_SCHEDULE);
                                 }
                             }}
                         >

@@ -13,8 +13,8 @@ import "./Final.css";
 
 const Teams: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [matchplanCreated, setMatchplanCreated] = useState<boolean>(false);
-    const [finalplanCreated, setFinalplanCreated] = useState<boolean>(false);
+    const [scheduleCreated, setScheduleCreated] = useState<boolean>(false);
+    const [finalScheduleCreated, setFinalScheduleCreated] = useState<boolean>(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
@@ -39,13 +39,13 @@ const Teams: React.FC = () => {
         }
 
         Promise.all([
-            PublicScheduleService.isMatchPlanCreated(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isScheduleCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             getFinalTeams()
         ])
-            .then(([matchPlan, finalPlan, _]) => {
-                setMatchplanCreated(matchPlan);
-                setFinalplanCreated(finalPlan);
+            .then(([schedule, finalSchedule, _]) => {
+                setScheduleCreated(schedule);
+                setFinalScheduleCreated(finalSchedule);
             })
             .catch(error => {
                 setError(error.message);
@@ -67,8 +67,8 @@ const Teams: React.FC = () => {
 
                 <TeamAdminContainer
                     teams={teams}
-                    matchPlanCreated={matchplanCreated}
-                    finalPlanCreated={finalplanCreated}
+                    scheduleCreated={scheduleCreated}
+                    finalScheduleCreated={finalScheduleCreated}
                     setModalClosed={setModalClosed}
                     modalClosed={modalClosed}
                     getTeams={getFinalTeams}

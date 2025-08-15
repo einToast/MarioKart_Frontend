@@ -11,7 +11,7 @@ import { PublicCookiesService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
-const MatchPlan: React.FC = () => {
+const Schedule: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
@@ -38,9 +38,9 @@ const MatchPlan: React.FC = () => {
         });
     }, [modalClosed, location]);
 
-    const handleMatchPlanCreation = () => {
+    const handleScheduleCreation = () => {
         setButtonDisabled(true);
-        AdminScheduleService.createMatchPlan()
+        AdminScheduleService.createSchedule()
             .then(newRounds => {
                 if (newRounds) {
                     setError('Spielplan erfolgreich erstellt');
@@ -87,8 +87,8 @@ const MatchPlan: React.FC = () => {
                     {teams ? (
                         <TeamAdminContainer
                             teams={teams}
-                            matchPlanCreated={false}
-                            finalPlanCreated={false}
+                            scheduleCreated={false}
+                            finalScheduleCreated={false}
                             setModalClosed={setModalClosed}
                             modalClosed={modalClosed}
                             getTeams={PublicRegistrationService.getTeamsSortedByTeamName}
@@ -101,11 +101,11 @@ const MatchPlan: React.FC = () => {
 
                 <div className={"playedContainer"}>
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
-                        <div onClick={handleMatchPlanCreation}
+                        <div onClick={handleScheduleCreation}
                             tabIndex={0}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
-                                    handleMatchPlanCreation();
+                                    handleScheduleCreation();
                                 }
                             }}
                         >
@@ -126,4 +126,4 @@ const MatchPlan: React.FC = () => {
         ;
 };
 
-export default MatchPlan;
+export default Schedule;

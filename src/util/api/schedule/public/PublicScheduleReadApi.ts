@@ -28,9 +28,9 @@ export const getNumberOfRoundsUnplayed = async (): Promise<number> => {
     }
 };
 
-export const isMatchPlanCreated = async (): Promise<boolean> => {
+export const isScheduleCreated = async (): Promise<boolean> => {
     try {
-        const response = await apiClient.get<boolean>(`${BASE_URL}/create/match_plan`);
+        const response = await apiClient.get<boolean>(`${BASE_URL}/create/schedule`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -40,9 +40,9 @@ export const isMatchPlanCreated = async (): Promise<boolean> => {
     }
 };
 
-export const isFinalPlanCreated = async (): Promise<boolean> => {
+export const isFinalScheduleCreated = async (): Promise<boolean> => {
     try {
-        const response = await apiClient.get<boolean>(`${BASE_URL}/create/final_plan`);
+        const response = await apiClient.get<boolean>(`${BASE_URL}/create/final_schedule`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
