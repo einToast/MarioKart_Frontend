@@ -25,8 +25,8 @@ export enum ChangeType {
     TOURNAMENT = "Turnier",
     SURVEYS = "Umfragen",
     TEAMS = "Teams",
-    MATCH_PLAN = "Spielplan",
-    FINAL_PLAN = "Finalspiele",
+    SCHEDULE = "Spielplan",
+    FINAL_SCHEDULE = "Finalspiele",
     ALL = "Anwendung"
 }
 

@@ -1,9 +1,9 @@
 import { AdminScheduleApi } from "../../../api";
 
-export const deleteMatchPlan = async (): Promise<void> => {
-    return await AdminScheduleApi.deleteMatchPlan();
+export const deleteSchedule = async (): Promise<void> => {
+    return await AdminScheduleApi.deleteSchedule();
 }
 
-export const deleteFinalPlan = async (): Promise<void> => {
-    return await AdminScheduleApi.deleteFinalPlan();
+export const deleteFinalSchedule = async (): Promise<void> => {
+    return await AdminScheduleApi.deleteFinalSchedule();
 }

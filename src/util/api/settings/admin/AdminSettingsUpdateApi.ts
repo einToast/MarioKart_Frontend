@@ -11,7 +11,7 @@ export const updateSettings = async (updateSettings: TournamentDTO): Promise<Tou
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Matchplan wurde bereits erstellt');
+                throw new Error('Spielplan wurde bereits erstellt');
             } else if (error.response?.status === 404) {
                 throw new Error('Einstellungen nicht gefunden');
             } else if (error.response?.status === 401) {

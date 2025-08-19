@@ -92,8 +92,8 @@ export interface SurveyAdminListItemProps {
 
 export interface TeamAdminListItemProps {
   team: TeamReturnDTO;
-  matchPlanCreated: boolean;
-  finalPlanCreated: boolean;
+  scheduleCreated: boolean;
+  finalScheduleCreated: boolean;
   onToggleFinalParticipation: (team: TeamReturnDTO) => void;
   onToggleActive: (team: TeamReturnDTO) => void;
   onOpenChangeModal: (team: TeamReturnDTO) => void;
@@ -108,8 +108,8 @@ export interface SurveyAdminContainerProps {
 
 export interface TeamAdminContainerProps {
   teams: TeamReturnDTO[];
-  matchPlanCreated: boolean;
-  finalPlanCreated: boolean;
+  scheduleCreated: boolean;
+  finalScheduleCreated: boolean;
   setModalClosed: (modalClosed: boolean) => void;
   getTeams: () => void;
   modalClosed: boolean;

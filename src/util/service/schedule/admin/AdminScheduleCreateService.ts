@@ -1,10 +1,10 @@
 import { AdminScheduleApi } from "../../../api";
 import { RoundReturnDTO } from "../../../api/config/dto";
 
-export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
-    return await AdminScheduleApi.createMatchPlan();
+export const createSchedule = async (): Promise<RoundReturnDTO[]> => {
+    return await AdminScheduleApi.createSchedule();
 }
 
-export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
-    return await AdminScheduleApi.createFinalPlan();
+export const createFinalSchedule = async (): Promise<RoundReturnDTO[]> => {
+    return await AdminScheduleApi.createFinalSchedule();
 }

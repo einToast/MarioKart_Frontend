@@ -12,8 +12,8 @@ import { TeamAdminListItemProps } from "../../util/api/config/interfaces";
 
 const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
     team,
-    matchPlanCreated,
-    finalPlanCreated,
+    scheduleCreated,
+    finalScheduleCreated,
     onToggleFinalParticipation,
     onToggleActive,
     onOpenChangeModal,
@@ -41,7 +41,7 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
                     style={{ cursor: "pointer" }}
                     onClick={() => onOpenChangeModal(team)}
                 />
-                {!finalPlanCreated && (
+                {!finalScheduleCreated && (
                     <>
                         <IonIcon
                             slot="end"
@@ -60,7 +60,7 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
                     </>
                 )}
 
-                {!matchPlanCreated && (
+                {!scheduleCreated && (
                     <IonIcon
                         slot="end"
                         icon={trashOutline}

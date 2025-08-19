@@ -4,9 +4,9 @@ import { RoundReturnDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
-export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
+export const createSchedule = async (): Promise<RoundReturnDTO[]> => {
     try {
-        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/match_plan`);
+        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/schedule`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -26,9 +26,9 @@ export const createMatchPlan = async (): Promise<RoundReturnDTO[]> => {
     }
 };
 
-export const createFinalPlan = async (): Promise<RoundReturnDTO[]> => {
+export const createFinalSchedule = async (): Promise<RoundReturnDTO[]> => {
     try {
-        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/final_plan`);
+        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/final_schedule`);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {

@@ -60,11 +60,11 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const updateShowTab2 = () => {
         Promise.all([
-            PublicScheduleService.isMatchPlanCreated(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isScheduleCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
-        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
-            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        ]).then(([scheduleValue, finalScheduleValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!scheduleValue || finalScheduleValue || !roundsLessTwoValue);
         }).catch(error => {
             console.error("Error fetching schedule data:", error);
         });

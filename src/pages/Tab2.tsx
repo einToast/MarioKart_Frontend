@@ -14,7 +14,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [maxNumberOfGames, setMaxNumberOfGames] = useState<number>(0);
-    const [finalPlanCreated, setFinalPlanCreated] = useState<boolean>(false);
+    const [finalScheduleCreated, setFinalScheduleCreated] = useState<boolean>(false);
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [error, setError] = useState<string>('Error');
@@ -26,12 +26,12 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const getRanking = () => {
         Promise.all([
             PublicRegistrationService.getTeamsSortedByGroupPoints(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             PublicSettingsService.getMaxGamesCount()
         ])
-            .then(([teams, finalPlan, maxGames]) => {
+            .then(([teams, finalSchedule, maxGames]) => {
                 setTeams(teams);
-                setFinalPlanCreated(finalPlan);
+                setFinalScheduleCreated(finalSchedule);
                 setMaxNumberOfGames(maxGames);
             })
             .catch(error => {
@@ -42,11 +42,11 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const updateShowTab2 = () => {
         Promise.all([
-            PublicScheduleService.isMatchPlanCreated(),
-            PublicScheduleService.isFinalPlanCreated(),
+            PublicScheduleService.isScheduleCreated(),
+            PublicScheduleService.isFinalScheduleCreated(),
             PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
-        ]).then(([matchPlanValue, finalPlanValue, roundsLessTwoValue]) => {
-            props.setShowTab2(!matchPlanValue || finalPlanValue || !roundsLessTwoValue);
+        ]).then(([scheduleValue, finalScheduleValue, roundsLessTwoValue]) => {
+            props.setShowTab2(!scheduleValue || finalScheduleValue || !roundsLessTwoValue);
         }).catch(error => {
             console.error("Error fetching schedule data:", error);
         });
@@ -110,7 +110,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         Rangliste
                     </LinearGradient>
                 </h1>
-                {finalPlanCreated ? (
+                {finalScheduleCreated ? (
                     <StaticTeamGraph teams={teams} />
                 ) : (
                     <></>
@@ -127,7 +127,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                                     <div>
                                         <p>{team.teamName}</p>
                                         <p className={"punkte"}>{index + 1}. Platz</p>
-                                        {finalPlanCreated ? (
+                                        {finalScheduleCreated ? (
                                             <p className={"punkte"}>{team.groupPoints} Punkte</p>
                                         ) : (
                                             <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>

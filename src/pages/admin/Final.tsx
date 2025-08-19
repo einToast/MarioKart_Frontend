@@ -56,7 +56,7 @@ const Final: React.FC = () => {
 
     const handleFinalCreation = () => {
         setButtonDisabled(true);
-        AdminScheduleService.createFinalPlan()
+        AdminScheduleService.createFinalSchedule()
             .then(final => {
                 if (final) {
                     setError('Finale erfolgreich erstellt');
@@ -111,8 +111,8 @@ const Final: React.FC = () => {
                     {teams ? (
                         <TeamAdminContainer
                             teams={teams}
-                            matchPlanCreated={true}
-                            finalPlanCreated={false}
+                            scheduleCreated={true}
+                            finalScheduleCreated={false}
                             setModalClosed={setModalClosed}
                             modalClosed={modalClosed}
                             getTeams={getFinalTeams}

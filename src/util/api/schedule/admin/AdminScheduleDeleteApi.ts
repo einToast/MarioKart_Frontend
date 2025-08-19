@@ -3,9 +3,9 @@ import apiClient, { ApiPath } from "../../config/apiClient";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
-export const deleteMatchPlan = async (): Promise<void> => {
+export const deleteSchedule = async (): Promise<void> => {
     try {
-        await apiClient.delete(`${BASE_URL}/create/match_plan`);
+        await apiClient.delete(`${BASE_URL}/create/schedule`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
@@ -18,9 +18,9 @@ export const deleteMatchPlan = async (): Promise<void> => {
     }
 };
 
-export const deleteFinalPlan = async (): Promise<void> => {
+export const deleteFinalSchedule = async (): Promise<void> => {
     try {
-        await apiClient.delete(`${BASE_URL}/create/final_plan`);
+        await apiClient.delete(`${BASE_URL}/create/final_schedule`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
