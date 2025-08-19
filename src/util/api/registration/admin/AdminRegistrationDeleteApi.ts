@@ -28,7 +28,7 @@ export const deleteAllTeams = async (): Promise<void> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Schedule wurde bereits erstellt');
+                throw new Error('Spielplan wurde bereits erstellt');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else {
