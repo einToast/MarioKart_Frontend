@@ -55,7 +55,7 @@
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.0.2",
     "cypress": "^15.1.0",
-    "eslint": "^9.34.0",
+    "eslint": "^9.35.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
     "jsdom": "^26.1.0",
