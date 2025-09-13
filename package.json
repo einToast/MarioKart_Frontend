@@ -58,7 +58,7 @@
     "eslint": "^9.35.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
-    "jsdom": "^26.1.0",
+    "jsdom": "^27.0.0",
     "react-inject-env": "^2.1.0",
     "terser": "^5.44.0",
     "typescript": "^5.9.2",
