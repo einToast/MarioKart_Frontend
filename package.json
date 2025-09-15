@@ -24,7 +24,7 @@
     "@stomp/stompjs": "^7.1.1",
     "@types/react-router": "^5.1.20",
     "@types/react-router-dom": "^5.3.3",
-    "axios": "^1.12.1",
+    "axios": "^1.12.2",
     "chart.js": "^4.5.0",
     "date-fns": "^4.1.0",
     "ionicons": "^8.0.13",
