@@ -1,4 +1,4 @@
-# Mario Kart Tournament — Frontend (Ionic + React)
+# Mario Kart Tournament Frontend
 
 Progressive Web App for managing a Mario Kart tournament: team registration, schedules, live rankings, surveys, and an admin control panel — built with Ionic 8, React, TypeScript, and Vite.
 
