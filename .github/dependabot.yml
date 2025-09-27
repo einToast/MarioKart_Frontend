@@ -25,5 +25,4 @@ updates:
     ignore:
       - dependency-name: "node"
         versions:
-        - ">= 23"
-        - "< 25"
+          - ">= 23, < 25"
