@@ -54,7 +54,7 @@
     "@types/sockjs-client": "^1.5.4",
     "@vitejs/plugin-legacy": "^7.2.1",
     "@vitejs/plugin-react": "^5.0.4",
-    "cypress": "^15.4.0",
+    "cypress": "^15.5.0",
     "eslint": "^9.38.0",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
