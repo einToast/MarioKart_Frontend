@@ -42,8 +42,8 @@ tsconfig.json     # TypeScript config
 
 ### Prerequisites
 
-- Node.js 18+ (Node 20+ recommended; Docker uses Node 22)
-- npm 9+
+- Node.js 24
+- npm 11
 
 ### Installation
 
