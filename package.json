@@ -62,7 +62,7 @@
     "react-inject-env": "^2.1.0",
     "terser": "^5.44.1",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3",
+    "typescript-eslint": "^8.46.4",
     "vite": "^7.2.2",
     "vite-plugin-pwa": "^1.1.0",
     "vitest": "^4.0.8"
