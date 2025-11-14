@@ -139,7 +139,6 @@ export interface AuthenticationRequestDTO {
 }
 
 export interface AuthenticationResponseDTO {
-    accessToken: string;
     user: UserDTO;
 }
 

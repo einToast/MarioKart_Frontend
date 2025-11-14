@@ -125,28 +125,33 @@ const Control: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadControlData = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        Promise.all([
-            PublicScheduleService.isScheduleCreated(),
-            PublicScheduleService.isFinalScheduleCreated(),
-            PublicSettingsService.getRegistrationOpen(),
-            PublicSettingsService.getTournamentOpen(),
-        ])
-            .then(([schedule, finalSchedule, registrationOpen, tournamentOpen]) => {
-                setIsSchedule(schedule);
-                setIsFinalSchedule(finalSchedule);
-                setIsRegistrationOpen(registrationOpen);
-                setIsTournamentOpen(tournamentOpen);
-            })
-            .catch(error => {
-                setError(error.message);
-                setIsError(true);
-                setShowToast(true);
-            });
+            Promise.all([
+                PublicScheduleService.isScheduleCreated(),
+                PublicScheduleService.isFinalScheduleCreated(),
+                PublicSettingsService.getRegistrationOpen(),
+                PublicSettingsService.getTournamentOpen(),
+            ])
+                .then(([schedule, finalSchedule, registrationOpen, tournamentOpen]) => {
+                    setIsSchedule(schedule);
+                    setIsFinalSchedule(finalSchedule);
+                    setIsRegistrationOpen(registrationOpen);
+                    setIsTournamentOpen(tournamentOpen);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setIsError(true);
+                    setShowToast(true);
+                });
+        };
 
+        loadControlData();
     }, [modalClosed, location]);
 
     return (

@@ -7,8 +7,7 @@ import FinalGraph from "../../components/graph/FinalGraph";
 import GroupGraph from "../../components/graph/GroupGraph";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, PublicScheduleService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { AdminRegistrationService, PublicCookiesService, PublicScheduleService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
@@ -23,23 +22,28 @@ const Results: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadResults = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        Promise.all([
-            AdminRegistrationService.getFinalTeams(),
-            PublicScheduleService.isFinalScheduleCreated()
-        ])
-            .then(([teams, finalSchedule]) => {
-                setTeams(teams);
-                setIsFinalSchedule(finalSchedule);
-            })
-            .catch(error => {
-                setError(error.message);
-                setShowToast(true);
-            });
+            Promise.all([
+                AdminRegistrationService.getFinalTeams(),
+                PublicScheduleService.isFinalScheduleCreated()
+            ])
+                .then(([teams, finalSchedule]) => {
+                    setTeams(teams);
+                    setIsFinalSchedule(finalSchedule);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
+        };
 
+        loadResults();
     }, [location]);
 
     return (

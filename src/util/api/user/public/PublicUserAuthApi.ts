@@ -19,3 +19,26 @@ export const login = async (request: AuthenticationRequestDTO): Promise<Authenti
         throw error;
     }
 };
+
+export const logout = async (): Promise<void> => {
+    try {
+        await apiClient.post<void>(`${BASE_URL}/logout`);
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error('Logout fehlgeschlagen');
+        }
+        throw error;
+    }
+};
+
+export const check = async (): Promise<AuthenticationResponseDTO> => {
+    try {
+        const response = await apiClient.get<AuthenticationResponseDTO>(`${BASE_URL}/login/check`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+            throw new Error('Login abgelaufen');
+        }
+        throw error;
+    }
+};

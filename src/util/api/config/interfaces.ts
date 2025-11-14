@@ -53,6 +53,7 @@ export interface RoundHeaderProps {
   title: string;
   onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   selectedOption: string;
+  loading: boolean;
 }
 
 export interface UseRoundDataReturn {
@@ -78,6 +79,7 @@ export interface RoundDisplayProps {
   viewType: "all" | "personal";
   noGames?: boolean;
   teamsNotInRound: TeamReturnDTO[];
+  loading?: boolean;
 }
 
 export interface SurveyAdminListItemProps {
