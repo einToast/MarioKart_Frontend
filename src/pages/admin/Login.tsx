@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
-import { PublicUserService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { PublicCookiesService, PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
 
 const Login: React.FC = () => {
@@ -32,7 +31,7 @@ const Login: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (PublicCookiesService.checkToken()) {
+            if (await PublicCookiesService.checkToken()) {
                 history.push('/admin/dashboard');
             }
         }

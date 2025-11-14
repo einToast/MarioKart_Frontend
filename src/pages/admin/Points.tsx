@@ -6,8 +6,7 @@ import { LinearGradient } from "react-text-gradients";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
 import { RoundReturnDTO } from "../../util/api/config/dto";
-import { AdminScheduleService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { AdminScheduleService, PublicCookiesService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
@@ -57,21 +56,27 @@ const Points: React.FC = () => {
     };
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadRounds = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        const roundsPromise = AdminScheduleService.getRounds();
-        roundsPromise.then((rounds) => {
-            rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
-            setRounds(rounds);
-            getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
-            setNumberOfRounds(rounds.length);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
+            const roundsPromise = AdminScheduleService.getRounds();
+            roundsPromise.then((rounds) => {
+                rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
+                setRounds(rounds);
+                getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
+                setNumberOfRounds(rounds.length);
+            }).catch((error) => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+        };
+
+        loadRounds();
     }, [location]);
 
     const toggleAccordion = (accordionId: string) => {

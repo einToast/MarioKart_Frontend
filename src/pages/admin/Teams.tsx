@@ -6,8 +6,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { PublicScheduleService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { PublicCookiesService, PublicScheduleService } from "../../util/service";
 import { AdminRegistrationService } from "../../util/service/registration";
 import "./Final.css";
 
@@ -34,24 +33,28 @@ const Teams: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadData = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        Promise.all([
-            PublicScheduleService.isScheduleCreated(),
-            PublicScheduleService.isFinalScheduleCreated(),
-            getFinalTeams()
-        ])
-            .then(([schedule, finalSchedule, _]) => {
+            try {
+                const [schedule, finalSchedule, _] = await Promise.all([
+                    PublicScheduleService.isScheduleCreated(),
+                    PublicScheduleService.isFinalScheduleCreated(),
+                    getFinalTeams()
+                ]);
                 setScheduleCreated(schedule);
                 setFinalScheduleCreated(finalSchedule);
-            })
-            .catch(error => {
+            } catch (error: any) {
                 setError(error.message);
                 setShowToast(true);
-            });
+            }
+        };
 
+        loadData();
     }, [modalClosed, location]);
 
     return (

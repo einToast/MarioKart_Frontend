@@ -8,8 +8,7 @@ import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import Toast from "../../components/Toast";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { AdminSurveyService, PublicCookiesService } from "../../util/service";
 import "./SurveyAdmin.css";
 
 const SurveyAdmin: React.FC = () => {
@@ -56,10 +55,16 @@ const SurveyAdmin: React.FC = () => {
 
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
-        getQuestions();
+        const loadData = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
+            getQuestions();
+        };
+
+        loadData();
     }, [modalClosed, location]);
 
     return (

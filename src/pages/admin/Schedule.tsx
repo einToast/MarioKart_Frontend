@@ -6,8 +6,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicRegistrationService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { AdminScheduleService, PublicCookiesService, PublicRegistrationService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 
@@ -24,18 +23,24 @@ const Schedule: React.FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadTeams = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        const teamNames = PublicRegistrationService.getTeamsSortedByTeamName();
-        teamNames.then((response) => {
-            setTeams(response);
-        }).catch((error) => {
-            setError(error.message);
-            setIsError(true);
-            setShowToast(true);
-        });
+            const teamNames = PublicRegistrationService.getTeamsSortedByTeamName();
+            teamNames.then((response) => {
+                setTeams(response);
+            }).catch((error) => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+        };
+
+        loadTeams();
     }, [modalClosed, location]);
 
     const handleScheduleCreation = () => {

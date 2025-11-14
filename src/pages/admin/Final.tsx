@@ -6,8 +6,7 @@ import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from '../../components/Toast';
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, AdminScheduleService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService, PublicCookiesService } from "../../util/service";
 import "./Final.css";
 
 const Final: React.FC = () => {
@@ -80,10 +79,16 @@ const Final: React.FC = () => {
     }
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
-        getFinalTeams();
+        const loadData = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
+            getFinalTeams();
+        };
+
+        loadData();
     }, [modalClosed, location]);
 
     return (

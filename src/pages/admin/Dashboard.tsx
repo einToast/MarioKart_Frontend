@@ -6,8 +6,7 @@ import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
 import Toast from "../../components/Toast";
-import { PublicScheduleService } from "../../util/service";
-import { PublicCookiesService } from "../../util/service";
+import { PublicCookiesService, PublicScheduleService, PublicUserService } from "../../util/service";
 
 const Dashboard: React.FC = () => {
 
@@ -21,30 +20,40 @@ const Dashboard: React.FC = () => {
     const history = useHistory();
     const location = useLocation();
 
-    const handleLogout = () => {
-        PublicCookiesService.removeToken();
-        history.push('/admin/login');
+    const handleLogout = async () => {
+        try {
+            await PublicUserService.logout();
+        } finally {
+            PublicCookiesService.removeUser();
+            history.push('/admin/login');
+        }
     }
 
     useEffect(() => {
-        if (!PublicCookiesService.checkToken()) {
-            window.location.assign('/admin/login');
-        }
+        const loadDashboard = async () => {
+            const isAuthenticated = await PublicCookiesService.checkToken();
+            if (!isAuthenticated) {
+                window.location.assign('/admin/login');
+                return;
+            }
 
-        Promise.all([
-            PublicScheduleService.isScheduleCreated(),
-            PublicScheduleService.isFinalScheduleCreated(),
-            PublicScheduleService.isNumberOfRoundsUnplayedZero()
-        ])
-            .then(([schedule, finalSchedule, roundsZero]) => {
-                setIsSchedule(schedule);
-                setIsFinalSchedule(finalSchedule);
-                setIsRoundsUnplayedZero(roundsZero);
-            })
-            .catch(error => {
-                setError(error.message);
-                setShowToast(true);
-            });
+            Promise.all([
+                PublicScheduleService.isScheduleCreated(),
+                PublicScheduleService.isFinalScheduleCreated(),
+                PublicScheduleService.isNumberOfRoundsUnplayedZero()
+            ])
+                .then(([schedule, finalSchedule, roundsZero]) => {
+                    setIsSchedule(schedule);
+                    setIsFinalSchedule(finalSchedule);
+                    setIsRoundsUnplayedZero(roundsZero);
+                })
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
+        };
+
+        loadDashboard();
     }, [location]);
 
 
