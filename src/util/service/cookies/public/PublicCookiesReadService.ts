@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import { User } from "../../../api/config/interfaces";
 import { check as checkAuthCookie } from "../../user/public/PublicUserAuthService";
-import { removeUser } from "./PublicCookiesDeleteService";
 
 export const getUser = (): User | null => {
     try {
@@ -36,7 +35,6 @@ export const checkToken = async (): Promise<boolean> => {
         return true;
     } catch (error) {
         console.error('Cookie validation failed:', error);
-        removeUser();
         return false;
     }
 };
