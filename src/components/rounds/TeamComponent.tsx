@@ -6,7 +6,7 @@ const TeamComponent = ({ team, switchColor }: { team: TeamReturnDTO, switchColor
     const classColor = switchColor.toLowerCase();
     return (
         <div className={`${classColor}`}>
-            <div className={`imageContainer ${classColor}`}>
+            <div className={`imageContainer ${classColor}`}> 
                 <img
                     src={`/characters/${character}.png`}
                     alt="teamcharacter"

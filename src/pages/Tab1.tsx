@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonCheckbox, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import './Tab1.css';
@@ -20,6 +20,8 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const location = useLocation();
 
@@ -51,12 +53,16 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         });
     }
 
-    const handleRefresh = (event: CustomEvent) => {
+    const handleRefresh = async (event: CustomEvent) => {
+        setLoading(true);
+        await Promise.all([
+            refreshRounds(),
+            updateShowTab2()
+        ]);
         setTimeout(() => {
-            refreshRounds();
-            updateShowTab2();
-            event.detail.complete();
+            setLoading(false);
         }, 500);
+        event.detail.complete();
     };
 
     useEffect(() => {
@@ -69,6 +75,12 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             setShowToast(true);
         }
     }, [error]);
+
+    useEffect(() => {
+        // if (currentRound !== null || nextRound !== null || error) {
+        //     setLoading(false);
+        // }
+    }, [currentRound, nextRound, error]);
 
     useEffect(() => {
         if (selectedOption === 'Alle Spiele') {
@@ -88,15 +100,20 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-                    <IonRefresherContent refreshingSpinner="circles" />
+                    <IonRefresherContent refreshingSpinner="crescent" />
                 </IonRefresher>
 
                 <RoundHeader
                     title="Spielplan"
                     onOptionChange={handleOptionChange}
                     selectedOption={selectedOption}
+                    loading={loading}
                 />
-
+                <IonCheckbox
+                    checked={loading}
+                    onIonChange={() => setLoading(!loading)}
+                />
+                <div>{JSON.stringify(PublicCookiesService.getUser())} </div>
                 <div>
                     <RoundDisplay
                         round={currentRound}
@@ -104,6 +121,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInCurrentRound}
+                        loading={loading}
                     />
 
                     <RoundDisplay
@@ -112,6 +130,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInNextRound}
+                        loading={loading}
                     />
                 </div>
             </IonContent>
