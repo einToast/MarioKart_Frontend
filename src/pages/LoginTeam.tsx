@@ -27,9 +27,6 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                 teamId: selectedTeam.id,
                 name: selectedTeam.teamName,
             };
-            const log = PublicCookiesService.setUser(user);
-            props.setUser(user);
-            alert(log);
             history.push('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
