@@ -109,10 +109,6 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     selectedOption={selectedOption}
                     loading={loading}
                 />
-                                <IonCheckbox
-                    checked={loading}
-                    onIonChange={() => setLoading(!loading)}
-                />
                 <div>
                     <RoundDisplay
                         round={currentRound}
