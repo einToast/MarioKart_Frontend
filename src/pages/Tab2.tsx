@@ -1,4 +1,4 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonSkeletonText } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
@@ -9,6 +9,8 @@ import { TeamReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab2.css';
+import SkeletonRoundComponentAll from '../components/skeletons/SkeletonRoundComponentAll';
+import SkeletonTeamStatistic from '../components/skeletons/SkeletonTeamStatistic';
 
 const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
@@ -19,6 +21,8 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const location = useLocation();
     const history = useHistory();
@@ -53,9 +57,11 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = (event: CustomEvent) => {
+        setLoading(true);
+        getRanking();
+        updateShowTab2();
         setTimeout(() => {
-            getRanking();
-            updateShowTab2();
+            setLoading(false);
             event.detail.complete();
         }, 500);
     };
@@ -116,29 +122,34 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <></>
                 )}
                 <div className={"flexContainer"}>
-                    {teams ? (
-                        teams
-                            .map((team, index) => (
-                                <div key={team.id} className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''}`}>
-                                    <div className={"imageContainer"}>
-                                        <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
-                                            className={"iconTeam"} />
-                                    </div>
-                                    <div>
-                                        <p>{team.teamName}</p>
-                                        <p className={"punkte"}>{index + 1}. Platz</p>
-                                        {finalScheduleCreated ? (
-                                            <p className={"punkte"}>{team.groupPoints} Punkte</p>
-                                        ) : (
-                                            <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>
-                                        )}
+                    {
+                        loading ? (
+                            <div className="flexSpiel">
+                                <SkeletonTeamStatistic
+                                    rows={10}
+                                    />
+                            </div>
+                        ) :
+                            teams
+                                .map((team, index) => (
+                                    <div key={team.id} className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''}`}>
+                                        <div className={"imageContainer"}>
+                                            <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
+                                                className={"iconTeam"} />
+                                        </div>
+                                        <div>
+                                            <p>{team.teamName}</p>
+                                            <p className={"punkte"}>{index + 1}. Platz</p>
+                                            {finalScheduleCreated ? (
+                                                <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                            ) : (
+                                                <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>
+                                            )}
 
+                                        </div>
                                     </div>
-                                </div>
-                            ))
-                    ) : (
-                        <p>loading...</p>
-                    )}
+                                ))
+                    }
                 </div>
             </IonContent>
             <Toast
