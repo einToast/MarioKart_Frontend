@@ -43,9 +43,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = (event: CustomEvent) => {
+        updateShowTab2();
+        setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
         setTimeout(() => {
-            updateShowTab2();
-            setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
             event.detail.complete();
         }, 500);
     };

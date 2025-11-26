@@ -26,8 +26,8 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = (event: CustomEvent) => {
+        updateShowTab2();
         setTimeout(() => {
-            updateShowTab2();
             event.detail.complete();
         }, 500);
     };

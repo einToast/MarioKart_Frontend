@@ -61,8 +61,8 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         ]);
         setTimeout(() => {
             setLoading(false);
+            event.detail.complete();
         }, 500);
-        event.detail.complete();
     };
 
     useEffect(() => {
@@ -109,11 +109,10 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     selectedOption={selectedOption}
                     loading={loading}
                 />
-                <IonCheckbox
+                                <IonCheckbox
                     checked={loading}
                     onIonChange={() => setLoading(!loading)}
                 />
-                <div>{JSON.stringify(PublicCookiesService.getUser())} </div>
                 <div>
                     <RoundDisplay
                         round={currentRound}
