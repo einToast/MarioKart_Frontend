@@ -1,19 +1,13 @@
-import React from 'react';
 import { IonSkeletonText } from '@ionic/react';
+import React from 'react';
+import { SkeletonTeamComponentProps } from '../../util/api/config/interfaces';
 
-interface SkeletonTeamComponentProps {
-  isSwiper?: boolean;
-  userTeam?: boolean;
-  switchColor?: string;
-}
 
 const SkeletonTeamComponent: React.FC<SkeletonTeamComponentProps> = ({
   isSwiper = false,
   switchColor = 'weiß',
 }) => {
   const classColor = switchColor.toLowerCase();
-
-  // isSwiper = false
 
   if (isSwiper) {
     return (

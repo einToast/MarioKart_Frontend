@@ -1,17 +1,14 @@
 import { IonSkeletonText } from "@ionic/react";
+import { SkeletonTeamStatisticProps } from "../../util/api/config/interfaces";
 
-interface SkeletonTeamStatisticProps {
-    rows?: number;
-}
-
-const SkeletonTeamStatistic: React.FC<SkeletonTeamStatisticProps> = ({ rows = 25 }) => {
+const SkeletonTeamStatistic: React.FC<SkeletonTeamStatisticProps> = ({ rows = 4}) => {
 
     const switchColor = "weiß"
     const classColor = switchColor.toLowerCase()
     return (
         <div className="roundContainer">
             {Array.from({ length: rows }).map((_, idx) => (
-                <div className={`teamContainer ${switchColor} slide`}>
+                <div className={`teamContainer ${switchColor} slide`} key={idx}>
                     <div className={classColor}>
                         <div className={`skeletonContainer `}>
                             <IonSkeletonText animated style={{ width: 55, height: 55, borderRadius: '50%' }} />

@@ -1,10 +1,6 @@
 import React from 'react';
+import { SkeletonRoundComponentAllProps } from '../../util/api/config/interfaces';
 import SkeletonTeamComponent from './SkeletonTeamComponent';
-
-interface SkeletonRoundComponentAllProps {
-  rows?: number;
-  isSwiper?: boolean;
-}
 
 const SkeletonRoundComponentAll: React.FC<SkeletonRoundComponentAllProps> = ({ rows = 4, isSwiper = false }) => {
   return (
