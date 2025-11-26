@@ -4,26 +4,25 @@ import { IonSkeletonText } from '@ionic/react';
 interface SkeletonTeamComponentProps {
   isSwiper?: boolean;
   userTeam?: boolean;
-  switchColor?: string; // e.g., "weiß", "grün", etc.
+  switchColor?: string;
 }
 
 const SkeletonTeamComponent: React.FC<SkeletonTeamComponentProps> = ({
   isSwiper = false,
-  userTeam = false,
   switchColor = 'weiß',
 }) => {
   const classColor = switchColor.toLowerCase();
 
-  isSwiper = false
+  // isSwiper = false
 
   if (isSwiper) {
     return (
-      <div className={`swiper-slide ${userTeam ? 'loggedIn' : ''}`}>
-        <div className={classColor} style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+      <div className={`swiper-slide `} style={{ marginBottom: 15 }}>
+        <div className={classColor} style={{ display: 'flex', alignItems: 'center', width: '100%', }}>
           <div className={`imageContainer ${classColor}`}>
             <IonSkeletonText
               animated
-              style={{ width: 70, height: 70, borderRadius: '50%', position: 'absolute', left: 45, top: 20 }}
+              style={{ width: 70, height: 70, borderRadius: "50%", position: 'absolute', left: 40, top: 10 }}
             />
           </div>
           <div>

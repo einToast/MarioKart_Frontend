@@ -13,7 +13,6 @@ const SkeletonRoundComponentAll: React.FC<SkeletonRoundComponentAllProps> = ({ r
         <SkeletonTeamComponent
           key={idx}
           isSwiper={isSwiper}
-          userTeam={idx === 0}
           switchColor={'weiß'}
         />
       ))}

@@ -3,7 +3,7 @@ import { RoundReturnDTO } from '../../util/api/config/dto';
 import { RoundDisplayProps } from '../../util/api/config/interfaces';
 import { GameList } from './GameList';
 import { IonSkeletonText } from '@ionic/react';
-import SkeletonRoundComponentAll from './SkeletonRoundComponentAll';
+import SkeletonRoundComponentAll from '../skeletons/SkeletonRoundComponentAll';
 
 export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     round,
