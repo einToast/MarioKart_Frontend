@@ -1,8 +1,10 @@
 import React from 'react';
 import { LinearGradient } from 'react-text-gradients';
 import { RoundHeaderProps } from '../../util/api/config/interfaces';
+import { IonSkeletonText } from '@ionic/react';
 
-export const RoundHeader: React.FC<RoundHeaderProps> = ({ title, onOptionChange, selectedOption }) => {
+export const RoundHeader: React.FC<RoundHeaderProps> = ({ title, onOptionChange, selectedOption, loading }) => {
+
     return (
         <div className="flexStart">
             <h1>
@@ -10,12 +12,18 @@ export const RoundHeader: React.FC<RoundHeaderProps> = ({ title, onOptionChange,
                     {title}
                 </LinearGradient>
             </h1>
-            <div>
-                <select value={selectedOption} onChange={onOptionChange}>
-                    <option>Deine Spiele</option>
-                    <option>Alle Spiele</option>
-                </select>
-            </div>
+            {loading ? (
+                <div >
+                    <IonSkeletonText animated style={{ width: '125px', height: '30px', borderRadius: 6 }} />
+                </div>
+            ) : (
+                <div>
+                    <select value={selectedOption} onChange={onOptionChange} >
+                        <option>Deine Spiele</option>
+                        <option>Alle Spiele</option>
+                    </select>
+                </div>
+            )}
         </div>
     );
 }; 

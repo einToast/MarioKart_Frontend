@@ -26,6 +26,7 @@ export default [
       // "no-unused-vars": "off",
       // "no-undef": "off",
       "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off",
       "@typescript-eslint/no-unused-vars": [
         "warn",
         { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }

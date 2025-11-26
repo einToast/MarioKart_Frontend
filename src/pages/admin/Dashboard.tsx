@@ -24,7 +24,6 @@ const Dashboard: React.FC = () => {
         try {
             await PublicUserService.logout();
         } finally {
-            PublicCookiesService.removeUser();
             history.push('/admin/login');
         }
     }

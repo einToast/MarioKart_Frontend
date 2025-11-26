@@ -131,3 +131,18 @@ export interface ToastProps {
   setShowToast: (show: boolean) => void;
   isError?: boolean;
 }
+
+export interface SkeletonRoundComponentAllProps {
+  rows?: number;
+  isSwiper?: boolean;
+}
+
+export interface SkeletonTeamComponentProps {
+  isSwiper?: boolean;
+  userTeam?: boolean;
+  switchColor?: string;
+}
+
+export interface SkeletonTeamStatisticProps {
+  rows?: number;
+}
