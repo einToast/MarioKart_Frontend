@@ -14,7 +14,7 @@ export const RoundHeader: React.FC<RoundHeaderProps> = ({ title, onOptionChange,
             </h1>
             {loading ? (
                 <div >
-                    <IonSkeletonText animated style={{ width: '125px', height: '30px' }} />
+                    <IonSkeletonText animated style={{ width: '125px', height: '30px', borderRadius: 6 }} />
                 </div>
             ) : (
                 <div>
