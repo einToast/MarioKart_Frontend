@@ -55,14 +55,15 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
+        
         await Promise.all([
-            refreshRounds(),
-            updateShowTab2()
+        refreshRounds(),
+        updateShowTab2(),
+        new Promise(resolve => setTimeout(resolve, 500)),
         ]);
-        setTimeout(() => {
-            setLoading(false);
-            event.detail.complete();
-        }, 500);
+
+        setLoading(false);
+        event.detail.complete();
     };
 
     useEffect(() => {

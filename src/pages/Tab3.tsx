@@ -42,12 +42,13 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         });
     }
 
-    const handleRefresh = (event: CustomEvent) => {
-        updateShowTab2();
-        setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
-        setTimeout(() => {
-            event.detail.complete();
-        }, 500);
+    const handleRefresh = async (event: CustomEvent) => {
+        await Promise.all([
+            updateShowTab2(),
+            setNotificationEnabled(PublicCookiesService.getNotificationsEnabled()),
+            new Promise(resolve => setTimeout(resolve, 500)),
+        ]);
+        event.detail.complete();
     };
 
     useEffect(() => {
@@ -108,7 +109,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
-                        refreshingSpinner="circles"
+                        refreshingSpinner="crescent"
                     />
                 </IonRefresher>
                 <h1>

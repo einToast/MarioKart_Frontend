@@ -56,14 +56,17 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         });
     }
 
-    const handleRefresh = (event: CustomEvent) => {
+    const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
-        getRanking();
-        updateShowTab2();
-        setTimeout(() => {
-            setLoading(false);
-            event.detail.complete();
-        }, 500);
+
+        await Promise.all([
+            getRanking(),
+            updateShowTab2(),
+            new Promise(resolve => setTimeout(resolve, 500)),
+        ]);
+
+        setLoading(false);
+        event.detail.complete();
     };
 
     useEffect(() => {
@@ -108,7 +111,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent
-                        refreshingSpinner="circles"
+                        refreshingSpinner="crescent"
                     />
                 </IonRefresher>
                 <h1>
