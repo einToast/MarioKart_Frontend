@@ -93,7 +93,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                 >
                                     {
                                         Object.keys(QuestionType)
-                                            .filter(key => key !== 'TEAM')
+                                            // .filter(key => key !== 'TEAM')
                                             .map((key) => (
                                                 <option key={key}
                                                     value={key}
