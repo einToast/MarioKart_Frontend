@@ -229,7 +229,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <u>Admin Login</u>
                 </a>
                 <br />
-                <a href="https://github.com/einToast/MarioKart_Deployment">Source Code</a>
+                <a href="https://github.com/einToast/MarioKart_Tournament">Source Code</a>
             </IonContent>
             <Toast
                 message={error}
