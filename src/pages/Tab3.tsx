@@ -205,7 +205,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     Hinweise
                     <p style={{ margin: 5, fontSize: 'inherit' }}>Aktiviere Benachrichtigung, um über deine nächste Runden, Pausen und Umfragen informiert zu werden.</p>
                     <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registierung fehlschlägt, lade die Seite bitte komplett neu.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Benachrichtigungen funktionieren momementan nur mit Android problemlos. Unter iOS muss die Webseite als PWA hinzugefügt werden. (Share --{'>'} Add to Home Screen --{'>'} Add)</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Benachrichtigungen funktionieren momementan nur mit Android problemlos. Unter iOS muss die Webseite vorher als PWA hinzugefügt werden. (Teilen --{'>'} Mehr --{'>'} Zum Home-Bildschirm --{'>'} Hinzufügen)</p>
                     <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhälst du eine Testbenachrichtigung</p>
                 </div>
 
