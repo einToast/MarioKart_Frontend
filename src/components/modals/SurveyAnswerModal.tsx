@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { AnswerReturnDTO, QuestionReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminRegistrationService, AdminSurveyService, PublicRegistrationService } from '../../util/service';
+import { AdminSurveyService, PublicRegistrationService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 
@@ -63,7 +63,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         if (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) {
             getAllTeams();
         }
-    }, [showModal]);
+    }, [showModal, question.questionType]);
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyResults: false })}>
@@ -83,7 +83,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </ul>
                         </div>
                     </>
-                ) : ( question.questionType === QuestionType.FREE_TEXT ? (
+                ) : (question.questionType === QuestionType.FREE_TEXT ? (
                     <>
                         <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                             <ul>
@@ -96,7 +96,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </ul>
                         </div>
                     </>
-                ) : ( question.questionType === QuestionType.TEAM_ONE_FREE_TEXT ? (
+                ) : (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT ? (
                     <>
                         <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                             <ul>
@@ -108,7 +108,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </ul>
                         </div>
                     </>
-                ) : null ))}
+                ) : null))}
                 <div className={"playedContainer"}>
                     <IonButton onClick={() => closeModal({ surveyResults: false })} className={"round"}
                         tabIndex={0}
