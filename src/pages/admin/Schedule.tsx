@@ -87,6 +87,9 @@ const Schedule: React.FC = () => {
                         Spielplan erstellen
                     </LinearGradient>
                 </h2>
+                <h3>
+                    Anzahl der angemeldeten Teams: {teams.length}
+                </h3>
 
                 <div className={"flexContainer"} style={{ paddingBottom: "50px" }}>
                     {teams ? (

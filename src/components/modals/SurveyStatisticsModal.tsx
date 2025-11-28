@@ -13,7 +13,6 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
-    console.log(showToast);
 
     const getAnswersToQuestion = async () => {
         const questionAnswers = AdminSurveyService.getStatisticsOfQuestion(question.id);

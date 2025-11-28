@@ -17,7 +17,8 @@ export enum QuestionType {
     MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
     FREE_TEXT = "FREE_TEXT",
     CHECKBOX = "CHECKBOX",
-    TEAM = "TEAM"
+    TEAM = "TEAM",
+    TEAM_ONE_FREE_TEXT = "TEAM_ONE_FREE_TEXT"
 }
 
 export enum ChangeType {

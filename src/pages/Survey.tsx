@@ -6,6 +6,7 @@ import Header from "../components/Header";
 import CheckBoxCard from "../components/survey/CheckBoxSurveyComponent";
 import FreeTextCard from "../components/survey/FreeTextSurveyComponent";
 import MultipleChoiceCard from "../components/survey/MultipleChoiceSurveyComponent";
+import TeamOneFreeTextCard from '../components/survey/TeamOneFreeTextSurveyComponent';
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import Toast from '../components/Toast';
 import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
@@ -75,12 +76,13 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         setOpenAccordions([])
     }
 
-    const handleRefresh = (event: CustomEvent) => {
-        setTimeout(() => {
-            getQuestions();
-            updateShowTab2();
-            event.detail.complete();
-        }, 500);
+    const handleRefresh = async (event: CustomEvent) => {
+        await Promise.all([
+            getQuestions(),
+            updateShowTab2(),
+            new Promise(resolve => setTimeout(resolve, 500))
+        ]);
+        event.detail.complete();
     };
 
     const isConnected = useWebSocketConnection('/topic/rounds', getQuestions);
@@ -143,9 +145,16 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                                     teamQuestion={question}
                                     toggleAccordion={() => toggleAccordion(question.id.toString())}
                                 />
-                            ) : (
-                                <p key={question.id}> Fehler </p>
-                            )
+                            ) : (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) ? (
+                                <TeamOneFreeTextCard
+                                    key={question.id}
+                                    teamOneFreeTextQuestion={question}
+                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
+                                />
+                            ) :
+                                (
+                                    <p key={question.id}> Fehler </p>
+                                )
                         ))
                         }
                     </IonAccordionGroup>

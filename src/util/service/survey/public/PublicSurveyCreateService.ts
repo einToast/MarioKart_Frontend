@@ -18,10 +18,14 @@ export const submitAnswer = async (question: QuestionReturnDTO, vote: string | n
     const answer: AnswerInputDTO = {
         questionId: question.id,
         answerType: question.questionType,
-        freeTextAnswer: question.questionType === QuestionType.FREE_TEXT ? String(vote) : '',
+        freeTextAnswer: (question.questionType === QuestionType.FREE_TEXT || question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) ? String(vote) : '',
         multipleChoiceSelectedOption: question.questionType === QuestionType.MULTIPLE_CHOICE ? Number(vote) : -1,
         checkboxSelectedOptions: question.questionType === QuestionType.CHECKBOX ? (Array.isArray(vote) ? vote.map(Number) : []) : [],
-        teamSelectedOption: question.questionType === QuestionType.TEAM ? Number(vote) : -1
+        teamSelectedOption: question.questionType === QuestionType.TEAM ? Number(vote) : -1,
+    }
+
+    if (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) {
+        answer.teamSelectedOption = teamId;
     }
 
     const response = await PublicSurveyApi.submitAnswer(answer, teamId);

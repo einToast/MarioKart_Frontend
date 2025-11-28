@@ -39,21 +39,22 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                         }
                     }}
                 />
-                {survey.questionType !== QuestionType.FREE_TEXT && (
-                    <IonIcon
-                        slot="end"
-                        icon={barChartOutline}
-                        title="Graph anzeigen"
-                        onClick={() => onOpenStatisticsModal(survey)}
-                        style={{ cursor: 'pointer', marginRight: '10px' }}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                onOpenStatisticsModal(survey);
-                            }
-                        }}
-                    />
-                )}
+                {survey.questionType !== QuestionType.FREE_TEXT &&
+                    survey.questionType !== QuestionType.TEAM_ONE_FREE_TEXT && (
+                        <IonIcon
+                            slot="end"
+                            icon={barChartOutline}
+                            title="Graph anzeigen"
+                            onClick={() => onOpenStatisticsModal(survey)}
+                            style={{ cursor: 'pointer', marginRight: '10px' }}
+                            tabIndex={0}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    onOpenStatisticsModal(survey);
+                                }
+                            }}
+                        />
+                    )}
                 <IonIcon
                     slot="end"
                     icon={createOutline}

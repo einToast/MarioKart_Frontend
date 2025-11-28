@@ -10,9 +10,11 @@ export const createQuestion = async (
 ): Promise<QuestionReturnDTO> => {
     if (question === '') {
         throw new Error('Die Frage darf nicht leer sein');
-    } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT && questionType !== QuestionType.TEAM) {
+    } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT &&
+        questionType !== QuestionType.TEAM && questionType !== QuestionType.TEAM_ONE_FREE_TEXT) {
         throw new Error('Es müssen mindestens 2 Optionen angegeben werden');
-    } else if (options.some(option => option === '') && questionType !== QuestionType.FREE_TEXT && questionType !== QuestionType.TEAM) {
+    } else if (options.some(option => option === '') && questionType !== QuestionType.FREE_TEXT &&
+        questionType !== QuestionType.TEAM && questionType !== QuestionType.TEAM_ONE_FREE_TEXT) {
         throw new Error('Alle Optionen müssen ausgefüllt sein');
     }
 

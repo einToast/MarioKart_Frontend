@@ -21,7 +21,8 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
 
     const handleQuestionTypeChange = (e) => {
         setQuestionType(e.target.value);
-        if (e.target.value === QuestionType.FREE_TEXT) {
+        if (e.target.value === QuestionType.FREE_TEXT ||
+            e.target.value === QuestionType.TEAM_ONE_FREE_TEXT) {
             setNumberOfOptions(0);
         } else {
             setNumberOfOptions(options.length);

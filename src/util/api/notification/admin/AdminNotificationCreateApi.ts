@@ -5,7 +5,6 @@ import { NotificationRequestDTO } from '../../config/dto';
 const BASE_URL = ApiPath.createPath('ADMIN', 'NOTIFICATION');
 
 export const sendNotificationToAll = async (notification: NotificationRequestDTO): Promise<void> => {
-    console.log('sendNotificationToAll', notification);
     try {
         await apiClient.post(`${BASE_URL}/send`, notification);
     } catch (error) {
