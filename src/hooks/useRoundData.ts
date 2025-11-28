@@ -35,7 +35,7 @@ export const useRoundData = (): UseRoundDataReturn => {
                     }
                 }
 
-                if (currentAndNextRound[1]) {
+                if (currentAndNextRound[1] && !isBreak) {
                     const formattedNextRound = formatRoundTimes(currentAndNextRound[1], false);
                     Promise.all([
                         PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id),
@@ -45,12 +45,32 @@ export const useRoundData = (): UseRoundDataReturn => {
                             setTeamsNotInNextRound(teamsNotInRound);
                             setNextRound(round);
                         });
+                } else if (currentAndNextRound[0] && isBreak) {
+                    const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
+                    Promise.all([
+                        PublicRegistrationService.getTeamsNotInRound(formattedNextRound.id),
+                        Promise.resolve(formattedNextRound)
+                    ])
+                        .then(([teamsNotInRound, round]) => {
+                            setTeamsNotInCurrentRound(teamsNotInRound);
+                            setNextRound(round);
+                        });
                 }
 
-                if (isBreak) {
-                    const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
-                    setNextRound(formattedNextRound);
+                if (!currentAndNextRound[0]){
+                    setCurrentRound(null)
                 }
+                if (!currentAndNextRound[1] && !isBreak){
+                    setNextRound(null)
+                }
+
+                // if (isBreak) {
+                //     const formattedNextRound = formatRoundTimes(currentAndNextRound[0], true);
+                //     setNextRound(formattedNextRound);
+                //     console.log("isBreak")
+                // } else {
+                //     console.log("isNoBreak")
+                // }
 
                 return PublicSettingsService.getTournamentOpen();
             })
