@@ -1,8 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
     heart, medalOutline, megaphoneOutline,
-    notificationsCircle,
-    notificationsOffSharp,
     notificationsOutline,
     notificationsSharp,
     pizzaOutline,
@@ -204,9 +202,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <div>
                     Hinweise
                     <p style={{ margin: 5, fontSize: 'inherit' }}>Aktiviere Benachrichtigung, um über deine nächste Runden, Pausen und Umfragen informiert zu werden.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registierung fehlschlägt, lade die Seite bitte komplett neu.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Benachrichtigungen funktionieren momementan nur mit Android problemlos. Unter iOS muss die Webseite als PWA hinzugefügt werden. (Share --{'>'} Add to Home Screen --{'>'} Add)</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhälst du eine Testbenachrichtigung</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registrierung fehlschlägt, lade die Seite bitte komplett neu.</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Unter iOS muss die Webseite vorher als PWA hinzugefügt werden. (Teilen --{'>'} Mehr --{'>'} Zum Home-Bildschirm --{'>'} Hinzufügen)</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhältst du eine Testbenachrichtigung</p>
                 </div>
 
                 <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
@@ -229,7 +227,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <u>Admin Login</u>
                 </a>
                 <br />
-                <a href="https://github.com/einToast/MarioKart_Deployment">Source Code</a>
+                <a href="https://github.com/einToast/MarioKart_Tournament">Source Code</a>
             </IonContent>
             <Toast
                 message={error}

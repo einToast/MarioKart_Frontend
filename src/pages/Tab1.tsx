@@ -1,4 +1,4 @@
-import { IonCheckbox, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import './Tab1.css';
@@ -21,7 +21,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const location = useLocation();
 
@@ -55,11 +55,11 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
-        
+
         await Promise.all([
-        refreshRounds(),
-        updateShowTab2(),
-        new Promise(resolve => setTimeout(resolve, 500)),
+            refreshRounds(),
+            updateShowTab2(),
+            new Promise(resolve => setTimeout(resolve, 500)),
         ]);
 
         setLoading(false);
@@ -78,9 +78,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }, [error]);
 
     useEffect(() => {
-        // if (currentRound !== null || nextRound !== null || error) {
-        //     setLoading(false);
-        // }
+        if (currentRound === null || nextRound === null || error) {
+            setLoading(false);
+        }
     }, [currentRound, nextRound, error]);
 
     useEffect(() => {

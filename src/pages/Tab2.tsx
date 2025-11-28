@@ -1,16 +1,15 @@
-import { IonContent, IonPage, IonRefresher, IonRefresherContent, IonSkeletonText } from '@ionic/react';
+import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
+import SkeletonTeamStatistic from '../components/skeletons/SkeletonTeamStatistic';
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab2.css';
-import SkeletonRoundComponentAll from '../components/skeletons/SkeletonRoundComponentAll';
-import SkeletonTeamStatistic from '../components/skeletons/SkeletonTeamStatistic';
 
 const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
@@ -22,7 +21,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     const location = useLocation();
     const history = useHistory();
@@ -105,6 +104,12 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         }
     }
 
+    useEffect(() => {
+        if (teams.length > 0 || error) {
+            setLoading(false);
+        }
+    }, [teams, error]);
+
     return (
         <IonPage>
             <Header />
@@ -130,7 +135,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                             <div className="flexSpiel">
                                 <SkeletonTeamStatistic
                                     rows={10}
-                                    />
+                                />
                             </div>
                         ) :
                             teams
