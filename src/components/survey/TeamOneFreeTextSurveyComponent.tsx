@@ -21,7 +21,6 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
 
     const getVote = async () => {
         const voted = await PublicSurveyService.getAnswerCookie(teamOneFreeTextQuestion.questionText + teamOneFreeTextQuestion.id);
-        console.log("Voted:", voted);
         if (voted !== -1) {
             setVotedId(parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
@@ -55,7 +54,6 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
         } else if (vote === undefined || vote === -1) {
             setIndicator(megaphoneOutline)
         } else {
-            console.log("Vote status:", vote);
             setIndicator(checkmarkCircleOutline)
         }
     }
