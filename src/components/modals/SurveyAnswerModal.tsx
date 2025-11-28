@@ -2,9 +2,9 @@ import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { AnswerReturnDTO, QuestionReturnDTO } from "../../util/api/config/dto";
+import { AnswerReturnDTO, QuestionReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService } from '../../util/service';
+import { AdminRegistrationService, AdminSurveyService, PublicRegistrationService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 
@@ -12,12 +12,13 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
     const [totalAnswers, setTotalAnswers] = useState<number>(0);
+    const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const getAnswersToQuestion = () => {
-        if (question.questionType === QuestionType.FREE_TEXT) {
+        if (question.questionType === QuestionType.FREE_TEXT || question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) {
             Promise.all([
                 AdminSurveyService.getAnswersOfQuestion(question.id),
                 AdminSurveyService.getNumberOfAnswers(question.id)
@@ -46,8 +47,22 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         }
     };
 
+    const getAllTeams = () => {
+        PublicRegistrationService.getTeams()
+            .then(fetchedTeams => {
+                setTeams(fetchedTeams);
+            })
+            .catch(error => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    };
+
     useEffect(() => {
         if (showModal) getAnswersToQuestion();
+        if (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) {
+            getAllTeams();
+        }
     }, [showModal]);
 
     return (
@@ -55,7 +70,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             <IonContent>
                 <h4>{question.questionText}</h4>
                 <h4>Ergebnisse: {totalAnswers} Antworten</h4>
-                {question.questionType !== QuestionType.FREE_TEXT ? (
+                {question.questionType !== QuestionType.FREE_TEXT && question.questionType !== QuestionType.TEAM_ONE_FREE_TEXT ? (
                     <>
 
                         <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
@@ -68,7 +83,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </ul>
                         </div>
                     </>
-                ) : (
+                ) : ( question.questionType === QuestionType.FREE_TEXT ? (
                     <>
                         <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                             <ul>
@@ -81,7 +96,19 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             </ul>
                         </div>
                     </>
-                )}
+                ) : ( question.questionType === QuestionType.TEAM_ONE_FREE_TEXT ? (
+                    <>
+                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
+                            <ul>
+                                {
+                                    answers.map((answer, index) => (
+                                        <li key={index}> {teams.find(team => team.id === answer.teamSelectedOption)?.teamName}: {answer.freeTextAnswer} </li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
+                    </>
+                ) : null ))}
                 <div className={"playedContainer"}>
                     <IonButton onClick={() => closeModal({ surveyResults: false })} className={"round"}
                         tabIndex={0}
