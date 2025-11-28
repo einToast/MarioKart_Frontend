@@ -202,9 +202,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <div>
                     Hinweise
                     <p style={{ margin: 5, fontSize: 'inherit' }}>Aktiviere Benachrichtigung, um über deine nächste Runden, Pausen und Umfragen informiert zu werden.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registierung fehlschlägt, lade die Seite bitte komplett neu.</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registrierung fehlschlägt, lade die Seite bitte komplett neu.</p>
                     <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Unter iOS muss die Webseite vorher als PWA hinzugefügt werden. (Teilen --{'>'} Mehr --{'>'} Zum Home-Bildschirm --{'>'} Hinzufügen)</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhälst du eine Testbenachrichtigung</p>
+                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhältst du eine Testbenachrichtigung</p>
                 </div>
 
                 <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
