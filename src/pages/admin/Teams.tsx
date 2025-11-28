@@ -67,6 +67,9 @@ const Teams: React.FC = () => {
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>Teams</LinearGradient>
                 </h2>
+                <h3>
+                    Anzahl der angemeldeten Teams: {teams.length}
+                </h3>
 
                 <TeamAdminContainer
                     teams={teams}
