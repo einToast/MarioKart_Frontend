@@ -65,7 +65,7 @@
     "typescript-eslint": "^8.48.1",
     "vite": "^7.2.6",
     "vite-plugin-pwa": "^1.2.0",
-    "vitest": "^4.0.14"
+    "vitest": "^4.0.15"
   },
   "description": "An Ionic project"
 }
