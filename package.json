@@ -18,7 +18,7 @@
     "@capacitor/core": "^8.0.0",
     "@capacitor/haptics": "^7.0.2",
     "@capacitor/keyboard": "^8.0.0",
-    "@capacitor/status-bar": "^7.0.3",
+    "@capacitor/status-bar": "^8.0.0",
     "@ionic/react": "^8.7.12",
     "@ionic/react-router": "^8.7.12",
     "@stomp/stompjs": "^7.2.1",
