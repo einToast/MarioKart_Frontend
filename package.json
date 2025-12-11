@@ -14,7 +14,7 @@
     "ionic_build": "ionic build --prod"
   },
   "dependencies": {
-    "@capacitor/app": "^7.1.0",
+    "@capacitor/app": "^8.0.0",
     "@capacitor/core": "^8.0.0",
     "@capacitor/haptics": "^7.0.2",
     "@capacitor/keyboard": "^7.0.3",
