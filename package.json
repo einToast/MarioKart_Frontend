@@ -19,7 +19,7 @@
     "@capacitor/haptics": "^8.0.0",
     "@capacitor/keyboard": "^8.0.0",
     "@capacitor/status-bar": "^8.0.0",
-    "@ionic/react": "^8.7.12",
+    "@ionic/react": "^8.7.13",
     "@ionic/react-router": "^8.7.12",
     "@stomp/stompjs": "^7.2.1",
     "@types/react-router": "^5.1.20",
