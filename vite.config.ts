@@ -30,24 +30,46 @@ export default defineConfig(({ mode }) => {
       setupFiles: './src_backup/setupTests.ts',
     },
     build: {
-      commonjsOptions: {
-        transformMixedEsModules: true
-      },
-      rollupOptions: {
+      cssMinify: 'esbuild',
+      rolldownOptions: {
         output: {
-          manualChunks: {
-            'vendor-base': ['react', 'react-dom'],
-            'vendor-ionic-core': ['@ionic/core'],
-            'vendor-ionic-react': ['@ionic/react'],
-            'vendor-routing': ['react-router', 'react-router-dom', '@ionic/react-router'],
-            'vendor-charts': ['chart.js', 'react-chartjs-2'],
-            'vendor-utils': [
-              'axios',
-              'sockjs-client',
-              '@stomp/stompjs',
-              'date-fns',
-              'js-cookie',
-              'jwt-decode'
+          codeSplitting: {
+            groups: [
+              {
+                name: 'vendor-base',
+                test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/,
+                priority: 60,
+              },
+              {
+                name: 'vendor-ionic-core',
+                test: /node_modules[\\/]@ionic[\\/]core[\\/]/,
+                priority: 50,
+              },
+              {
+                name: 'vendor-ionic-react',
+                test: /node_modules[\\/]@ionic[\\/]react[\\/]/,
+                priority: 45,
+              },
+              {
+                name: 'vendor-routing',
+                test: /node_modules[\\/](react-router|react-router-dom)[\\/]|node_modules[\\/]@ionic[\\/]react-router[\\/]/,
+                priority: 40,
+              },
+              {
+                name: 'vendor-charts',
+                test: /node_modules[\\/](chart\.js|react-chartjs-2)[\\/]/,
+                priority: 30,
+              },
+              {
+                name: 'vendor-utils',
+                test: /node_modules[\\/](axios|sockjs-client|date-fns|js-cookie|jwt-decode)[\\/]|node_modules[\\/]@stomp[\\/]stompjs[\\/]/,
+                priority: 20,
+              },
+              {
+                name: 'vendor',
+                test: /node_modules[\\/]/,
+                priority: 10,
+              }
             ]
           }
         }
