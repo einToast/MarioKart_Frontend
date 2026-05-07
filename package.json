@@ -61,7 +61,7 @@
     "globals": "^17.6.0",
     "jsdom": "^29.1.1",
     "react-inject-env": "^2.1.0",
-    "terser": "^5.46.2",
+    "terser": "^5.47.1",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.10",
