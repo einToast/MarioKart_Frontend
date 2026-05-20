@@ -26,7 +26,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.16.1",
     "chart.js": "^4.5.1",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.2.1",
     "ionicons": "^8.0.13",
     "js-cookie": "^3.0.7",
     "jwt-decode": "^4.0.0",
