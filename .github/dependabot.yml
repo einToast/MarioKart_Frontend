@@ -17,7 +17,13 @@ updates:
       - dependency-name: "@eslint/js"
         versions:
           - ">= 10"
-
+      - dependency-name: "react-router"
+        versions:
+          - ">= 6"
+      - dependency-name: "react-router-dom"
+        versions:
+          - ">= 6"
+  
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
