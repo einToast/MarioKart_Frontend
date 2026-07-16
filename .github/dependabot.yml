@@ -28,6 +28,11 @@ updates:
         patterns:
           - "@ionic/react"
           - "@ionic/react-router"
+      eslint:
+        patterns:
+          - "eslint"
+          - "@eslint/js"
+
 
   
   - package-ecosystem: "github-actions"
