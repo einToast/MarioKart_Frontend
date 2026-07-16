@@ -23,6 +23,12 @@ updates:
       - dependency-name: "react-router-dom"
         versions:
           - ">= 6"
+    groups:
+      ionic:
+        patterns:
+          - "@ionic/react"
+          - "@ionic/react-router"
+
   
   - package-ecosystem: "github-actions"
     directory: "/"
