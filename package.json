@@ -27,7 +27,7 @@
     "axios": "^1.18.1",
     "chart.js": "^4.5.1",
     "date-fns": "^4.4.0",
-    "ionicons": "^8.0.13",
+    "ionicons": "^8.1.0",
     "js-cookie": "^3.0.8",
     "jwt-decode": "^4.0.0",
     "qrcode.react": "^4.2.0",
