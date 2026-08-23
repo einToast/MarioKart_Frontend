@@ -19,10 +19,10 @@ updates:
           - ">= 10"
       - dependency-name: "react-router"
         versions:
-          - ">= 6"
+          - ">= 7"
       - dependency-name: "react-router-dom"
         versions:
-          - ">= 6"
+          - ">= 7"
     groups:
       ionic:
         patterns:
@@ -32,9 +32,11 @@ updates:
         patterns:
           - "eslint"
           - "@eslint/js"
+      react-router:
+        patterns:
+          - "react-router"
+          - "react-router-dom"
 
-
-  
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
