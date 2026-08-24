@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => {
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: './src_backup/setupTests.ts',
+      setupFiles: './src/setupTests.ts',
     },
     build: {
       cssMinify: 'esbuild',
