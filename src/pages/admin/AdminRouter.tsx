@@ -1,6 +1,6 @@
 import { IonRouterOutlet } from '@ionic/react';
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 
 // Import aller Admin-Komponenten
 import Control from './Control';
@@ -23,9 +23,7 @@ const AdminRouter: React.FC = () => {
       <Route path="/admin/control" element={<Control />} />
       <Route path="/admin/survey" element={<AdminSurvey />} />
       <Route path="/admin/teams" element={<Teams />} />
-      <Route path="/admin">
-        <Redirect to="/admin/dashboard" />
-      </Route>
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
     </IonRouterOutlet>
   );
 };
