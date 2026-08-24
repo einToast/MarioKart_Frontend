@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent, } from "@ionic/react";
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
@@ -10,7 +10,7 @@ import { PublicCookiesService, PublicRegistrationService, PublicSettingsService 
 import './RegisterTeam.css';
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
-    const history = useHistory();
+    const navigate = useNavigate();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamId, setTeamId] = useState<string>("-1");
     const [error, setError] = useState<string>('Error');
@@ -29,7 +29,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             };
             PublicCookiesService.setUser(user);
             props.setUser(user);
-            history.push('/tab1');
+            navigate('/tab1');
         } else {
             setError("Ausgewähltes Team nicht in der Liste gefunden.");
             setIsError(true);
@@ -58,13 +58,13 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     useEffect(() => {
         if (PublicCookiesService.getUser()?.name) {
-            history.push('/tab1');
+            navigate('/tab1');
         }
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
             if (!response) {
-                history.push('/admin/login');
+                navigate('/admin/login');
             }
         }).catch((error) => {
             setError(error.message);
@@ -129,12 +129,12 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    {/*<a onClick={() => history.push("/register")}*/}
+                    {/*<a onClick={() => navigate("/register")}*/}
                     {/*   style={{ cursor: "pointer", textDecoration: "underline" }}*/}
                     {/*   tabIndex={0}*/}
                     {/*   onKeyDown={(e) => {*/}
                     {/*       if (e.key === 'Enter' || e.key === ' ') {*/}
-                    {/*           history.push('/register');*/}
+                    {/*           navigate('/register');*/}
                     {/*       }*/}
                     {/*   }}*/}
                     {/*>*/}

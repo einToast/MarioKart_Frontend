@@ -1,7 +1,7 @@
 import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import FinalGraph from "../../components/graph/FinalGraph";
 import GroupGraph from "../../components/graph/GroupGraph";
@@ -18,7 +18,7 @@ const Results: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -49,11 +49,11 @@ const Results: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin/dashboard');
+                            navigate('/admin/dashboard');
                         }
                     }}
 

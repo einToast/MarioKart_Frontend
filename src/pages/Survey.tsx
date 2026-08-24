@@ -1,6 +1,6 @@
 import { IonAccordionGroup, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import CheckBoxCard from "../components/survey/CheckBoxSurveyComponent";
@@ -24,7 +24,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
 
@@ -97,7 +97,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         ])
             .then(([_, __, tournamentOpen]) => {
                 if (!tournamentOpen) {
-                    history.push('/admin');
+                    navigate('/admin');
                 }
             })
             .catch(error => {

@@ -8,7 +8,7 @@ import {
 } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Toast from "../components/Toast";
 import characters from "../util/api/config/characters";
@@ -19,7 +19,7 @@ import './RegisterTeam.css';
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
-    const history = useHistory();
+    const navigate = useNavigate();
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
@@ -43,7 +43,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     };
                     PublicCookiesService.setUser(user);
                     props.setUser(user);
-                    history.push('/tab1');
+                    navigate('/tab1');
                 } else {
                     setError('Team konnte nicht registriert werden');
                     setShowToast(true);
@@ -82,10 +82,10 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
         ])
             .then(([registrationOpen, tournamentOpen, _]) => {
                 if (!registrationOpen) {
-                    history.push('/login');
+                    navigate('/login');
                 }
                 if (!tournamentOpen) {
-                    history.push('/admin/login');
+                    navigate('/admin/login');
                 }
             })
             .catch(error => {
@@ -159,12 +159,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => history.push("/login")}
+                    <a onClick={() => navigate("/login")}
                         style={{ cursor: "pointer", textDecoration: "underline" }}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                history.push('/login');
+                                navigate('/login');
                             }
                         }}
                     >

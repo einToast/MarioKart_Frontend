@@ -1,7 +1,7 @@
 import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { User } from '../util/api/config/interfaces';
 import { PublicCookiesService } from '../util/service';
 import './Header.css';
@@ -11,7 +11,7 @@ const Header: React.FC = () => {
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -72,13 +72,13 @@ const Header: React.FC = () => {
                     </div>
                 )}
             </div>
-            <a onClick={() => history.push('/survey')}
+            <a onClick={() => navigate('/survey')}
                 title="Umfragen"
                 style={{ cursor: "pointer" }}
                 tabIndex={0}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
-                        history.push('/survey');
+                        navigate('/survey');
                     }
                 }}
             >

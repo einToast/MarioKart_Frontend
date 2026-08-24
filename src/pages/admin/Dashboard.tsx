@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
@@ -17,14 +17,14 @@ const Dashboard: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     const handleLogout = async () => {
         try {
             await PublicUserService.logout();
         } finally {
-            history.push('/admin/login');
+            navigate('/admin/login');
         }
     }
 
@@ -68,7 +68,7 @@ const Dashboard: React.FC = () => {
                     <h1>Dashboard</h1>
                     <div className={"adminDashboard"}>
                         {isSchedule ?
-                            <IonButton slot="start" onClick={() => history.push('/admin/points')}>
+                            <IonButton slot="start" onClick={() => navigate('/admin/points')}>
                                 <div>
                                     <p>Punkte eintragen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -77,7 +77,7 @@ const Dashboard: React.FC = () => {
                             : ''
                         }
                         {!isSchedule ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/schedule')}>
+                            <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/schedule')}>
                                 <div>
                                     <p>Spielplan erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
                             : ''
                         }
                         {!isFinalSchedule && isSchedule && isRoundsUnplayedZero ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/final')}>
+                            <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/final')}>
                                 <div>
                                     <p>Finalspiele erzeugen</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -95,7 +95,7 @@ const Dashboard: React.FC = () => {
                             : ''
                         }
                         {isSchedule && isRoundsUnplayedZero ?
-                            <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/results')}>
+                            <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/results')}>
                                 <div>
                                     {isFinalSchedule ?
                                         <p>Endergebnis</p>
@@ -107,19 +107,19 @@ const Dashboard: React.FC = () => {
                             </IonButton>
                             : ''
                         }
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/teams')}>
+                        <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/teams')}>
                             <div>
                                 <p>Teams</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/survey')}>
+                        <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/survey')}>
                             <div>
                                 <p>Umfragen</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
-                        <IonButton slot="start" className={"secondary"} onClick={() => history.push('/admin/control')}>
+                        <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/control')}>
                             <div>
                                 <p>Kontrollzentrum</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
@@ -132,12 +132,12 @@ const Dashboard: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => history.push("/login")}
+                    <a onClick={() => navigate("/login")}
                         style={{ cursor: "pointer", textDecoration: "underline" }}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                history.push('/login');
+                                navigate('/login');
                             }
                         }}
                     >
