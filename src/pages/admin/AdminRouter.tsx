@@ -15,15 +15,15 @@ import Teams from './Teams';
 const AdminRouter: React.FC = () => {
   return (
     <IonRouterOutlet animated={false} mode="md">
-      <Route exact path="/admin/dashboard" component={AdminDashboard} />
-      <Route exact path="/admin/points" component={AdminPoints} />
-      <Route exact path="/admin/final" component={Final} />
-      <Route exact path="/admin/results" component={AdminResults} />
-      <Route exact path="/admin/schedule" component={Schedule} />
-      <Route exact path="/admin/control" component={Control} />
-      <Route exact path="/admin/survey" component={AdminSurvey} />
-      <Route exact path="/admin/teams" component={Teams} />
-      <Route exact path="/admin">
+      <Route path="/admin/dashboard" element={<AdminDashboard />} />
+      <Route path="/admin/points" element={<AdminPoints />} />
+      <Route path="/admin/final" element={<Final />} />
+      <Route path="/admin/results" element={<AdminResults />} />
+      <Route path="/admin/schedule" element={<Schedule />} />
+      <Route path="/admin/control" element={<Control />} />
+      <Route path="/admin/survey" element={<AdminSurvey />} />
+      <Route path="/admin/teams" element={<Teams />} />
+      <Route path="/admin">
         <Redirect to="/admin/dashboard" />
       </Route>
     </IonRouterOutlet>

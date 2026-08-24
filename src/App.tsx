@@ -70,35 +70,30 @@ const App: React.FC = () => {
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
                                 <Route
-                                    exact
                                     path="/tab1"
                                     render={routeProps => (
                                         <Tab1 {...showTab2Props} {...routeProps} />
                                     )}
                                 />
                                 <Route
-                                    exact
                                     path="/tab2"
                                     render={routeProps => (
                                         <Tab2 {...showTab2Props} {...routeProps} />
                                     )}
                                 />
                                 <Route
-                                    exact
                                     path="/tab3"
                                     render={routeProps => (
                                         <Tab3 {...showTab2Props} {...routeProps} />
                                     )}
                                 />
                                 <Route
-                                    exact
                                     path="/tab4"
                                     render={routeProps => (
                                         <Tab4 {...showTab2Props} {...routeProps} />
                                     )}
                                 />
                                 <Route
-                                    exact
                                     path="/survey"
                                     render={routeProps => (
                                         <Survey {...showTab2Props} {...routeProps} />
@@ -106,14 +101,14 @@ const App: React.FC = () => {
                                 />
 
                                 <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                    <Route exact path="/admin/login" component={Login} />
-                                    <Route path="/admin" component={AdminRouter} />
+                                    <Route path="/admin/login" element={<Login />} />
+                                    <Route path="/admin" element={<AdminRouter />} />
                                 </Suspense>
-                                <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
-                                <Route exact path="/admin">
+                                <Route path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
+                                <Route path="/admin">
                                     <Redirect to="/admin/dashboard" />
                                 </Route>
-                                <Route exact path="/">
+                                <Route path="/">
                                     <Redirect to="/tab1" />
                                 </Route>
                             </IonRouterOutlet>
@@ -136,25 +131,24 @@ const App: React.FC = () => {
                         </IonTabs>
                     ) : (
                         <IonRouterOutlet animated={false} mode="md">
-                            <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
-                            <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
+                            <Route path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
+                            <Route path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
                             <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                <Route exact path="/admin/login" component={Login} />
-                                <Route path="/admin" component={AdminRouter} />
+                                <Route path="/admin/login" element={<Login />} />
+                                <Route path="/admin" element={<AdminRouter />} />
                             </Suspense>
                             <Route
-                                exact
                                 path="/tab4"
                                 render={routeProps => (
                                     <Tab4 {...showTab2Props} {...routeProps} />
                                 )}
                             />
-                            <Route exact path="/">
+                            <Route path="/">
                                 <Redirect to="/login" />
                             </Route>
 
                             {/* <Route exact path={["/tab1", "/tab2", "/tab3", "/tab4", "/survey"]} component={() => <Redirect to="/login" />} /> */}
-                            <Route exact path="/healthcheck">
+                            <Route path="/healthcheck">
                                 <div>OK</div>
                             </Route>
                         </IonRouterOutlet>
