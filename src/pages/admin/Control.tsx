@@ -68,7 +68,7 @@ const Control: React.FC = () => {
     }
 
 
-    const closeModal = (changeT: ChangeType) => {
+    const closeModal = (changeT?: ChangeType) => {
         setModalClosed(prev => !prev);
         if (typeof changeT !== 'string') {
             return;
@@ -156,7 +156,7 @@ const Control: React.FC = () => {
 
     return (
         <IonPage>
-            <IonContent fullscreen class="no-scroll">
+            <IonContent fullscreen className="no-scroll">
                 <div className={"back"} onClick={() => navigate('/admin/dashboard')}
                     tabIndex={0}
                     onKeyDown={(e) => {

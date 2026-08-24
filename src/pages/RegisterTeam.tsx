@@ -26,7 +26,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     const location = useLocation();
 
-    const handleEnterPress = (e) => {
+    const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleLogin();
         }
@@ -96,7 +96,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
 
     return (
         <IonPage>
-            <IonContent fullscreen class="no-scroll">
+            <IonContent fullscreen className="no-scroll">
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent refreshingSpinner="circles" />
                 </IonRefresher>

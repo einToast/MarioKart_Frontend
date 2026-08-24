@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
 
     return (
         <IonPage>
-            <IonContent fullscreen class="no-scroll">
+            <IonContent fullscreen className="no-scroll">
                 <div className={"contentLogin"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>

@@ -17,7 +17,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const handleOptionChange = (index, value) => {
+    const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
         newOptions[index] = value;
         setOptions(newOptions);
