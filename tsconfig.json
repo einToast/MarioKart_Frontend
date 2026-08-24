@@ -20,7 +20,7 @@
     "jsx": "react-jsx",
   },
   "include": [
-    "src_backup"
+    "src"
   ],
   "references": [
     {
