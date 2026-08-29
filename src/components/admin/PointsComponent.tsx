@@ -60,7 +60,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     }
 
     return (
-        <IonAccordion value={game.id.toString()} onIonChange={toggleAccordion} isOpen={isOpen}>
+        <IonAccordion value={game.id.toString()}>
             <IonItem slot="header" color="light">
                 <h3 className={convertUmlauts(game.switchGame).toLowerCase()}>Switch {game.switchGame}</h3>
             </IonItem>

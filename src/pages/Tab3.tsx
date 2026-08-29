@@ -8,7 +8,7 @@ import {
     playSkipForwardOutline
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
@@ -25,7 +25,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     const updateShowTab2 = () => {
@@ -58,7 +58,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
         tournamentOpen.then((response) => {
             if (!response) {
-                history.push('/admin');
+                navigate('/admin');
             }
         })
     }, [location])
@@ -214,12 +214,12 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <br />
 
                 <a
-                    onClick={() => history.push('/admin/login')}
+                    onClick={() => navigate('/admin/login')}
                     style={{ cursor: "pointer" }}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin/login');
+                            navigate('/admin/login');
                         }
                     }}
 

@@ -19,8 +19,8 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const handleQuestionTypeChange = (e) => {
-        setQuestionType(e.target.value);
+    const handleQuestionTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setQuestionType(e.target.value as QuestionType);
         if (e.target.value === QuestionType.FREE_TEXT ||
             e.target.value === QuestionType.TEAM_ONE_FREE_TEXT) {
             setNumberOfOptions(0);
@@ -29,7 +29,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         }
     }
 
-    const handleOptionChange = (index, value) => {
+    const handleOptionChange = (index: number, value: string) => {
         const newOptions = [...options];
         newOptions[index] = value;
         setOptions(newOptions);

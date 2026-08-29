@@ -1,5 +1,5 @@
 export const convertUmlauts = (text: string): string => {
-    const umlautMap = {
+    const umlautMap: Record<string, string> = {
         'ä': 'ae',
         'ö': 'oe',
         'ü': 'ue',

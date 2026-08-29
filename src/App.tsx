@@ -3,7 +3,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import '@ionic/react/css/core.css';
 import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Navigate, Route } from 'react-router-dom';
 
 // Normale Imports für Hauptkomponenten
 import '@ionic/react/css/display.css';
@@ -69,53 +69,20 @@ const App: React.FC = () => {
                     {currentUser?.teamId ? (
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
-                                <Route
-                                    exact
-                                    path="/tab1"
-                                    render={routeProps => (
-                                        <Tab1 {...showTab2Props} {...routeProps} />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/tab2"
-                                    render={routeProps => (
-                                        <Tab2 {...showTab2Props} {...routeProps} />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/tab3"
-                                    render={routeProps => (
-                                        <Tab3 {...showTab2Props} {...routeProps} />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/tab4"
-                                    render={routeProps => (
-                                        <Tab4 {...showTab2Props} {...routeProps} />
-                                    )}
-                                />
-                                <Route
-                                    exact
-                                    path="/survey"
-                                    render={routeProps => (
-                                        <Survey {...showTab2Props} {...routeProps} />
-                                    )}
-                                />
+                                <Route path="/tab1" element={<Tab1 {...showTab2Props} />} />
+                                <Route path="/tab2" element={<Tab2 {...showTab2Props} />} />
+                                <Route path="/tab3" element={<Tab3 {...showTab2Props} />} />
+                                <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
+                                <Route path="/survey" element={<Survey {...showTab2Props} />} />
 
                                 <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                    <Route exact path="/admin/login" component={Login} />
-                                    <Route path="/admin" component={AdminRouter} />
+                                    <Route path="/admin/login" element={<Login />} />
+                                    <Route path="/admin" element={<AdminRouter />} />
                                 </Suspense>
-                                <Route exact path={["/register", "/login"]} component={() => <Redirect to="/tab1" />} />
-                                <Route exact path="/admin">
-                                    <Redirect to="/admin/dashboard" />
-                                </Route>
-                                <Route exact path="/">
-                                    <Redirect to="/tab1" />
-                                </Route>
+                                <Route path="/register" element={<Navigate to="/tab1" />} />
+                                <Route path="/login" element={<Navigate to="/tab1" />} />
+                                <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
+                                <Route path="/" element={<Navigate to="/tab1" />} />
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
@@ -136,27 +103,17 @@ const App: React.FC = () => {
                         </IonTabs>
                     ) : (
                         <IonRouterOutlet animated={false} mode="md">
-                            <Route exact path="/register" component={() => <RegisterTeam setUser={setCurrentUser} />} />
-                            <Route exact path="/login" component={() => <LoginToTeam setUser={setCurrentUser} />} />
+                            <Route path="/register" element={<RegisterTeam setUser={setCurrentUser} />} />
+                            <Route path="/login" element={<LoginToTeam setUser={setCurrentUser} />} />
                             <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                <Route exact path="/admin/login" component={Login} />
-                                <Route path="/admin" component={AdminRouter} />
+                                <Route path="/admin/login" element={<Login />} />
+                                <Route path="/admin" element={<AdminRouter />} />
                             </Suspense>
-                            <Route
-                                exact
-                                path="/tab4"
-                                render={routeProps => (
-                                    <Tab4 {...showTab2Props} {...routeProps} />
-                                )}
-                            />
-                            <Route exact path="/">
-                                <Redirect to="/login" />
-                            </Route>
+                            <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
+                            <Route path="/" element={<Navigate to="/login" />} />
 
-                            {/* <Route exact path={["/tab1", "/tab2", "/tab3", "/tab4", "/survey"]} component={() => <Redirect to="/login" />} /> */}
-                            <Route exact path="/healthcheck">
-                                <div>OK</div>
-                            </Route>
+                            {/* <Route exact path={["/tab1", "/tab2", "/tab3", "/tab4", "/survey"]} element={<Navigate to="/login" />} /> */}
+                            <Route path="/healthcheck" element={<div>OK</div>} />
                         </IonRouterOutlet>
                     )}
                 </IonReactRouter>
