@@ -36,6 +36,9 @@ updates:
         patterns:
           - "react-router"
           - "react-router-dom"
+      capacitor:
+        patterns:
+          - "@capacitor/*"
 
   - package-ecosystem: "github-actions"
     directory: "/"
