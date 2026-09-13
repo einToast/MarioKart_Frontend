@@ -91,6 +91,13 @@ export interface TournamentDTO {
     maxGamesCount?: number;
 }
 
+export interface ScheduleInputDTO {
+    version: number;
+    numFields: number;
+    numRounds: number;
+    teamsPerGame: number;
+}
+
 export interface QuestionInputDTO {
     questionText: string;
     questionType: QuestionType;

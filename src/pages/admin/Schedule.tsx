@@ -9,6 +9,7 @@ import { TeamReturnDTO } from "../../util/api/config/dto";
 import { AdminScheduleService, PublicCookiesService, PublicRegistrationService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
+import "./Schedule.css";
 
 const Schedule: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
@@ -18,6 +19,11 @@ const Schedule: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
+
+    const [version, setVersion] = useState<number>(2);
+    const [switchCount, setSwitchCount] = useState<number | ''>(4);
+    const [teamsPerGame, setTeamsPerGame] = useState<number | ''>(4);
+    const [roundCount, setRoundCount] = useState<number | ''>(8);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -45,7 +51,7 @@ const Schedule: React.FC = () => {
 
     const handleScheduleCreation = () => {
         setButtonDisabled(true);
-        AdminScheduleService.createSchedule()
+        AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, teamsPerGame as number)
             .then(newRounds => {
                 if (newRounds) {
                     setError('Spielplan erfolgreich erstellt');
@@ -67,6 +73,16 @@ const Schedule: React.FC = () => {
                 setButtonDisabled(false);
             });
     };
+
+    const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedVersion = parseInt(event.target.value);
+        setVersion(selectedVersion);
+        if (selectedVersion === 1) {
+            setSwitchCount(4);
+            setTeamsPerGame(4);
+            setRoundCount(8);
+        }
+    }
 
     return (
         <IonPage>
@@ -107,7 +123,50 @@ const Schedule: React.FC = () => {
                     )}
                 </div>
 
-                <div className={"playedContainer"}>
+                <div className={"playedContainer scheduleControls"}>
+                    <div className="scheduleFields">
+                        <div className="scheduleField">
+                            <label htmlFor="scheduleVersion">Schedule Version:</label>
+                            <select id="scheduleVersion"
+                                value={version}
+                                onChange={handleVersionChange}
+                            >
+                                <option value="1">v1</option>
+                                <option value="2">v2</option>
+                            </select>
+                        </div>
+
+                        <div className="scheduleField">
+                            <label htmlFor="switchCount">Anzahl Spielfelder:</label>
+                            <input id="switchCount"
+                                type="number"
+                                min={1}
+                                value={switchCount}
+                                onChange={(e) => setSwitchCount(e.target.value === '' ? '' : Number(e.target.value))}
+                                disabled={version === 1}
+                            />
+                        </div>
+                        <div className="scheduleField">
+                            <label htmlFor="roundCount">Anzahl Runden:</label>
+                            <input id="roundCount"
+                                type="number"
+                                min={1}
+                                value={roundCount}
+                                onChange={(e) => setRoundCount(e.target.value === '' ? '' : Number(e.target.value))}
+                                disabled={version === 1}
+                            />
+                        </div>
+                        <div className="scheduleField">
+                            <label htmlFor="teamsPerGame">Teams pro Spiel:</label>
+                            <input id="teamsPerGame"
+                                type="number"
+                                min={1}
+                                value={teamsPerGame}
+                                onChange={(e) => setTeamsPerGame(e.target.value === '' ? '' : Number(e.target.value))}
+                                disabled={version === 1}
+                            />
+                        </div>
+                    </div>
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleScheduleCreation}
                             tabIndex={0}

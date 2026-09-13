@@ -1,12 +1,12 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { RoundReturnDTO } from '../../config/dto';
+import { RoundReturnDTO, ScheduleInputDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
-export const createSchedule = async (): Promise<RoundReturnDTO[]> => {
+export const createSchedule = async (scheduleInput: ScheduleInputDTO): Promise<RoundReturnDTO[]> => {
     try {
-        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/schedule`);
+        const response = await apiClient.post<RoundReturnDTO[]>(`${BASE_URL}/create/schedule`, scheduleInput);
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -16,6 +16,8 @@ export const createSchedule = async (): Promise<RoundReturnDTO[]> => {
                 throw new Error('Nicht genügend Teams vorhanden');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
+            } else if (error.response?.status === 400) {
+                throw new Error('Ungültige Parameter für die Spielplanerstellung');
             } else if (error.response?.status ===  500) {
                 throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
