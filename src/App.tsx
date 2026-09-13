@@ -75,13 +75,10 @@ const App: React.FC = () => {
                                 <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
                                 <Route path="/survey" element={<Survey {...showTab2Props} />} />
 
-                                <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                    <Route path="/admin/login" element={<Login />} />
-                                    <Route path="/admin" element={<AdminRouter />} />
-                                </Suspense>
+                                <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><Login /></Suspense>} />
+                                <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><AdminRouter /></Suspense>} />
                                 <Route path="/register" element={<Navigate to="/tab1" />} />
                                 <Route path="/login" element={<Navigate to="/tab1" />} />
-                                <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
                                 <Route path="/" element={<Navigate to="/tab1" />} />
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
@@ -105,10 +102,8 @@ const App: React.FC = () => {
                         <IonRouterOutlet animated={false} mode="md">
                             <Route path="/register" element={<RegisterTeam setUser={setCurrentUser} />} />
                             <Route path="/login" element={<LoginToTeam setUser={setCurrentUser} />} />
-                            <Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}>
-                                <Route path="/admin/login" element={<Login />} />
-                                <Route path="/admin" element={<AdminRouter />} />
-                            </Suspense>
+                            <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><Login /></Suspense>} />
+                            <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><AdminRouter /></Suspense>} />
                             <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
                             <Route path="/" element={<Navigate to="/login" />} />
 
