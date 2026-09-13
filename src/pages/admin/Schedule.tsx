@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
@@ -19,7 +19,7 @@ const Schedule: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const Schedule: React.FC = () => {
                     setError('Spielplan erfolgreich erstellt');
                     setIsError(false);
                     setShowToast(true);
-                    history.push('/admin/dashboard');
+                    navigate('/admin/dashboard');
                 } else {
                     setError('Spielplan konnte nicht erstellt werden');
                     setIsError(true);
@@ -71,11 +71,11 @@ const Schedule: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin/dashboard');
+                            navigate('/admin/dashboard');
                         }
                     }}
                 >

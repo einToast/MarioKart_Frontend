@@ -18,9 +18,12 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": [
+      "vitest/globals"
+    ],
   },
   "include": [
-    "src_backup"
+    "src"
   ],
   "references": [
     {

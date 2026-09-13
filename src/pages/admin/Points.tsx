@@ -1,7 +1,7 @@
 import { IonAccordionGroup, IonButton, IonCheckbox, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
@@ -21,7 +21,7 @@ const Points: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
     const getSelectedRound = (id: number) => {
@@ -90,11 +90,11 @@ const Points: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin/dashboard');
+                            navigate('/admin/dashboard');
                         }
                     }}
                 >

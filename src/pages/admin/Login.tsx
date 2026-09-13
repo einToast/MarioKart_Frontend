@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
 import { PublicCookiesService, PublicUserService } from "../../util/service";
@@ -14,14 +14,14 @@ const Login: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const handleLogin = () => {
         PublicUserService.login(username, password)
             .then(() => {
                 setUsername('');
                 setPassword('');
-                history.push('/admin/dashboard');
+                navigate('/admin/dashboard');
             })
             .catch(error => {
                 setError(error.message);
@@ -32,7 +32,7 @@ const Login: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             if (await PublicCookiesService.checkToken()) {
-                history.push('/admin/dashboard');
+                navigate('/admin/dashboard');
             }
         }
         fetchData();
@@ -100,12 +100,12 @@ const Login: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => history.push("/login")}
+                    <a onClick={() => navigate("/login")}
                         style={{ cursor: "pointer", textDecoration: "underline" }}
                         tabIndex={0}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
-                                history.push('/login');
+                                navigate('/login');
                             }
                         }}
                     >

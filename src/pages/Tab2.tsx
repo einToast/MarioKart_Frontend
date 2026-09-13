@@ -1,6 +1,6 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import StaticTeamGraph from '../components/graph/StaticTeamGraph';
 import Header from "../components/Header";
@@ -24,7 +24,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const getRanking = () => {
         Promise.all([
@@ -81,7 +81,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
         tournamentOpen.then((response) => {
             if (!response) {
-                history.push('/admin');
+                navigate('/admin');
             }
         }).catch((error) => {
             setError(error.message);
@@ -100,7 +100,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         if (!props.showTab2) {
             setError("Die Statistiken können momentan nicht angezeigt werden.");
             setShowToast(true);
-            history.push('/tab1');
+            navigate('/tab1');
         }
     }
 

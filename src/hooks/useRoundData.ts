@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
+import { useNavigate } from 'react-router';
 import { BreakReturnDTO, RoundReturnDTO, TeamReturnDTO } from '../util/api/config/dto';
 import { UseRoundDataReturn } from '../util/api/config/interfaces';
 import { PublicRegistrationService, PublicScheduleService, PublicSettingsService } from '../util/service';
@@ -11,7 +11,7 @@ export const useRoundData = (): UseRoundDataReturn => {
     const [teamsNotInNextRound, setTeamsNotInNextRound] = useState<TeamReturnDTO[]>([]);
     const [error, setError] = useState<string>("");
 
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const refreshRounds = async () => {
         return PublicScheduleService.getCurrentRounds()
@@ -76,7 +76,7 @@ export const useRoundData = (): UseRoundDataReturn => {
             })
             .then(tournamentOpen => {
                 if (!tournamentOpen) {
-                    history.push('/admin');
+                    navigate('/admin');
                 }
             })
             .catch(error => {

@@ -3,7 +3,7 @@ import { NotificationSubscriptionDTO } from "../../api/config/dto";
 import { PublicCookiesService } from "../cookies";
 
 export class NotificationService {
-    private static convertedVapidKey: Uint8Array | undefined;
+    private static convertedVapidKey: Uint8Array<ArrayBuffer> | undefined;
 
     static async requestPermission(): Promise<boolean> {
         if (!('Notification' in window)) {
@@ -41,7 +41,7 @@ export class NotificationService {
         }
     }
 
-    private static async getPublicKey(): Promise<Uint8Array> {
+    private static async getPublicKey(): Promise<Uint8Array<ArrayBuffer>> {
         if (!this.convertedVapidKey) {
             const response = await PublicNotificationApi.getPublicKey();
 
@@ -60,15 +60,15 @@ export class NotificationService {
     private static async sendSubscriptionToServer(subscription: PushSubscription): Promise<void> {
         const subscriptionData: NotificationSubscriptionDTO = {
             endpoint: subscription.endpoint,
-            p256dh: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))),
-            auth: btoa(String.fromCharCode.apply(null, new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
+            p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))),
+            auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
             teamId: PublicCookiesService.getUser()?.teamId || 0
         };
 
         await PublicNotificationApi.subscribe(subscriptionData);
     }
 
-    private static urlBase64ToUint8Array(base64String: string): Uint8Array {
+    private static urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
             .replace(/-/g, '+')

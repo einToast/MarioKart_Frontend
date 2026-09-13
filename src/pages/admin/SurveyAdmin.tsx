@@ -1,7 +1,7 @@
 import { IonContent, IonIcon, IonPage } from "@ionic/react";
 import { addCircleOutline, arrowBackOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import SurveyAdminContainer from "../../components/admin/SurveyAdminContainer";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
@@ -21,7 +21,7 @@ const SurveyAdmin: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const history = useHistory();
+    const navigate = useNavigate();
     const location = useLocation();
 
 
@@ -70,11 +70,11 @@ const SurveyAdmin: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => history.push('/admin/dashboard')}
+                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
                     tabIndex={0}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') {
-                            history.push('/admin/dashboard');
+                            navigate('/admin/dashboard');
                         }
                     }}
                 >

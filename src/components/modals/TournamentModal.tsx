@@ -7,7 +7,7 @@ import { AdminSettingsService, PublicSettingsService } from '../../util/service'
 import { ChangeType } from "../../util/service/util";
 import Toast from '../Toast';
 
-const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT: ChangeType) => void, changeType: ChangeType }> = ({ showModal, closeModal, changeType }) => {
+const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: ChangeType) => void, changeType: ChangeType }> = ({ showModal, closeModal, changeType }) => {
 
     const [message, setMessage] = useState<string>('');
     const [secondaryMessage, setSecondaryMessage] = useState<string>('');

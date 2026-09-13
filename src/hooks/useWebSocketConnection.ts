@@ -2,7 +2,7 @@ import { App as CapacitorApp } from '@capacitor/app';
 import { useCallback, useEffect, useState } from 'react';
 import { useWebSocket } from '../components/WebSocketContext';
 
-export const useWebSocketConnection = (url, onMessageReceived: () => void) => {
+export const useWebSocketConnection = (url: string, onMessageReceived: () => void) => {
     const [isConnected, setIsConnected] = useState<boolean>(false);
     const wsService = useWebSocket();
 
