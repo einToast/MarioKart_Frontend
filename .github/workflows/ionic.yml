@@ -6,6 +6,9 @@ on:
       - main
   workflow_call:
 
+permissions:
+  contents: read
+
 jobs:
   ionic-build:
     runs-on: ubuntu-latest
