@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --ignore-scripts
+RUN npm ci --ignore-scripts
 
 RUN npm install -g --ignore-scripts @ionic/cli
 
