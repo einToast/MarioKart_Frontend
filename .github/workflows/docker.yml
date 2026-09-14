@@ -8,6 +8,12 @@ on:
 #      - main
 
 jobs:
+  docker-test:
+    uses: ./.github/workflows/docker_test.yml
+
+  ionic-build:
+    uses: ./.github/workflows/ionic.yml
+
   docker-build-push:
     needs:
       - docker-test
