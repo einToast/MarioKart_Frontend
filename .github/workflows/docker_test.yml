@@ -1,15 +1,13 @@
 name: Docker Build
 
 on:
-#  push:
-#    branches:
-#      - main
   pull_request:
     branches:
       - main
+  workflow_call:
 
 jobs:
-  build:
+  docker-test:
     runs-on: ubuntu-latest
 
     steps:

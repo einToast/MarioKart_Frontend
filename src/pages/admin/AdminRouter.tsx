@@ -24,6 +24,7 @@ const AdminRouter: React.FC = () => {
       <Route path="/admin/survey" element={<AdminSurvey />} />
       <Route path="/admin/teams" element={<Teams />} />
       <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
+      <Route path="/admin/*" element={<Navigate to="/admin/dashboard" />} />
     </IonRouterOutlet>
   );
 };

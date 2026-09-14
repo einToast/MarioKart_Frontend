@@ -1,0 +1,36 @@
+.scheduleControls .scheduleFields {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 12px;
+    overflow-x: auto;
+    margin-bottom: 12px;
+}
+
+.scheduleControls .scheduleField {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    gap: 6px;
+}
+
+.scheduleControls .scheduleField label {
+    font-family: Poppins;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.scheduleControls .scheduleField input {
+    box-sizing: border-box;
+    width: 64px;
+}
+
+.scheduleControls ion-button {
+    display: block;
+    margin: 0;
+    width: 100%;
+}
+
+.scheduleControls ion-button p {
+    white-space: nowrap;
+}

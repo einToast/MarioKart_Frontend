@@ -80,6 +80,8 @@ const App: React.FC = () => {
                                 <Route path="/register" element={<Navigate to="/tab1" />} />
                                 <Route path="/login" element={<Navigate to="/tab1" />} />
                                 <Route path="/" element={<Navigate to="/tab1" />} />
+                                <Route path="*" element={<Navigate to="/tab1" />} />
+
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
@@ -105,10 +107,9 @@ const App: React.FC = () => {
                             <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><Login /></Suspense>} />
                             <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><AdminRouter /></Suspense>} />
                             <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
-                            <Route path="/" element={<Navigate to="/login" />} />
-
-                            {/* <Route exact path={["/tab1", "/tab2", "/tab3", "/tab4", "/survey"]} element={<Navigate to="/login" />} /> */}
                             <Route path="/healthcheck" element={<div>OK</div>} />
+                            <Route path="/" element={<Navigate to="/login" />} />
+                            <Route path="*" element={<Navigate to="/login" />} />
                         </IonRouterOutlet>
                     )}
                 </IonReactRouter>
