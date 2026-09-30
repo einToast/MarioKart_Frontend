@@ -15,6 +15,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
     const [numberOfOptions, setNumberOfOptions] = useState(4);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
+    const [oneAnswerPerKey, setOneAnswerPerKey] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -61,6 +62,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             questionType: questionType,
             options: options,
             finalTeamsOnly: finalTeamsOnly,
+            oneAnswerPerKey: oneAnswerPerKey,
             active: question.active,
             visible: question.visible,
         })
@@ -84,6 +86,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         setOptions((question.options) ? question.options : ['']);
         setNumberOfOptions((question.options) ? question.options.length : 0);
         setFinalTeamsOnly(question.finalTeamsOnly);
+        setOneAnswerPerKey(question.oneAnswerPerKey);
 
     }, [showModal]);
 
@@ -137,6 +140,23 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                                 </IonButton>
                             </div>
                         }
+                    </div>
+
+                    <div className="borderContainer multipleSelect">
+                        <div>
+                            <p>Antworten pro Gerät</p>
+                            <IonItem className={"item-background-color"}>
+                                <select
+                                    value={oneAnswerPerKey ? 'true' : 'false'}
+                                    onChange={(e) => setOneAnswerPerKey(e.target.value === 'true')}
+                                    style={{ cursor: 'pointer' }}
+                                    className="item-background-color"
+                                >
+                                    <option value="false">Unbegrenzt</option>
+                                    <option value="true">Eine Antwort pro Umfrage-Schlüssel</option>
+                                </select>
+                            </IonItem>
+                        </div>
                     </div>
 
                     <br></br>

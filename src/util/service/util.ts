@@ -21,6 +21,12 @@ export enum QuestionType {
     TEAM_ONE_FREE_TEXT = "TEAM_ONE_FREE_TEXT"
 }
 
+export enum SurveyKeyMode {
+    DISABLED = "DISABLED",
+    DISTRIBUTING = "DISTRIBUTING",
+    REQUIRED = "REQUIRED"
+}
+
 export enum ChangeType {
     REGISTRATION = "Registrierung",
     TOURNAMENT = "Turnier",

@@ -1,5 +1,6 @@
 import { PublicSettingsApi } from "../../../api";
 import { TournamentDTO } from "../../../api/config/dto";
+import { SurveyKeyMode } from "../../util";
 
 export const getSettings = async (): Promise<TournamentDTO> => {
     return await PublicSettingsApi.getSettings();
@@ -13,6 +14,11 @@ export const getRegistrationOpen = async (): Promise<boolean> => {
 export const getTournamentOpen = async (): Promise<boolean> => {
     const tournament = await getSettings();
     return tournament.tournamentOpen ?? false;
+}
+
+export const getSurveyKeyMode = async (): Promise<SurveyKeyMode> => {
+    const tournament = await getSettings();
+    return tournament.surveyKeyMode ?? SurveyKeyMode.DISABLED;
 }
 
 export const getMaxGamesCount = async (): Promise<number> => {

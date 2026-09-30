@@ -1,4 +1,4 @@
-import { QuestionType } from "../../service/util";
+import { QuestionType, SurveyKeyMode } from "../../service/util";
 
 
 export interface RoundInputFullDTO {
@@ -89,6 +89,7 @@ export interface TournamentDTO {
     tournamentOpen?: boolean;
     registrationOpen?: boolean;
     maxGamesCount?: number;
+    surveyKeyMode?: SurveyKeyMode;
 }
 
 export interface ScheduleInputDTO {
@@ -106,6 +107,7 @@ export interface QuestionInputDTO {
     visible: boolean;
     live: boolean;
     finalTeamsOnly?: boolean;
+    oneAnswerPerKey?: boolean;
 }
 export interface AnswerInputDTO {
     questionId: number;
@@ -125,6 +127,7 @@ export interface QuestionReturnDTO {
     visible: boolean;
     live: boolean;
     finalTeamsOnly: boolean;
+    oneAnswerPerKey: boolean;
 }
 
 export interface AnswerReturnDTO {
