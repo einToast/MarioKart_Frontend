@@ -4,7 +4,7 @@ import { TournamentDTO } from "../../../api/config/dto";
 import { AdminRegistrationService } from "../../registration";
 import { AdminScheduleService } from "../../schedule";
 import { AdminSurveyService } from "../../survey";
-import { ChangeType } from "../../util";
+import { ChangeType, SurveyKeyMode } from "../../util";
 
 export const updateSettings = async (tournament: TournamentDTO): Promise<TournamentDTO> => {
     return await AdminSettingsApi.updateSettings(tournament);
@@ -24,6 +24,13 @@ export const updateRegistrationOpen = async (registrationOpen: boolean): Promise
 export const updateTournamentOpen = async (tournamentOpen: boolean): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {
         tournamentOpen: tournamentOpen
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateSurveyKeyMode = async (surveyKeyMode: SurveyKeyMode): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        surveyKeyMode: surveyKeyMode
     }
     return await AdminSettingsApi.updateSettings(tournament);
 }

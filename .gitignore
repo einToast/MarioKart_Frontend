@@ -42,3 +42,5 @@ plugins/
 tmp/
 temp/
 *.swp
+*.pem
+

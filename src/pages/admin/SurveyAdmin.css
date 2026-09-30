@@ -181,5 +181,42 @@ ion-modal {
             margin: 0;
             font-weight: normal;
         }
+
+        .oneAnswerPerKeyIcon {
+            font-size: 16px;
+            margin-left: 6px;
+            vertical-align: middle;
+            opacity: 0.6;
+        }
+    }
+}
+.surveyKeyMode {
+    background-color: #32345E;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 9px;
+    margin-top: -15px;
+    margin-bottom: 30px;
+    box-shadow: 2px 16px 19px rgba(0, 0, 0, 0.1);
+
+    p {
+        margin: 0;
+        font-weight: normal;
+        white-space: nowrap;
+    }
+
+    select {
+        font-family: Poppins;
+        font-size: 14px;
+        background-color: #2F315B;
+        border: none;
+        padding: 3px 7px;
+        color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        flex-shrink: 0;
     }
 }

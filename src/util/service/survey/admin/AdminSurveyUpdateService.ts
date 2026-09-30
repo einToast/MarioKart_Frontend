@@ -18,7 +18,8 @@ export const updateQuestion = async (question: QuestionReturnDTO): Promise<Quest
         active: question.active,
         visible: question.visible,
         live: question.live,
-        finalTeamsOnly: question.finalTeamsOnly
+        finalTeamsOnly: question.finalTeamsOnly,
+        oneAnswerPerKey: question.oneAnswerPerKey
     }
     return AdminSurveyApi.updateQuestion(question.id, questionInput);
 }

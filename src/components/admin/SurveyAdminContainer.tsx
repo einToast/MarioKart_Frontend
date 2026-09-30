@@ -23,7 +23,8 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
         visible: false,
         active: false,
         live: false,
-        finalTeamsOnly: false
+        finalTeamsOnly: false,
+        oneAnswerPerKey: false
     });
     const [showChangeModal, setShowChangeModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);

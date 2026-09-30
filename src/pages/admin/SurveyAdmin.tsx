@@ -8,13 +8,21 @@ import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import Toast from "../../components/Toast";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
-import { AdminSurveyService, PublicCookiesService } from "../../util/service";
+import { AdminSettingsService, AdminSurveyService, PublicCookiesService, PublicSettingsService } from "../../util/service";
+import { SurveyKeyMode } from "../../util/service/util";
 import "./SurveyAdmin.css";
+
+const SURVEY_KEY_MODE_MESSAGES: Record<SurveyKeyMode, string> = {
+    [SurveyKeyMode.DISABLED]: 'Umfrage-Schlüssel deaktiviert, alle können abstimmen',
+    [SurveyKeyMode.DISTRIBUTING]: 'Geräte erhalten bei ihrer ersten Antwort einen Umfrage-Schlüssel',
+    [SurveyKeyMode.REQUIRED]: 'Nur Geräte mit Umfrage-Schlüssel können abstimmen',
+};
 
 const SurveyAdmin: React.FC = () => {
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
+    const [surveyKeyMode, setSurveyKeyMode] = useState<SurveyKeyMode>(SurveyKeyMode.DISABLED);
 
 
     const [error, setError] = useState<string>("Error");
@@ -32,6 +40,33 @@ const SurveyAdmin: React.FC = () => {
             })
             .catch(error => {
                 setError(error.message);
+                setShowToast(true);
+            });
+    };
+
+    const getSurveyKeyMode = () => {
+        PublicSettingsService.getSurveyKeyMode()
+            .then(mode => {
+                setSurveyKeyMode(mode);
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+    };
+
+    const handleSurveyKeyModeChange = (mode: SurveyKeyMode) => {
+        AdminSettingsService.updateSurveyKeyMode(mode)
+            .then(settings => {
+                setSurveyKeyMode(settings.surveyKeyMode ?? mode);
+                setError(SURVEY_KEY_MODE_MESSAGES[mode]);
+                setIsError(false);
+                setShowToast(true);
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
                 setShowToast(true);
             });
     };
@@ -62,6 +97,7 @@ const SurveyAdmin: React.FC = () => {
                 return;
             }
             getQuestions();
+            getSurveyKeyMode();
         };
 
         loadData();
@@ -98,6 +134,19 @@ const SurveyAdmin: React.FC = () => {
                 >
                     <IonIcon slot="end" icon={addCircleOutline} />
                     <p>Neue Abstimmung</p>
+                </div>
+
+                <div className="surveyKeyMode">
+                    <p>Umfrage-Schlüssel</p>
+                    <select
+                        value={surveyKeyMode}
+                        onChange={(e) => handleSurveyKeyModeChange(e.target.value as SurveyKeyMode)}
+                        aria-label="Umfrage-Schlüssel"
+                    >
+                        <option value={SurveyKeyMode.DISABLED}>Aus</option>
+                        <option value={SurveyKeyMode.DISTRIBUTING}>Schlüssel verteilen</option>
+                        <option value={SurveyKeyMode.REQUIRED}>Nur mit Schlüssel</option>
+                    </select>
                 </div>
 
                 <SurveyAdminContainer

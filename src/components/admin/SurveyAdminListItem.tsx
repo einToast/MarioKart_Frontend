@@ -6,6 +6,7 @@ import {
     createOutline,
     eyeOffOutline,
     eyeOutline,
+    keyOutline,
     statsChartOutline,
     trashOutline
 } from "ionicons/icons";
@@ -24,7 +25,16 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
 }) => {
     return (
         <div className={`currentSurvey ${survey.visible ? 'active' : ''}`}>
-            <p>{survey.questionText}</p>
+            <p>
+                {survey.questionText}
+                {survey.oneAnswerPerKey && (
+                    <IonIcon
+                        icon={keyOutline}
+                        title="Eine Antwort pro Umfrage-Schlüssel"
+                        className="oneAnswerPerKeyIcon"
+                    />
+                )}
+            </p>
             <div>
                 <IonIcon
                     slot="end"

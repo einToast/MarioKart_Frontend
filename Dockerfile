@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install --ignore-scripts
+RUN npm ci --ignore-scripts
 
 RUN npm install -g --ignore-scripts @ionic/cli
 
@@ -14,19 +14,19 @@ COPY . .
 RUN ionic build --prod
 
 #Stage 2: Run
-FROM node:24.21.0-slim
+FROM node:24.21.0-slim AS runtime
 
 WORKDIR /app
 
 COPY --from=build /app/dist /app/dist
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g --ignore-scripts serve
 
 RUN npm install --ignore-scripts react-inject-env
 
 EXPOSE 5000
-
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=10s \
     CMD curl --fail http://localhost:5000/healthcheck || exit 1

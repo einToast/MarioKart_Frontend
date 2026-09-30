@@ -6,7 +6,8 @@ export const createQuestion = async (
     question: string,
     questionType: QuestionType,
     options: string[],
-    finalTeamsOnly: boolean
+    finalTeamsOnly: boolean,
+    oneAnswerPerKey: boolean
 ): Promise<QuestionReturnDTO> => {
     if (question === '') {
         throw new Error('Die Frage darf nicht leer sein');
@@ -25,7 +26,8 @@ export const createQuestion = async (
         active: false,
         visible: false,
         live: false,
-        finalTeamsOnly: finalTeamsOnly
+        finalTeamsOnly: finalTeamsOnly,
+        oneAnswerPerKey: oneAnswerPerKey
     }
     return AdminSurveyApi.createQuestion(questionInput);
 }

@@ -11,7 +11,12 @@ export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Prom
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 429) {
+                if (String(error.response.data).includes("survey key")) {
+                    throw new Error("Du hast diese Frage bereits beantwortet");
+                }
                 throw new Error("Dein Team hat zu oft geantwortet");
+            } else if (error.response?.status === 403) {
+                throw new Error("Die Teilnahme ist nur noch für Geräte möglich, die bereits an einer Umfrage teilgenommen haben");
             } else if (error.response?.status === 409) {
                 throw new Error("Frage kann nicht beantwortet werden");
             } else if (error.response?.status === 404) {

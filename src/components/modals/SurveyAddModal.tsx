@@ -13,6 +13,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
     const [options, setOptions] = useState<string[]>(['', '', '', '']);
     const [numberOfOptions, setNumberOfOptions] = useState(4);
     const [finalTeamsOnly, setFinalTeamsOnly] = useState<boolean>(false);
+    const [oneAnswerPerKey, setOneAnswerPerKey] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -40,6 +41,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
         setQuestionType(QuestionType.MULTIPLE_CHOICE);
         setOptions(['', '', '', '']);
         setNumberOfOptions(4);
+        setOneAnswerPerKey(false);
         closeModal({ surveyCreated: false });
     }
 
@@ -48,7 +50,8 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
             questionText,
             questionType,
             options,
-            finalTeamsOnly
+            finalTeamsOnly,
+            oneAnswerPerKey
         )
             .then(newQuestion => {
                 if (newQuestion) {
@@ -134,6 +137,23 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                 </IonButton>
                             </div>
                         }
+                    </div>
+
+                    <div className="borderContainer multipleSelect">
+                        <div>
+                            <p>Antworten pro Gerät</p>
+                            <IonItem className={"item-background-color"}>
+                                <select
+                                    value={oneAnswerPerKey ? 'true' : 'false'}
+                                    onChange={(e) => setOneAnswerPerKey(e.target.value === 'true')}
+                                    style={{ cursor: 'pointer' }}
+                                    className="item-background-color"
+                                >
+                                    <option value="false">Unbegrenzt</option>
+                                    <option value="true">Eine Antwort pro Umfrage-Schlüssel</option>
+                                </select>
+                            </IonItem>
+                        </div>
                     </div>
 
                     <br></br>
