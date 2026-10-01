@@ -92,15 +92,23 @@ npm run ionic_serve
 
 ### Testing
 
-- Unit tests (Vitest):
+- Unit and component tests (Vitest, jsdom):
   ```bash
-  npm run test.unit
+  npm run test.unit            # watch mode
+  npm run test.unit -- --run   # single run, e.g. for CI
   ```
+  Tests live next to the code as `*.test.ts(x)`. They run the real API and service layers
+  against an in-memory backend (`src/test/backend.ts`), so no backend has to be running.
+  A request a test did not stub fails that test. Shared helpers (fixtures, render wrappers,
+  stand-ins for the Ionic overlays, charts and the WebSocket client) are in `src/test/`.
 - E2E tests (Cypress):
   ```bash
-  npm run dev &
+  npm run dev &        # needs the .env from above (backend at http://localhost:8080/api)
   npm run test.e2e
   ```
+  The specs in `cypress/e2e/` drive the real app in a browser and stub every backend request
+  with `cy.intercept` (see `cypress/support/commands.ts`), so no backend has to be running
+  here either. They expect the backend address from the `.env` example above.
 
 ### Linting
 
