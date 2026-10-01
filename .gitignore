@@ -13,6 +13,10 @@ www/
 build/
 dist/
 
+# Cypress run artifacts
+cypress/screenshots/
+cypress/videos/
+
 # Logs
 *.log
 

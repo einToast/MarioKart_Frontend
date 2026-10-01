@@ -29,5 +29,53 @@ jobs:
       - name: Lint code
         run: npm run lint
 
+      - name: Run unit tests
+        run: npm run test.unit -- --run
+
       - name: Build the app
         run: npm run build
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      REACT_APP_BACKEND_PROTOCOL: http
+      REACT_APP_BACKEND_URL: localhost
+      REACT_APP_BACKEND_PORT: 8080
+      REACT_APP_BACKEND_PATH: api
+      REACT_APP_BACKEND_WS_PROTOCOL: http
+      REACT_APP_BACKEND_WS_URL: localhost
+      REACT_APP_BACKEND_WS_PORT: 8080
+      REACT_APP_BACKEND_WS_PATH: api/ws
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install Cypress binary
+        run: npx cypress install
+
+      - name: Start dev server
+        run: |
+          npm run dev -- --port 5173 --strictPort > dev-server.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail --output /dev/null http://localhost:5173; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Dev server did not start within 60 seconds:"
+          cat dev-server.log
+          exit 1
+
+      - name: Run E2E tests
+        run: npm run test.e2e

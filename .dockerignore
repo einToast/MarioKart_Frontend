@@ -7,3 +7,9 @@ cypress/
 .env
 *.pem
 *.p12
+
+cypress.config.ts
+src/setupTests.ts
+src/test/
+**/*.test.ts
+**/*.test.tsx
