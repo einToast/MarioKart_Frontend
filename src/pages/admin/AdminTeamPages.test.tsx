@@ -238,7 +238,7 @@ describe('admin Schedule', () => {
 
         fireEvent.click(screen.getByText(CREATE));
 
-        await expectErrorToast('Nicht genügend Teams vorhanden');
+        await expectErrorToast('Nicht genügend Teams vorhanden (mindestens Spielfelder x Teams pro Spiel)');
         expect(currentPath()).toBe('/admin/schedule');
         await waitFor(() => expect(buttonOf(CREATE).disabled).toBe(false));
     });

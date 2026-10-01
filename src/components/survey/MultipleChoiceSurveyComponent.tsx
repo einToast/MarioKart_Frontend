@@ -17,11 +17,11 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
-    const getVote = async () => {
-        const voted = await PublicSurveyService.getAnswerCookie(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
+    const getVote = () => {
+        const voted = PublicSurveyService.getAnswerCookie(multipleChoiceQuestion.questionText + multipleChoiceQuestion.id);
 
         if (voted !== -1) {
-            setVotedId(parseInt(voted.answerId));
+            setVotedId(Number.parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
         } else {
             handleVoteStatus(-1);
@@ -56,10 +56,14 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
         }
     }
 
-    const showResults = async () => {
+    const showResults = () => {
         if (!multipleChoiceQuestion.active) {
-            const results = await PublicSurveyService.getStatisticsOfQuestion(multipleChoiceQuestion.id);
-            setResults(results);
+            PublicSurveyService.getStatisticsOfQuestion(multipleChoiceQuestion.id)
+                .then(setResults)
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
         }
     }
 
@@ -101,7 +105,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                                             }
                                         }
                                     }}
-                                    key={index}
+                                    key={option}
                                     disabled={!(vote == index || votedId == index) && votedId !== -1}
                                     style={{
                                         pointerEvents: (votedId !== -1 || !multipleChoiceQuestion.active) ? 'none' : 'auto',
@@ -125,7 +129,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                     <IonButton
                         className={"button"}
                         onClick={() => handleSaveVote()}
-                        disabled={!(votedId === -1) || !multipleChoiceQuestion.active || vote === -1}
+                        disabled={votedId !== -1 || !multipleChoiceQuestion.active || vote === -1}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 handleSaveVote();

@@ -15,10 +15,12 @@ self.addEventListener('push', (event) => {
         const data = JSON.parse(text);
         title = data.title || title;
         body = data.body || body;
-      } catch (err) {
+      } catch {
+        // Payload is not JSON: show it as plain text
         body = text || body;
       }
-    } catch (err) {
+    } catch {
+      // Payload could not be read: fall back to a generic message
       body = 'Neue Benachrichtigung erhalten';
     }
   

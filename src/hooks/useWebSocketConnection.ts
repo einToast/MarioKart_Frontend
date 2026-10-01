@@ -40,6 +40,8 @@ export const useWebSocketConnection = (url: string, onMessageReceived: () => voi
         let subscription: any;
         setupAppStateListener().then(sub => {
             subscription = sub;
+        }).catch(error => {
+            console.error("Error setting up app state listener:", error);
         });
 
         return () => {

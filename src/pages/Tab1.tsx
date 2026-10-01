@@ -19,7 +19,6 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [selectedOption, setSelectedOption] = useState('Deine Spiele');
 
     const [showToast, setShowToast] = useState<boolean>(false);
-    const [isError, setIsError] = useState<boolean>(true);
 
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -34,7 +33,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         refreshRounds
     } = useRoundData();
 
-    const isConnected = useWebSocketConnection('/topic/rounds', refreshRounds);
+    useWebSocketConnection('/topic/rounds', refreshRounds);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
@@ -56,9 +55,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
 
+        updateShowTab2();
         await Promise.all([
             refreshRounds(),
-            updateShowTab2(),
             new Promise(resolve => setTimeout(resolve, 500)),
         ]);
 
@@ -135,7 +134,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 message={error}
                 showToast={showToast}
                 setShowToast={setShowToast}
-                isError={isError}
+                isError={true}
             ></Toast>
         </IonPage>
     );

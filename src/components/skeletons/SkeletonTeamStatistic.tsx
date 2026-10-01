@@ -7,8 +7,8 @@ const SkeletonTeamStatistic: React.FC<SkeletonTeamStatisticProps> = ({ rows = 4}
     const classColor = switchColor.toLowerCase()
     return (
         <div className="roundContainer">
-            {Array.from({ length: rows }).map((_, idx) => (
-                <div className={`teamContainer ${switchColor} slide`} key={idx}>
+            {Array.from({ length: rows }, (_, idx) => `skeleton-${idx}`).map((rowKey) => (
+                <div className={`teamContainer ${switchColor} slide`} key={rowKey}>
                     <div className={classColor}>
                         <div className={`skeletonContainer `}>
                             <IonSkeletonText animated style={{ width: 55, height: 55, borderRadius: '50%' }} />

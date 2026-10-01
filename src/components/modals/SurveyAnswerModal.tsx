@@ -58,6 +58,23 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             });
     };
 
+    const renderResults = () => {
+        switch (question.questionType) {
+            case QuestionType.FREE_TEXT:
+                return answers.map((answer, index) => (
+                    <li key={index}> {answer.freeTextAnswer} </li>
+                ));
+            case QuestionType.TEAM_ONE_FREE_TEXT:
+                return answers.map((answer, index) => (
+                    <li key={index}> {teams.find(team => team.id === answer.teamSelectedOption)?.teamName}: {answer.freeTextAnswer} </li>
+                ));
+            default:
+                return question.options.map((option, index) => (
+                    <li key={option}> {option}: {answersCount[index]} </li>
+                ));
+        }
+    };
+
     useEffect(() => {
         if (showModal) getAnswersToQuestion();
         if (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) {
@@ -70,45 +87,11 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
             <IonContent>
                 <h4>{question.questionText}</h4>
                 <h4>Ergebnisse: {totalAnswers} Antworten</h4>
-                {question.questionType !== QuestionType.FREE_TEXT && question.questionType !== QuestionType.TEAM_ONE_FREE_TEXT ? (
-                    <>
-
-                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
-                            <ul>
-                                {
-                                    question.options.map((option, index) => (
-                                        <li key={option}> {option}: {answersCount[index]} </li>
-                                    ))
-                                }
-                            </ul>
-                        </div>
-                    </>
-                ) : (question.questionType === QuestionType.FREE_TEXT ? (
-                    <>
-                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
-                            <ul>
-                                {
-                                    answers.map((answer, index) => (
-                                        <li key={index}> {answer.freeTextAnswer} </li>
-                                    ))
-
-                                }
-                            </ul>
-                        </div>
-                    </>
-                ) : (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT ? (
-                    <>
-                        <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
-                            <ul>
-                                {
-                                    answers.map((answer, index) => (
-                                        <li key={index}> {teams.find(team => team.id === answer.teamSelectedOption)?.teamName}: {answer.freeTextAnswer} </li>
-                                    ))
-                                }
-                            </ul>
-                        </div>
-                    </>
-                ) : null))}
+                <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
+                    <ul>
+                        {renderResults()}
+                    </ul>
+                </div>
                 <div className={"playedContainer"}>
                     <IonButton onClick={() => closeModal({ surveyResults: false })} className={"round"}
                         tabIndex={0}

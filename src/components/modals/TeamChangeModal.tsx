@@ -80,7 +80,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                             >
                                 {character}
                             </option>
-                            {availableCharacters && availableCharacters.map((character) => (
+                            {availableCharacters?.map((character) => (
                                 <option
                                     key={character}
                                     value={character}

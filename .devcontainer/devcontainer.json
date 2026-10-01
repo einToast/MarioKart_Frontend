@@ -1,0 +1,40 @@
+{
+  "name": "MarioKart Frontend Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
+  "forwardPorts": [
+    8100,
+    5173
+  ],
+  "portsAttributes": {
+    "8100": {
+      "label": "Ionic frontend"
+    },
+    "5173": {
+      "label": "Vite frontend"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "webnative.webnative",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "github.vscode-pull-request",
+        "yzhang.markdown-all-in-one",
+        "vscode-icons-team.vscode-icons"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "containerEnv": {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  },
+  "remoteEnv": {
+    "LANG": "C.UTF-8",
+    "LC_ALL": "C.UTF-8"
+  }
+}

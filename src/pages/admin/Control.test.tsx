@@ -273,14 +273,13 @@ describe('admin Control', () => {
         await expectErrorToast('Einstellungen konnten nicht geladen werden');
     });
 
-    it.each([
-        ['click', (element: HTMLElement) => fireEvent.click(element)],
-        ['Enter key', (element: HTMLElement) => fireEvent.keyDown(element, { key: 'Enter' })],
-    ])('returns to the dashboard (%s)', async (_name, activate) => {
+    it('returns to the dashboard', async () => {
         renderPage();
         await screen.findByText('Anwendung zurücksetzen');
+        const link = screen.getByRole('link', { name: 'Zurück' });
 
-        activate(screen.getByText('Zurück'));
+        expect(link).toHaveAttribute('href', '/admin/dashboard');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/admin/dashboard');
     });

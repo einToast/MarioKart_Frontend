@@ -7,24 +7,23 @@ COPY package*.json ./
 
 RUN npm ci --ignore-scripts
 
-RUN npm install -g --ignore-scripts @ionic/cli
-
 COPY . .
 
-RUN ionic build --prod
+RUN npx ionic build --prod
 
 #Stage 2: Run
 FROM node:24.21.0-slim AS runtime
 
 WORKDIR /app
 
-COPY --from=build /app/dist /app/dist
+RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
+    && npm install -g --ignore-scripts serve \
+    && npm install --ignore-scripts react-inject-env \
+    && useradd --system --create-home --uid 10001 frontend
 
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+COPY --from=build --chown=frontend:frontend /app/dist /app/dist
 
-RUN npm install -g --ignore-scripts serve
-
-RUN npm install --ignore-scripts react-inject-env
+USER frontend
 
 EXPOSE 5000
 

@@ -42,7 +42,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                         <div className="borderContainer selectCharacter">
                             <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value={-1}>Alle</option>
-                                {teams && teams.map((team) => (
+                                {teams?.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
                                         style={{ backgroundImage: `url(/characters/${team.character.characterName}.png)` }}

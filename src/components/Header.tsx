@@ -1,7 +1,7 @@
 import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
 import { pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { User } from '../util/api/config/interfaces';
 import { PublicCookiesService } from '../util/service';
 import './Header.css';
@@ -10,8 +10,6 @@ const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
@@ -50,7 +48,7 @@ const Header: React.FC = () => {
                 }}
             >
                 <IonAvatar>
-                    {user && user.character &&
+                    {user?.character &&
                         <img src={`/characters/${user.character}.png`} alt={user.character}
                             className="iconTeam" />
                     }
@@ -72,18 +70,9 @@ const Header: React.FC = () => {
                     </div>
                 )}
             </div>
-            <a onClick={() => navigate('/survey')}
-                title="Umfragen"
-                style={{ cursor: "pointer" }}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                        navigate('/survey');
-                    }
-                }}
-            >
+            <Link to="/survey" title="Umfragen">
                 <IonIcon aria-hidden="true" icon={pieChartOutline} />
-            </a>
+            </Link>
         </IonHeader>
     );
 };

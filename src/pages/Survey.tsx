@@ -30,16 +30,12 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const getQuestions = () => {
         return PublicSurveyService.getVisibleQuestions()
-            .then(async questions => {
-                const questionsWithAnswers = await Promise.all(
-                    questions.map(question =>
-                        PublicSurveyService.getAnswerCookie(question.questionText + question.id)
-                            .then(answers => ({
-                                ...question,
-                                isAnswered: (answers !== -1 && question.questionType !== QuestionType.FREE_TEXT)
-                            }))
-                    )
-                );
+            .then(questions => {
+                const questionsWithAnswers = questions.map(question => ({
+                    ...question,
+                    isAnswered: (PublicSurveyService.getAnswerCookie(question.questionText + question.id) !== -1
+                        && question.questionType !== QuestionType.FREE_TEXT)
+                }));
 
                 questionsWithAnswers.sort((a, b) => {
                     if (a.active !== b.active) return a.active ? -1 : 1;
@@ -77,25 +73,73 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = async (event: CustomEvent) => {
+        updateShowTab2();
         await Promise.all([
             getQuestions(),
-            updateShowTab2(),
             new Promise(resolve => setTimeout(resolve, 500))
         ]);
         event.detail.complete();
     };
 
-    const isConnected = useWebSocketConnection('/topic/rounds', getQuestions);
+    useWebSocketConnection('/topic/rounds', getQuestions);
 
+    const renderQuestion = (question: QuestionReturnDTO) => {
+        const toggleQuestionAccordion = () => toggleAccordion(question.id.toString());
+
+        switch (question.questionType) {
+            case QuestionType.MULTIPLE_CHOICE:
+                return (
+                    <MultipleChoiceCard
+                        key={question.id}
+                        multipleChoiceQuestion={question}
+                        toggleAccordion={toggleQuestionAccordion}
+                    />
+                );
+            case QuestionType.CHECKBOX:
+                return (
+                    <CheckBoxCard
+                        key={question.id}
+                        checkBoxQuestion={question}
+                        toggleAccordion={toggleQuestionAccordion}
+                    />
+                );
+            case QuestionType.FREE_TEXT:
+                return (
+                    <FreeTextCard
+                        key={question.id}
+                        freeTextQuestion={question}
+                        toggleAccordion={toggleQuestionAccordion}
+                    />
+                );
+            case QuestionType.TEAM:
+                return (
+                    <TeamCard
+                        key={question.id}
+                        teamQuestion={question}
+                        toggleAccordion={toggleQuestionAccordion}
+                    />
+                );
+            case QuestionType.TEAM_ONE_FREE_TEXT:
+                return (
+                    <TeamOneFreeTextCard
+                        key={question.id}
+                        teamOneFreeTextQuestion={question}
+                        toggleAccordion={toggleQuestionAccordion}
+                    />
+                );
+            default:
+                return <p key={question.id}> Fehler </p>;
+        }
+    };
 
     useEffect(() => {
 
+        updateShowTab2();
         Promise.all([
             getQuestions(),
-            updateShowTab2(),
             PublicSettingsService.getTournamentOpen()
         ])
-            .then(([_, __, tournamentOpen]) => {
+            .then(([, tournamentOpen]) => {
                 if (!tournamentOpen) {
                     navigate('/admin');
                 }
@@ -120,43 +164,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </h1>
                 {currentQuestions.length > 0 ? (
                     <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
-                        {currentQuestions.map((question) => (
-                            (question.questionType === QuestionType.MULTIPLE_CHOICE) ? (
-                                <MultipleChoiceCard
-                                    key={question.id}
-                                    multipleChoiceQuestion={question}
-                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
-                                />
-                            ) : (question.questionType === QuestionType.CHECKBOX) ? (
-                                <CheckBoxCard
-                                    key={question.id}
-                                    checkBoxQuestion={question}
-                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
-                                />
-                            ) : (question.questionType === QuestionType.FREE_TEXT) ? (
-                                <FreeTextCard
-                                    key={question.id}
-                                    freeTextQuestion={question}
-                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
-                                />
-                            ) : (question.questionType === QuestionType.TEAM) ? (
-                                <TeamCard
-                                    key={question.id}
-                                    teamQuestion={question}
-                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
-                                />
-                            ) : (question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) ? (
-                                <TeamOneFreeTextCard
-                                    key={question.id}
-                                    teamOneFreeTextQuestion={question}
-                                    toggleAccordion={() => toggleAccordion(question.id.toString())}
-                                />
-                            ) :
-                                (
-                                    <p key={question.id}> Fehler </p>
-                                )
-                        ))
-                        }
+                        {currentQuestions.map(renderQuestion)}
                     </IonAccordionGroup>
                 ) : (
                     <p>Gerade finden keine Abstimmungen statt.</p>

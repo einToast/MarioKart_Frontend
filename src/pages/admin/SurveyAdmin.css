@@ -24,7 +24,7 @@ h4 {
 }
 
 ul li {
-    font-family: Poppins;
+    font-family: Poppins, sans-serif;
     font-weight: normal;
 }
 
@@ -79,8 +79,6 @@ form {
         display: flex;
         margin-top: 10px;
         align-items: center;
-        /*justify-content: space-between; !* Ensures space between elements *!*/
-        margin-top: 10px;
         margin-left: 0;
         padding-left: 10px;
 
@@ -209,7 +207,7 @@ ion-modal {
     }
 
     select {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         font-size: 14px;
         background-color: #2F315B;
         border: none;

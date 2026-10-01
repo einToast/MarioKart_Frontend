@@ -14,7 +14,7 @@ export const createQuestion = async (
     } else if (options.length < 2 && questionType !== QuestionType.FREE_TEXT &&
         questionType !== QuestionType.TEAM && questionType !== QuestionType.TEAM_ONE_FREE_TEXT) {
         throw new Error('Es müssen mindestens 2 Optionen angegeben werden');
-    } else if (options.some(option => option === '') && questionType !== QuestionType.FREE_TEXT &&
+    } else if (options.includes('') && questionType !== QuestionType.FREE_TEXT &&
         questionType !== QuestionType.TEAM && questionType !== QuestionType.TEAM_ONE_FREE_TEXT) {
         throw new Error('Alle Optionen müssen ausgefüllt sein');
     }

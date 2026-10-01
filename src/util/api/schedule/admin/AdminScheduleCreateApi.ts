@@ -13,7 +13,7 @@ export const createSchedule = async (scheduleInput: ScheduleInputDTO): Promise<R
             if (error.response?.status === 409) {
                 throw new Error('Spielplan existiert bereits');
             } else if (error.response?.status === 404) {
-                throw new Error('Nicht genügend Teams vorhanden');
+                throw new Error('Nicht genügend Teams vorhanden (mindestens Spielfelder x Teams pro Spiel)');
             } else if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 400) {

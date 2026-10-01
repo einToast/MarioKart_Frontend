@@ -286,15 +286,13 @@ describe('RegisterTeam', () => {
         await expectErrorToast('Einstellungen nicht gefunden');
     });
 
-    it.each([
-        ['click', (link: HTMLElement) => fireEvent.click(link)],
-        ['Enter key', (link: HTMLElement) => fireEvent.keyDown(link, { key: 'Enter' })],
-        ['space key', (link: HTMLElement) => fireEvent.keyDown(link, { key: ' ' })],
-    ])('links to the team login (%s)', async (_name, activate) => {
+    it('links to the team login', async () => {
         renderPage();
         await waitForCharacters();
+        const link = screen.getByRole('link', { name: 'registriertem Team beitreten' });
 
-        activate(screen.getByText('registriertem Team beitreten'));
+        expect(link).toHaveAttribute('href', '/login');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/login');
     });

@@ -1,8 +1,8 @@
-import { IonContent, IonIcon, IonPage } from "@ionic/react";
-import { arrowBackOutline } from 'ionicons/icons';
+import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import BackLink from "../../components/admin/BackLink";
 import FinalGraph from "../../components/graph/FinalGraph";
 import GroupGraph from "../../components/graph/GroupGraph";
 import Toast from "../../components/Toast";
@@ -18,7 +18,6 @@ const Results: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     useEffect(() => {
@@ -43,24 +42,16 @@ const Results: React.FC = () => {
                 });
         };
 
-        loadResults();
+        loadResults().catch(error => {
+            setError(error.message);
+            setShowToast(true);
+        });
     }, [location]);
 
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/dashboard');
-                        }
-                    }}
-
-                >
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         {isFinalSchedule ? 'Endergebnis' : 'Zwischenergebnis'}

@@ -1,6 +1,5 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { NotificationSubscriptionDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'NOTIFICATION');
 

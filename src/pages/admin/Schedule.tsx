@@ -1,8 +1,9 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
-import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import BackLink from "../../components/admin/BackLink";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
@@ -46,7 +47,11 @@ const Schedule: React.FC = () => {
             });
         };
 
-        loadTeams();
+        loadTeams().catch(error => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
+        });
     }, [modalClosed, location]);
 
     const handleScheduleCreation = () => {
@@ -75,7 +80,7 @@ const Schedule: React.FC = () => {
     };
 
     const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedVersion = parseInt(event.target.value);
+        const selectedVersion = Number.parseInt(event.target.value);
         setVersion(selectedVersion);
         if (selectedVersion === 1) {
             setSwitchCount(4);
@@ -87,17 +92,7 @@ const Schedule: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/dashboard');
-                        }
-                    }}
-                >
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Spielplan erstellen

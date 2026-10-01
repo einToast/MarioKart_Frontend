@@ -54,7 +54,7 @@ describe('AdminScheduleApi', () => {
         response: [makeRound()],
         errors: {
             409: 'Spielplan existiert bereits',
-            404: 'Nicht genügend Teams vorhanden',
+            404: 'Nicht genügend Teams vorhanden (mindestens Spielfelder x Teams pro Spiel)',
             401: 'Nicht autorisierter Zugriff',
             400: 'Ungültige Parameter für die Spielplanerstellung',
             500: 'Benachrichtigung konnte nicht gesendet werden',

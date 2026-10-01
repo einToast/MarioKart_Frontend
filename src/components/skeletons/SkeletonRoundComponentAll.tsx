@@ -5,9 +5,9 @@ import SkeletonTeamComponent from './SkeletonTeamComponent';
 const SkeletonRoundComponentAll: React.FC<SkeletonRoundComponentAllProps> = ({ rows = 4, isSwiper = false }) => {
   return (
     <div className="roundContainer">
-      {Array.from({ length: rows }).map((_, idx) => (
+      {Array.from({ length: rows }, (_, idx) => `skeleton-${idx}`).map((rowKey) => (
         <SkeletonTeamComponent
-          key={idx}
+          key={rowKey}
           isSwiper={isSwiper}
           switchColor={'weiß'}
         />

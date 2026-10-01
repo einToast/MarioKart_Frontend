@@ -8,6 +8,8 @@ import {
   TeamReturnDTO,
 } from "./dto";
 
+export type RoundOrBreak = RoundReturnDTO | BreakReturnDTO | null;
+
 export interface User {
   character: string | null;
   teamId: number;
@@ -57,8 +59,8 @@ export interface RoundHeaderProps {
 }
 
 export interface UseRoundDataReturn {
-  currentRound: RoundReturnDTO | BreakReturnDTO | null;
-  nextRound: RoundReturnDTO | BreakReturnDTO | null;
+  currentRound: RoundOrBreak;
+  nextRound: RoundOrBreak;
   teamsNotInCurrentRound: TeamReturnDTO[];
   teamsNotInNextRound: TeamReturnDTO[];
   error: string;
@@ -73,7 +75,7 @@ export interface GameListProps {
 }
 
 export interface RoundDisplayProps {
-  round: RoundReturnDTO | BreakReturnDTO | null;
+  round: RoundOrBreak;
   title: string;
   user: User | null;
   viewType: "all" | "personal";

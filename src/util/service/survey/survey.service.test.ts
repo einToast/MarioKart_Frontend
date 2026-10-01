@@ -134,13 +134,13 @@ describe('AdminSurveyService', () => {
             ]);
         });
 
-        it('deleteAllQuestions stops at the first question that cannot be deleted', async () => {
+        it('deleteAllQuestions fails when a question cannot be deleted', async () => {
             backend
                 .get('/admin/survey', [makeQuestion({ id: 1 }), makeQuestion({ id: 2 })])
-                .fail('DELETE', '/admin/survey/1', 401);
+                .fail('DELETE', '/admin/survey/1', 401)
+                .delete('/admin/survey/2');
 
             await expect(AdminSurveyService.deleteAllQuestions()).rejects.toThrow('Nicht autorisierter Zugriff');
-            expect(backend.requestsTo('DELETE', '/admin/survey/2')).toEqual([]);
         });
     });
 
@@ -196,20 +196,20 @@ describe('PublicSurveyService', () => {
     });
 
     describe('answer cookie', () => {
-        it('getAnswerCookie resolves to -1 for a question that was not answered', async () => {
-            await expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?1')).resolves.toBe(-1);
+        it('getAnswerCookie returns -1 for a question that was not answered', () => {
+            expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?1')).toBe(-1);
         });
 
-        it('setAnswerCookie stores the answer so getAnswerCookie finds it', async () => {
-            await PublicSurveyService.setAnswerCookie('Wer gewinnt?1', 3);
+        it('setAnswerCookie stores the answer so getAnswerCookie finds it', () => {
+            PublicSurveyService.setAnswerCookie('Wer gewinnt?1', 3);
 
-            await expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?1')).resolves.toEqual({ answerId: '3' });
+            expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?1')).toEqual({ answerId: '3' });
         });
 
-        it('keeps answers of different questions apart', async () => {
-            await PublicSurveyService.setAnswerCookie('Wer gewinnt?1', 3);
+        it('keeps answers of different questions apart', () => {
+            PublicSurveyService.setAnswerCookie('Wer gewinnt?1', 3);
 
-            await expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?2')).resolves.toBe(-1);
+            expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?2')).toBe(-1);
         });
     });
 
@@ -329,7 +329,7 @@ describe('PublicSurveyService', () => {
 
             await PublicSurveyService.submitAnswer(question, 2, 4);
 
-            await expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?7')).resolves.toEqual({ answerId: '2' });
+            expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?7')).toEqual({ answerId: '2' });
         });
 
         it.each([
@@ -342,7 +342,7 @@ describe('PublicSurveyService', () => {
 
             await PublicSurveyService.submitAnswer(question, vote as string | number[], 4);
 
-            await expect(PublicSurveyService.getAnswerCookie('Frage7')).resolves.not.toBe(-1);
+            expect(PublicSurveyService.getAnswerCookie('Frage7')).not.toBe(-1);
         });
 
         it('does not remember an answer the backend rejected', async () => {

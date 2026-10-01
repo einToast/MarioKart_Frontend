@@ -84,14 +84,12 @@ describe('admin Login', () => {
         await expectErrorToast('Login fehlgeschlagen');
     });
 
-    it.each([
-        ['click', (link: HTMLElement) => fireEvent.click(link)],
-        ['Enter key', (link: HTMLElement) => fireEvent.keyDown(link, { key: 'Enter' })],
-        ['space key', (link: HTMLElement) => fireEvent.keyDown(link, { key: ' ' })],
-    ])('links back to the team login (%s)', (_name, activate) => {
+    it('links back to the team login', () => {
         renderPage();
+        const link = screen.getByRole('link', { name: 'Zurück zum Team Login' });
 
-        activate(screen.getByText('Zurück zum Team Login'));
+        expect(link).toHaveAttribute('href', '/login');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/login');
     });
@@ -190,14 +188,13 @@ describe('admin Dashboard', () => {
         expect(queryToast()).not.toBeInTheDocument();
     });
 
-    it.each([
-        ['click', (link: HTMLElement) => fireEvent.click(link)],
-        ['Enter key', (link: HTMLElement) => fireEvent.keyDown(link, { key: 'Enter' })],
-    ])('links back to the team login (%s)', async (_name, activate) => {
+    it('links back to the team login', async () => {
         renderPage();
         await waitForDashboard();
+        const link = screen.getByRole('link', { name: 'Zurück zum Team Login' });
 
-        activate(screen.getByText('Zurück zum Team Login'));
+        expect(link).toHaveAttribute('href', '/login');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/login');
     });

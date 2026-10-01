@@ -17,11 +17,11 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
-    const getVote = async () => {
-        const voted = await PublicSurveyService.getAnswerCookie(teamQuestion.questionText + teamQuestion.id);
+    const getVote = () => {
+        const voted = PublicSurveyService.getAnswerCookie(teamQuestion.questionText + teamQuestion.id);
 
         if (voted !== -1) {
-            setVotedId(parseInt(voted.answerId));
+            setVotedId(Number.parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
         } else {
             handleVoteStatus(-1);
@@ -56,11 +56,14 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
         }
     }
 
-    const showResults = async () => {
+    const showResults = () => {
         if (!teamQuestion.active) {
-            const results = await PublicSurveyService.getStatisticsOfQuestion(teamQuestion.id);
-
-            setResults(results);
+            PublicSurveyService.getStatisticsOfQuestion(teamQuestion.id)
+                .then(setResults)
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
         }
     }
 
@@ -102,7 +105,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
                                             }
                                         }
                                     }}
-                                    key={index}
+                                    key={option}
                                     disabled={!(vote == index || votedId == index) && votedId !== -1}
                                     style={{
                                         pointerEvents: (votedId !== -1 || !teamQuestion.active) ? 'none' : 'auto',
@@ -126,7 +129,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
                     <IonButton
                         className={"button"}
                         onClick={() => handleSaveVote()}
-                        disabled={!(votedId === -1) || !teamQuestion.active || vote === -1}
+                        disabled={votedId !== -1 || !teamQuestion.active || vote === -1}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 handleSaveVote();

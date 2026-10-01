@@ -59,14 +59,12 @@ describe('Tab3 (details)', () => {
         expect(screen.getByRole('link', { name: 'Source Code' })).toHaveAttribute('href', 'https://github.com/einToast/MarioKart_Tournament');
     });
 
-    it.each([
-        ['click', (link: HTMLElement) => fireEvent.click(link)],
-        ['Enter key', (link: HTMLElement) => fireEvent.keyDown(link, { key: 'Enter' })],
-        ['space key', (link: HTMLElement) => fireEvent.keyDown(link, { key: ' ' })],
-    ])('links to the admin login (%s)', (_name, activate) => {
+    it('links to the admin login', () => {
         renderPage();
+        const link = screen.getByRole('link', { name: 'Admin Login' });
 
-        activate(screen.getByText('Admin Login'));
+        expect(link).toHaveAttribute('href', '/admin/login');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/admin/login');
     });

@@ -9,6 +9,7 @@ import {
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import Toast from "../components/Toast";
 import characters from "../util/api/config/characters";
@@ -75,12 +76,12 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     };
 
     useEffect(() => {
+        getCharacterNames();
         Promise.all([
             PublicSettingsService.getRegistrationOpen(),
-            PublicSettingsService.getTournamentOpen(),
-            getCharacterNames()
+            PublicSettingsService.getTournamentOpen()
         ])
-            .then(([registrationOpen, tournamentOpen, _]) => {
+            .then(([registrationOpen, tournamentOpen]) => {
                 if (!registrationOpen) {
                     navigate('/login');
                 }
@@ -115,7 +116,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                 <option value="" disabled hidden={true}>
                                     Wähle deinen Charakter
                                 </option>
-                                {updatedCharacterNames && updatedCharacterNames.map((character) => (
+                                {updatedCharacterNames?.map((character) => (
                                     <option
                                         key={character}
                                         value={character}
@@ -159,17 +160,9 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => navigate("/login")}
-                        style={{ cursor: "pointer", textDecoration: "underline" }}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                navigate('/login');
-                            }
-                        }}
-                    >
+                    <Link to="/login" style={{ textDecoration: "underline" }}>
                         registriertem Team beitreten
-                    </a>
+                    </Link>
                 </div>
             </IonContent>
             <Toast

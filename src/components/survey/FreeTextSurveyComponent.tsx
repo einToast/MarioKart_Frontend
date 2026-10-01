@@ -8,7 +8,7 @@ import { User } from "../../util/api/config/interfaces";
 import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
 
-const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion: freeTextQuestion, toggleAccordion }) => {
+const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion, toggleAccordion }) => {
     const [text, setText] = useState<string>('');
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());

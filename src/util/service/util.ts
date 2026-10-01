@@ -13,6 +13,14 @@ export const convertUmlauts = (text: string): string => {
     return text.split('').map(char => umlautMap[char] || char).join('');
 }
 
+export const loadImage = (src: string): Promise<HTMLImageElement> => {
+    return new Promise<HTMLImageElement>((resolve) => {
+        const img = new Image();
+        img.src = src;
+        img.onload = () => resolve(img);
+    });
+}
+
 export enum QuestionType {
     MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
     FREE_TEXT = "FREE_TEXT",

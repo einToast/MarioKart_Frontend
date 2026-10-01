@@ -1,8 +1,9 @@
 import { IonAccordionGroup, IonButton, IonCheckbox, IonContent, IonIcon, IonPage } from "@ionic/react";
-import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import BackLink from "../../components/admin/BackLink";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
 import { RoundReturnDTO } from "../../util/api/config/dto";
@@ -14,23 +15,27 @@ const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); // Alle Runden speichern
-    const [numberOfRounds, setNumberOfRounds] = useState<number>(0);
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     const getSelectedRound = (id: number) => {
         const round = AdminScheduleService.getRoundById(id);
         round.then((round) => {
-            round.games = round.games?.sort((a, b) => a.id - b.id) || [];
+            round.games ??= [];
+            round.games.sort((a, b) => a.id - b.id);
+            round.games.forEach(game => game.teams.sort((a, b) => a.id - b.id));
             setRound(round);
             setRoundPlayed(round.played);
             setOpenAccordions([]); // Close all accordions initially
+        }).catch((error) => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
         });
     };
 
@@ -65,10 +70,12 @@ const Points: React.FC = () => {
 
             const roundsPromise = AdminScheduleService.getRounds();
             roundsPromise.then((rounds) => {
-                rounds = rounds.sort((a, b) => a.roundNumber - b.roundNumber);
+                rounds.sort((a, b) => a.roundNumber - b.roundNumber);
                 setRounds(rounds);
-                getSelectedRound(rounds.find(round => !round.played)?.id || rounds[rounds.length - 1].id);
-                setNumberOfRounds(rounds.length);
+                const selectedRound = rounds.find(round => !round.played) ?? rounds.at(-1);
+                if (selectedRound) {
+                    getSelectedRound(selectedRound.id);
+                }
             }).catch((error) => {
                 setError(error.message);
                 setIsError(true);
@@ -76,7 +83,11 @@ const Points: React.FC = () => {
             });
         };
 
-        loadRounds();
+        loadRounds().catch(error => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
+        });
     }, [location]);
 
     const toggleAccordion = (accordionId: string) => {
@@ -90,17 +101,7 @@ const Points: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/dashboard');
-                        }
-                    }}
-                >
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <div className={"flexStart"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
@@ -112,7 +113,7 @@ const Points: React.FC = () => {
                             name="round"
                             id="round"
                             value={round.roundNumber}
-                            onChange={(e) => getSelectedRound(parseInt(e.target.value))}
+                            onChange={(e) => getSelectedRound(Number.parseInt(e.target.value))}
                         >
                             {(() => {
                                 let finalCount = 0;
@@ -135,7 +136,6 @@ const Points: React.FC = () => {
                         </div>
                         <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
                             {round.games.map((game) => (
-                                game.teams = game.teams.sort((a, b) => a.id - b.id) || [],
                                 <PointsComponent
                                     key={game.id}
                                     game={game}
