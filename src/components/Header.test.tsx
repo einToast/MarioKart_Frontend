@@ -115,20 +115,11 @@ describe('Header', () => {
             expect(currentPath()).toBe('/survey');
         });
 
-        it.each(['Enter', ' '])('opens the surveys with the "%s" key', (key) => {
+        // A real link is keyboard accessible without a key handler of its own
+        it('is a link to the surveys', () => {
             renderWithRouter(<Header />, { route: '/tab1' });
 
-            fireEvent.keyDown(screen.getByTitle('Umfragen'), { key });
-
-            expect(currentPath()).toBe('/survey');
-        });
-
-        it('ignores other keys', () => {
-            renderWithRouter(<Header />, { route: '/tab1' });
-
-            fireEvent.keyDown(screen.getByTitle('Umfragen'), { key: 'Tab' });
-
-            expect(currentPath()).toBe('/tab1');
+            expect(screen.getByRole('link', { name: 'Umfragen' })).toHaveAttribute('href', '/survey');
         });
     });
 });

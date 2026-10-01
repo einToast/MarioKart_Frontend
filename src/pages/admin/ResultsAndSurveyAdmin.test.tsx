@@ -57,14 +57,13 @@ describe('admin Results', () => {
         await expectErrorToast('Team konnte nicht abgerufen werden');
     });
 
-    it.each([
-        ['click', (element: HTMLElement) => fireEvent.click(element)],
-        ['Enter key', (element: HTMLElement) => fireEvent.keyDown(element, { key: 'Enter' })],
-    ])('returns to the dashboard (%s)', async (_name, activate) => {
+    it('returns to the dashboard', async () => {
         renderPage();
         await waitFor(() => expect(lastBarProps().data.datasets[0].data).toEqual([55, 48, 40]));
+        const link = screen.getByRole('link', { name: 'Zurück' });
 
-        activate(screen.getByText('Zurück'));
+        expect(link).toHaveAttribute('href', '/admin/dashboard');
+        fireEvent.click(link);
 
         expect(currentPath()).toBe('/admin/dashboard');
     });
