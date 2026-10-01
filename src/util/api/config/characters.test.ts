@@ -1,6 +1,6 @@
 import characters from './characters';
 
-// Vite resolves the glob at transform time; only the file names are needed here.
+// Vite resolves the glob at transform time; only the file names are needed here
 const avatarFiles = Object.keys(import.meta.glob('/public/characters/*.png'));
 
 describe('characters', () => {

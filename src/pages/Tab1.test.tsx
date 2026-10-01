@@ -11,7 +11,7 @@ const CURRENT_ROUNDS_URL = '/public/schedule/rounds/current';
 
 const team = (id: number, name: string) => makeTeam({ id, teamName: `Team ${name}`, character: { id, characterName: name } });
 
-/** Round 5: Mario vs Luigi (red) and Peach vs Toad (blue). Round 6: Mario vs Peach (green). */
+// Round 5: Mario vs Luigi (red) and Peach vs Toad (blue). Round 6: Mario vs Peach (green)
 const stubTwoRounds = () => {
     backend
         .get(CURRENT_ROUNDS_URL, [

@@ -17,7 +17,7 @@ const HIDDEN = '#6351F9';
 const team = (id: number, name: string, groupPoints: number, finalPoints = 0): TeamReturnDTO =>
     makeTeam({ id, teamName: `Team ${name}`, character: { id, characterName: name }, groupPoints, finalPoints });
 
-/** jsdom never loads images; this stand-in reports every image as loaded right away. */
+// jsdom never loads images; this stand-in reports every image as loaded right away
 class LoadedImage {
     onload: (() => void) | null = null;
     private source = '';
@@ -48,9 +48,9 @@ const pressTimes = (times: number) => {
     }
 };
 
-/** File names of the images drawn onto the canvas, in drawing order. */
+// File names of the images drawn onto the canvas, in drawing order
 const drawnImages = () => chartContext.drawImage.mock.calls.map(call => (call[0] as LoadedImage).src.split('/').pop());
-/** [text, x, y] of everything written onto the canvas, in drawing order. */
+// [text, x, y] of everything written onto the canvas, in drawing order
 const writtenTexts = () => chartContext.fillText.mock.calls;
 
 const waitForImages = async () => {
@@ -164,7 +164,7 @@ describe('StaticTeamGraph', () => {
 });
 
 describe('GroupGraph', () => {
-    /** Mario and Toad share the last place. */
+    // Mario and Toad share the last place
     const teams = () => [team(1, 'Mario', 10), team(2, 'Luigi', 30), team(3, 'Peach', 20), team(4, 'Toad', 10)];
 
     it('starts with the scores visible but the teams hidden behind their places', () => {
@@ -275,7 +275,7 @@ describe('GroupGraph', () => {
 describe('FinalGraph', () => {
     const teams = () => [team(1, 'Mario', 0, 10), team(2, 'Luigi', 0, 30), team(3, 'Peach', 0, 20), team(4, 'Toad', 0, 5)];
 
-    /** Makes the Fisher-Yates shuffle leave the order untouched: bars appear best team first. */
+    // Makes the Fisher-Yates shuffle leave the order untouched: bars appear best team first
     const keepOrder = () => vi.spyOn(Math, 'random').mockReturnValue(0.999);
 
     it('starts with empty bars in the neutral colour', () => {

@@ -6,7 +6,7 @@ import { loginAsTeam } from './test/render';
 
 vi.mock('qrcode.react', () => ({ QRCodeCanvas: () => <canvas data-testid="qr-code" /> }));
 
-/** App uses the browser history, so a test chooses its start page through the address bar. */
+// App uses the browser history, so a test chooses its start page through the address bar
 const renderAppAt = (path: string) => {
     window.history.pushState({}, '', path);
     return render(<App />);
@@ -135,7 +135,7 @@ describe('App', () => {
         it('opens the dashboard for an admin with a session', async () => {
             renderAppAt('/admin');
 
-            // The first admin route also has to load the lazily imported admin bundle.
+            // The first admin route also has to load the lazily imported admin bundle
             expect(await screen.findByRole('heading', { name: 'Dashboard' }, { timeout: 5000 })).toBeInTheDocument();
             expect(path()).toBe('/admin/dashboard');
         });

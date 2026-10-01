@@ -6,7 +6,7 @@ import { QuestionType } from '../../util/service/util';
 import SurveyAdminListItem from './SurveyAdminListItem';
 import TeamAdminListItem from './TeamAdminListItem';
 
-/** The edit icon has no title, so it is looked up through the icon it displays. */
+// The edit icon has no title, so it is looked up through the icon it displays
 const editIcon = (container: HTMLElement) =>
     Array.from(container.querySelectorAll<HTMLIonIconElement>('ion-icon')).find(icon => icon.icon === createOutline) as HTMLElement;
 

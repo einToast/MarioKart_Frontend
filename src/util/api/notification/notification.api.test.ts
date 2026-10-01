@@ -11,7 +11,7 @@ const subscription: NotificationSubscriptionDTO = {
 };
 
 // The notification endpoints reuse the final-schedule wording as their generic error message.
-// These tests pin the current behaviour; a clearer message would have to be updated here too.
+// These tests pin the current behaviour; a clearer message would have to be updated here too
 const NOTIFICATION_FALLBACK = 'Finalrunden konnten nicht erstellt werden';
 
 describe('PublicNotificationApi', () => {

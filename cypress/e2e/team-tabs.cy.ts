@@ -53,7 +53,7 @@ describe('team tabs', () => {
     cy.get('ion-tab-button[tab="tab2"]').click();
     cy.location('pathname').should('eq', '/tab2');
     cy.contains('h1', 'Rangliste');
-    // Ionic keeps the schedule page in the DOM, so the ranking rows are addressed explicitly.
+    // Ionic keeps the schedule page in the DOM, so the ranking rows are addressed explicitly
     cy.contains('.flexContainer > .teamContainer', 'Team Luigi').should('contain', '1. Platz').and('contain', '4/8 Spiele');
     cy.contains('.flexContainer > .teamContainer.userTeam', 'Team Mario').should('contain', '2. Platz');
 

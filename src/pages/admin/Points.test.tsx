@@ -12,7 +12,7 @@ const SAVE = 'Punkte speichern';
 
 const renderPage = () => renderWithRouter(<Points />, { route: '/admin/points' });
 
-/** A round with a blue (id 2) and a red (id 1) game, deliberately listed out of order. */
+// A round with a blue (id 2) and a red (id 1) game, deliberately listed out of order
 const roundWithGames = (overrides: Partial<RoundReturnDTO>): RoundReturnDTO => {
     const teams = makeTeams();
     return makeRound({
@@ -24,10 +24,8 @@ const roundWithGames = (overrides: Partial<RoundReturnDTO>): RoundReturnDTO => {
     });
 };
 
-/**
- * Round ids equal round numbers in these fixtures: the page currently looks a selected round up
- * by its number (see the todo at the end of this file).
- */
+// Round ids equal round numbers in these fixtures: the page currently looks a selected round up
+// by its number (see the todo at the end of this file)
 const stubRounds = () => {
     const rounds = [
         roundWithGames({ id: 3, roundNumber: 3, finalGame: true, played: false, startTime: '2025-01-08T20:00:00', endTime: '2025-01-08T20:20:00' }),

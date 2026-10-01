@@ -13,13 +13,13 @@ const toad = () => team(4, 'Toad');
 const yoshi = () => team(5, 'Yoshi');
 const wario = () => team(6, 'Wario');
 
-/** Two games: Mario and Luigi play on the red switch, Peach and Toad on the blue one. */
+// Two games: Mario and Luigi play on the red switch, Peach and Toad on the blue one
 const twoGames = (): GameReturnDTO[] => [
     makeGame({ id: 1, switchGame: 'Rot', teams: [mario(), luigi()] }),
     makeGame({ id: 2, switchGame: 'Blau', teams: [peach(), toad()] }),
 ];
 
-/** Every block of the list (one per game or pause group) with the text it shows, in order. */
+// Every block of the list (one per game or pause group) with the text it shows, in order
 const blocks = (container: HTMLElement) =>
     Array.from(container.querySelectorAll<HTMLElement>('.roundContainer')).map(block => block.textContent);
 

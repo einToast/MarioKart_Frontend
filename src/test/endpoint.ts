@@ -2,29 +2,27 @@ import { describe, expect, it } from 'vitest';
 import { backend, Method } from './backend';
 
 interface EndpointSpec {
-    /** Invokes the API function under test. */
+    // Invokes the API function under test
     call: () => Promise<unknown>;
     method: Method;
     url: string;
-    /** Expected request body; omit for requests without one. */
+    // Expected request body; omit for requests without one
     body?: unknown;
-    /** Payload the backend answers with; the function is expected to return it unchanged. */
+    // Payload the backend answers with; the function is expected to return it unchanged
     response?: unknown;
-    /** Set for functions that resolve to void regardless of the payload. */
+    // Set for functions that resolve to void regardless of the payload
     returnsVoid?: boolean;
-    /** HTTP status -> German message the function must throw for it. */
+    // HTTP status -> German message the function must throw for it
     errors?: Record<number, string>;
-    /** Message for every other HTTP error, including a request that got no response at all. */
+    // Message for every other HTTP error, including a request that got no response at all
     fallback: string;
 }
 
-/** A status no endpoint maps explicitly, used to exercise the fallback branch. */
+// A status no endpoint maps explicitly, used to exercise the fallback branch
 const UNMAPPED_STATUS = 418;
 
-/**
- * Generates the contract tests shared by every function in `util/api`: the request it sends,
- * the value it returns, and how it translates HTTP failures into user-facing messages.
- */
+// Generates the contract tests shared by every function in `util/api`: the request it sends,
+// the value it returns, and how it translates HTTP failures into user-facing messages
 export const describeEndpoint = (name: string, spec: EndpointSpec): void => {
     describe(name, () => {
         it(`sends ${spec.method} ${spec.url}`, async () => {

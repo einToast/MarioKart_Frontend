@@ -17,7 +17,7 @@ const renderPage = () => {
     return { ...view, setShowTab2 };
 };
 
-/** The question texts in the order the page lists them. */
+// The question texts in the order the page lists them
 const questionTitles = () => screen.queryAllByRole('heading', { level: 3 }).map(heading => heading.textContent);
 
 describe('Survey', () => {

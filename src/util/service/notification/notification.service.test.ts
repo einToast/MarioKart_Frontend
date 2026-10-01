@@ -15,7 +15,7 @@ const makeSubscription = (keys: Record<string, ArrayBuffer | null> = { p256dh: b
 const makeRegistration = (subscribe: ReturnType<typeof vi.fn>) =>
     ({ pushManager: { subscribe } }) as unknown as ServiceWorkerRegistration;
 
-/** The converted VAPID key is cached in a private static; clear it so tests stay independent. */
+// The converted VAPID key is cached in a private static; clear it so tests stay independent
 const clearCachedPublicKey = () => {
     (NotificationService as unknown as { convertedVapidKey?: Uint8Array }).convertedVapidKey = undefined;
 };

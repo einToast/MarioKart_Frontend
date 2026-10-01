@@ -129,7 +129,7 @@ describe('TeamDeleteModal', () => {
         return { ...view, closeModal };
     };
 
-    /** "Team löschen" is both the title and the button label; this is the button. */
+    // "Team löschen" is both the title and the button label; this is the button
     const deleteButton = () => screen.getByText(DELETE, { selector: 'p' });
 
     it('stays hidden while closed', () => {

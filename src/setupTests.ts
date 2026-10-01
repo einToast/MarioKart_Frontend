@@ -9,12 +9,12 @@ import { resetCharts } from './test/charts';
 import { resetStomp } from './test/stomp';
 import apiClient from './util/api/config/apiClient';
 
-// The WebSocket layer would otherwise open a real SockJS connection as soon as it is imported.
+// The WebSocket layer would otherwise open a real SockJS connection as soon as it is imported
 vi.mock('@stomp/stompjs', async () => await import('./test/stomp'));
 vi.mock('sockjs-client', () => ({ default: vi.fn() }));
 
 // The two overlays are the only Ionic components that are replaced, see test/overlays.tsx for
-// the reasons. Everything else is the real Ionic component.
+// the reasons. Everything else is the real Ionic component
 vi.mock('@ionic/react', async (importOriginal) => {
     const { FakeIonModal, FakeIonToast } = await import('./test/overlays');
     return {
@@ -24,10 +24,10 @@ vi.mock('@ionic/react', async (importOriginal) => {
     };
 });
 
-// chart.js needs a real canvas; the graphs are tested through the props they pass to <Bar>.
+// chart.js needs a real canvas; the graphs are tested through the props they pass to <Bar>
 vi.mock('react-chartjs-2', async () => await import('./test/charts'));
 
-// Every request the app makes goes to the in-memory backend in test/backend.ts.
+// Every request the app makes goes to the in-memory backend in test/backend.ts
 apiClient.defaults.adapter = backend.adapter;
 
 // Mock matchmedia
@@ -59,6 +59,6 @@ afterEach(() => {
   resetCharts();
   vi.useRealTimers();
 
-  // A request without a stubbed route means the test does not control what the app sees.
+  // A request without a stubbed route means the test does not control what the app sees
   expect(unhandled, 'requests without a fake backend route').toEqual([]);
 });

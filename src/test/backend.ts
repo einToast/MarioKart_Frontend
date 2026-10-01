@@ -32,20 +32,18 @@ const parseBody = (data: unknown): unknown => {
     }
 };
 
-/**
- * In-memory stand-in for the REST backend. It is installed as the axios adapter of `apiClient`
- * (see setupTests.ts), so the real API and service layers run unchanged and produce real
- * AxiosErrors for non-2xx replies.
- *
- * A request without a matching route is rejected and recorded in `unhandled`; setupTests.ts
- * fails the test in that case so that missing stubs cannot go unnoticed.
- */
+// In-memory stand-in for the REST backend. It is installed as the axios adapter of `apiClient`
+// (see setupTests.ts), so the real API and service layers run unchanged and produce real
+// AxiosErrors for non-2xx replies.
+//
+// A request without a matching route is rejected and recorded in `unhandled`; setupTests.ts
+// fails the test in that case so that missing stubs cannot go unnoticed
 class FakeBackend {
     requests: BackendRequest[] = [];
     unhandled: BackendRequest[] = [];
     private routes: Route[] = [];
 
-    /** Registers a route. Routes registered later take precedence over earlier ones. */
+    // Registers a route. Routes registered later take precedence over earlier ones
     on(method: Method, url: string | RegExp, responder: Responder = {}): this {
         this.routes.unshift({ method, url, responder });
         return this;
@@ -71,7 +69,7 @@ class FakeBackend {
         return this.on(method, url, { status, data });
     }
 
-    /** Rejects like a request that never reached the server (AxiosError without a response). */
+    // Rejects like a request that never reached the server (AxiosError without a response)
     networkError(method: Method, url: string | RegExp): this {
         this.routes.unshift({ method, url, responder: 'network-error' });
         return this;
@@ -87,7 +85,7 @@ class FakeBackend {
         this.routes = [];
     }
 
-    adapter: AxiosAdapter = async (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => {
+    adapter: AxiosAdapter = (config: InternalAxiosRequestConfig): Promise<AxiosResponse> => {
         const request: BackendRequest = {
             method: (config.method ?? 'get').toUpperCase() as Method,
             url: config.url ?? '',
@@ -98,15 +96,22 @@ class FakeBackend {
         const route = this.routes.find(candidate => candidate.method === request.method && this.matches(candidate.url, request.url));
         if (!route) {
             this.unhandled.push(request);
-            throw new AxiosError(`No fake backend route for ${request.method} ${request.url}`, AxiosError.ERR_BAD_RESPONSE, config, {}, {
+            return Promise.reject(new AxiosError(`No fake backend route for ${request.method} ${request.url}`, AxiosError.ERR_BAD_RESPONSE, config, {}, {
                 data: undefined, status: 501, statusText: 'Not Implemented', headers: {}, config,
-            });
+            }));
         }
         if (route.responder === 'network-error') {
-            throw new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, {});
+            return Promise.reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, {}));
         }
 
-        const reply = typeof route.responder === 'function' ? route.responder(request) : route.responder;
+        // A responder that throws must reject the request rather than throw out of the adapter
+        let reply: BackendReply;
+        try {
+            reply = typeof route.responder === 'function' ? route.responder(request) : route.responder;
+        } catch (error) {
+            return Promise.reject(error);
+        }
+
         const response: AxiosResponse = {
             data: reply.data,
             status: reply.status ?? 200,
@@ -116,15 +121,15 @@ class FakeBackend {
             request: {},
         };
         if (response.status >= 200 && response.status < 300) {
-            return response;
+            return Promise.resolve(response);
         }
-        throw new AxiosError(
+        return Promise.reject(new AxiosError(
             `Request failed with status code ${response.status}`,
             response.status >= 500 ? AxiosError.ERR_BAD_RESPONSE : AxiosError.ERR_BAD_REQUEST,
             config,
             {},
             response
-        );
+        ));
     };
 
     private matches(pattern: string | RegExp, url: string): boolean {
@@ -134,10 +139,8 @@ class FakeBackend {
 
 export const backend = new FakeBackend();
 
-/**
- * Stubs the read-only endpoints nearly every page calls on mount: an open tournament with a
- * running group phase. Individual tests override single routes afterwards.
- */
+// Stubs the read-only endpoints nearly every page calls on mount: an open tournament with a
+// running group phase. Individual tests override single routes afterwards
 export const stubDefaultBackend = (): void => {
     backend
         .get('/public/settings', { tournamentOpen: true, registrationOpen: true, maxGamesCount: 8, surveyKeyMode: 'DISABLED' })
@@ -148,7 +151,7 @@ export const stubDefaultBackend = (): void => {
         .get('/public/user/login/check', { user: { username: 'admin', isAdmin: true, ID: 1 } });
 };
 
-/** Overrides the three schedule endpoints the pages derive their state from. */
+// Overrides the three schedule endpoints the pages derive their state from
 export const stubScheduleState = (state: { schedule: boolean; finalSchedule: boolean; unplayed: number }): void => {
     backend
         .get('/public/schedule/create/schedule', state.schedule)
@@ -156,7 +159,7 @@ export const stubScheduleState = (state: { schedule: boolean; finalSchedule: boo
         .get('/public/schedule/rounds/unplayed', state.unplayed);
 };
 
-/** Makes the admin session check fail, as it does for a visitor who is not logged in. */
+// Makes the admin session check fail, as it does for a visitor who is not logged in
 export const stubLoggedOutAdmin = (): void => {
     backend.fail('GET', '/public/user/login/check', 401);
 };

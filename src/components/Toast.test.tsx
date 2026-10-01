@@ -34,7 +34,7 @@ describe('Toast', () => {
         const setShowToast = vi.fn();
         render(<Toast message="Fehler" showToast={true} setShowToast={setShowToast} />);
 
-        fireEvent.click(screen.getByRole('alert'));
+        fireEvent.click(screen.getByRole('button', { name: 'Schließen' }));
 
         expect(setShowToast).toHaveBeenCalledWith(false);
     });

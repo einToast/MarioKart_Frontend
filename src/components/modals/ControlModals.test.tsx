@@ -153,7 +153,7 @@ describe('NotificationModal', () => {
         return { ...view, closeModal };
     };
 
-    /** "Benachrichtigung senden" is both the title and the button label; this is the button. */
+    // "Benachrichtigung senden" is both the title and the button label; this is the button
     const sendButton = () => screen.getByText(SEND, { selector: 'p' });
     const titleInput = () => screen.getByPlaceholderText('Titel eingeben');
     const messageInput = () => screen.getByPlaceholderText('Nachricht eingeben');
@@ -260,10 +260,8 @@ describe('NotificationModal', () => {
 });
 
 describe('TournamentModal', () => {
-    /**
-     * Opens the modal the way Control.tsx does: it is mounted closed, loads the settings and is
-     * opened afterwards.
-     */
+    // Opens the modal the way Control.tsx does: it is mounted closed, loads the settings and is
+    // opened afterwards
     const openModal = async (changeType: ChangeType, settings = { tournamentOpen: true, registrationOpen: true }) => {
         backend.get('/public/settings', settings);
         const closeModal = vi.fn();
@@ -274,7 +272,7 @@ describe('TournamentModal', () => {
     };
 
     const title = () => screen.getByRole('heading', { level: 4 });
-    /** The confirm button repeats the title; this is the button. */
+    // The confirm button repeats the title; this is the button
     const confirmButton = (label: string) => screen.getByText(label, { selector: 'p' }).closest('ion-button') as HTMLElement;
     const question = () => screen.getByText(/Willst du wirklich/);
     const IRREVERSIBLE = 'Diese Aktion kann nicht rückgängig gemacht werden.';

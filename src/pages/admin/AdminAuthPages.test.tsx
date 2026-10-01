@@ -100,7 +100,7 @@ describe('admin Login', () => {
 describe('admin Dashboard', () => {
     const renderPage = () => renderWithRouter(<Dashboard />, { route: '/admin/dashboard' });
 
-    /** Resolves once the dashboard has applied the schedule state it loaded. */
+    // Resolves once the dashboard has applied the schedule state it loaded
     const waitForDashboard = () => waitFor(() => expect(backend.requestsTo('GET', '/public/schedule/rounds/unplayed')).toHaveLength(1))
         .then(() => screen.findByText('Teams'));
 

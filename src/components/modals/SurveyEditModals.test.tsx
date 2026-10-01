@@ -12,7 +12,7 @@ import SurveyDeleteModal from './SurveyDeleteModal';
 const questionInput = () => screen.getByPlaceholderText('Frage eingeben');
 const optionInputs = () => screen.queryAllByPlaceholderText(/^Option \d+ eingeben$/) as HTMLInputElement[];
 const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
-/** The modals contain several selects; they are addressed through the label next to them. */
+// The modals contain several selects; they are addressed through the label next to them
 const selectBelow = (label: string) => (screen.getByText(label).parentElement as HTMLElement).querySelector('select') as HTMLSelectElement;
 
 describe('SurveyAddModal', () => {
@@ -390,7 +390,7 @@ describe('SurveyDeleteModal', () => {
         return { ...view, closeModal };
     };
 
-    /** "Umfrage löschen" is both the title and the button label; this is the button. */
+    // "Umfrage löschen" is both the title and the button label; this is the button
     const deleteButton = () => screen.getByText('Umfrage löschen', { selector: 'p' });
 
     it('stays hidden while closed', () => {

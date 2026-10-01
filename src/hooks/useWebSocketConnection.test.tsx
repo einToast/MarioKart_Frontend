@@ -11,7 +11,7 @@ type AppStateListener = (state: { isActive: boolean }) => void;
 const addListener = vi.mocked(CapacitorApp.addListener);
 const removeListener = vi.fn();
 
-/** The appStateChange listener the hook registered with Capacitor. */
+// The appStateChange listener the hook registered with Capacitor
 const appStateListener = (): AppStateListener => addListener.mock.calls[0][1] as unknown as AppStateListener;
 
 const advance = (ms: number) => act(async () => {

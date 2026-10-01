@@ -3,14 +3,12 @@ import { expect, it } from 'vitest';
 import { backend, stubLoggedOutAdmin } from './backend';
 import { stubLocationAssign } from './render';
 
-/**
- * Every admin page checks the session itself instead of relying on a route guard. This adds the
- * test for that check: without a session the page must leave for the admin login and must not
- * request any admin data.
- */
+// Every admin page checks the session itself instead of relying on a route guard. This adds the
+// test for that check: without a session the page must leave for the admin login and must not
+// request any admin data
 export const itRequiresAnAdminSession = (
     renderPage: () => unknown,
-    /** Public endpoints that child components load on mount, independent of the session. */
+    // Public endpoints that child components load on mount, independent of the session
     { unguardedRequests = [] }: { unguardedRequests?: string[] } = {}
 ): void => {
     it('sends visitors without an admin session to the admin login and loads nothing', async () => {

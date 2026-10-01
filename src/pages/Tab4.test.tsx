@@ -62,7 +62,7 @@ describe('Tab4 (how to play)', () => {
     });
 
     // The ranking is hidden exactly while the last group round is running, so that the final
-    // standings stay a surprise until the finals are scheduled.
+    // standings stay a surprise until the finals are scheduled
     it.each([
         ['no schedule exists yet', { schedule: false, finalSchedule: false, unplayed: 0 }, true],
         ['several group rounds are open', { schedule: true, finalSchedule: false, unplayed: 2 }, true],

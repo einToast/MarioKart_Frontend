@@ -32,7 +32,7 @@ describe('admin area', () => {
 
       cy.get('input[name="username"]').type('admin');
       cy.get('input[name="password"]').type('secret');
-      // From here on the session exists.
+      // From here on the session exists
       cy.loginAsAdmin();
       cy.contains('ion-button', 'Admin Bereich betreten').click();
 
@@ -108,7 +108,7 @@ describe('admin area', () => {
       cy.visit('/admin/dashboard');
       cy.contains('ion-button', 'Punkte eintragen');
 
-      // After the logout the backend no longer accepts the session.
+      // After the logout the backend no longer accepts the session
       cy.stubApi('GET', '/public/user/login/check', '', 401);
       cy.contains('ion-button', 'Logout').click();
 

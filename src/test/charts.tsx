@@ -7,7 +7,7 @@ interface BarProps {
     options: ChartOptions<'bar'>;
 }
 
-/** Records what the graphs draw onto the canvas, which jsdom cannot render. */
+// Records what the graphs draw onto the canvas, which jsdom cannot render
 export const chartContext = {
     save: vi.fn(),
     restore: vi.fn(),
@@ -21,7 +21,7 @@ export const chartContext = {
 
 const barRenders: BarProps[] = [];
 
-/** Bars are laid out 100px apart at a fixed height so drawing coordinates are predictable. */
+// Bars are laid out 100px apart at a fixed height so drawing coordinates are predictable
 export const barPosition = (index: number): { x: number; y: number } => ({ x: 100 * (index + 1), y: 200 });
 
 export const fakeChart = {
@@ -33,10 +33,8 @@ export const fakeChart = {
     update: vi.fn(),
 };
 
-/**
- * Replacement for the react-chartjs-2 Bar (wired up in setupTests.ts). It captures the props of
- * every render and hands the component a fake chart instance through its ref.
- */
+// Replacement for the react-chartjs-2 Bar (wired up in setupTests.ts). It captures the props of
+// every render and hands the component a fake chart instance through its ref
 export const Bar = forwardRef<unknown, BarProps>((props, ref) => {
     useImperativeHandle(ref, () => fakeChart);
     barRenders.push(props);
@@ -52,7 +50,7 @@ export const lastBarProps = (): BarProps => {
     return props;
 };
 
-/** Runs the chart's animation-complete hook, which is where the graphs paint icons and scores. */
+// Runs the chart's animation-complete hook, which is where the graphs paint icons and scores
 export const completeChartAnimation = (): void => {
     const animation = lastBarProps().options.animation;
     if (animation && typeof animation.onComplete === 'function') {

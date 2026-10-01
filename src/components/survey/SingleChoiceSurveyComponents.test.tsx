@@ -18,7 +18,7 @@ interface Variant {
     name: string;
     type: QuestionType;
     renderCard: (question: QuestionReturnDTO, toggleAccordion: () => void) => React.ReactElement;
-    /** The answer fields this question type is expected to submit for option index 2. */
+    // The answer fields this question type is expected to submit for option index 2
     submittedSelection: Record<string, number>;
 }
 

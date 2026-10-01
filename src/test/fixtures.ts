@@ -22,7 +22,7 @@ export const makeTeam = (overrides: Partial<TeamReturnDTO> = {}): TeamReturnDTO 
     ...overrides,
 });
 
-/** Four distinct teams with ids 1-4, as they appear in a regular game. */
+// Four distinct teams with ids 1-4, as they appear in a regular game
 export const makeTeams = (): TeamReturnDTO[] => [
     makeTeam({ id: 1, teamName: 'Team Mario', character: { id: 1, characterName: 'Mario' } }),
     makeTeam({ id: 2, teamName: 'Team Luigi', character: { id: 2, characterName: 'Luigi' } }),

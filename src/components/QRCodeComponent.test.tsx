@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import QRCodeComponent from './QRCodeComponent';
 
-// The real QRCodeCanvas paints onto a canvas, which jsdom does not implement.
+// The real QRCodeCanvas paints onto a canvas, which jsdom does not implement
 vi.mock('qrcode.react', () => ({
     QRCodeCanvas: ({ value, size }: { value: string; size: number }) => (
         <canvas data-testid="qr-code" data-value={value} data-size={size} />

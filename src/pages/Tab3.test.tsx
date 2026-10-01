@@ -6,7 +6,7 @@ import { buttonOf, currentPath, loginAsTeam, pullToRefresh, renderWithRouter } f
 import { NotificationService } from '../util/service';
 import Tab3 from './Tab3';
 
-// The real QRCodeCanvas paints onto a canvas, which jsdom does not implement.
+// The real QRCodeCanvas paints onto a canvas, which jsdom does not implement
 vi.mock('qrcode.react', () => ({
     QRCodeCanvas: ({ value }: { value: string }) => <canvas data-testid="qr-code" data-value={value} />,
 }));
@@ -20,7 +20,7 @@ const renderPage = () => {
     return { ...view, setShowTab2 };
 };
 
-/** Makes the browser grant (or refuse) notifications and provide a working push manager. */
+// Makes the browser grant (or refuse) notifications and provide a working push manager
 const stubPushSupport = ({ permission = 'granted', subscribe }: { permission?: string; subscribe?: ReturnType<typeof vi.fn> } = {}) => {
     const subscription = { endpoint: 'https://push.example/abc', getKey: () => new Uint8Array([1, 2, 3]).buffer };
     const pushSubscribe = subscribe ?? vi.fn().mockResolvedValue(subscription);

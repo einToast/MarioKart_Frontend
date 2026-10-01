@@ -12,11 +12,9 @@ interface FakeIonToastProps {
     onDidDismiss?: () => void;
 }
 
-/**
- * Replacement for IonToast (wired up in setupTests.ts). The real toast renders its message into
- * shadow DOM and dismisses itself after `duration`, which makes assertions timing dependent.
- * This one stays visible while `isOpen` is set; clicking it dismisses it.
- */
+// Replacement for IonToast (wired up in setupTests.ts). The real toast renders its message into
+// shadow DOM and dismisses itself after `duration`, which makes assertions timing dependent.
+// This one stays visible while `isOpen` is set; its "Schließen" button dismisses it
 export const FakeIonToast: React.FC<FakeIonToastProps> = ({ isOpen, message, duration, className, style, onDidDismiss }) => {
     if (!isOpen) {
         return null;
@@ -28,9 +26,9 @@ export const FakeIonToast: React.FC<FakeIonToastProps> = ({ isOpen, message, dur
             className={className}
             data-duration={duration}
             data-background={style?.['--toast-background']}
-            onClick={() => onDidDismiss?.()}
         >
             {message}
+            <button type="button" aria-label="Schließen" onClick={() => onDidDismiss?.()} />
         </div>
     );
 };
@@ -41,11 +39,9 @@ interface FakeIonModalProps {
     children?: React.ReactNode;
 }
 
-/**
- * Replacement for IonModal (wired up in setupTests.ts). The real modal moves its content out of
- * the React tree and leaves it in the document after a test unmounts. Like the real one, this
- * renders its children only while open and fires `onDidDismiss` once `isOpen` is withdrawn.
- */
+// Replacement for IonModal (wired up in setupTests.ts). The real modal moves its content out of
+// the React tree and leaves it in the document after a test unmounts. Like the real one, this
+// renders its children only while open and fires `onDidDismiss` once `isOpen` is withdrawn
 export const FakeIonModal: React.FC<FakeIonModalProps> = ({ isOpen, onDidDismiss, children }) => {
     const wasOpen = useRef(false);
 

@@ -11,7 +11,7 @@ describe('WebSocketContext', () => {
     });
 
     it('refuses to be used outside of the provider', () => {
-        // React reports the render error on the console as well.
+        // React reports the render error on the console as well
         vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
         expect(() => renderHook(() => useWebSocket())).toThrow('useWebSocket must be used within a WebSocketProvider');
