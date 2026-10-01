@@ -9,6 +9,7 @@ import {
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
@@ -41,11 +42,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = async (event: CustomEvent) => {
-        await Promise.all([
-            updateShowTab2(),
-            setNotificationEnabled(PublicCookiesService.getNotificationsEnabled()),
-            new Promise(resolve => setTimeout(resolve, 500)),
-        ]);
+        updateShowTab2();
+        setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
+        await new Promise(resolve => setTimeout(resolve, 500));
         event.detail.complete();
     };
 
@@ -60,7 +59,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             if (!response) {
                 navigate('/admin');
             }
-        })
+        }).catch(error => {
+            console.error("Error fetching tournament status:", error);
+        });
     }, [location])
 
     const enableNotifications = async () => {
@@ -94,6 +95,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 setShowToast(true);
             }
         } catch (error) {
+            console.error("Error enabling notifications:", error);
             alert('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
             setIsError(true);
             setError('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
@@ -213,19 +215,9 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 {/*</div>*/}
                 <br />
 
-                <a
-                    onClick={() => navigate('/admin/login')}
-                    style={{ cursor: "pointer" }}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/login');
-                        }
-                    }}
-
-                >
+                <Link to="/admin/login">
                     <u>Admin Login</u>
-                </a>
+                </Link>
                 <br />
                 <a href="https://github.com/einToast/MarioKart_Tournament">Source Code</a>
             </IonContent>

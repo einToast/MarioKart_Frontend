@@ -5,7 +5,7 @@ import TeamComponent from './TeamComponent';
 
 const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, switchColor: string }> = ({ game, user, switchColor }) => {
 
-    if (!game || !game.teams) {
+    if (!game?.teams) {
         return (
             <p>Du hast aktuell keine Spiele.</p>
         );

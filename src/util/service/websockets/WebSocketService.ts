@@ -5,7 +5,7 @@ import { WS_BASE_URL } from "../../api/config/constants";
 
 class WebSocketService {
     private static instance: WebSocketService;
-    private client: Client;
+    private readonly client: Client;
     private connected: boolean = false;
 
     private constructor() {

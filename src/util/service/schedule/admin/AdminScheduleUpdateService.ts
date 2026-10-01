@@ -55,16 +55,14 @@ export const saveRoundFull = async (round: RoundReturnDTO): Promise<RoundReturnD
 }
 
 export const saveRound = async (round: RoundReturnDTO): Promise<RoundReturnDTO> => {
-    for (const game of round.games ?? []) {
-        for (const team of game.teams ?? []) {
-            await updatePoints(
-                round.id,
-                game.id,
-                team.id,
-                game.points?.find(point => point?.team.id === team.id)?.points ?? 0
-            );
-        }
-    }
+    await Promise.all((round.games ?? []).flatMap(game =>
+        (game.teams ?? []).map(team => updatePoints(
+            round.id,
+            game.id,
+            team.id,
+            game.points?.find(point => point?.team.id === team.id)?.points ?? 0
+        ))
+    ));
 
     return await updateRoundPlayed(round.id, round.played);
 }
@@ -90,14 +88,10 @@ export const saveGameDirect = async (game: GameReturnDTO): Promise<GameReturnDTO
 };
 
 export const saveGame = async (roundId: number, game: GameReturnDTO): Promise<PointsReturnDTO[]> => {
-    const points: PointsReturnDTO[] = [];
-    for (const team of game.teams ?? []) {
-        points.push(await updatePoints(
-            roundId,
-            game.id,
-            team.id,
-            game.points?.find(point => point?.team.id === team.id)?.points ?? 0
-        ));
-    }
-    return points;
+    return Promise.all((game.teams ?? []).map(team => updatePoints(
+        roundId,
+        game.id,
+        team.id,
+        game.points?.find(point => point?.team.id === team.id)?.points ?? 0
+    )));
 }

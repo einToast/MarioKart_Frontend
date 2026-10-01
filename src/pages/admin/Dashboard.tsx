@@ -2,6 +2,7 @@ import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
@@ -52,7 +53,10 @@ const Dashboard: React.FC = () => {
                 });
         };
 
-        loadDashboard();
+        loadDashboard().catch(error => {
+            setError(error.message);
+            setShowToast(true);
+        });
     }, [location]);
 
 
@@ -132,17 +136,9 @@ const Dashboard: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => navigate("/login")}
-                        style={{ cursor: "pointer", textDecoration: "underline" }}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                navigate('/login');
-                            }
-                        }}
-                    >
+                    <Link to="/login" style={{ textDecoration: "underline" }}>
                         Zurück zum Team Login
-                    </a>
+                    </Link>
                 </div>
             </IonContent>
             <Toast

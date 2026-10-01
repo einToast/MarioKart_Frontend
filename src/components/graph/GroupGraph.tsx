@@ -2,6 +2,7 @@ import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { TeamGraphProps } from "../../util/api/config/interfaces";
+import { loadImage } from "../../util/service/util";
 import './RankingGraph.css';
 
 Chart.register(...registerables);
@@ -11,27 +12,16 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
     const [revealedIcons, setRevealedIcons] = useState<string[]>([]);
     const [revealedLabels, setRevealedLabels] = useState<string[]>([]);
-    const [revealedColors, setRevealedColors] = useState<string[]>([]);
     const [step, setStep] = useState(0);
 
-    // Fisher-Yates Shuffle Algorithmus entfernen
-    // const shuffleArray = React.useCallback((array: number[]) => {
-    //     const newArray = [...array];
-    //     for (let i = newArray.length - 1; i > 0; i--) {
-    //         const j = Math.floor(Math.random() * (i + 1));
-    //         [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    //     }
-    //     return newArray;
-    // }, []);
 
     const sortedTeamsData = React.useMemo(() => {
         const sorted = [...teams].sort((a, b) => b.groupPoints - a.groupPoints);
 
-        // Gruppiere Teams nach Punktzahl und bestimme ihre Platzierung
         const pointGroups: number[][] = [];
         let currentGroup: number[] = [0];
         let currentRank = 1;
-        const ranks: number[] = Array(sorted.length).fill(0);
+        const ranks: number[] = new Array(sorted.length).fill(0);
         ranks[0] = currentRank;
 
         sorted.forEach((team, index) => {
@@ -48,12 +38,11 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         });
         pointGroups.push(currentGroup);
 
-        // Überprüfe, ob der erste Platz alleine ist
         const isFirstPlaceAlone = sorted.length === 0 || sorted[1].groupPoints < sorted[0].groupPoints;
 
         return {
             teams: sorted,
-            initialData: Array(sorted.length).fill(0),
+            initialData: new Array(sorted.length).fill(0),
             finalData: sorted.map(team => team.groupPoints),
             icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
             labels: sorted.map(team => team.teamName),
@@ -63,39 +52,18 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         };
     }, [teams]);
 
-    // Initialisierung
     useEffect(() => {
-        // Initialisiere alle Icons mit missingno
-        setRevealedIcons(Array(sortedTeamsData.teams.length).fill('/media/missingno.png'));
-        // Initialisiere Labels mit Platzierungen
-        setRevealedLabels(Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
-        setRevealedColors(Array(sortedTeamsData.teams.length).fill('#6351F9'));
+        setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.png'));
+        setRevealedLabels(new Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
         setStep(0);
     }, [sortedTeamsData]);
 
-    // Bilder vorladen
     useEffect(() => {
-        const preloadImages = async () => {
-            const missingno = new Image();
-            missingno.src = '/media/missingno.png';
-            const loadImages = [...sortedTeamsData.icons.map((src) => {
-                return new Promise<HTMLImageElement>((resolve) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => resolve(img);
-                });
-            }), new Promise<HTMLImageElement>((resolve) => {
-                missingno.onload = () => resolve(missingno);
-            })];
-            const images = await Promise.all(loadImages);
-            setLoadedImages(images);
-        };
-        preloadImages();
+        Promise.all([...sortedTeamsData.icons, '/media/missingno.png'].map(loadImage))
+            .then(setLoadedImages)
+            .catch(error => console.error('Error preloading images:', error));
     }, [sortedTeamsData.icons]);
 
-    const colors = React.useMemo(() => ["#FFD700", "#C0C0C0", "#CD7F32", "#696969"], []);
-
-    // Optimierte revealNext Funktion
     const revealNext = React.useCallback(() => {
         const totalGroups = sortedTeamsData.pointGroups.length;
         const maxSteps = totalGroups;
@@ -104,7 +72,6 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             const currentGroupIndex = totalGroups - 1 - step;
             const currentGroup = sortedTeamsData.pointGroups[currentGroupIndex];
 
-            // Icons und Namen enthüllen
             setRevealedIcons(prev => {
                 const newIcons = [...prev];
                 currentGroup.forEach(teamIndex => {
@@ -124,7 +91,6 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         }
     }, [step, sortedTeamsData]);
 
-    // Event-Listener für Tastendruck
     useEffect(() => {
         const handleKeyPress = (event: KeyboardEvent) => {
             const validKeys = new Set([" ", "Enter", "ArrowRight", "ArrowDown", "ArrowLeft", "ArrowUp", "PageDown", "PageUp"]);
@@ -140,7 +106,6 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
     }, [revealNext]);
 
-    // Angepasstes chartData
     const chartData = React.useMemo(() => ({
         labels: revealedLabels,
         datasets: [{
@@ -154,7 +119,6 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         }],
     }), [revealedLabels, sortedTeamsData.finalData]);
 
-    // Angepasstes drawImages
     const drawImages = React.useCallback((chart: ChartJS<"bar">, ctx: CanvasRenderingContext2D) => {
         const meta = chart.getDatasetMeta(0);
         if (!meta.data) return;
@@ -190,12 +154,11 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         ctx.restore();
     }, [loadedImages, revealedIcons, sortedTeamsData.finalData]);
 
-    // Memoize Chart Options
     const options: ChartOptions<"bar"> = React.useMemo(() => ({
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-            duration: 500, // Reduzierte Animationsdauer
+            duration: 500,
             easing: "easeInOutCubic" as const,
             onProgress: function (animation) {
                 const chart = chartRef.current;
@@ -224,7 +187,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                         weight: 800
                     },
                     callback: function (tickValue: number | string) {
-                        const value = typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue;
+                        const value = typeof tickValue === 'string' ? Number.parseFloat(tickValue) : tickValue;
                         const max = Math.max(...sortedTeamsData.finalData) + Math.max(...sortedTeamsData.finalData) * 0.2;
                         if (value >= max) return null;
                         return value;

@@ -10,6 +10,7 @@ p {
 h2 {
     font-size: 32px !important;
     margin-bottom: 10px !important;
+    padding-bottom: 0;
 }
 
 h1 {
@@ -81,8 +82,6 @@ h1 {
         color: #fff;
         font-size: 16px !important;
 
-        &::placeholder {}
-
         &:focus-visible {
             outline: none;
         }
@@ -119,30 +118,7 @@ ion-button::part(native) {
 ion-button {
     width: 100%;
     margin: 0;
-}
 
-ion-button.bsurvey::part(native) {
-    --ion-color-base: #32345E !important;
-    /*background: linear-gradient(to right, var(--ion-color-gradient01) 70%, var(--ion-color-base) 70%);*/
-    background: var(--ion-color-gradient02);
-    background: linear-gradient(to right, var(--ion-color-gradient02) var(--gradient-percentage), var(--ion-color-base) var(--gradient-percentage));
-    padding: 8px 16px;
-    /*background: linear-gradient(to right, linear-gradient(to right, var(--ion-color-gradient01) 70%, var(--ion-color-base) 70%) 70%, var(--ion-color-base) 70%);*/
-
-}
-
-ion-button.bsurvey:hover::part(native) {
-    --ion-color-gradient01: #6b6dfa;
-    --ion-color-base: #454678;
-}
-
-.adminDashboard {
-    ion-button>div {
-        padding: 10px;
-    }
-}
-
-ion-button {
     >div {
         display: flex;
         justify-content: space-between;
@@ -161,22 +137,32 @@ ion-button {
     }
 }
 
-ion-button.secondary::part(native) {
-    border: 2px solid #fff;
-    background: transparent;
+ion-button.bsurvey::part(native) {
+    --ion-color-base: #32345E !important;
+    background: var(--ion-color-gradient02);
+    background: linear-gradient(to right, var(--ion-color-gradient02) var(--gradient-percentage), var(--ion-color-base) var(--gradient-percentage));
+    padding: 8px 16px;
 }
 
-/*ion-button.logout::part(native) {*/
-/*    background-color: #ad000d;*/
-/*    background: #ad000d;*/
-/*}*/
-
+ion-button.bsurvey:hover::part(native) {
+    --ion-color-gradient01: #6b6dfa;
+    --ion-color-base: #454678;
+}
 
 .adminDashboard {
     flex-direction: column;
     display: flex;
     gap: 10px;
     margin-top: 20px;
+
+    ion-button>div {
+        padding: 10px;
+    }
+}
+
+ion-button.secondary::part(native) {
+    border: 2px solid #fff;
+    background: transparent;
 }
 
 a {
@@ -184,10 +170,6 @@ a {
     font-size: 12px;
     margin-top: 15px;
     color: #ffffff !important;
-}
-
-h2 {
-    padding-bottom: 0;
 }
 
 .custom-alert {

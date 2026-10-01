@@ -22,6 +22,7 @@ export class NotificationService {
         try {
             return await navigator.serviceWorker.register('/sw.js');
         } catch (err) {
+            console.error('Service worker registration failed:', err);
             return null;
         }
     }
@@ -37,6 +38,7 @@ export class NotificationService {
             await this.sendSubscriptionToServer(subscription);
             return subscription;
         } catch (err) {
+            console.error('Push subscription failed:', err);
             return null;
         }
     }
@@ -60,8 +62,8 @@ export class NotificationService {
     private static async sendSubscriptionToServer(subscription: PushSubscription): Promise<void> {
         const subscriptionData: NotificationSubscriptionDTO = {
             endpoint: subscription.endpoint,
-            p256dh: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))),
-            auth: btoa(String.fromCharCode(...new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
+            p256dh: btoa(String.fromCodePoint(...new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))),
+            auth: btoa(String.fromCodePoint(...new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
             teamId: PublicCookiesService.getUser()?.teamId || 0
         };
 
@@ -71,14 +73,14 @@ export class NotificationService {
     private static urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
         const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
-            .replace(/-/g, '+')
-            .replace(/_/g, '/');
+            .replaceAll('-', '+')
+            .replaceAll('_', '/');
 
         const rawData = window.atob(base64);
         const outputArray = new Uint8Array(rawData.length);
 
         for (let i = 0; i < rawData.length; ++i) {
-            outputArray[i] = rawData.charCodeAt(i);
+            outputArray[i] = rawData.codePointAt(i) ?? 0;
         }
         return outputArray;
     }

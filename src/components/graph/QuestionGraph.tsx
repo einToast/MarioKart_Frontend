@@ -9,7 +9,6 @@ Chart.register(...registerables);
 const QuestionGraph: React.FC<QuestionGraphProps> = ({ question, answers }) => {
     const chartRef = useRef<ChartJS<"bar">>(null);
 
-    // Memoize die Antwortdaten
     const answerData = React.useMemo(() => {
         const options = question.options || [];
         const data = options.map((option, index) => ({
@@ -95,7 +94,7 @@ const QuestionGraph: React.FC<QuestionGraphProps> = ({ question, answers }) => {
                         weight: 800
                     },
                     callback: function (tickValue: number | string) {
-                        const value = typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue;
+                        const value = typeof tickValue === 'string' ? Number.parseFloat(tickValue) : tickValue;
                         const max = Math.max(...answerData.counts) + Math.max(...answerData.counts) * 0.2;
                         if (value >= max) return null;
                         return value;

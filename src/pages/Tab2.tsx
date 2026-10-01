@@ -58,11 +58,9 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
 
-        await Promise.all([
-            getRanking(),
-            updateShowTab2(),
-            new Promise(resolve => setTimeout(resolve, 500)),
-        ]);
+        getRanking();
+        updateShowTab2();
+        await new Promise(resolve => setTimeout(resolve, 500));
 
         setLoading(false);
         event.detail.complete();

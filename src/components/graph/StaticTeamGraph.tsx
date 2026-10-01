@@ -2,6 +2,7 @@ import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { TeamGraphProps } from "../../util/api/config/interfaces";
+import { loadImage } from "../../util/service/util";
 import './RankingGraph.css';
 
 Chart.register(...registerables);
@@ -11,11 +12,9 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-    // Memoize sortierte Teams und Daten
     const sortedTeamsData = React.useMemo(() => {
         const sorted = [...teams].sort((a, b) => b.groupPoints - a.groupPoints);
 
-        // Neue Ranks-Berechnung
         const ranks: number[] = [];
         sorted.forEach((team, index) => {
             if (index === 0) {
@@ -36,20 +35,10 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         };
     }, [teams]);
 
-    // Bilder vorladen
     useEffect(() => {
-        const preloadImages = async () => {
-            const loadImages = sortedTeamsData.icons.map((src) => {
-                return new Promise<HTMLImageElement>((resolve) => {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => resolve(img);
-                });
-            });
-            const images = await Promise.all(loadImages);
-            setLoadedImages(images);
-        };
-        preloadImages();
+        Promise.all(sortedTeamsData.icons.map(loadImage))
+            .then(setLoadedImages)
+            .catch(error => console.error('Error preloading images:', error));
     }, [sortedTeamsData.icons]);
 
     const chartData = React.useMemo(() => ({
@@ -148,7 +137,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
                         weight: 800
                     },
                     callback: function (tickValue: number | string) {
-                        const value = typeof tickValue === 'string' ? parseFloat(tickValue) : tickValue;
+                        const value = typeof tickValue === 'string' ? Number.parseFloat(tickValue) : tickValue;
                         const max = Math.max(...sortedTeamsData.finalData) + Math.max(...sortedTeamsData.finalData) * 0.2;
                         if (value >= max) return null;
                         return value;
@@ -186,7 +175,6 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         }
     }), [sortedTeamsData.finalData, drawImages, isMobile]);
 
-    // Angepasster Effect für Responsive-Handling
     useEffect(() => {
         const handleResize = () => {
             const mobile = window.innerWidth < 768;

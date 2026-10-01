@@ -10,7 +10,7 @@ export const getStatisticsOfQuestion = async (questionId: number): Promise<numbe
     return PublicSurveyApi.getStatisticsOfQuestion(questionId);
 }
 
-export const getAnswerCookie = async (questionString: string): Promise<AnswerCookieDTO | -1> => {
+export const getAnswerCookie = (questionString: string): AnswerCookieDTO | -1 => {
     const answerCookie = Cookies.get(questionString);
     if (answerCookie) {
         return JSON.parse(answerCookie) as AnswerCookieDTO;

@@ -40,7 +40,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
             });
     };
 
-    const enterBreak = async () => {
+    const enterBreak = () => {
         setBreakDuration(differenceInMinutes(new Date(aBreak.endTime), new Date(aBreak.startTime)));
         setBreakEnded(aBreak.breakEnded);
         setBeforeRound(aBreak.round?.id || -1);
@@ -74,19 +74,19 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                         <input
                             type="number"
                             value={breakDuration}
-                            onChange={(e) => setBreakDuration(parseInt(e.target.value))}
+                            onChange={(e) => setBreakDuration(Number.parseInt(e.target.value))}
                             placeholder={"Dauer der Pause"}
                             required
                         />
                     </div>
                     <div className={"borderContainer"}>
                         <p>Vor Runde</p>
-                        <select value={beforeRound} onChange={(e) => setBeforeRound(parseInt(e.target.value))}
+                        <select value={beforeRound} onChange={(e) => setBeforeRound(Number.parseInt(e.target.value))}
                             style={{ cursor: "pointer" }}
                         >
-                            {rounds.map((round, index) => (
+                            {rounds.map((round) => (
                                 <option value={round.id}
-                                    key={index}
+                                    key={round.id}
                                 >
                                     {round.roundNumber}
                                 </option>

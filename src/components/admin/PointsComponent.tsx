@@ -23,7 +23,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     const [isError, setIsError] = useState<boolean>(true);
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
-        const newValue = parseInt(event.target.value);
+        const newValue = Number.parseInt(event.target.value);
 
         if (index === 0) {
             setPointsOne(newValue);

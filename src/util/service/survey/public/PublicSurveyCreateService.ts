@@ -10,17 +10,19 @@ export const submitAnswer = async (question: QuestionReturnDTO, vote: string | n
         throw new Error('Die Antwort darf nicht leer sein');
     } else if (
         (typeof vote === 'number' && vote === -1) ||
-        (Array.isArray(vote) && (vote.length === 0 || vote.some(v => v === -1)))
+        (Array.isArray(vote) && (vote.length === 0 || vote.includes(-1)))
     ) {
         throw new Error('Es wurde keine Antwort ausgewählt');
     }
+
+    const checkboxSelectedOptions = Array.isArray(vote) ? vote.map(Number) : [];
 
     const answer: AnswerInputDTO = {
         questionId: question.id,
         answerType: question.questionType,
         freeTextAnswer: (question.questionType === QuestionType.FREE_TEXT || question.questionType === QuestionType.TEAM_ONE_FREE_TEXT) ? String(vote) : '',
         multipleChoiceSelectedOption: question.questionType === QuestionType.MULTIPLE_CHOICE ? Number(vote) : -1,
-        checkboxSelectedOptions: question.questionType === QuestionType.CHECKBOX ? (Array.isArray(vote) ? vote.map(Number) : []) : [],
+        checkboxSelectedOptions: question.questionType === QuestionType.CHECKBOX ? checkboxSelectedOptions : [],
         teamSelectedOption: question.questionType === QuestionType.TEAM ? Number(vote) : -1,
     }
 
@@ -29,11 +31,11 @@ export const submitAnswer = async (question: QuestionReturnDTO, vote: string | n
     }
 
     const response = await PublicSurveyApi.submitAnswer(answer, teamId);
-    await setAnswerCookie(question.questionText + question.id, typeof vote === 'number' ? vote : Number(Array.isArray(vote) ? vote[0] : vote));
+    setAnswerCookie(question.questionText + question.id, Number(Array.isArray(vote) ? vote[0] : vote));
     return response;
 }
 
-export const setAnswerCookie = async (questionString: string, answer: number): Promise<void> => {
+export const setAnswerCookie = (questionString: string, answer: number): void => {
     const answerCookie: AnswerCookieDTO = {
         answerId: answer.toString(),
     }

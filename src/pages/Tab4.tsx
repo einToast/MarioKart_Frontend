@@ -11,7 +11,7 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
+    const [user] = useState<User | null>(PublicCookiesService.getUser());
 
     const updateShowTab2 = () => {
         Promise.all([
@@ -26,10 +26,8 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }
 
     const handleRefresh = async (event: CustomEvent) => {
-        await Promise.all([
-            updateShowTab2(),
-            new Promise(resolve => setTimeout(resolve, 500)),
-        ]);
+        updateShowTab2();
+        await new Promise(resolve => setTimeout(resolve, 500));
         event.detail.complete();
     };
 
@@ -43,7 +41,9 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             if (!response) {
                 navigate('/admin');
             }
-        })
+        }).catch(error => {
+            console.error("Error fetching tournament status:", error);
+        });
     }, [location])
 
     return (

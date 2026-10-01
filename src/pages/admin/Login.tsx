@@ -2,6 +2,7 @@ import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
 import { PublicCookiesService, PublicUserService } from "../../util/service";
@@ -35,7 +36,10 @@ const Login: React.FC = () => {
                 navigate('/admin/dashboard');
             }
         }
-        fetchData();
+        fetchData().catch(error => {
+            setError(error.message);
+            setShowToast(true);
+        });
     }, []);
 
 
@@ -100,17 +104,9 @@ const Login: React.FC = () => {
                             </div>
                         </IonButton>
                     </div>
-                    <a onClick={() => navigate("/login")}
-                        style={{ cursor: "pointer", textDecoration: "underline" }}
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                navigate('/login');
-                            }
-                        }}
-                    >
+                    <Link to="/login" style={{ textDecoration: "underline" }}>
                         Zurück zum Team Login
-                    </a>
+                    </Link>
                 </div>
             </IonContent>
             <Toast

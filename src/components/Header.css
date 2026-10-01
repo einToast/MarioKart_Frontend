@@ -41,7 +41,6 @@ ion-header {
   top: 100%;
   left: 0;
   background-color: var(--ion-color-bg01-tint);
-  /*border: 1px solid #ccc;*/
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   width: 150px;
@@ -57,7 +56,6 @@ ion-header {
 .dropdownMenu li {
   padding: 10px;
   cursor: pointer;
-  /*font-weight: bold;*/
 }
 
 .dropdownMenu li:hover {
@@ -65,7 +63,6 @@ ion-header {
   top: 100%;
   right: 0;
   background-color: var(--ion-color-bg01-shade);
-  /*border: 1px solid #ccc;*/
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   width: 150px;

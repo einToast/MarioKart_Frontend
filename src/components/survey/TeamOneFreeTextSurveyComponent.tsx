@@ -9,7 +9,6 @@ import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
 
 const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamOneFreeTextQuestion, toggleAccordion }) => {
-    const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
 
     const [text, setText] = useState<string>('');
@@ -19,10 +18,10 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
-    const getVote = async () => {
-        const voted = await PublicSurveyService.getAnswerCookie(teamOneFreeTextQuestion.questionText + teamOneFreeTextQuestion.id);
+    const getVote = () => {
+        const voted = PublicSurveyService.getAnswerCookie(teamOneFreeTextQuestion.questionText + teamOneFreeTextQuestion.id);
         if (voted !== -1) {
-            setVotedId(parseInt(voted.answerId));
+            setVotedId(Number.parseInt(voted.answerId));
             handleVoteStatus(voted.answerId);
         } else {
             handleVoteStatus(-1);

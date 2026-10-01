@@ -26,14 +26,14 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
         }
     }, []);
 
-    const getVote = async () => {
-        const vote = await PublicSurveyService.getAnswerCookie(checkBoxQuestion.questionText + checkBoxQuestion.id);
+    const getVote = () => {
+        const vote = PublicSurveyService.getAnswerCookie(checkBoxQuestion.questionText + checkBoxQuestion.id);
 
         if (vote !== -1) {
             if (typeof vote.answerId === 'string' && vote.answerId.includes(',')) {
                 setVotedId(vote.answerId.split(',').map(Number));
             } else {
-                setVotedId([parseInt(vote.answerId)]);
+                setVotedId([Number.parseInt(vote.answerId)]);
             }
             handleVoteStatus(vote.answerId);
         } else {
@@ -58,7 +58,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
             });
     }
 
-    const handleAddVote = async (index: number) => {
+    const handleAddVote = (index: number) => {
         if (votes.includes(index)) {
             setVotes(votes.filter(vote => vote !== index));
         } else {
@@ -76,10 +76,14 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
         }
     }
 
-    const showResults = async () => {
+    const showResults = () => {
         if (!checkBoxQuestion.active) {
-            const results = await PublicSurveyService.getStatisticsOfQuestion(checkBoxQuestion.id);
-            setResults(results);
+            PublicSurveyService.getStatisticsOfQuestion(checkBoxQuestion.id)
+                .then(setResults)
+                .catch(error => {
+                    setError(error.message);
+                    setShowToast(true);
+                });
         }
     }
 
@@ -112,7 +116,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
                                             }
                                         }
                                     }}
-                                    key={index}
+                                    key={option}
 
                                     disabled={!(votes.includes(index) || votedId.includes(index)) && !votedId.includes(-1)}
                                     style={{

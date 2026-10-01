@@ -1,8 +1,8 @@
-import { IonContent, IonIcon, IonPage } from "@ionic/react";
-import { arrowBackOutline } from 'ionicons/icons';
+import { IonContent, IonPage } from "@ionic/react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import BackLink from "../../components/admin/BackLink";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
@@ -19,7 +19,6 @@ const Teams: React.FC = () => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState(false);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     const getFinalTeams = () => {
@@ -40,30 +39,25 @@ const Teams: React.FC = () => {
                 return;
             }
 
-            try {
-                const [schedule, finalSchedule, _] = await Promise.all([
-                    PublicScheduleService.isScheduleCreated(),
-                    PublicScheduleService.isFinalScheduleCreated(),
-                    getFinalTeams()
-                ]);
-                setScheduleCreated(schedule);
-                setFinalScheduleCreated(finalSchedule);
-            } catch (error: any) {
-                setError(error.message);
-                setShowToast(true);
-            }
+            getFinalTeams();
+            const [schedule, finalSchedule] = await Promise.all([
+                PublicScheduleService.isScheduleCreated(),
+                PublicScheduleService.isFinalScheduleCreated()
+            ]);
+            setScheduleCreated(schedule);
+            setFinalScheduleCreated(finalSchedule);
         };
 
-        loadData();
+        loadData().catch(error => {
+            setError(error.message);
+            setShowToast(true);
+        });
     }, [modalClosed, location]);
 
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}>
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>Teams</LinearGradient>
                 </h2>

@@ -1,8 +1,9 @@
 import { IonContent, IonIcon, IonPage } from "@ionic/react";
-import { addCircleOutline, arrowBackOutline } from 'ionicons/icons';
+import { addCircleOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
+import BackLink from "../../components/admin/BackLink";
 import SurveyAdminContainer from "../../components/admin/SurveyAdminContainer";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import Toast from "../../components/Toast";
@@ -29,7 +30,6 @@ const SurveyAdmin: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
 
@@ -100,29 +100,24 @@ const SurveyAdmin: React.FC = () => {
             getSurveyKeyMode();
         };
 
-        loadData();
+        loadData().catch(error => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
+        });
     }, [modalClosed, location]);
 
     return (
         <IonPage>
             <IonContent fullscreen>
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/dashboard');
-                        }
-                    }}
-                >
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Umfragen
                     </LinearGradient>
                 </h2>
                 <div className="newSurvey"
+                    role="button"
                     onClick={() => setShowAddModal(true)}
                     tabIndex={0}
                     onKeyDown={(e) => {

@@ -158,22 +158,20 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
 
                     <br></br>
                     {(questionType === QuestionType.MULTIPLE_CHOICE || questionType === QuestionType.CHECKBOX) &&
-                        <>
-                            <div style={{ marginBottom: '115px' }}>
-                                {Array.from({ length: numberOfOptions }, (_, index) => (
-                                    <div key={index} className="form-group">
-                                        <label>Option {index + 1}</label>
-                                        <input
-                                            type="text"
-                                            value={options[index]}
-                                            onChange={(e) => handleOptionChange(index, e.target.value)}
-                                            placeholder={`Option ${index + 1} eingeben`}
-                                            required
-                                        />
-                                    </div>
-                                ))}
-                            </div>
-                        </>
+                        <div style={{ marginBottom: '115px' }}>
+                            {Array.from({ length: numberOfOptions }, (_, index) => (
+                                <div key={index} className="form-group">
+                                    <label>Option {index + 1}</label>
+                                    <input
+                                        type="text"
+                                        value={options[index]}
+                                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                                        placeholder={`Option ${index + 1} eingeben`}
+                                        required
+                                    />
+                                </div>
+                            ))}
+                        </div>
                     }
                     {(questionType === QuestionType.TEAM) &&
                         <div className="borderContainer multipleSelect">

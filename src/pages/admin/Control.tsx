@@ -1,10 +1,11 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
-import { arrowBackOutline, arrowForwardOutline } from 'ionicons/icons';
+import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import '../RegisterTeam.css';
 
+import BackLink from "../../components/admin/BackLink";
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import NotificationModal from "../../components/modals/NotificationModal";
 import TournamentModal from "../../components/modals/TournamentModal";
@@ -32,7 +33,6 @@ const Control: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     const handleOpenModal = (deleteType: ChangeType) => {
@@ -56,7 +56,7 @@ const Control: React.FC = () => {
         const teams = AdminRegistrationService.getTeamsSortedByFinalPoints();
         teams.then((result) => {
             // sort by alphabetical order
-            setTeams(result.sort((a, b) => a.teamName.localeCompare(b.teamName)));
+            setTeams([...result].sort((a, b) => a.teamName.localeCompare(b.teamName)));
             setShowNotificationModal(true);
         }).catch((error) => {
             setError(error.message);
@@ -151,23 +151,17 @@ const Control: React.FC = () => {
                 });
         };
 
-        loadControlData();
+        loadControlData().catch(error => {
+            setError(error.message);
+            setIsError(true);
+            setShowToast(true);
+        });
     }, [modalClosed, location]);
 
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
-                <div className={"back"} onClick={() => navigate('/admin/dashboard')}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            navigate('/admin/dashboard');
-                        }
-                    }}
-                >
-                    <IonIcon slot="end" icon={arrowBackOutline}></IonIcon>
-                    <a>Zurück</a>
-                </div>
+                <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
                         Kontrollzentrum

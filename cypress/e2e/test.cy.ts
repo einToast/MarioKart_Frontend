@@ -1,6 +1,6 @@
-describe('My First Test', () => {
-  it('Visits the app root url', () => {
+describe('App root', () => {
+  it('redirects visitors without a team to the login', () => {
     cy.visit('/')
-    cy.contains('ion-content', 'Tab 1 page')
+    cy.url().should('include', '/login')
   })
 })
