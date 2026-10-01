@@ -70,6 +70,6 @@
   "allowScripts": {
     "esbuild@0.28.2": true,
     "core-js@3.50.0": true,
-    "cypress@16.0.0": true
+    "cypress@16.1.0": true
   }
 }
