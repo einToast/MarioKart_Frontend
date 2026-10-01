@@ -16,13 +16,14 @@ FROM node:24.21.0-slim AS runtime
 
 WORKDIR /app
 
-COPY --from=build --chown=node:node /app/dist /app/dist
-
 RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf /var/lib/apt/lists/* \
     && npm install -g --ignore-scripts serve \
-    && npm install --ignore-scripts react-inject-env
+    && npm install --ignore-scripts react-inject-env \
+    && useradd --system --create-home --uid 10001 frontend
 
-USER node
+COPY --from=build --chown=frontend:frontend /app/dist /app/dist
+
+USER frontend
 
 EXPOSE 5000
 
