@@ -10,6 +10,7 @@ import { RoundDisplay } from "../components/rounds/RoundDisplay";
 import { RoundHeader } from "../components/rounds/RoundHeader";
 import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
+import { useSwitches } from "../hooks/useSwitches";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicScheduleService } from '../util/service';
@@ -32,6 +33,8 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         error,
         refreshRounds
     } = useRoundData();
+
+    const switches = useSwitches(location);
 
     useWebSocketConnection('/topic/rounds', refreshRounds);
 
@@ -116,6 +119,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInCurrentRound}
+                        switches={switches}
                         loading={loading}
                     />
 
@@ -125,6 +129,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         user={user ?? null}
                         viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInNextRound}
+                        switches={switches}
                         loading={loading}
                     />
                 </div>

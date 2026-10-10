@@ -1,0 +1,102 @@
+.floorPlan {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 900px;
+    margin: 0 auto;
+
+    .floorPlanSwitchName {
+        font-family: Poppins, sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .floorPlanText {
+        font-family: Poppins, sans-serif;
+        font-weight: 800;
+        fill: #ffffff;
+    }
+}
+
+.floorPlanEditable {
+    /* Dragging an element must not scroll the page on touch devices */
+    touch-action: none;
+    user-select: none;
+    background: #1B1C3F;
+    border-radius: 12px;
+
+    .floorPlanElement {
+        cursor: grab;
+        outline: none;
+    }
+
+    .floorPlanHitArea {
+        fill: transparent;
+        stroke: transparent;
+        stroke-width: 2;
+        stroke-dasharray: 8 6;
+    }
+
+    .floorPlanElement:focus-visible .floorPlanHitArea,
+    .floorPlanElement.selected .floorPlanHitArea {
+        stroke: #ffffff;
+    }
+}
+
+.floorPlanEditor {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .floorPlanToolbar,
+    .floorPlanProperties {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .floorPlanProperties {
+        min-height: 40px;
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: Poppins, sans-serif;
+            font-size: 14px;
+        }
+
+        input {
+            box-sizing: border-box;
+            width: 76px;
+        }
+
+        input[type="text"] {
+            width: 170px;
+        }
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+
+    button {
+        font-family: Poppins, sans-serif;
+        background-color: #2F315B;
+        border: 1px solid #2F315B;
+        padding: 6px 12px;
+        color: #fff;
+        border-radius: 7px;
+
+        &:hover,
+        &:focus-visible {
+            border-color: #fff;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}
