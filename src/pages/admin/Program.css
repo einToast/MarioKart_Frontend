@@ -1,0 +1,65 @@
+.programList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    .programRow,
+    .programActions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .programRow {
+        ion-icon {
+            font-size: 22px;
+        }
+
+        input,
+        select {
+            box-sizing: border-box;
+        }
+
+        .programTime {
+            width: 130px;
+        }
+
+        .programText {
+            width: 200px;
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+
+    select {
+        font-family: Poppins, sans-serif;
+        background-color: #2F315B;
+        border: none;
+        padding: 6px 7px;
+        color: #fff;
+        border-radius: 5px;
+    }
+
+    button {
+        font-family: Poppins, sans-serif;
+        background-color: #2F315B;
+        border: 1px solid #2F315B;
+        padding: 6px 12px;
+        color: #fff;
+        border-radius: 7px;
+
+        &:hover,
+        &:focus-visible {
+            border-color: #fff;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}

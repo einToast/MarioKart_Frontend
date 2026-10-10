@@ -20,15 +20,15 @@ const stubTwoRounds = () => {
                 startTime: '2025-01-08T17:45:00',
                 endTime: '2025-01-08T18:05:00',
                 games: [
-                    makeGame({ id: 51, switchGame: 'Rot', teams: [team(1, 'Mario'), team(2, 'Luigi')] }),
-                    makeGame({ id: 52, switchGame: 'Blau', teams: [team(3, 'Peach'), team(4, 'Toad')] }),
+                    makeGame({ id: 51, switchIndex: 1, teams: [team(1, 'Mario'), team(2, 'Luigi')] }),
+                    makeGame({ id: 52, switchIndex: 0, teams: [team(3, 'Peach'), team(4, 'Toad')] }),
                 ],
             }),
             makeRound({
                 id: 6,
                 startTime: '2025-01-08T18:10:00',
                 endTime: '2025-01-08T18:30:00',
-                games: [makeGame({ id: 61, switchGame: 'Grün', teams: [team(1, 'Mario'), team(3, 'Peach')] })],
+                games: [makeGame({ id: 61, switchIndex: 2, teams: [team(1, 'Mario'), team(3, 'Peach')] })],
             }),
         ])
         .get('/public/teams/notInRound/5', [])

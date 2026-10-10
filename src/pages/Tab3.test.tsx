@@ -3,6 +3,9 @@ import Cookies from 'js-cookie';
 import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
 import { expectErrorToast, expectSuccessToast, queryToast } from '../test/overlays';
 import { buttonOf, currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
+import { makeSwitches } from '../test/fixtures';
+import { createDefaultFloorPlan, serializeFloorPlan } from '../util/layout/floorPlan';
+import { serializeProgram } from '../util/layout/program';
 import { NotificationService } from '../util/service';
 import Tab3 from './Tab3';
 
@@ -44,13 +47,70 @@ describe('Tab3 (details)', () => {
         delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
     });
 
-    it('shows the room plan, the programme and a QR code of the site', () => {
+    it('shows the programme and a QR code of the site', () => {
         renderPage();
 
         expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
-        expect(screen.getByAltText('raumplan')).toHaveAttribute('src', '/media/Raumplan.png');
         expect(screen.getByText('Siegerehrung', { exact: false })).toHaveTextContent('21:00 Siegerehrung');
         expect(screen.getByTestId('qr-code')).toHaveAttribute('data-value', window.location.origin);
+    });
+
+    it('shows the default programme while none is stored', () => {
+        const { container } = renderPage();
+
+        expect(Array.from(container.querySelectorAll('.progressContainer p span')).map(time => time.textContent)).toEqual([
+            '16:00 - 16:45', '16:45 - 18:30', '18:30 - 19:00', '19:00 - 20:00', '20:00 - 20:45', '21:00',
+        ]);
+    });
+
+    it('shows the stored programme', async () => {
+        backend.get('/public/settings', {
+            tournamentOpen: true,
+            program: serializeProgram([{ icon: 'trophy', time: '12:00', text: 'Los gehts' }]),
+        });
+
+        renderPage();
+
+        expect(await screen.findByText('Los gehts', { exact: false })).toHaveTextContent('12:00 Los gehts');
+        expect(screen.queryByText('Siegerehrung', { exact: false })).not.toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Programm' })).toBeInTheDocument();
+    });
+
+    it('hides the programme when it was saved without entries', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, program: serializeProgram([]) });
+
+        renderPage();
+
+        await waitFor(() => expect(screen.queryByRole('heading', { name: 'Programm' })).not.toBeInTheDocument());
+    });
+
+    it('draws the stored room plan with the configured switches', async () => {
+        backend.get('/public/settings', {
+            tournamentOpen: true,
+            switches: makeSwitches().slice(0, 2),
+            floorPlan: serializeFloorPlan(createDefaultFloorPlan(2)),
+        });
+
+        renderPage();
+
+        expect(await screen.findByRole('img', { name: 'Raumplan' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Raumplan' })).toBeInTheDocument();
+        expect(screen.getByText('switch blau')).toBeInTheDocument();
+        expect(screen.getByText('switch rot')).toBeInTheDocument();
+    });
+
+    it.each([
+        ['no plan is stored', null],
+        ['the stored plan is empty', '{"elements":[]}'],
+        ['the stored plan is unreadable', 'not json'],
+    ])('hides the room plan while %s', async (_name, floorPlan) => {
+        backend.get('/public/settings', { tournamentOpen: true, switches: makeSwitches(), floorPlan });
+
+        const { setShowTab2 } = renderPage();
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalled());
+        expect(screen.queryByRole('heading', { name: 'Raumplan' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('img', { name: 'Raumplan' })).not.toBeInTheDocument();
     });
 
     it('links to the source code', () => {

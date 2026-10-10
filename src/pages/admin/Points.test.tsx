@@ -17,8 +17,8 @@ const roundWithGames = (overrides: Partial<RoundReturnDTO>): RoundReturnDTO => {
     const teams = makeTeams();
     return makeRound({
         games: [
-            makeGame({ id: 2, switchGame: 'Blau', teams: makeTeams(), points: makeTeams().map(team => makePoints(team, 0)) }),
-            makeGame({ id: 1, switchGame: 'Rot', teams: [...teams].reverse(), points: teams.map((team, index) => makePoints(team, 15 - 3 * index)) }),
+            makeGame({ id: 2, switchIndex: 0, teams: makeTeams(), points: makeTeams().map(team => makePoints(team, 0)) }),
+            makeGame({ id: 1, switchIndex: 1, teams: [...teams].reverse(), points: teams.map((team, index) => makePoints(team, 15 - 3 * index)) }),
         ],
         ...overrides,
     });

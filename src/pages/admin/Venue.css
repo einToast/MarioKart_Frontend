@@ -1,0 +1,61 @@
+.switchList {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    .switchRow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        input[type="text"] {
+            box-sizing: border-box;
+            width: 170px;
+        }
+
+        input[type="color"] {
+            width: 44px;
+            height: 34px;
+            padding: 0;
+            border: none;
+            background: none;
+        }
+    }
+
+    .switchNumber {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        color: #141535;
+        font-family: Poppins, sans-serif;
+        font-weight: 700;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    button {
+        font-family: Poppins, sans-serif;
+        background-color: #2F315B;
+        border: 1px solid #2F315B;
+        padding: 6px 12px;
+        color: #fff;
+        border-radius: 7px;
+
+        &:hover,
+        &:focus-visible {
+            border-color: #fff;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}

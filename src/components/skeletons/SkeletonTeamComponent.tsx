@@ -1,19 +1,20 @@
 import { IonSkeletonText } from '@ionic/react';
 import React from 'react';
 import { SkeletonTeamComponentProps } from '../../util/api/config/interfaces';
+import { switchColorStyle } from '../../util/layout/switches';
 
+const NEUTRAL_COLOR = '#ECECEC';
 
 const SkeletonTeamComponent: React.FC<SkeletonTeamComponentProps> = ({
   isSwiper = false,
-  switchColor = 'weiß',
+  switchColor = NEUTRAL_COLOR,
 }) => {
-  const classColor = switchColor.toLowerCase();
 
   if (isSwiper) {
     return (
       <div className={`swiper-slide `} style={{ marginBottom: 15 }}>
-        <div className={classColor} style={{ display: 'flex', alignItems: 'center', width: '100%', }}>
-          <div className={`imageContainer ${classColor}`}>
+        <div className="switchColored" style={{ ...switchColorStyle(switchColor), display: 'flex', alignItems: 'center', width: '100%', }}>
+          <div className="imageContainer switchColored">
             <IonSkeletonText
               animated
               style={{ width: 70, height: 70, borderRadius: "50%", position: 'absolute', left: 40, top: 10 }}
@@ -33,8 +34,8 @@ const SkeletonTeamComponent: React.FC<SkeletonTeamComponentProps> = ({
   }
 
   return (
-    <div className={`teamContainer ${switchColor} slide`}>
-      <div className={classColor}>
+    <div className="teamContainer slide">
+      <div className="switchColored" style={switchColorStyle(switchColor)}>
         <div className={`skeletonContainer `}>
           <IonSkeletonText animated style={{ width: 55, height: 55, borderRadius: '50%' }} />
         </div>
