@@ -11,16 +11,22 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
+import FloorPlanView from "../components/floorplan/FloorPlanView";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
 import Toast from '../components/Toast';
+import { SwitchDTO } from '../util/api/config/dto';
 import { ShowTab2Props } from '../util/api/config/interfaces';
+import { FloorPlan, parseFloorPlan } from '../util/layout/floorPlan';
 import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [notificationEnabled, setNotificationEnabled] = useState<boolean>(PublicCookiesService.getNotificationsEnabled());
+
+    const [floorPlan, setFloorPlan] = useState<FloorPlan | null>(null);
+    const [switches, setSwitches] = useState<SwitchDTO[]>([]);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -53,12 +59,14 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         updateShowTab2();
         setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
 
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
+        const settings = PublicSettingsService.getSettings();
 
-        tournamentOpen.then((response) => {
-            if (!response) {
+        settings.then((response) => {
+            if (!response.tournamentOpen) {
                 navigate('/admin');
             }
+            setSwitches(response.switches ?? []);
+            setFloorPlan(parseFloorPlan(response.floorPlan));
         }).catch(error => {
             console.error("Error fetching tournament status:", error);
         });
@@ -117,10 +125,14 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         Details
                     </LinearGradient>
                 </h1>
-                <h3>Raumplan</h3>
-                <div>
-                    <img src={"/media/Raumplan.png"} alt="raumplan" />
-                </div>
+                {floorPlan && floorPlan.elements.length > 0 && (
+                    <>
+                        <h3>Raumplan</h3>
+                        <div>
+                            <FloorPlanView plan={floorPlan} switches={switches} />
+                        </div>
+                    </>
+                )}
                 <h3>Programm</h3>
                 <div className={"progressContainer"}>
                     <div>
