@@ -170,11 +170,12 @@ describe('admin Schedule', () => {
         expect(row('Team Mario').getByTitle('Team löschen')).toBeInTheDocument();
     });
 
-    it('proposes schedule version 2 with 4 fields, 8 rounds and 4 teams per game', async () => {
+    it('proposes schedule version 3 with 4 fields, 8 rounds and 4 teams per game', async () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        expect(version()).toHaveValue('2');
+        expect(version()).toHaveValue('3');
+        expect(screen.getByText('Mindestens 16 Teams nötig')).toBeInTheDocument();
         expect([fields().value, rounds().value, teamsPerGame().value]).toEqual(['4', '8', '4']);
         expect(fields()).toBeEnabled();
     });
@@ -190,7 +191,7 @@ describe('admin Schedule', () => {
         fireEvent.click(screen.getByText(CREATE));
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 3, numRounds: 10, teamsPerGame: 2 });
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 3, numFields: 3, numRounds: 10, teamsPerGame: 2 });
     });
 
     it.each(['Enter', ' '])('creates the schedule with the "%s" key', async (key) => {
@@ -201,6 +202,36 @@ describe('admin Schedule', () => {
         fireEvent.keyDown(screen.getByText(CREATE).parentElement as HTMLElement, { key });
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+    });
+
+    it('creates a schedule for a single switch with eight teams', async () => {
+        backend.post(CREATE_URL, [makeRound()]);
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        set(fields(), '1');
+        set(teamsPerGame(), '8');
+        expect(screen.getByText('Mindestens 8 Teams nötig')).toBeInTheDocument();
+        fireEvent.click(screen.getByText(CREATE));
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 3, numFields: 1, numRounds: 8, teamsPerGame: 8 });
+    });
+
+    it.each([
+        ['more than eight teams per game', () => set(teamsPerGame(), '9'), 'Pro Spiel können 2 bis 8 Teams antreten'],
+        ['a single team per game', () => set(teamsPerGame(), '1'), 'Pro Spiel können 2 bis 8 Teams antreten'],
+        ['no switch', () => set(fields(), '0'), 'Die Anzahl der Spielfelder muss zwischen 1 und 16 liegen'],
+        ['an empty round count', () => set(rounds(), ''), 'Es muss mindestens eine Runde geben'],
+    ])('rejects %s without asking the backend', async (_name, change, message) => {
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        change();
+        fireEvent.click(screen.getByText(CREATE));
+
+        await expectErrorToast(message);
+        expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(0);
     });
 
     it('fixes the parameters of schedule version 1', async () => {
