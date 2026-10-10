@@ -116,28 +116,15 @@ body:not(.all-games-selected) .flexSpiel {
         .imageContainer {
             .round {
                 img {
+                    /* Placed around the switch circle by TeamComponent4 */
                     width: 35px !important;
                     position: absolute;
+                }
+            }
 
-                    &:first-of-type {
-                        top: 50px;
-                        left: 35px;
-                    }
-
-                    &:nth-child(2) {
-                        top: 25px;
-                        left: 85px;
-                    }
-
-                    &:nth-child(3) {
-                        top: 60px;
-                        left: 70px;
-                    }
-
-                    &:last-of-type {
-                        top: 15px;
-                        left: 50px;
-                    }
+            .round.crowded {
+                img {
+                    width: 28px !important;
                 }
             }
 

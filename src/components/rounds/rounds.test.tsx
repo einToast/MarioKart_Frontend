@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { makeGame, makeTeam, makeTeams, makeUser } from '../../test/fixtures';
+import { makeEightTeams, makeGame, makeTeam, makeTeams, makeUser } from '../../test/fixtures';
 import { GameReturnDTO } from '../../util/api/config/dto';
 import PauseComponent from './PauseComponent';
 import PauseComponentAll from './PauseComponentAll';
@@ -43,6 +43,33 @@ describe('TeamComponent4', () => {
             '/characters/Toad.png',
         ]);
         expect((container.firstElementChild as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#DA9DC9');
+        expect(container.querySelector('.round')).not.toHaveClass('crowded');
+    });
+
+    it.each([
+        [2, [['63px', '8px'], ['63px', '68px']]],
+        [3, [['63px', '8px'], ['88px', '53px'], ['37px', '53px']]],
+        [4, [['63px', '8px'], ['93px', '38px'], ['63px', '68px'], ['33px', '38px']]],
+    ])('spreads the characters of a game with %i teams around the switch', (count, positions) => {
+        const game = makeGame({ teams: makeTeams().slice(0, count) });
+
+        const { container } = render(<TeamComponent4 team={game.teams[0]} game={game} gameSwitch={ROT} />);
+
+        const icons = Array.from(container.querySelectorAll<HTMLImageElement>('.round img'));
+        expect(icons.map(icon => [icon.style.left, icon.style.top])).toEqual(positions);
+    });
+
+    it('shrinks the characters of a game with more than four teams', () => {
+        const game = makeGame({ teams: makeEightTeams() });
+
+        const { container } = render(<TeamComponent4 team={game.teams[0]} game={game} gameSwitch={ROT} />);
+
+        const icons = Array.from(container.querySelectorAll<HTMLImageElement>('.round.crowded img'));
+        expect(icons).toHaveLength(8);
+        // The first character sits at the top, the fifth opposite of it at the bottom
+        expect([icons[0].style.left, icons[0].style.top]).toEqual(['66px', '11px']);
+        expect([icons[4].style.left, icons[4].style.top]).toEqual(['66px', '71px']);
+        expect(new Set(icons.map(icon => `${icon.style.left}/${icon.style.top}`)).size).toBe(8);
     });
 });
 
@@ -119,6 +146,12 @@ describe('RoundComponentAll', () => {
         ]);
         teamRows(container).forEach(row =>
             expect((row.firstElementChild as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#9DDAAA'));
+    });
+
+    it('lists all eight teams of a fully occupied switch', () => {
+        const { container } = render(<RoundComponentAll game={makeGame({ teams: makeEightTeams() })} user={null} gameSwitch={ROT} />);
+
+        expect(teamRows(container)).toHaveLength(8);
     });
 
     it('highlights only the own team', () => {
