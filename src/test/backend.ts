@@ -1,5 +1,4 @@
 import { AxiosError, type AxiosAdapter, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
-import { makeSwitches } from './fixtures';
 
 export type Method = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
@@ -144,16 +143,7 @@ export const backend = new FakeBackend();
 // running group phase. Individual tests override single routes afterwards
 export const stubDefaultBackend = (): void => {
     backend
-        .get('/public/settings', {
-            tournamentOpen: true,
-            registrationOpen: true,
-            maxGamesCount: 8,
-            surveyKeyMode: 'DISABLED',
-            finalTeamsCount: 4,
-            switches: makeSwitches(),
-            floorPlan: null,
-            program: null,
-        })
+        .get('/public/settings', { tournamentOpen: true, registrationOpen: true, maxGamesCount: 8, surveyKeyMode: 'DISABLED' })
         .get('/public/schedule/create/schedule', true)
         .get('/public/schedule/create/final_schedule', false)
         .get('/public/schedule/rounds/unplayed', 5)

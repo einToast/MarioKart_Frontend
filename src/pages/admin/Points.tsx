@@ -6,15 +6,14 @@ import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
-import { RoundReturnDTO, SwitchDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicCookiesService, PublicSettingsService } from "../../util/service";
+import { RoundReturnDTO } from "../../util/api/config/dto";
+import { AdminScheduleService, PublicCookiesService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
-    const [switches, setSwitches] = useState<SwitchDTO[]>([]);
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); // Alle Runden speichern
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
@@ -68,11 +67,6 @@ const Points: React.FC = () => {
                 window.location.assign('/admin/login');
                 return;
             }
-
-            // Without the switches the games are numbered, so a failed request is not an error
-            PublicSettingsService.getSwitches()
-                .then(setSwitches)
-                .catch(error => console.error("Error fetching switches:", error));
 
             const roundsPromise = AdminScheduleService.getRounds();
             roundsPromise.then((rounds) => {
@@ -146,7 +140,6 @@ const Points: React.FC = () => {
                                     key={game.id}
                                     game={game}
                                     roundId={round.id}
-                                    switches={switches}
                                     isOpen={openAccordions.includes(game.id.toString())}
                                     toggleAccordion={() => toggleAccordion(game.id.toString())}
                                 />

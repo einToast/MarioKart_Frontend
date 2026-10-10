@@ -1,12 +1,12 @@
 import React from 'react';
-import { SwitchDTO, TeamReturnDTO } from '../../util/api/config/dto';
-import { switchColorStyle } from '../../util/layout/switches';
+import { TeamReturnDTO } from '../../util/api/config/dto';
 
-const TeamComponent = ({ team, gameSwitch }: { team: TeamReturnDTO, gameSwitch: SwitchDTO }) => {
+const TeamComponent = ({ team, switchColor }: { team: TeamReturnDTO, switchColor: string }) => {
     const character = team.character.characterName;
+    const classColor = switchColor.toLowerCase();
     return (
-        <div className="switchColored" style={switchColorStyle(gameSwitch.color)}>
-            <div className="imageContainer switchColored">
+        <div className={`${classColor}`}>
+            <div className={`imageContainer ${classColor}`}> 
                 <img
                     src={`/characters/${character}.png`}
                     alt="teamcharacter"
@@ -15,7 +15,7 @@ const TeamComponent = ({ team, gameSwitch }: { team: TeamReturnDTO, gameSwitch: 
             </div>
             <div>
                 <p>{team.teamName}</p>
-                <p className="punkte">Switch {gameSwitch.name}</p>
+                <p className="punkte">Switch {switchColor}</p>
             </div>
         </div>
     );

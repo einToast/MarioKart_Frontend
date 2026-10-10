@@ -23,14 +23,6 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getSurveyKeyMode()).resolves.toBe(SurveyKeyMode.REQUIRED);
     });
 
-    it('reads the switches and the size of the final', async () => {
-        const switches = [{ name: 'Blau', color: '#9DAEDA' }];
-        backend.get(SETTINGS_URL, { finalTeamsCount: 8, switches });
-
-        await expect(PublicSettingsService.getSwitches()).resolves.toEqual(switches);
-        await expect(PublicSettingsService.getFinalTeamsCount()).resolves.toBe(8);
-    });
-
     it('falls back to closed, 0 games and disabled survey keys for settings the backend leaves out', async () => {
         backend.get(SETTINGS_URL, {});
 
@@ -38,8 +30,6 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getRegistrationOpen()).resolves.toBe(false);
         await expect(PublicSettingsService.getMaxGamesCount()).resolves.toBe(0);
         await expect(PublicSettingsService.getSurveyKeyMode()).resolves.toBe(SurveyKeyMode.DISABLED);
-        await expect(PublicSettingsService.getSwitches()).resolves.toEqual([]);
-        await expect(PublicSettingsService.getFinalTeamsCount()).resolves.toBe(4);
     });
 
     it('propagates the API error message', async () => {
@@ -62,9 +52,6 @@ describe('AdminSettingsService', () => {
         ['updateRegistrationOpen', () => AdminSettingsService.updateRegistrationOpen(true), { registrationOpen: true }],
         ['updateTournamentOpen', () => AdminSettingsService.updateTournamentOpen(false), { tournamentOpen: false }],
         ['updateSurveyKeyMode', () => AdminSettingsService.updateSurveyKeyMode(SurveyKeyMode.DISTRIBUTING), { surveyKeyMode: 'DISTRIBUTING' }],
-        ['updateFinalTeamsCount', () => AdminSettingsService.updateFinalTeamsCount(8), { finalTeamsCount: 8 }],
-        ['updateProgram', () => AdminSettingsService.updateProgram('{"entries":[]}'), { program: '{"entries":[]}' }],
-        ['updateVenue', () => AdminSettingsService.updateVenue([{ name: 'Blau', color: '#9DAEDA' }], '{"elements":[]}'), { switches: [{ name: 'Blau', color: '#9DAEDA' }], floorPlan: '{"elements":[]}' }],
     ])('%s updates only its own setting', async (_name, call, body) => {
         backend.put(ADMIN_SETTINGS_URL, body);
 

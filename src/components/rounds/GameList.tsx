@@ -1,13 +1,12 @@
 import React from 'react';
 import { GameReturnDTO } from '../../util/api/config/dto';
 import { GameListProps } from '../../util/api/config/interfaces';
-import { resolveSwitch } from '../../util/layout/switches';
 import PauseComponentAll from './PauseComponentAll';
 import PauseComponentSwiper from './PauseComponentSwiper';
 import RoundComponentAll from './RoundComponentAll';
 import RoundComponentSwiper from './RoundComponentSwiper';
 
-export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound, switches }) => {
+export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound }) => {
     const sortGamesForUser = (games: GameReturnDTO[]) => {
 
         const gamesWithSortedTeams = games.map(game => {
@@ -68,20 +67,20 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
                 />
             )}
             {sortedGames.map(game => {
-                const gameSwitch = resolveSwitch(switches, game.switchIndex);
+                const switchColor = game.switchGame;
                 return viewType === 'all' ? (
                     <RoundComponentSwiper
                         key={game.id}
                         game={game}
                         user={user}
-                        gameSwitch={gameSwitch}
+                        switchColor={switchColor}
                     />
                 ) : (
                     <RoundComponentAll
                         key={game.id}
                         game={game}
                         user={user}
-                        gameSwitch={gameSwitch}
+                        switchColor={switchColor}
                     />
                 );
             })}

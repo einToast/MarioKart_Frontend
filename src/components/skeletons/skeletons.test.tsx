@@ -25,13 +25,14 @@ describe('SkeletonTeamComponent', () => {
     it('uses the neutral switch colour by default', () => {
         const { container } = render(<SkeletonTeamComponent />);
 
-        expect((container.querySelector('.teamContainer > div') as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#ECECEC');
+        expect(container.querySelector('.teamContainer')).toHaveClass('weiß');
     });
 
     it('uses the given switch colour', () => {
-        const { container } = render(<SkeletonTeamComponent switchColor="#DA9DC9" />);
+        const { container } = render(<SkeletonTeamComponent switchColor="Rot" />);
 
-        expect((container.querySelector('.teamContainer > div') as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#DA9DC9');
+        expect(container.querySelector('.teamContainer')).toHaveClass('Rot');
+        expect(container.querySelector('.teamContainer > div')).toHaveClass('rot');
     });
 });
 

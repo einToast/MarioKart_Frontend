@@ -1,18 +1,18 @@
 import { team } from '../support/commands';
 
-const game = (id: number, switchIndex: number, teams: ReturnType<typeof team>[]) => ({ id, switchIndex, teams, points: null });
+const game = (id: number, switchGame: string, teams: ReturnType<typeof team>[]) => ({ id, switchGame, teams, points: null });
 
 const rounds = () => [
   {
     id: 5, roundNumber: 5, startTime: '2025-01-08T17:45:00', endTime: '2025-01-08T18:05:00', finalGame: false, played: false,
     games: [
-      game(51, 1, [team(1, 'Mario'), team(2, 'Luigi')]),
-      game(52, 0, [team(3, 'Peach'), team(4, 'Toad')]),
+      game(51, 'Rot', [team(1, 'Mario'), team(2, 'Luigi')]),
+      game(52, 'Blau', [team(3, 'Peach'), team(4, 'Toad')]),
     ],
   },
   {
     id: 6, roundNumber: 6, startTime: '2025-01-08T18:10:00', endTime: '2025-01-08T18:30:00', finalGame: false, played: false,
-    games: [game(61, 2, [team(3, 'Peach'), team(4, 'Toad')])],
+    games: [game(61, 'Grün', [team(3, 'Peach'), team(4, 'Toad')])],
   },
 ];
 

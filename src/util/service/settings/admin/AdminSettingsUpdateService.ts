@@ -1,6 +1,6 @@
 import { AdminSettingsService, PublicSettingsService } from "..";
 import { AdminSettingsApi } from "../../../api";
-import { SwitchDTO, TournamentDTO } from "../../../api/config/dto";
+import { TournamentDTO } from "../../../api/config/dto";
 import { AdminRegistrationService } from "../../registration";
 import { AdminScheduleService } from "../../schedule";
 import { AdminSurveyService } from "../../survey";
@@ -31,29 +31,6 @@ export const updateTournamentOpen = async (tournamentOpen: boolean): Promise<Tou
 export const updateSurveyKeyMode = async (surveyKeyMode: SurveyKeyMode): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {
         surveyKeyMode: surveyKeyMode
-    }
-    return await AdminSettingsApi.updateSettings(tournament);
-}
-
-export const updateFinalTeamsCount = async (finalTeamsCount: number): Promise<TournamentDTO> => {
-    const tournament: TournamentDTO = {
-        finalTeamsCount: finalTeamsCount
-    }
-    return await AdminSettingsApi.updateSettings(tournament);
-}
-
-// An empty floor plan removes the stored one
-export const updateVenue = async (switches: SwitchDTO[], floorPlan: string): Promise<TournamentDTO> => {
-    const tournament: TournamentDTO = {
-        switches: switches,
-        floorPlan: floorPlan
-    }
-    return await AdminSettingsApi.updateSettings(tournament);
-}
-
-export const updateProgram = async (program: string): Promise<TournamentDTO> => {
-    const tournament: TournamentDTO = {
-        program: program
     }
     return await AdminSettingsApi.updateSettings(tournament);
 }

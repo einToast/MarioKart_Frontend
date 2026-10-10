@@ -1,9 +1,9 @@
 import React from 'react';
-import { GameReturnDTO, SwitchDTO } from "../../util/api/config/dto";
+import { GameReturnDTO } from "../../util/api/config/dto";
 import { User } from '../../util/api/config/interfaces';
 import TeamComponent from './TeamComponent';
 
-const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, gameSwitch: SwitchDTO }> = ({ game, user, gameSwitch }) => {
+const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, switchColor: string }> = ({ game, user, switchColor }) => {
 
     if (!game?.teams) {
         return (
@@ -17,10 +17,10 @@ const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, game
                 return (
                     <div
                         key={team.id}
-                        className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''} slide`}
+                        className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''} ${switchColor} slide`}
                         style={{ opacity: team.active ? 1 : 0.5 }}
                     >
-                        <TeamComponent team={team} gameSwitch={gameSwitch} />
+                        <TeamComponent team={team} switchColor={switchColor} />
                     </div>
                 );
             })}

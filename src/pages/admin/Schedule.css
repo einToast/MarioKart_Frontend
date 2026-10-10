@@ -25,11 +25,6 @@
     width: 64px;
 }
 
-.scheduleControls .scheduleHint {
-    margin: 0 0 10px;
-    font-size: 14px;
-}
-
 .scheduleControls ion-button {
     display: block;
     margin: 0;

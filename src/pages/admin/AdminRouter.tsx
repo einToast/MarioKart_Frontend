@@ -8,11 +8,9 @@ import AdminDashboard from './Dashboard';
 import Final from './Final';
 import Schedule from './Schedule';
 import AdminPoints from './Points';
-import Program from './Program';
 import AdminResults from './Results';
 import AdminSurvey from './SurveyAdmin';
 import Teams from './Teams';
-import Venue from './Venue';
 
 const AdminRouter: React.FC = () => {
   return (
@@ -25,8 +23,6 @@ const AdminRouter: React.FC = () => {
       <Route path="/admin/control" element={<Control />} />
       <Route path="/admin/survey" element={<AdminSurvey />} />
       <Route path="/admin/teams" element={<Teams />} />
-      <Route path="/admin/venue" element={<Venue />} />
-      <Route path="/admin/program" element={<Program />} />
       <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
       <Route path="/admin/*" element={<Navigate to="/admin/dashboard" />} />
     </IonRouterOutlet>

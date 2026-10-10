@@ -35,7 +35,6 @@ describe('AdminSettingsApi', () => {
             409: 'Spielplan wurde bereits erstellt',
             404: 'Einstellungen nicht gefunden',
             401: 'Nicht autorisierter Zugriff',
-            400: 'Ungültige Einstellungen',
         },
         fallback: 'Einstellungen konnten nicht aktualisiert werden',
     });

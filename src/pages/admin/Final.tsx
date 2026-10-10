@@ -7,15 +7,11 @@ import BackLink from "../../components/admin/BackLink";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from '../../components/Toast';
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, AdminScheduleService, AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService, PublicCookiesService } from "../../util/service";
 import "./Final.css";
-
-const MIN_FINAL_TEAMS = 2;
-const MAX_FINAL_TEAMS = 8;
 
 const Final: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
-    const [finalTeamsCount, setFinalTeamsCount] = useState<number | ''>('');
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
 
@@ -58,23 +54,6 @@ const Final: React.FC = () => {
         });
     }
 
-    // The finalists depend on the stored count, so it is saved right away
-    const handleFinalTeamsCountChange = (value: string) => {
-        const count = value === '' ? '' : Number(value);
-        setFinalTeamsCount(count);
-        if (count === '' || !Number.isInteger(count) || count < MIN_FINAL_TEAMS || count > MAX_FINAL_TEAMS) {
-            return;
-        }
-
-        AdminSettingsService.updateFinalTeamsCount(count)
-            .then(() => getFinalTeams())
-            .catch(error => {
-                setError(error.message);
-                setIsError(true);
-                setShowToast(true);
-            });
-    }
-
     const handleFinalCreation = () => {
         setButtonDisabled(true);
         AdminScheduleService.createFinalSchedule()
@@ -108,7 +87,6 @@ const Final: React.FC = () => {
                 return;
             }
             getFinalTeams();
-            setFinalTeamsCount(await PublicSettingsService.getFinalTeamsCount());
         };
 
         loadData().catch(error => {
@@ -127,16 +105,6 @@ const Final: React.FC = () => {
                 </h2>
                 <p>Bist du dir sicher, dass du das Finalspiel erzeugen willst? Du hast danach nicht mehr die Möglichkeit
                     Rundenpunkte einzutragen.</p>
-                <div className="finalTeamsCount">
-                    <label htmlFor="finalTeamsCount">Teams im Finale:</label>
-                    <input id="finalTeamsCount"
-                        type="number"
-                        min={MIN_FINAL_TEAMS}
-                        max={MAX_FINAL_TEAMS}
-                        value={finalTeamsCount}
-                        onChange={(e) => handleFinalTeamsCountChange(e.target.value)}
-                    />
-                </div>
                 <p className={"bold"}>Folgende Teams sind im Finale:</p>
 
                 <div className={"teamFinalContainer"}>

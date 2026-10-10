@@ -60,6 +60,22 @@ ion-accordion {
 
     h3 {
         font-size: 18px;
+
+        &.gruen {
+            color: #9DDAAA;
+        }
+
+        &.rot {
+            color: #DA9DC9;
+        }
+
+        &.blau {
+            color: #9DAEDA;
+        }
+
+        &.weiss {
+            color: #ECECEC;
+        }
     }
 
     .characterInput {

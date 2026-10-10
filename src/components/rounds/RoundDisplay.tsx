@@ -11,8 +11,7 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     user,
     viewType,
     teamsNotInRound,
-    loading,
-    switches
+    loading
 }) => {
 
     if (loading) {
@@ -57,7 +56,6 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
                     user={user}
                     viewType={viewType}
                     teamsNotInRound={teamsNotInRound}
-                    switches={switches}
                 />
             )}
         </div>

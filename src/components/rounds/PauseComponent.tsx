@@ -1,13 +1,12 @@
 import React from 'react';
 import { TeamReturnDTO } from '../../util/api/config/dto';
-import { PAUSE_COLOR, switchColorStyle } from '../../util/layout/switches';
 
 const PauseComponent = ({ team }: { team: TeamReturnDTO }) => {
     const character = team.character.characterName || [];
 
     return (
-        <div className="switchColored" style={switchColorStyle(PAUSE_COLOR)}>
-            <div className="imageContainer switchColored">
+        <div className="gelb">
+            <div className={`imageContainer gelb`}>
                 <div className="pause">
                     <img
                         src={`/characters/${character}.png`}

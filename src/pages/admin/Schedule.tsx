@@ -12,14 +12,6 @@ import '../RegisterTeam.css';
 import "./Points.css";
 import "./Schedule.css";
 
-const LEGACY_VERSION = 1;
-const MAX_SWITCH_COUNT = 16;
-const MIN_TEAMS_PER_GAME = 2;
-const MAX_TEAMS_PER_GAME = 8;
-
-const isBetween = (value: number | '', min: number, max: number): value is number =>
-    value !== '' && Number.isInteger(value) && value >= min && value <= max;
-
 const Schedule: React.FC = () => {
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -29,7 +21,7 @@ const Schedule: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const [version, setVersion] = useState<number>(3);
+    const [version, setVersion] = useState<number>(2);
     const [switchCount, setSwitchCount] = useState<number | ''>(4);
     const [teamsPerGame, setTeamsPerGame] = useState<number | ''>(4);
     const [roundCount, setRoundCount] = useState<number | ''>(8);
@@ -62,34 +54,7 @@ const Schedule: React.FC = () => {
         });
     }, [modalClosed, location]);
 
-    // A team plays on one switch per round, so every switch needs its own teams
-    const teamsNeeded = switchCount !== '' && teamsPerGame !== '' ? switchCount * teamsPerGame : null;
-
-    const validateParameters = (): string | null => {
-        if (version === LEGACY_VERSION) {
-            return null;
-        }
-        if (!isBetween(switchCount, 1, MAX_SWITCH_COUNT)) {
-            return `Die Anzahl der Spielfelder muss zwischen 1 und ${MAX_SWITCH_COUNT} liegen`;
-        }
-        if (!isBetween(roundCount, 1, Number.MAX_SAFE_INTEGER)) {
-            return 'Es muss mindestens eine Runde geben';
-        }
-        if (!isBetween(teamsPerGame, MIN_TEAMS_PER_GAME, MAX_TEAMS_PER_GAME)) {
-            return `Pro Spiel können ${MIN_TEAMS_PER_GAME} bis ${MAX_TEAMS_PER_GAME} Teams antreten`;
-        }
-        return null;
-    };
-
     const handleScheduleCreation = () => {
-        const invalid = validateParameters();
-        if (invalid) {
-            setError(invalid);
-            setIsError(true);
-            setShowToast(true);
-            return;
-        }
-
         setButtonDisabled(true);
         AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, teamsPerGame as number)
             .then(newRounds => {
@@ -117,7 +82,7 @@ const Schedule: React.FC = () => {
     const handleVersionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedVersion = Number.parseInt(event.target.value);
         setVersion(selectedVersion);
-        if (selectedVersion === LEGACY_VERSION) {
+        if (selectedVersion === 1) {
             setSwitchCount(4);
             setTeamsPerGame(4);
             setRoundCount(8);
@@ -163,7 +128,6 @@ const Schedule: React.FC = () => {
                             >
                                 <option value="1">v1</option>
                                 <option value="2">v2</option>
-                                <option value="3">v3</option>
                             </select>
                         </div>
 
@@ -172,10 +136,9 @@ const Schedule: React.FC = () => {
                             <input id="switchCount"
                                 type="number"
                                 min={1}
-                                max={MAX_SWITCH_COUNT}
                                 value={switchCount}
                                 onChange={(e) => setSwitchCount(e.target.value === '' ? '' : Number(e.target.value))}
-                                disabled={version === LEGACY_VERSION}
+                                disabled={version === 1}
                             />
                         </div>
                         <div className="scheduleField">
@@ -185,24 +148,20 @@ const Schedule: React.FC = () => {
                                 min={1}
                                 value={roundCount}
                                 onChange={(e) => setRoundCount(e.target.value === '' ? '' : Number(e.target.value))}
-                                disabled={version === LEGACY_VERSION}
+                                disabled={version === 1}
                             />
                         </div>
                         <div className="scheduleField">
                             <label htmlFor="teamsPerGame">Teams pro Spiel:</label>
                             <input id="teamsPerGame"
                                 type="number"
-                                min={MIN_TEAMS_PER_GAME}
-                                max={MAX_TEAMS_PER_GAME}
+                                min={1}
                                 value={teamsPerGame}
                                 onChange={(e) => setTeamsPerGame(e.target.value === '' ? '' : Number(e.target.value))}
-                                disabled={version === LEGACY_VERSION}
+                                disabled={version === 1}
                             />
                         </div>
                     </div>
-                    {version !== LEGACY_VERSION && teamsNeeded !== null && (
-                        <p className="scheduleHint">Mindestens {teamsNeeded} Teams nötig</p>
-                    )}
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
                         <div onClick={handleScheduleCreation}
                             tabIndex={0}

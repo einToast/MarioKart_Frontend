@@ -47,20 +47,7 @@ Cypress.Commands.add('stubBackend', () => {
     // SockJS probes this endpoint before opening the socket; the specs do not use live updates
     cy.intercept(apiUrl('/ws/**'), { statusCode: 503, body: '' });
 
-    cy.stubApi('GET', '/public/settings', {
-        tournamentOpen: true,
-        registrationOpen: true,
-        maxGamesCount: 8,
-        surveyKeyMode: 'DISABLED',
-        finalTeamsCount: 4,
-        switches: [
-            { name: 'Blau', color: '#9DAEDA' },
-            { name: 'Rot', color: '#DA9DC9' },
-            { name: 'Grün', color: '#9DDAAA' },
-            { name: 'Weiß', color: '#ECECEC' },
-        ],
-        floorPlan: null,
-    });
+    cy.stubApi('GET', '/public/settings', { tournamentOpen: true, registrationOpen: true, maxGamesCount: 8, surveyKeyMode: 'DISABLED' });
     cy.stubApi('GET', '/public/schedule/create/schedule', true);
     cy.stubApi('GET', '/public/schedule/create/final_schedule', false);
     cy.stubApi('GET', '/public/schedule/rounds/unplayed', 5);
