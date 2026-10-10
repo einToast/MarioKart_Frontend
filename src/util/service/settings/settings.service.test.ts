@@ -23,6 +23,13 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getSurveyKeyMode()).resolves.toBe(SurveyKeyMode.REQUIRED);
     });
 
+    it('reads the switches', async () => {
+        const switches = [{ name: 'Blau', color: '#9DAEDA' }];
+        backend.get(SETTINGS_URL, { switches });
+
+        await expect(PublicSettingsService.getSwitches()).resolves.toEqual(switches);
+    });
+
     it('falls back to closed, 0 games and disabled survey keys for settings the backend leaves out', async () => {
         backend.get(SETTINGS_URL, {});
 
@@ -30,6 +37,7 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getRegistrationOpen()).resolves.toBe(false);
         await expect(PublicSettingsService.getMaxGamesCount()).resolves.toBe(0);
         await expect(PublicSettingsService.getSurveyKeyMode()).resolves.toBe(SurveyKeyMode.DISABLED);
+        await expect(PublicSettingsService.getSwitches()).resolves.toEqual([]);
     });
 
     it('propagates the API error message', async () => {

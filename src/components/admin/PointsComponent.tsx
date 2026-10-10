@@ -7,12 +7,12 @@ import {
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import "../../pages/admin/Points.css";
-import { GameReturnDTO, PointsReturnDTO } from "../../util/api/config/dto";
+import { GameReturnDTO, PointsReturnDTO, SwitchDTO } from "../../util/api/config/dto";
+import { resolveSwitch } from "../../util/layout/switches";
 import { AdminScheduleService } from "../../util/service";
-import { convertUmlauts } from "../../util/service/util";
 import Toast from "../Toast";
 
-const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void }> = ({ game, roundId, isOpen, toggleAccordion }) => {
+const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[] }> = ({ game, switches }) => {
     const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team.id === game.teams[0].id)?.points ?? 0);
     const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team.id === game.teams[1].id)?.points ?? 0);
     const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team.id === game.teams[2].id)?.points ?? 0);
@@ -21,6 +21,8 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
+
+    const gameSwitch = resolveSwitch(switches, game.switchIndex);
 
     const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
         const newValue = Number.parseInt(event.target.value);
@@ -62,7 +64,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     return (
         <IonAccordion value={game.id.toString()}>
             <IonItem slot="header" color="light">
-                <h3 className={convertUmlauts(game.switchGame).toLowerCase()}>Switch {game.switchGame}</h3>
+                <h3 style={{ color: gameSwitch.color }}>Switch {gameSwitch.name}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">

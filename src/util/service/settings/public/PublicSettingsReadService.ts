@@ -1,5 +1,5 @@
 import { PublicSettingsApi } from "../../../api";
-import { TournamentDTO } from "../../../api/config/dto";
+import { SwitchDTO, TournamentDTO } from "../../../api/config/dto";
 import { SurveyKeyMode } from "../../util";
 
 export const getSettings = async (): Promise<TournamentDTO> => {
@@ -24,4 +24,9 @@ export const getSurveyKeyMode = async (): Promise<SurveyKeyMode> => {
 export const getMaxGamesCount = async (): Promise<number> => {
     const tournament = await getSettings();
     return tournament.maxGamesCount ?? 0;
+}
+
+export const getSwitches = async (): Promise<SwitchDTO[]> => {
+    const tournament = await getSettings();
+    return tournament.switches ?? [];
 }

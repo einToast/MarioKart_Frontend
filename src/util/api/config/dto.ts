@@ -29,7 +29,7 @@ export interface RoundReturnDTO {
 
 export interface GameReturnDTO {
     id: number;
-    switchGame: string;
+    switchIndex: number;
     teams: TeamReturnDTO[];
     points: PointsReturnDTO[] | null;
 }
@@ -85,11 +85,20 @@ export interface BreakInputDTO {
     breakEnded: boolean;
 }
 
+export interface SwitchDTO {
+    name: string;
+    color: string;
+}
+
 export interface TournamentDTO {
     tournamentOpen?: boolean;
     registrationOpen?: boolean;
     maxGamesCount?: number;
     surveyKeyMode?: SurveyKeyMode;
+    finalTeamsCount?: number;
+    switches?: SwitchDTO[];
+    // JSON of the floor plan, see util/layout/floorPlan.ts
+    floorPlan?: string | null;
 }
 
 export interface ScheduleInputDTO {

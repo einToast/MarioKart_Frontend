@@ -1,12 +1,12 @@
 import React from 'react';
-import { GameReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
+import { GameReturnDTO, SwitchDTO, TeamReturnDTO } from "../../util/api/config/dto";
+import { switchColorStyle } from '../../util/layout/switches';
 
-const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, switchColor: string }> = ({ team, game, switchColor }) => {
+const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, gameSwitch: SwitchDTO }> = ({ team, game, gameSwitch }) => {
 
-    const classColor = switchColor.toLowerCase();
     return (
-        <div className={`${classColor}`}>
-            <div className={`imageContainer ${classColor}`} >
+        <div className="switchColored" style={switchColorStyle(gameSwitch.color)}>
+            <div className="imageContainer switchColored" >
                 <div className="round">
                     {game.teams.map(team => {
                         return (
@@ -22,7 +22,7 @@ const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, switc
             </div>
             <div>
                 <p>{team.teamName}</p>
-                <p>Switch {switchColor}</p>
+                <p>Switch {gameSwitch.name}</p>
             </div>
         </div>
     );

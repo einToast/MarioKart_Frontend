@@ -5,6 +5,7 @@ import {
   GameReturnDTO,
   QuestionReturnDTO,
   RoundReturnDTO,
+  SwitchDTO,
   TeamReturnDTO,
 } from "./dto";
 
@@ -72,6 +73,7 @@ export interface GameListProps {
   user: User | null;
   viewType: "all" | "personal";
   teamsNotInRound: TeamReturnDTO[];
+  switches?: SwitchDTO[];
 }
 
 export interface RoundDisplayProps {
@@ -82,6 +84,7 @@ export interface RoundDisplayProps {
   noGames?: boolean;
   teamsNotInRound: TeamReturnDTO[];
   loading?: boolean;
+  switches?: SwitchDTO[];
 }
 
 export interface SurveyAdminListItemProps {

@@ -5,6 +5,7 @@ import {
     PointsReturnDTO,
     QuestionReturnDTO,
     RoundReturnDTO,
+    SwitchDTO,
     TeamReturnDTO,
 } from '../util/api/config/dto';
 import { User } from '../util/api/config/interfaces';
@@ -36,11 +37,19 @@ export const makePoints = (team: TeamReturnDTO, points: number, id = team.id * 1
     team,
 });
 
+// The four switches of a classic tournament; games refer to them by their position
+export const makeSwitches = (): SwitchDTO[] => [
+    { name: 'Blau', color: '#9DAEDA' },
+    { name: 'Rot', color: '#DA9DC9' },
+    { name: 'Grün', color: '#9DDAAA' },
+    { name: 'Weiß', color: '#ECECEC' },
+];
+
 export const makeGame = (overrides: Partial<GameReturnDTO> = {}): GameReturnDTO => {
     const teams = overrides.teams ?? makeTeams();
     return {
         id: 1,
-        switchGame: 'Rot',
+        switchIndex: 1,
         teams,
         points: teams.map(team => makePoints(team, 0)),
         ...overrides,
