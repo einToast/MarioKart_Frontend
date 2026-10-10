@@ -7,16 +7,16 @@ import {
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useState } from "react";
 import "../../pages/admin/Points.css";
-import { GameReturnDTO, PointsReturnDTO, SwitchDTO } from "../../util/api/config/dto";
+import { GameReturnDTO, SwitchDTO } from "../../util/api/config/dto";
 import { resolveSwitch } from "../../util/layout/switches";
 import { AdminScheduleService } from "../../util/service";
 import Toast from "../Toast";
 
 const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[] }> = ({ game, switches }) => {
-    const [pointsOne, setPointsOne] = useState<number>(game.points?.find(point => point.team.id === game.teams[0].id)?.points ?? 0);
-    const [pointsTwo, setPointsTwo] = useState<number>(game.points?.find(point => point.team.id === game.teams[1].id)?.points ?? 0);
-    const [pointsThree, setPointsThree] = useState<number>(game.points?.find(point => point.team.id === game.teams[2].id)?.points ?? 0);
-    const [pointsFour, setPointsFour] = useState<number>(game.points?.find(point => point.team.id === game.teams[3].id)?.points ?? 0);
+    const pointsOfTeam = (teamId: number) => game.points?.find(point => point.team.id === teamId);
+
+    // One entry per team of the game, in the order of the teams
+    const [points, setPoints] = useState<number[]>(() => game.teams.map(team => pointsOfTeam(team.id)?.points ?? 0));
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -24,20 +24,15 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
 
     const gameSwitch = resolveSwitch(switches, game.switchIndex);
 
-    const handleChangePoints = (points: PointsReturnDTO, event: any, index: number) => {
+    const handleChangePoints = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const newValue = Number.parseInt(event.target.value);
 
-        if (index === 0) {
-            setPointsOne(newValue);
-        } else if (index === 1) {
-            setPointsTwo(newValue);
-        } else if (index === 2) {
-            setPointsThree(newValue);
-        } else if (index === 3) {
-            setPointsFour(newValue);
-        }
+        setPoints(previous => previous.map((value, position) => position === index ? newValue : value));
 
-        points.points = newValue;
+        const teamPoints = pointsOfTeam(game.teams[index].id);
+        if (teamPoints) {
+            teamPoints.points = newValue;
+        }
     };
 
     const handleSavePoints = () => {
@@ -69,38 +64,16 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
-                    <div className={"characterInput"}>
-                        <input
-                            type={"number"}
-                            value={pointsOne}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[0]?.id) ?? {} as PointsReturnDTO, e, 0)}
-                        />
-                        <img src={`/characters/${game.teams[0]?.character.characterName}.png`} alt="Character" />
-                    </div>
-                    <div className={"characterInput"}>
-                        <input
-                            type={"number"}
-                            value={pointsTwo}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[1]?.id) ?? {} as PointsReturnDTO, e, 1)}
-                        />
-                        <img src={`/characters/${game.teams[1]?.character.characterName}.png`} alt="Character" />
-                    </div>
-                    <div className={"characterInput"}>
-                        <input
-                            type={"number"}
-                            value={pointsThree}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[2]?.id) ?? {} as PointsReturnDTO, e, 2)}
-                        />
-                        <img src={`/characters/${game.teams[2]?.character.characterName}.png`} alt="Character" />
-                    </div>
-                    <div className={"characterInput"}>
-                        <input
-                            type={"number"}
-                            value={pointsFour}
-                            onChange={(e) => handleChangePoints(game.points?.find(point => point.team.id === game.teams[3]?.id) ?? {} as PointsReturnDTO, e, 3)}
-                        />
-                        <img src={`/characters/${game.teams[3]?.character.characterName}.png`} alt="Character" />
-                    </div>
+                    {game.teams.map((team, index) => (
+                        <div className={"characterInput"} key={team.id}>
+                            <input
+                                type={"number"}
+                                value={points[index]}
+                                onChange={(e) => handleChangePoints(e, index)}
+                            />
+                            <img src={`/characters/${team.character.characterName}.png`} alt="Character" />
+                        </div>
+                    ))}
                 </div>
                 <IonButton slot="start" shape="round" onClick={handleSavePoints}
                     tabIndex={0}

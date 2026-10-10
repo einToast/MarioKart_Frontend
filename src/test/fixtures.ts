@@ -45,6 +45,11 @@ export const makeSwitches = (): SwitchDTO[] => [
     { name: 'Weiß', color: '#ECECEC' },
 ];
 
+// Eight distinct teams with ids 1-8, as they appear in a game on a fully occupied switch
+export const makeEightTeams = (): TeamReturnDTO[] =>
+    ['Mario', 'Luigi', 'Peach', 'Toad', 'Yoshi', 'Wario', 'Bowser', 'Daisy'].map((characterName, index) =>
+        makeTeam({ id: index + 1, teamName: `Team ${characterName}`, character: { id: index + 1, characterName } }));
+
 export const makeGame = (overrides: Partial<GameReturnDTO> = {}): GameReturnDTO => {
     const teams = overrides.teams ?? makeTeams();
     return {

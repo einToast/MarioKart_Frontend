@@ -1,7 +1,7 @@
 import { IonAccordionGroup } from '@ionic/react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { backend } from '../../test/backend';
-import { makeGame, makePoints, makeSwitches, makeTeams } from '../../test/fixtures';
+import { makeEightTeams, makeGame, makePoints, makeSwitches, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { GameReturnDTO } from '../../util/api/config/dto';
@@ -133,5 +133,26 @@ describe('PointsComponent', () => {
         await expectErrorToast('Das Spiel konnte nicht gespeichert werden.');
     });
 
-    it.todo('renders a game with fewer than four teams (currently throws while reading the missing team)');
+    it('renders a game with fewer than four teams', () => {
+        const teams = makeTeams().slice(0, 2);
+
+        renderPoints(gameWithPoints({ teams, points: [makePoints(teams[0], 15), makePoints(teams[1], 12)] }));
+
+        expect(inputs().map(input => input.value)).toEqual(['15', '12']);
+    });
+
+    it('edits and saves a game with eight teams', async () => {
+        const teams = makeEightTeams();
+        const game = gameWithPoints({ teams, points: teams.map((team, index) => makePoints(team, 15 - index)) });
+        backend.put('/admin/schedule/games/3', game);
+        renderPoints(game);
+
+        expect(inputs().map(input => input.value)).toEqual(['15', '14', '13', '12', '11', '10', '9', '8']);
+        setPoints(7, '1');
+        fireEvent.click(screen.getByText(SAVE));
+
+        await expectSuccessToast('Spiel erfolgreich gespeichert');
+        const body = backend.requests[0].body as { points: { points: number }[] };
+        expect(body.points.map(entry => entry.points)).toEqual([15, 14, 13, 12, 11, 10, 9, 1]);
+    });
 });
