@@ -23,7 +23,7 @@ const paletteEntry = (switchIndex: number): SwitchDTO => {
     return SWITCH_PALETTE[index % SWITCH_PALETTE.length];
 };
 
-// A switch without a configured name is called by its number, like in the push notifications
+// A switch without a configured name is called by its number
 export const resolveSwitch = (switches: SwitchDTO[] | undefined | null, switchIndex: number): SwitchDTO => {
     const configured = switches?.[switchIndex];
     return {

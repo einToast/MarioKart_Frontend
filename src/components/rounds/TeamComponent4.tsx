@@ -2,7 +2,7 @@ import React from 'react';
 import { GameReturnDTO, SwitchDTO, TeamReturnDTO } from "../../util/api/config/dto";
 import { switchColorStyle } from '../../util/layout/switches';
 
-// Up to four characters keep their full size, more of them have to shrink to fit
+// 1-4 characters keep full size, more of them have to shrink to fit
 const FULL_SIZE_TEAMS = 4;
 const CIRCLE_CENTRE = { x: 80, y: 55 };
 const CIRCLE_RADIUS = 30;

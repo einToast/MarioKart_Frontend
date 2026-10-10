@@ -5,6 +5,7 @@ import { expectErrorToast, expectSuccessToast, queryToast } from '../test/overla
 import { buttonOf, currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
 import { makeSwitches } from '../test/fixtures';
 import { createDefaultFloorPlan, serializeFloorPlan } from '../util/layout/floorPlan';
+import { serializeProgram } from '../util/layout/program';
 import { NotificationService } from '../util/service';
 import Tab3 from './Tab3';
 
@@ -52,6 +53,35 @@ describe('Tab3 (details)', () => {
         expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
         expect(screen.getByText('Siegerehrung', { exact: false })).toHaveTextContent('21:00 Siegerehrung');
         expect(screen.getByTestId('qr-code')).toHaveAttribute('data-value', window.location.origin);
+    });
+
+    it('shows the default programme while none is stored', () => {
+        const { container } = renderPage();
+
+        expect(Array.from(container.querySelectorAll('.progressContainer p span')).map(time => time.textContent)).toEqual([
+            '16:00 - 16:45', '16:45 - 18:30', '18:30 - 19:00', '19:00 - 20:00', '20:00 - 20:45', '21:00',
+        ]);
+    });
+
+    it('shows the stored programme', async () => {
+        backend.get('/public/settings', {
+            tournamentOpen: true,
+            program: serializeProgram([{ icon: 'trophy', time: '12:00', text: 'Los gehts' }]),
+        });
+
+        renderPage();
+
+        expect(await screen.findByText('Los gehts', { exact: false })).toHaveTextContent('12:00 Los gehts');
+        expect(screen.queryByText('Siegerehrung', { exact: false })).not.toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Programm' })).toBeInTheDocument();
+    });
+
+    it('hides the programme when it was saved without entries', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, program: serializeProgram([]) });
+
+        renderPage();
+
+        await waitFor(() => expect(screen.queryByRole('heading', { name: 'Programm' })).not.toBeInTheDocument());
     });
 
     it('draws the stored room plan with the configured switches', async () => {

@@ -99,6 +99,8 @@ export interface TournamentDTO {
     switches?: SwitchDTO[];
     // JSON of the floor plan, see util/layout/floorPlan.ts
     floorPlan?: string | null;
+    // JSON of the programme, see util/layout/program.ts
+    program?: string | null;
 }
 
 export interface ScheduleInputDTO {

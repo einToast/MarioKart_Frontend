@@ -51,6 +51,13 @@ export const updateVenue = async (switches: SwitchDTO[], floorPlan: string): Pro
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
+export const updateProgram = async (program: string): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        program: program
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
 export const changeService = async (deleteType: ChangeType): Promise<void> => {
     switch (deleteType) {
         case ChangeType.TOURNAMENT:

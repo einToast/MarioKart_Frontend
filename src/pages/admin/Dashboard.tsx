@@ -129,6 +129,12 @@ const Dashboard: React.FC = () => {
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
+                        <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/program')}>
+                            <div>
+                                <p>Programm</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/control')}>
                             <div>
                                 <p>Kontrollzentrum</p>

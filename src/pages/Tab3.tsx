@@ -1,11 +1,8 @@
 import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
-    heart, medalOutline, megaphoneOutline,
+    heart,
     notificationsOutline,
-    notificationsSharp,
-    pizzaOutline,
-    playOutline,
-    playSkipForwardOutline
+    notificationsSharp
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
@@ -18,6 +15,7 @@ import Toast from '../components/Toast';
 import { SwitchDTO } from '../util/api/config/dto';
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { FloorPlan, parseFloorPlan } from '../util/layout/floorPlan';
+import { defaultProgram, PROGRAM_ICONS, ProgramEntry, resolveProgram } from '../util/layout/program';
 import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
@@ -27,6 +25,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [floorPlan, setFloorPlan] = useState<FloorPlan | null>(null);
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
+    const [program, setProgram] = useState<ProgramEntry[]>(defaultProgram);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -67,6 +66,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             }
             setSwitches(response.switches ?? []);
             setFloorPlan(parseFloorPlan(response.floorPlan));
+            setProgram(resolveProgram(response.program));
         }).catch(error => {
             console.error("Error fetching tournament status:", error);
         });
@@ -133,34 +133,21 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         </div>
                     </>
                 )}
-                <h3>Programm</h3>
-                <div className={"progressContainer"}>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={megaphoneOutline} />
-                        <p><span>16:00 - 16:45</span> Arne labert</p>
-                    </div>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={playOutline} />
-                        <p><span>16:45 - 18:30</span> Runde 1 - 5</p>
-                    </div>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={pizzaOutline} />
-                        <p><span>18:30 - 19:00</span> Pause</p>
-                    </div>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={playOutline} />
-                        <p><span>19:00 - 20:00</span> Runde 6 - 8</p>
-                    </div>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={playSkipForwardOutline} />
-                        <p><span>20:00 - 20:45</span> Finale</p>
-                    </div>
-                    <div>
-                        <IonIcon aria-hidden="true" icon={medalOutline} />
-                        <p><span>21:00</span> Siegerehrung</p>
-                    </div>
-                </div>
-                <br />
+                {program.length > 0 && (
+                    <>
+                        <h3>Programm</h3>
+                        <div className={"progressContainer"}>
+                            {program.map((entry, index) => (
+                                // The position is the identity of an entry
+                                <div key={index}>
+                                    <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
+                                    <p><span>{entry.time}</span> {entry.text}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <br />
+                    </>
+                )}
                 <h3>QR-Code für die Webseite</h3>
                 <div className={"progressContainer"}>
                     {/* <div>

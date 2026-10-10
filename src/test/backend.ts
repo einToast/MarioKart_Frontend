@@ -152,6 +152,7 @@ export const stubDefaultBackend = (): void => {
             finalTeamsCount: 4,
             switches: makeSwitches(),
             floorPlan: null,
+            program: null,
         })
         .get('/public/schedule/create/schedule', true)
         .get('/public/schedule/create/final_schedule', false)

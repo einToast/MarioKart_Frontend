@@ -63,6 +63,7 @@ describe('AdminSettingsService', () => {
         ['updateTournamentOpen', () => AdminSettingsService.updateTournamentOpen(false), { tournamentOpen: false }],
         ['updateSurveyKeyMode', () => AdminSettingsService.updateSurveyKeyMode(SurveyKeyMode.DISTRIBUTING), { surveyKeyMode: 'DISTRIBUTING' }],
         ['updateFinalTeamsCount', () => AdminSettingsService.updateFinalTeamsCount(8), { finalTeamsCount: 8 }],
+        ['updateProgram', () => AdminSettingsService.updateProgram('{"entries":[]}'), { program: '{"entries":[]}' }],
         ['updateVenue', () => AdminSettingsService.updateVenue([{ name: 'Blau', color: '#9DAEDA' }], '{"elements":[]}'), { switches: [{ name: 'Blau', color: '#9DAEDA' }], floorPlan: '{"elements":[]}' }],
     ])('%s updates only its own setting', async (_name, call, body) => {
         backend.put(ADMIN_SETTINGS_URL, body);
