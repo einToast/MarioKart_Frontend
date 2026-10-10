@@ -35,6 +35,13 @@ export const updateSurveyKeyMode = async (surveyKeyMode: SurveyKeyMode): Promise
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
+export const updateFinalTeamsCount = async (finalTeamsCount: number): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        finalTeamsCount: finalTeamsCount
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
 // An empty floor plan removes the stored one
 export const updateVenue = async (switches: SwitchDTO[], floorPlan: string): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {

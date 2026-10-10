@@ -33,6 +33,43 @@ describe('admin Final', () => {
         await waitFor(() => expect(teamNames(container)).toEqual(['Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']));
     });
 
+    it('shows the configured number of final teams', async () => {
+        renderPage();
+
+        await waitFor(() => expect(screen.getByLabelText('Teams im Finale:')).toHaveValue(4));
+    });
+
+    it('stores a changed number of final teams and reloads the finalists', async () => {
+        backend.put('/admin/settings', { finalTeamsCount: 2 });
+        const { container } = renderPage();
+        await screen.findByText('Team Toad');
+        backend.get(FINAL_TEAMS_URL, makeTeams().slice(0, 2));
+
+        fireEvent.change(screen.getByLabelText('Teams im Finale:'), { target: { value: '2' } });
+
+        await waitFor(() => expect(teamNames(container)).toEqual(['Team Mario', 'Team Luigi']));
+        expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ finalTeamsCount: 2 });
+    });
+
+    it.each(['', '1', '9'])('does not store "%s" as the number of final teams', async (value) => {
+        renderPage();
+        await screen.findByText('Team Toad');
+
+        fireEvent.change(screen.getByLabelText('Teams im Finale:'), { target: { value } });
+
+        expect(backend.requestsTo('PUT', '/admin/settings')).toHaveLength(0);
+    });
+
+    it('shows the error when the number of final teams cannot be stored', async () => {
+        backend.fail('PUT', '/admin/settings', 400);
+        renderPage();
+        await screen.findByText('Team Toad');
+
+        fireEvent.change(screen.getByLabelText('Teams im Finale:'), { target: { value: '6' } });
+
+        await expectErrorToast('Ungültige Einstellungen');
+    });
+
     it('lets the admin take teams out of the final but not delete them', async () => {
         renderPage();
         await screen.findByText('Team Mario');

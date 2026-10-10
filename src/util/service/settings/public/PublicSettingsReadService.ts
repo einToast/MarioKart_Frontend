@@ -2,6 +2,8 @@ import { PublicSettingsApi } from "../../../api";
 import { SwitchDTO, TournamentDTO } from "../../../api/config/dto";
 import { SurveyKeyMode } from "../../util";
 
+export const DEFAULT_FINAL_TEAMS_COUNT = 4;
+
 export const getSettings = async (): Promise<TournamentDTO> => {
     return await PublicSettingsApi.getSettings();
 }
@@ -29,4 +31,9 @@ export const getMaxGamesCount = async (): Promise<number> => {
 export const getSwitches = async (): Promise<SwitchDTO[]> => {
     const tournament = await getSettings();
     return tournament.switches ?? [];
+}
+
+export const getFinalTeamsCount = async (): Promise<number> => {
+    const tournament = await getSettings();
+    return tournament.finalTeamsCount ?? DEFAULT_FINAL_TEAMS_COUNT;
 }
