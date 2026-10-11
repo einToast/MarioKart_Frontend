@@ -36,6 +36,7 @@ describe('admin Control', () => {
                 'Turnier schließen',
                 'Registrierung schließen',
                 'Benachrichtigung senden',
+                'Punkteerkennung konfigurieren',
                 'Alle Teams löschen',
                 'Alle Umfragen löschen',
                 'Anwendung zurücksetzen',
@@ -51,6 +52,7 @@ describe('admin Control', () => {
                 'Pause ändern',
                 'Turnier schließen',
                 'Benachrichtigung senden',
+                'Punkteerkennung konfigurieren',
                 'Gesamten Spielplan löschen',
                 'Alle Umfragen löschen',
                 'Anwendung zurücksetzen',
@@ -66,6 +68,7 @@ describe('admin Control', () => {
                 'Pause ändern',
                 'Turnier schließen',
                 'Benachrichtigung senden',
+                'Punkteerkennung konfigurieren',
                 'Alle Finalspiele löschen',
                 'Alle Umfragen löschen',
                 'Anwendung zurücksetzen',
@@ -179,6 +182,38 @@ describe('admin Control', () => {
             fireEvent.keyDown(buttonOf('Anwendung zurücksetzen'), { key });
 
             expect(dialog().getByRole('heading')).toHaveTextContent('Anwendung zurücksetzen');
+        });
+    });
+
+    describe('point detection', () => {
+        const stubOcr = () => backend
+            .get('/public/ocr/available', ['openai'])
+            .get('/public/ocr/openai/config', { provider: 'openai', model: 'gpt-6.1-sol', thinking: 'low' })
+            .get('/public/ocr/openai/models', ['gpt-6.1-sol']);
+
+        it('saves the configuration of a provider and confirms', async () => {
+            stubOcr();
+            backend.put('/public/ocr/openai/config', {});
+            renderPage();
+
+            fireEvent.click(await screen.findByText('Punkteerkennung konfigurieren'));
+            await waitFor(() => expect(dialog().getAllByRole('combobox')).toHaveLength(3));
+            fireEvent.click(dialog().getByText('Konfiguration speichern'));
+
+            await expectSuccessToast('Die Punkteerkennung wurde konfiguriert');
+            expect(backend.requestsTo('PUT', '/public/ocr/openai/config')[0].body).toEqual({ model: 'gpt-6.1-sol', thinking: 'low' });
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        });
+
+        it('closes the configuration without a confirmation message on cancel', async () => {
+            stubOcr();
+            renderPage();
+            fireEvent.click(await screen.findByText('Punkteerkennung konfigurieren'));
+
+            fireEvent.click(dialog().getByText('Abbrechen'));
+
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+            expect(queryToast()).not.toBeInTheDocument();
         });
     });
 
