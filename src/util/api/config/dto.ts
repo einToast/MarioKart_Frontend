@@ -103,6 +103,32 @@ export interface TournamentDTO {
     program?: string | null;
 }
 
+export interface OcrInputDTO {
+    provider: string;
+    image: string; // Base64 encoded image
+}
+
+export interface OcrCharacterDTO {
+    name: string;
+    points: number;
+    place?: number | null;
+}
+
+export interface OcrReturnDTO {
+    characters: OcrCharacterDTO[];
+}
+
+export interface ProviderInputDTO {
+    model: string;
+    thinking: string;
+}
+
+export interface ProviderReturnDTO {
+    provider: string;
+    model: string;
+    thinking: string;
+}
+
 export interface ScheduleInputDTO {
     version: number;
     numFields: number;

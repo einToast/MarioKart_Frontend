@@ -16,6 +16,7 @@ export class ApiPath {
 
     static readonly CONTROLLER = {
         NOTIFICATION: 'notification',
+        OCR: 'ocr',
         REGISTRATION: 'teams',
         SCHEDULE: 'schedule',
         SETTINGS: 'settings',

@@ -2,9 +2,10 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend } from '../../test/backend';
 import { makeGame, makePoints, makeRound, makeTeams } from '../../test/fixtures';
-import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
+import { expectErrorToast, expectSuccessToast, queryToast } from '../../test/overlays';
 import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import { RoundReturnDTO } from '../../util/api/config/dto';
+import { AdminOcrService } from '../../util/service';
 import Points from './Points';
 
 const ROUNDS_URL = '/admin/schedule/rounds';
@@ -46,6 +47,7 @@ const waitForRound = (container: HTMLElement, time: string) => waitFor(() => exp
 describe('admin Points', () => {
     beforeEach(() => {
         stubDefaultBackend();
+        backend.get('/public/ocr/available', []);
     });
 
     itRequiresAnAdminSession(renderPage);
@@ -194,6 +196,103 @@ describe('admin Points', () => {
         fireEvent.click(screen.getByText('Zurück'));
 
         expect(currentPath()).toBe('/admin/dashboard');
+    });
+
+    describe('with point detection', () => {
+        const providerSelect = () => screen.getByLabelText('Punkteerkennung:') as HTMLSelectElement;
+        const photo = new File(['image'], 'result.jpg', { type: 'image/jpeg' });
+
+        beforeEach(() => {
+            // jsdom has no object URLs
+            URL.createObjectURL = vi.fn(() => 'blob:photo');
+            URL.revokeObjectURL = vi.fn();
+            AdminOcrService.clearGamePhotos();
+        });
+
+        afterEach(() => {
+            localStorage.clear();
+        });
+
+        it('offers the available providers and a photo for every game', async () => {
+            stubRounds();
+            backend.get('/public/ocr/available', ['gemini', 'openai']);
+
+            const { container } = renderPage();
+
+            await waitForRound(container, '17:10 - 17:30');
+            await waitFor(() => expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini', 'openai']));
+            expect(providerSelect()).toHaveValue('gemini');
+            expect(screen.getAllByText('Foto auswählen')).toHaveLength(2);
+        });
+
+        it('keeps the provider that was used last selected', async () => {
+            stubRounds();
+            backend.get('/public/ocr/available', ['gemini', 'openai']);
+            const first = renderPage();
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
+            first.unmount();
+
+            renderPage();
+
+            await waitFor(() => expect(providerSelect()).toHaveValue('openai'));
+        });
+
+        it('enters the points read from the photo with the selected provider', async () => {
+            stubRounds();
+            backend
+                .get('/public/ocr/available', ['gemini', 'openai'])
+                .post('/public/ocr/2/1', { characters: [{ name: 'Toad', points: 1 }, { name: 'Peach', points: 2 }, { name: 'Luigi', points: 3 }, { name: 'Mario', points: 4 }] });
+            const { container } = renderPage();
+            await waitForRound(container, '17:10 - 17:30');
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+
+            fireEvent.change(screen.getByLabelText('Foto von Switch Rot'), { target: { files: [photo] } });
+            fireEvent.click(screen.getByText('Foto auswerten'));
+
+            await expectSuccessToast('Switch Rot: Punkte erkannt, bitte prüfen und speichern');
+            expect(backend.requestsTo('POST', '/public/ocr/2/1')[0].body).toEqual({ provider: 'gemini', image: 'aW1hZ2U=' });
+            const points = (screen.getAllByRole('spinbutton') as HTMLInputElement[]).map(input => input.value);
+            expect(points).toEqual(['4', '3', '2', '1', '0', '0', '0', '0']);
+        });
+
+        it('keeps a game open when the page renders again', async () => {
+            stubRounds();
+            backend.get('/public/ocr/available', ['gemini', 'openai']);
+            const { container } = renderPage();
+            await waitForRound(container, '17:10 - 17:30');
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+            const games = container.querySelector('ion-accordion-group') as HTMLIonAccordionGroupElement;
+
+            // Ionic reports the game that was opened with a click
+            fireEvent(games, new CustomEvent('ionChange', { detail: { value: '1' } }));
+            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
+
+            expect(games.value).toBe('1');
+        });
+
+        it('offers no photos when no provider is available', async () => {
+            stubRounds();
+
+            const { container } = renderPage();
+
+            await waitForRound(container, '17:10 - 17:30');
+            expect(screen.queryByLabelText('Punkteerkennung:')).not.toBeInTheDocument();
+            expect(screen.queryByText('Foto auswählen')).not.toBeInTheDocument();
+        });
+
+        it('offers no photos and reports no error when the providers cannot be loaded', async () => {
+            stubRounds();
+            backend.fail('GET', '/public/ocr/available', 500);
+            const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+            const { container } = renderPage();
+
+            await waitForRound(container, '17:10 - 17:30');
+            await waitFor(() => expect(logged).toHaveBeenCalled());
+            expect(screen.queryByText('Foto auswählen')).not.toBeInTheDocument();
+            expect(queryToast()).not.toBeInTheDocument();
+        });
     });
 
     it.todo('loads the selected round by its id (currently the round number is sent as the id)');
