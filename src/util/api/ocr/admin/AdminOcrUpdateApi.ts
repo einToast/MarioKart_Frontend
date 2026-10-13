@@ -2,8 +2,7 @@ import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { ProviderInputDTO, ProviderReturnDTO } from '../../config/dto';
 
-// TODO: The backend serves its OCR controllers below the public path
-const BASE_URL = ApiPath.createPath('PUBLIC', 'OCR');
+const BASE_URL = ApiPath.createPath('ADMIN', 'OCR');
 
 export const updateProviderConfig = async (providerName: string, config: ProviderInputDTO): Promise<ProviderReturnDTO> => {
     try {

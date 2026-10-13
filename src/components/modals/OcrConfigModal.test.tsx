@@ -5,7 +5,7 @@ import { buttonOf } from '../../test/render';
 import OcrConfigModal from './OcrConfigModal';
 
 const SAVE = 'Konfiguration speichern';
-const OCR_URL = '/public/ocr';
+const OCR_URL = '/admin/ocr';
 
 const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
 const fieldBelow = (label: string) => (screen.getByText(label).parentElement as HTMLElement).querySelector('select, input') as HTMLSelectElement;

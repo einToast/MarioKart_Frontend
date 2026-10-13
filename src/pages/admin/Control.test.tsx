@@ -187,13 +187,13 @@ describe('admin Control', () => {
 
     describe('point detection', () => {
         const stubOcr = () => backend
-            .get('/public/ocr/available', ['openai'])
-            .get('/public/ocr/openai/config', { provider: 'openai', model: 'gpt-6.1-sol', thinking: 'low' })
-            .get('/public/ocr/openai/models', ['gpt-6.1-sol']);
+            .get('/admin/ocr/available', ['openai'])
+            .get('/admin/ocr/openai/config', { provider: 'openai', model: 'gpt-6.1-sol', thinking: 'low' })
+            .get('/admin/ocr/openai/models', ['gpt-6.1-sol']);
 
         it('saves the configuration of a provider and confirms', async () => {
             stubOcr();
-            backend.put('/public/ocr/openai/config', {});
+            backend.put('/admin/ocr/openai/config', {});
             renderPage();
 
             fireEvent.click(await screen.findByText('Punkteerkennung konfigurieren'));
@@ -201,7 +201,7 @@ describe('admin Control', () => {
             fireEvent.click(dialog().getByText('Konfiguration speichern'));
 
             await expectSuccessToast('Die Punkteerkennung wurde konfiguriert');
-            expect(backend.requestsTo('PUT', '/public/ocr/openai/config')[0].body).toEqual({ model: 'gpt-6.1-sol', thinking: 'low' });
+            expect(backend.requestsTo('PUT', '/admin/ocr/openai/config')[0].body).toEqual({ model: 'gpt-6.1-sol', thinking: 'low' });
             await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
         });
 

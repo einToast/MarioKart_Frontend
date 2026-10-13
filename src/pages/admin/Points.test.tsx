@@ -47,7 +47,7 @@ const waitForRound = (container: HTMLElement, time: string) => waitFor(() => exp
 describe('admin Points', () => {
     beforeEach(() => {
         stubDefaultBackend();
-        backend.get('/public/ocr/available', []);
+        backend.get('/admin/ocr/available', []);
     });
 
     itRequiresAnAdminSession(renderPage);
@@ -215,7 +215,7 @@ describe('admin Points', () => {
 
         it('offers the available providers and a photo for every game', async () => {
             stubRounds();
-            backend.get('/public/ocr/available', ['gemini', 'openai']);
+            backend.get('/admin/ocr/available', ['gemini', 'openai']);
 
             const { container } = renderPage();
 
@@ -227,7 +227,7 @@ describe('admin Points', () => {
 
         it('keeps the provider that was used last selected', async () => {
             stubRounds();
-            backend.get('/public/ocr/available', ['gemini', 'openai']);
+            backend.get('/admin/ocr/available', ['gemini', 'openai']);
             const first = renderPage();
             await waitFor(() => expect(providerSelect().options).toHaveLength(2));
             fireEvent.change(providerSelect(), { target: { value: 'openai' } });
@@ -241,8 +241,8 @@ describe('admin Points', () => {
         it('enters the points read from the photo with the selected provider', async () => {
             stubRounds();
             backend
-                .get('/public/ocr/available', ['gemini', 'openai'])
-                .post('/public/ocr/2/1', { characters: [{ name: 'Toad', points: 1 }, { name: 'Peach', points: 2 }, { name: 'Luigi', points: 3 }, { name: 'Mario', points: 4 }] });
+                .get('/admin/ocr/available', ['gemini', 'openai'])
+                .post('/admin/ocr/2/1', { characters: [{ name: 'Toad', points: 1 }, { name: 'Peach', points: 2 }, { name: 'Luigi', points: 3 }, { name: 'Mario', points: 4 }] });
             const { container } = renderPage();
             await waitForRound(container, '17:10 - 17:30');
             await waitFor(() => expect(providerSelect().options).toHaveLength(2));
@@ -251,14 +251,14 @@ describe('admin Points', () => {
             fireEvent.click(screen.getByText('Foto auswerten'));
 
             await expectSuccessToast('Switch Rot: Punkte erkannt, bitte prüfen und speichern');
-            expect(backend.requestsTo('POST', '/public/ocr/2/1')[0].body).toEqual({ provider: 'gemini', image: 'aW1hZ2U=' });
+            expect(backend.requestsTo('POST', '/admin/ocr/2/1')[0].body).toEqual({ provider: 'gemini', image: 'aW1hZ2U=' });
             const points = (screen.getAllByRole('spinbutton') as HTMLInputElement[]).map(input => input.value);
             expect(points).toEqual(['4', '3', '2', '1', '0', '0', '0', '0']);
         });
 
         it('keeps a game open when the page renders again', async () => {
             stubRounds();
-            backend.get('/public/ocr/available', ['gemini', 'openai']);
+            backend.get('/admin/ocr/available', ['gemini', 'openai']);
             const { container } = renderPage();
             await waitForRound(container, '17:10 - 17:30');
             await waitFor(() => expect(providerSelect().options).toHaveLength(2));
@@ -283,7 +283,7 @@ describe('admin Points', () => {
 
         it('offers no photos and reports no error when the providers cannot be loaded', async () => {
             stubRounds();
-            backend.fail('GET', '/public/ocr/available', 500);
+            backend.fail('GET', '/admin/ocr/available', 500);
             const logged = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
             const { container } = renderPage();

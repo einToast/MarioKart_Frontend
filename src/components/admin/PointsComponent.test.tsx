@@ -135,7 +135,7 @@ describe('PointsComponent', () => {
     });
 
     describe('point detection', () => {
-        const OCR_URL = '/public/ocr/6/3';
+        const OCR_URL = '/admin/ocr/6/3';
         const photoInput = () => screen.getByLabelText('Foto von Switch Rot');
         const choosePhoto = () => fireEvent.change(photoInput(), { target: { files: [new File(['image'], 'result.jpg', { type: 'image/jpeg' })] } });
         const evaluatePhoto = () => {

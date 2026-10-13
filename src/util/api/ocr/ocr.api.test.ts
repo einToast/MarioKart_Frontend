@@ -10,7 +10,7 @@ describe('AdminOcrApi', () => {
     describeEndpoint('getAvailableProviders', {
         call: () => AdminOcrApi.getAvailableProviders(),
         method: 'GET',
-        url: '/public/ocr/available',
+        url: '/admin/ocr/available',
         response: ['gemini', 'openai'],
         errors: {
             401: 'Nicht autorisierter Zugriff',
@@ -21,7 +21,7 @@ describe('AdminOcrApi', () => {
     describeEndpoint('getProviderModels', {
         call: () => AdminOcrApi.getProviderModels('openai'),
         method: 'GET',
-        url: '/public/ocr/openai/models',
+        url: '/admin/ocr/openai/models',
         response: ['gpt-6.1-sol'],
         errors: {
             401: 'Nicht autorisierter Zugriff',
@@ -32,7 +32,7 @@ describe('AdminOcrApi', () => {
     describeEndpoint('getProviderConfig', {
         call: () => AdminOcrApi.getProviderConfig('openai'),
         method: 'GET',
-        url: '/public/ocr/openai/config',
+        url: '/admin/ocr/openai/config',
         response: providerConfig,
         errors: {
             401: 'Nicht autorisierter Zugriff',
@@ -43,7 +43,7 @@ describe('AdminOcrApi', () => {
     describeEndpoint('updateProviderConfig', {
         call: () => AdminOcrApi.updateProviderConfig('openai', providerInput),
         method: 'PUT',
-        url: '/public/ocr/openai/config',
+        url: '/admin/ocr/openai/config',
         body: providerInput,
         response: providerConfig,
         errors: {
@@ -55,7 +55,7 @@ describe('AdminOcrApi', () => {
     describeEndpoint('detectCharacters', {
         call: () => AdminOcrApi.detectCharacters(6, 3, ocrInput),
         method: 'POST',
-        url: '/public/ocr/6/3',
+        url: '/admin/ocr/6/3',
         body: ocrInput,
         response: { characters: [{ name: 'Mario', points: 15, place: 1 }] },
         errors: {
