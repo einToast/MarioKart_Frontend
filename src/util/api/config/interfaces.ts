@@ -52,6 +52,10 @@ export interface NotificationModalResult {
   notificationSent?: boolean;
 }
 
+export interface OcrConfigModalResult {
+  ocrConfigChanged?: boolean;
+}
+
 export interface RoundHeaderProps {
   title: string;
   onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;

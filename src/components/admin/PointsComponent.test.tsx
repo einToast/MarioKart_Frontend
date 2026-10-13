@@ -5,6 +5,7 @@ import { makeEightTeams, makeGame, makePoints, makeSwitches, makeTeams } from '.
 import { buttonOf } from '../../test/render';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { GameReturnDTO } from '../../util/api/config/dto';
+import { AdminOcrService } from '../../util/service';
 import PointsComponent from './PointsComponent';
 
 const SAVE = 'Spiel speichern';
@@ -20,10 +21,10 @@ const gameWithPoints = (overrides: Partial<GameReturnDTO> = {}): GameReturnDTO =
     });
 };
 
-const renderPoints = (game: GameReturnDTO, switches = makeSwitches()) =>
+const renderPoints = (game: GameReturnDTO, switches = makeSwitches(), ocrProvider?: string) =>
     render(
         <IonAccordionGroup>
-            <PointsComponent game={game} roundId={6} isOpen={true} toggleAccordion={vi.fn()} switches={switches} />
+            <PointsComponent game={game} roundId={6} isOpen={true} toggleAccordion={vi.fn()} switches={switches} ocrProvider={ocrProvider} />
         </IonAccordionGroup>
     );
 
@@ -131,6 +132,202 @@ describe('PointsComponent', () => {
         fireEvent.click(screen.getByText(SAVE));
 
         await expectErrorToast('Das Spiel konnte nicht gespeichert werden.');
+    });
+
+    describe('point detection', () => {
+        const OCR_URL = '/admin/ocr/6/3';
+        const photoInput = () => screen.getByLabelText('Foto von Switch Rot');
+        const choosePhoto = () => fireEvent.change(photoInput(), { target: { files: [new File(['image'], 'result.jpg', { type: 'image/jpeg' })] } });
+        const evaluatePhoto = () => {
+            choosePhoto();
+            fireEvent.click(screen.getByText('Foto auswerten'));
+        };
+
+        beforeEach(() => {
+            // jsdom has no object URLs
+            let photos = 0;
+            URL.createObjectURL = vi.fn(() => `blob:photo-${++photos}`);
+            URL.revokeObjectURL = vi.fn();
+            AdminOcrService.clearGamePhotos();
+        });
+
+        it('offers no photo without a provider', () => {
+            renderPoints(gameWithPoints());
+
+            expect(screen.queryByText('Foto auswählen')).not.toBeInTheDocument();
+        });
+
+        it('opens the photo chooser from the button', () => {
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+            const click = vi.spyOn(photoInput() as HTMLInputElement, 'click');
+
+            fireEvent.click(screen.getByText('Foto auswählen'));
+
+            expect(click).toHaveBeenCalledTimes(1);
+            expect(screen.queryByText('Foto auswerten')).not.toBeInTheDocument();
+        });
+
+        describe('drag and drop', () => {
+            const game = (container: HTMLElement) => container.querySelector('ion-accordion') as HTMLElement;
+            const files = (...dropped: File[]) => ({ dataTransfer: { types: ['Files'], files: dropped } });
+            const jpeg = new File(['image'], 'result.jpg', { type: 'image/jpeg' });
+
+            it('shows a dropped photo without evaluating it', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(jpeg));
+
+                expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo-1');
+                expect(screen.getByText('Foto auswerten')).toBeInTheDocument();
+                expect(backend.requests).toEqual([]);
+            });
+
+            it('takes the photo out of several dropped files', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(new File(['text'], 'notes.txt', { type: 'text/plain' }), jpeg));
+
+                expect(screen.getByAltText('Ergebnis von Switch Rot')).toBeInTheDocument();
+            });
+
+            it('rejects a dropped file that is not a photo', async () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(new File(['text'], 'notes.txt', { type: 'text/plain' })));
+
+                await expectErrorToast('Switch Rot: Nur PNG, JPEG, WebP oder GIF können ausgewertet werden');
+                expect(screen.queryByAltText('Ergebnis von Switch Rot')).not.toBeInTheDocument();
+            });
+
+            it('marks the game while a photo is dragged over it', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.dragOver(game(container), files());
+                expect(game(container)).toHaveClass('photoDropTarget');
+
+                fireEvent.dragLeave(game(container), { relatedTarget: document.body });
+                expect(game(container)).not.toHaveClass('photoDropTarget');
+            });
+
+            it('ignores dragged text', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.dragOver(game(container), { dataTransfer: { types: ['text/plain'], files: [] } });
+
+                expect(game(container)).not.toHaveClass('photoDropTarget');
+            });
+
+            it('accepts no photo without a provider', () => {
+                const { container } = renderPoints(gameWithPoints());
+
+                fireEvent.drop(game(container), files(jpeg));
+
+                expect(screen.queryByAltText('Ergebnis von Switch Rot')).not.toBeInTheDocument();
+            });
+        });
+
+        it('shows the chosen photo without evaluating it', () => {
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            choosePhoto();
+
+            expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo-1');
+            expect(screen.getByText('Anderes Foto auswählen')).toBeInTheDocument();
+            expect(backend.requests).toHaveLength(0);
+        });
+
+        it('shows the photo next to the points', () => {
+            const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            choosePhoto();
+
+            const comparison = container.querySelector('.pointsComparison') as HTMLElement;
+            expect(comparison).toContainElement(inputs()[0]);
+            expect(comparison).toContainElement(screen.getByAltText('Ergebnis von Switch Rot'));
+        });
+
+        it('shows a newly chosen photo unzoomed', () => {
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+            choosePhoto();
+            fireEvent.doubleClick(screen.getByAltText('Ergebnis von Switch Rot'));
+            expect(screen.getByAltText('Ergebnis von Switch Rot').style.transform).toContain('scale(3)');
+
+            choosePhoto();
+
+            expect(screen.getByAltText('Ergebnis von Switch Rot').style.transform).toContain('scale(1)');
+        });
+
+        it('replaces the photo with another one', () => {
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            choosePhoto();
+            choosePhoto();
+
+            expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo-2');
+            expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:photo-1');
+        });
+
+        it('still shows the photo after the game was rendered anew', () => {
+            const first = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+            choosePhoto();
+            first.unmount();
+
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo-1');
+            expect(screen.getByText('Foto auswerten')).toBeInTheDocument();
+        });
+
+        it('enters the detected points by character and saves them with the game', async () => {
+            const game = gameWithPoints();
+            backend
+                .post(OCR_URL, { characters: [{ name: 'Toad', points: 1, place: 4 }, { name: 'Mario', points: 9, place: 1 }, { name: 'Peach', points: 3, place: 3 }, { name: 'Luigi', points: 5, place: 2 }] })
+                .put('/admin/schedule/games/3', game);
+            renderPoints(game, makeSwitches(), 'openai');
+
+            evaluatePhoto();
+
+            await expectSuccessToast('Switch Rot: Punkte erkannt, bitte prüfen und speichern');
+            expect(backend.requestsTo('POST', OCR_URL)[0].body).toEqual({ provider: 'openai', image: 'aW1hZ2U=' });
+            expect(inputs().map(input => input.value)).toEqual(['9', '5', '3', '1']);
+            expect(screen.getByAltText('Ergebnis von Switch Rot')).toBeInTheDocument();
+
+            fireEvent.click(screen.getByText(SAVE));
+
+            await expectSuccessToast('Spiel erfolgreich gespeichert');
+            const body = backend.requestsTo('PUT', '/admin/schedule/games/3')[0].body as { points: { points: number }[] };
+            expect(body.points.map(entry => entry.points)).toEqual([9, 5, 3, 1]);
+        });
+
+        it('keeps the points of characters the photo does not show and says so', async () => {
+            backend.post(OCR_URL, { characters: [{ name: 'Mario', points: 9 }, { name: 'Yoshi', points: 7 }] });
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            evaluatePhoto();
+
+            await expectErrorToast('Switch Rot: Nicht alle Charaktere wurden erkannt');
+            expect(inputs().map(input => input.value)).toEqual(['9', '12', '9', '6']);
+        });
+
+        it('says so when nothing was detected', async () => {
+            backend.post(OCR_URL, { characters: [] });
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            evaluatePhoto();
+
+            await expectErrorToast('Switch Rot: Auf dem Foto wurden keine Punkte erkannt');
+            expect(inputs().map(input => input.value)).toEqual(['15', '12', '9', '6']);
+        });
+
+        it('shows the reason when the photo cannot be evaluated', async () => {
+            backend.fail('POST', OCR_URL, 500);
+            renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+            evaluatePhoto();
+
+            await expectErrorToast('Switch Rot: Foto konnte nicht ausgewertet werden');
+            expect(screen.getByText('Foto auswerten')).toBeInTheDocument();
+        });
     });
 
     it('renders a game with fewer than four teams', () => {

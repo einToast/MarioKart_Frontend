@@ -8,10 +8,11 @@ import '../RegisterTeam.css';
 import BackLink from "../../components/admin/BackLink";
 import BreakChangeModal from "../../components/modals/BreakChangeModal";
 import NotificationModal from "../../components/modals/NotificationModal";
+import OcrConfigModal from "../../components/modals/OcrConfigModal";
 import TournamentModal from "../../components/modals/TournamentModal";
 import Toast from "../../components/Toast";
 import { BreakReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
-import { BreakModalResult, NotificationModalResult } from "../../util/api/config/interfaces";
+import { BreakModalResult, NotificationModalResult, OcrConfigModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
 
@@ -27,6 +28,7 @@ const Control: React.FC = () => {
     const [showModal, setShowModal] = useState<boolean>(false);
     const [showBreakModal, setShowBreakModal] = useState<boolean>(false);
     const [showNotificationModal, setShowNotificationModal] = useState<boolean>(false);
+    const [showOcrConfigModal, setShowOcrConfigModal] = useState<boolean>(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
     const [error, setError] = useState<string>('Error');
@@ -119,6 +121,14 @@ const Control: React.FC = () => {
         setModalClosed(prev => !prev);
         if (notify.notificationSent) {
             setError('Benachrichtigung wurde gesendet');
+            setIsError(false);
+            setShowToast(true);
+        }
+    }
+
+    const closeOcrConfigModal = (result: OcrConfigModalResult) => {
+        if (result.ocrConfigChanged) {
+            setError('Die Punkteerkennung wurde konfiguriert');
             setIsError(false);
             setShowToast(true);
         }
@@ -226,6 +236,19 @@ const Control: React.FC = () => {
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
+                    <IonButton slot="start" className={"secondary"} onClick={() => setShowOcrConfigModal(true)}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                setShowOcrConfigModal(true);
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>Punkteerkennung konfigurieren</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
                     {(!isSchedule &&
                         <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.TEAMS)}
                             tabIndex={0}
@@ -321,6 +344,13 @@ const Control: React.FC = () => {
                         closeNotificationModal(notify);
                     }}
                     teams={teams}
+                />
+                <OcrConfigModal
+                    showModal={showOcrConfigModal}
+                    closeModal={(result) => {
+                        setShowOcrConfigModal(false);
+                        closeOcrConfigModal(result);
+                    }}
                 />
             </IonContent>
             <Toast

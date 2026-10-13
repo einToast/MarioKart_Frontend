@@ -4,6 +4,9 @@
 // Notification API
 export * from './notification'
 
+// OCR API
+export * from './ocr';
+
 // Schedule API
 export * from './schedule';
 

@@ -7,7 +7,7 @@ import BackLink from "../../components/admin/BackLink";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
 import { RoundReturnDTO, SwitchDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicCookiesService, PublicSettingsService } from "../../util/service";
+import { AdminOcrService, AdminScheduleService, AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
@@ -15,12 +15,16 @@ const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
-    const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); // Alle Runden speichern
+    const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); 
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
-    const [openAccordions, setOpenAccordions] = useState<string[]>([]); // Start with an empty array
+    const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
+    const [ocrProviders, setOcrProviders] = useState<string[]>([]);
+    const [selectedOcrProvider, setSelectedOcrProvider] = useState<string>('');
+    const [standardOcrProvider, setStandardOcrProvider] = useState<string>('');
+    const ocrProvider = selectedOcrProvider || (ocrProviders.includes(standardOcrProvider) ? standardOcrProvider : ocrProviders[0] ?? '');
 
     const location = useLocation();
 
@@ -32,12 +36,28 @@ const Points: React.FC = () => {
             round.games.forEach(game => game.teams.sort((a, b) => a.id - b.id));
             setRound(round);
             setRoundPlayed(round.played);
-            setOpenAccordions([]); // Close all accordions initially
+            setOpenAccordion(undefined); // Close all accordions initially
         }).catch((error) => {
             setError(error.message);
             setIsError(true);
             setShowToast(true);
         });
+    };
+
+    const handleSaveStandardOcrProvider = () => {
+        AdminSettingsService.updateOcrProvider(ocrProvider)
+            .then(() => {
+                setStandardOcrProvider(ocrProvider);
+                setError('Standard-Anbieter gespeichert');
+                setIsError(false);
+            })
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+            })
+            .finally(() => {
+                setShowToast(true);
+            });
     };
 
     const handleSavePoints = () => {
@@ -70,9 +90,17 @@ const Points: React.FC = () => {
             }
 
             // Without the switches the games are numbered, so a failed request is not an error
-            PublicSettingsService.getSwitches()
-                .then(setSwitches)
-                .catch(error => console.error("Error fetching switches:", error));
+            PublicSettingsService.getSettings()
+                .then(settings => {
+                    setSwitches(settings.switches ?? []);
+                    setStandardOcrProvider(settings.ocrProvider ?? '');
+                })
+                .catch(error => console.error("Error fetching settings:", error));
+
+            // Without a provider the points are typed in, so a failed request is not an error
+            AdminOcrService.getAvailableProviders()
+                .then(setOcrProviders)
+                .catch(error => console.error("Error fetching OCR providers:", error));
 
             const roundsPromise = AdminScheduleService.getRounds();
             roundsPromise.then((rounds) => {
@@ -97,11 +125,17 @@ const Points: React.FC = () => {
     }, [location]);
 
     const toggleAccordion = (accordionId: string) => {
-        setOpenAccordions(prevOpenAccordions =>
-            prevOpenAccordions.includes(accordionId)
-                ? prevOpenAccordions.filter(id => id !== accordionId) // Remove the accordion from the list
-                : [...prevOpenAccordions, accordionId] // Add the accordion to the list
-        );
+        setOpenAccordion(previous => previous === accordionId ? undefined : accordionId);
+    };
+
+    const handleAccordionChange = (event: CustomEvent<{ value?: string | string[] | null }>) => {
+        // Elements inside of a game report changes with the same event
+        if (event.target !== accordionGroupRef.current) {
+            return;
+        }
+
+        const value = event.detail.value;
+        setOpenAccordion((Array.isArray(value) ? value[0] : value) ?? undefined);
     };
 
     return (
@@ -135,19 +169,38 @@ const Points: React.FC = () => {
                         </select>
                     </div>
                 </div>
+                {ocrProviders.length > 0 && (
+                    <div className="ocrProvider">
+                        <label htmlFor="ocrProvider">Punkteerkennung:</label>
+                        <select
+                            name="ocrProvider"
+                            id="ocrProvider"
+                            value={ocrProvider}
+                            onChange={(e) => setSelectedOcrProvider(e.target.value)}
+                        >
+                            {ocrProviders.map((provider) => (
+                                <option value={provider} key={provider}>{provider === standardOcrProvider ? `${provider} (Standard)` : provider}</option>
+                            ))}
+                        </select>
+                        <button type="button" disabled={ocrProvider === standardOcrProvider} onClick={handleSaveStandardOcrProvider}>
+                            Als Standard festlegen
+                        </button>
+                    </div>
+                )}
                 {round && (
                     <>
                         <div className="timeContainer">
                             <p className="timeStamp">{round.startTime.split('T')[1].slice(0, 5)} - {round.endTime.split('T')[1].slice(0, 5)}</p>
                         </div>
-                        <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
+                        <IonAccordionGroup ref={accordionGroupRef} value={openAccordion} onIonChange={handleAccordionChange}>
                             {round.games.map((game) => (
                                 <PointsComponent
                                     key={game.id}
                                     game={game}
                                     roundId={round.id}
                                     switches={switches}
-                                    isOpen={openAccordions.includes(game.id.toString())}
+                                    ocrProvider={ocrProvider || undefined}
+                                    isOpen={openAccordion === game.id.toString()}
                                     toggleAccordion={() => toggleAccordion(game.id.toString())}
                                 />
                             ))}

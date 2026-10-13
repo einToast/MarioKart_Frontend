@@ -1,6 +1,7 @@
 // Service Layer Exports
 export * from './cookies';
 export * from './notification';
+export * from './ocr';
 export * from './registration';
 export * from './schedule';
 export * from './settings';
