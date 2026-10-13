@@ -14,10 +14,11 @@ import { GamePhoto } from "../../util/service/ocr/admin/AdminOcrPhotoService";
 import Toast from "../Toast";
 import ZoomablePhoto from "./ZoomablePhoto";
 
-const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[], ocrProvider?: string }> = ({ game, roundId, switches, ocrProvider }) => {
+const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+
+const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[], ocrProvider?: string }> = ({ game, roundId, isOpen, toggleAccordion, switches, ocrProvider }) => {
     const pointsOfTeam = (teamId: number) => game.points?.find(point => point.team.id === teamId);
 
-    // One entry per team of the game, in the order of the teams
     const [points, setPoints] = useState<number[]>(() => game.teams.map(team => pointsOfTeam(team.id)?.points ?? 0));
 
     const [error, setError] = useState<string>('Error');
@@ -27,6 +28,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     const photoInputRef = useRef<HTMLInputElement>(null);
     const [detecting, setDetecting] = useState<boolean>(false);
     const [photo, setPhoto] = useState<GamePhoto | undefined>(() => AdminOcrService.getGamePhoto(game.id));
+    const [dropTarget, setDropTarget] = useState<boolean>(false);
 
     const gameSwitch = resolveSwitch(switches, game.switchIndex);
 
@@ -43,17 +45,49 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
         changePoints(index, Number.parseInt(event.target.value));
     };
 
-    // The photo is only shown, it is evaluated with a second click
     const handleChoosePhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        // Otherwise choosing the same photo again would not trigger a change
         event.target.value = '';
         if (file) {
             setPhoto(AdminOcrService.setGamePhoto(game.id, file));
         }
     };
 
-    // The detected points are only entered, they are saved like points typed in by hand
+    const handleDragOver = (event: React.DragEvent<HTMLElement>) => {
+        if (!event.dataTransfer.types.includes('Files')) {
+            return;
+        }
+        event.preventDefault();
+        setDropTarget(true);
+    };
+
+    const handleDragLeave = (event: React.DragEvent<HTMLElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setDropTarget(false);
+        }
+    };
+
+    const handleDrop = (event: React.DragEvent<HTMLElement>) => {
+        if (!event.dataTransfer.types.includes('Files')) {
+            return;
+        }
+        event.preventDefault();
+        setDropTarget(false);
+
+        const file = Array.from(event.dataTransfer.files).find(candidate => PHOTO_TYPES.includes(candidate.type));
+        if (!file) {
+            setError(`Switch ${gameSwitch.name}: Nur PNG, JPEG, WebP oder GIF können ausgewertet werden`);
+            setIsError(true);
+            setShowToast(true);
+            return;
+        }
+
+        setPhoto(AdminOcrService.setGamePhoto(game.id, file));
+        if (!isOpen) {
+            toggleAccordion();
+        }
+    };
+
     const handleDetectPoints = () => {
         if (!photo || !ocrProvider) {
             return;
@@ -112,7 +146,11 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
     }
 
     return (
-        <IonAccordion value={game.id.toString()}>
+        <IonAccordion
+            value={game.id.toString()}
+            className={dropTarget ? "photoDropTarget" : undefined}
+            {...(ocrProvider ? { onDragOver: handleDragOver, onDragLeave: handleDragLeave, onDrop: handleDrop } : {})}
+        >
             <IonItem slot="header" color="light">
                 <h3 style={{ color: gameSwitch.color }}>Switch {gameSwitch.name}</h3>
             </IonItem>
@@ -131,14 +169,13 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                             </div>
                         ))}
                     </div>
-                    {/* The key shows another photo unzoomed */}
                     {photo && <ZoomablePhoto key={photo.url} src={photo.url} alt={`Ergebnis von Switch ${gameSwitch.name}`} />}
                 </div>
                 {ocrProvider && (
                     <>
                         <input
                             type="file"
-                            accept="image/png,image/jpeg,image/webp,image/gif"
+                            accept={PHOTO_TYPES.join(',')}
                             aria-label={`Foto von Switch ${gameSwitch.name}`}
                             ref={photoInputRef}
                             onChange={handleChoosePhoto}

@@ -167,6 +167,65 @@ describe('PointsComponent', () => {
             expect(screen.queryByText('Foto auswerten')).not.toBeInTheDocument();
         });
 
+        describe('drag and drop', () => {
+            const game = (container: HTMLElement) => container.querySelector('ion-accordion') as HTMLElement;
+            const files = (...dropped: File[]) => ({ dataTransfer: { types: ['Files'], files: dropped } });
+            const jpeg = new File(['image'], 'result.jpg', { type: 'image/jpeg' });
+
+            it('shows a dropped photo without evaluating it', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(jpeg));
+
+                expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo-1');
+                expect(screen.getByText('Foto auswerten')).toBeInTheDocument();
+                expect(backend.requests).toEqual([]);
+            });
+
+            it('takes the photo out of several dropped files', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(new File(['text'], 'notes.txt', { type: 'text/plain' }), jpeg));
+
+                expect(screen.getByAltText('Ergebnis von Switch Rot')).toBeInTheDocument();
+            });
+
+            it('rejects a dropped file that is not a photo', async () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.drop(game(container), files(new File(['text'], 'notes.txt', { type: 'text/plain' })));
+
+                await expectErrorToast('Switch Rot: Nur PNG, JPEG, WebP oder GIF können ausgewertet werden');
+                expect(screen.queryByAltText('Ergebnis von Switch Rot')).not.toBeInTheDocument();
+            });
+
+            it('marks the game while a photo is dragged over it', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.dragOver(game(container), files());
+                expect(game(container)).toHaveClass('photoDropTarget');
+
+                fireEvent.dragLeave(game(container), { relatedTarget: document.body });
+                expect(game(container)).not.toHaveClass('photoDropTarget');
+            });
+
+            it('ignores dragged text', () => {
+                const { container } = renderPoints(gameWithPoints(), makeSwitches(), 'openai');
+
+                fireEvent.dragOver(game(container), { dataTransfer: { types: ['text/plain'], files: [] } });
+
+                expect(game(container)).not.toHaveClass('photoDropTarget');
+            });
+
+            it('accepts no photo without a provider', () => {
+                const { container } = renderPoints(gameWithPoints());
+
+                fireEvent.drop(game(container), files(jpeg));
+
+                expect(screen.queryByAltText('Ergebnis von Switch Rot')).not.toBeInTheDocument();
+            });
+        });
+
         it('shows the chosen photo without evaluating it', () => {
             renderPoints(gameWithPoints(), makeSwitches(), 'openai');
 
