@@ -58,6 +58,13 @@ export const updateProgram = async (program: string): Promise<TournamentDTO> => 
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
+export const updateOcrProvider = async (ocrProvider: string): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        ocrProvider: ocrProvider
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
 export const changeService = async (deleteType: ChangeType): Promise<void> => {
     switch (deleteType) {
         case ChangeType.TOURNAMENT:

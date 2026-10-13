@@ -158,9 +158,34 @@ ion-accordion {
 
 .ocrProvider {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     margin-top: 10px;
+
+    button {
+        font-family: Poppins, sans-serif;
+        background-color: #2F315B;
+        border: 1px solid #2F315B;
+        padding: 6px 12px;
+        color: #fff;
+        border-radius: 7px;
+
+        &:hover,
+        &:focus-visible {
+            border-color: #fff;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+}
+
+/* A photo is dragged over the game */
+ion-accordion.photoDropTarget {
+    outline: 2px dashed #8752F9;
+    outline-offset: -2px;
 }
 
 ion-button.round::part(native) {

@@ -97,10 +97,11 @@ export interface TournamentDTO {
     surveyKeyMode?: SurveyKeyMode;
     finalTeamsCount?: number;
     switches?: SwitchDTO[];
-    // JSON of the floor plan, see util/layout/floorPlan.ts
+    // JSON of the floor plan
     floorPlan?: string | null;
-    // JSON of the programme, see util/layout/program.ts
+    // JSON of the programme
     program?: string | null;
+    ocrProvider?: string | null;
 }
 
 export interface OcrInputDTO {
@@ -134,6 +135,7 @@ export interface ScheduleInputDTO {
     numFields: number;
     numRounds: number;
     teamsPerGame: number;
+    teamsPerField?: number[];
 }
 
 export interface QuestionInputDTO {

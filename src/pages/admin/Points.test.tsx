@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend } from '../../test/backend';
-import { makeGame, makePoints, makeRound, makeTeams } from '../../test/fixtures';
+import { makeGame, makePoints, makeRound, makeSwitches, makeTeams } from '../../test/fixtures';
 import { expectErrorToast, expectSuccessToast, queryToast } from '../../test/overlays';
 import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import { RoundReturnDTO } from '../../util/api/config/dto';
@@ -201,16 +201,13 @@ describe('admin Points', () => {
     describe('with point detection', () => {
         const providerSelect = () => screen.getByLabelText('Punkteerkennung:') as HTMLSelectElement;
         const photo = new File(['image'], 'result.jpg', { type: 'image/jpeg' });
+        const STANDARD = 'Als Standard festlegen';
 
         beforeEach(() => {
             // jsdom has no object URLs
             URL.createObjectURL = vi.fn(() => 'blob:photo');
             URL.revokeObjectURL = vi.fn();
             AdminOcrService.clearGamePhotos();
-        });
-
-        afterEach(() => {
-            localStorage.clear();
         });
 
         it('offers the available providers and a photo for every game', async () => {
@@ -225,17 +222,78 @@ describe('admin Points', () => {
             expect(screen.getAllByText('Foto auswählen')).toHaveLength(2);
         });
 
-        it('keeps the provider that was used last selected', async () => {
+        it('selects the standard provider and marks it', async () => {
             stubRounds();
-            backend.get('/admin/ocr/available', ['gemini', 'openai']);
-            const first = renderPage();
-            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
-            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
-            first.unmount();
+            backend
+                .get('/admin/ocr/available', ['gemini', 'openai'])
+                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'openai' });
 
             renderPage();
 
             await waitFor(() => expect(providerSelect()).toHaveValue('openai'));
+            expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini', 'openai (Standard)']);
+            expect(screen.getByText(STANDARD)).toBeDisabled();
+        });
+
+        it('selects the first provider when the standard provider is not available', async () => {
+            stubRounds();
+            backend
+                .get('/admin/ocr/available', ['gemini', 'openai'])
+                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'mistral' });
+
+            renderPage();
+
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+            expect(providerSelect()).toHaveValue('gemini');
+            expect(screen.getByText(STANDARD)).toBeEnabled();
+        });
+
+        it('saves the selected provider as the standard provider', async () => {
+            stubRounds();
+            backend
+                .get('/admin/ocr/available', ['gemini', 'openai'])
+                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'gemini' })
+                .put('/admin/settings', {});
+            renderPage();
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+
+            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
+            fireEvent.click(screen.getByText(STANDARD));
+
+            await expectSuccessToast('Standard-Anbieter gespeichert');
+            expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ ocrProvider: 'openai' });
+            expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini', 'openai (Standard)']);
+            expect(screen.getByText(STANDARD)).toBeDisabled();
+        });
+
+        it('shows the error and keeps the standard provider when it cannot be saved', async () => {
+            stubRounds();
+            backend
+                .get('/admin/ocr/available', ['gemini', 'openai'])
+                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'gemini' })
+                .fail('PUT', '/admin/settings', 500);
+            renderPage();
+            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
+
+            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
+            fireEvent.click(screen.getByText(STANDARD));
+
+            await expectErrorToast('Einstellungen konnten nicht aktualisiert werden');
+            expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini (Standard)', 'openai']);
+        });
+
+        it('opens the game a photo is dropped on', async () => {
+            stubRounds();
+            backend.get('/admin/ocr/available', ['gemini']);
+            const { container } = renderPage();
+            await waitForRound(container, '17:10 - 17:30');
+            await screen.findAllByText('Foto auswählen');
+            const games = container.querySelector('ion-accordion-group') as HTMLIonAccordionGroupElement;
+
+            fireEvent.drop(container.querySelectorAll('ion-accordion')[0], { dataTransfer: { types: ['Files'], files: [photo] } });
+
+            expect(screen.getByAltText('Ergebnis von Switch Rot')).toHaveAttribute('src', 'blob:photo');
+            expect(games.value).toBe('1');
         });
 
         it('enters the points read from the photo with the selected provider', async () => {
