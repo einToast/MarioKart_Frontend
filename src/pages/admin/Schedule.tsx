@@ -13,6 +13,7 @@ import "./Points.css";
 import "./Schedule.css";
 
 const LEGACY_VERSION = 1;
+const PER_FIELD_VERSION = 4;
 const MAX_SWITCH_COUNT = 16;
 const MIN_TEAMS_PER_GAME = 2;
 const MAX_TEAMS_PER_GAME = 8;
@@ -32,6 +33,7 @@ const Schedule: React.FC = () => {
     const [version, setVersion] = useState<number>(3);
     const [switchCount, setSwitchCount] = useState<number | ''>(4);
     const [teamsPerGame, setTeamsPerGame] = useState<number | ''>(4);
+    const [teamsPerField, setTeamsPerField] = useState<(number | '')[]>([]);
     const [roundCount, setRoundCount] = useState<number | ''>(8);
 
     const navigate = useNavigate();
@@ -62,8 +64,22 @@ const Schedule: React.FC = () => {
         });
     }, [modalClosed, location]);
 
+    const perField = version >= PER_FIELD_VERSION;
+    // A switch has the common number of teams until it gets its own
+    const fieldSizes: (number | '')[] = Array.from(
+        { length: isBetween(switchCount, 1, MAX_SWITCH_COUNT) ? switchCount : 0 },
+        (_, index) => teamsPerField[index] ?? teamsPerGame);
+
     // A team plays on one switch per round, so every switch needs its own teams
-    const teamsNeeded = switchCount !== '' && teamsPerGame !== '' ? switchCount * teamsPerGame : null;
+    const teamsNeeded = (() => {
+        if (!perField) {
+            return switchCount !== '' && teamsPerGame !== '' ? switchCount * teamsPerGame : null;
+        }
+        if (fieldSizes.length === 0 || fieldSizes.includes('')) {
+            return null;
+        }
+        return fieldSizes.reduce<number>((sum, size) => sum + Number(size), 0);
+    })();
 
     const validateParameters = (): string | null => {
         if (version === LEGACY_VERSION) {
@@ -75,7 +91,8 @@ const Schedule: React.FC = () => {
         if (!isBetween(roundCount, 1, Number.MAX_SAFE_INTEGER)) {
             return 'Es muss mindestens eine Runde geben';
         }
-        if (!isBetween(teamsPerGame, MIN_TEAMS_PER_GAME, MAX_TEAMS_PER_GAME)) {
+        const sizes = perField ? fieldSizes : [teamsPerGame];
+        if (!sizes.every(size => isBetween(size, MIN_TEAMS_PER_GAME, MAX_TEAMS_PER_GAME))) {
             return `Pro Spiel können ${MIN_TEAMS_PER_GAME} bis ${MAX_TEAMS_PER_GAME} Teams antreten`;
         }
         return null;
@@ -91,7 +108,10 @@ const Schedule: React.FC = () => {
         }
 
         setButtonDisabled(true);
-        AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, teamsPerGame as number)
+        const creation = perField
+            ? AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, fieldSizes[0] as number, fieldSizes as number[])
+            : AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, teamsPerGame as number);
+        creation
             .then(newRounds => {
                 if (newRounds) {
                     setError('Spielplan erfolgreich erstellt');
@@ -120,8 +140,15 @@ const Schedule: React.FC = () => {
         if (selectedVersion === LEGACY_VERSION) {
             setSwitchCount(4);
             setTeamsPerGame(4);
+            setTeamsPerField([]);
             setRoundCount(8);
         }
+    }
+
+    const handleTeamsPerFieldChange = (index: number, value: string) => {
+        const sizes = [...fieldSizes];
+        sizes[index] = value === '' ? '' : Number(value);
+        setTeamsPerField(sizes);
     }
 
     return (
@@ -164,6 +191,7 @@ const Schedule: React.FC = () => {
                                 <option value="1">v1</option>
                                 <option value="2">v2</option>
                                 <option value="3">v3</option>
+                                <option value="4">v4</option>
                             </select>
                         </div>
 
@@ -188,18 +216,36 @@ const Schedule: React.FC = () => {
                                 disabled={version === LEGACY_VERSION}
                             />
                         </div>
-                        <div className="scheduleField">
-                            <label htmlFor="teamsPerGame">Teams pro Spiel:</label>
-                            <input id="teamsPerGame"
-                                type="number"
-                                min={MIN_TEAMS_PER_GAME}
-                                max={MAX_TEAMS_PER_GAME}
-                                value={teamsPerGame}
-                                onChange={(e) => setTeamsPerGame(e.target.value === '' ? '' : Number(e.target.value))}
-                                disabled={version === LEGACY_VERSION}
-                            />
-                        </div>
+                        {!perField && (
+                            <div className="scheduleField">
+                                <label htmlFor="teamsPerGame">Teams pro Spiel:</label>
+                                <input id="teamsPerGame"
+                                    type="number"
+                                    min={MIN_TEAMS_PER_GAME}
+                                    max={MAX_TEAMS_PER_GAME}
+                                    value={teamsPerGame}
+                                    onChange={(e) => setTeamsPerGame(e.target.value === '' ? '' : Number(e.target.value))}
+                                    disabled={version === LEGACY_VERSION}
+                                />
+                            </div>
+                        )}
                     </div>
+                    {perField && (
+                        <div className="scheduleFields">
+                            {fieldSizes.map((size, index) => (
+                                <div className="scheduleField" key={`teamsPerField${index + 1}`}>
+                                    <label htmlFor={`teamsPerField${index + 1}`}>Teams Spielfeld {index + 1}:</label>
+                                    <input id={`teamsPerField${index + 1}`}
+                                        type="number"
+                                        min={MIN_TEAMS_PER_GAME}
+                                        max={MAX_TEAMS_PER_GAME}
+                                        value={size}
+                                        onChange={(e) => handleTeamsPerFieldChange(index, e.target.value)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     {version !== LEGACY_VERSION && teamsNeeded !== null && (
                         <p className="scheduleHint">Mindestens {teamsNeeded} Teams nötig</p>
                     )}
