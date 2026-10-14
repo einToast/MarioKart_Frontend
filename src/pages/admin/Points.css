@@ -156,6 +156,13 @@ ion-accordion {
     }
 }
 
+.relativePoints {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
 .ocrProvider {
     display: flex;
     flex-wrap: wrap;

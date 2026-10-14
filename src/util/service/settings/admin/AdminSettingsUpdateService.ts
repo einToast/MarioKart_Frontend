@@ -65,6 +65,13 @@ export const updateOcrProvider = async (ocrProvider: string): Promise<Tournament
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
+export const updateRelativePoints = async (relativePoints: boolean): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        relativePoints: relativePoints
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
 export const changeService = async (deleteType: ChangeType): Promise<void> => {
     switch (deleteType) {
         case ChangeType.TOURNAMENT:

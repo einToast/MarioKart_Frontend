@@ -198,6 +198,48 @@ describe('admin Points', () => {
         expect(currentPath()).toBe('/admin/dashboard');
     });
 
+    describe('relative points', () => {
+        const relativePointsCheckbox = () => screen.getByLabelText('Relative Punkte') as HTMLInputElement;
+
+        it('shows the stored setting', async () => {
+            stubRounds();
+            backend.get('/public/settings', { switches: makeSwitches(), relativePoints: true });
+
+            renderPage();
+
+            await waitFor(() => expect(relativePointsCheckbox()).toBeChecked());
+        });
+
+        it('saves the setting when it is toggled', async () => {
+            stubRounds();
+            backend
+                .get('/public/settings', { switches: makeSwitches(), relativePoints: false })
+                .put('/admin/settings', {});
+            const { container } = renderPage();
+            await waitForRound(container, '17:10 - 17:30');
+
+            fireEvent.click(relativePointsCheckbox());
+
+            await expectSuccessToast('Einstellung gespeichert');
+            expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ relativePoints: true });
+            expect(relativePointsCheckbox()).toBeChecked();
+        });
+
+        it('keeps the setting when it cannot be saved', async () => {
+            stubRounds();
+            backend
+                .get('/public/settings', { switches: makeSwitches(), relativePoints: false })
+                .fail('PUT', '/admin/settings', 500);
+            const { container } = renderPage();
+            await waitForRound(container, '17:10 - 17:30');
+
+            fireEvent.click(relativePointsCheckbox());
+
+            await expectErrorToast('Einstellungen konnten nicht aktualisiert werden');
+            expect(relativePointsCheckbox()).not.toBeChecked();
+        });
+    });
+
     describe('with point detection', () => {
         const providerSelect = () => screen.getByLabelText('Punkteerkennung:') as HTMLSelectElement;
         const photo = new File(['image'], 'result.jpg', { type: 'image/jpeg' });

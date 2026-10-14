@@ -102,6 +102,7 @@ export interface TournamentDTO {
     // JSON of the programme
     program?: string | null;
     ocrProvider?: string | null;
+    relativePoints?: boolean;
 }
 
 export interface OcrInputDTO {
