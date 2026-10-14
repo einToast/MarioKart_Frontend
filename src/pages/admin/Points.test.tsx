@@ -25,8 +25,6 @@ const roundWithGames = (overrides: Partial<RoundReturnDTO>): RoundReturnDTO => {
     });
 };
 
-// Round ids equal round numbers in these fixtures: the page currently looks a selected round up
-// by its number (see the todo at the end of this file)
 const stubRounds = () => {
     const rounds = [
         roundWithGames({ id: 3, roundNumber: 3, finalGame: true, played: false, startTime: '2025-01-08T20:00:00', endTime: '2025-01-08T20:20:00' }),
@@ -395,6 +393,20 @@ describe('admin Points', () => {
         });
     });
 
-    it.todo('loads the selected round by its id (currently the round number is sent as the id)');
+    it('loads the selected round by its id when ids and round numbers differ', async () => {
+        const rounds = [
+            roundWithGames({ id: 11, roundNumber: 1, played: true, startTime: '2025-01-08T16:45:00', endTime: '2025-01-08T17:05:00' }),
+            roundWithGames({ id: 12, roundNumber: 2, played: false, startTime: '2025-01-08T17:10:00', endTime: '2025-01-08T17:30:00' }),
+        ];
+        backend.get(ROUNDS_URL, rounds);
+        rounds.forEach(round => backend.get(`${ROUNDS_URL}/${round.id}`, round));
+        const { container } = renderPage();
+        await waitForRound(container, '17:10 - 17:30');
+        expect(roundSelect()).toHaveValue('12');
+
+        fireEvent.change(roundSelect(), { target: { value: '11' } });
+
+        await waitForRound(container, '16:45 - 17:05');
+    });
     it.todo('explains that no rounds exist yet (currently shows a raw TypeError message)');
 });

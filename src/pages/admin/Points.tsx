@@ -170,7 +170,7 @@ const Points: React.FC = () => {
                         <select
                             name="round"
                             id="round"
-                            value={round.roundNumber}
+                            value={round.id}
                             onChange={(e) => getSelectedRound(Number.parseInt(e.target.value))}
                         >
                             {(() => {
@@ -178,7 +178,7 @@ const Points: React.FC = () => {
                                 return rounds.map((r) => {
                                     if (r.finalGame) finalCount++;
                                     return (
-                                        <option value={r.roundNumber} key={r.roundNumber}>
+                                        <option value={r.id} key={r.id}>
                                             {r.finalGame ? `Finale ${finalCount}` : `Runde ${r.roundNumber}`}
                                         </option>
                                     );
