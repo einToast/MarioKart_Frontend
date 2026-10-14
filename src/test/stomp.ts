@@ -7,6 +7,12 @@ interface FakeClientConfig {
     heartbeatOutgoing?: number;
     onConnect?: () => void;
     onDisconnect?: () => void;
+    onWebSocketClose?: () => void;
+}
+
+export interface FakeSubscription {
+    id: string;
+    unsubscribe: ReturnType<typeof vi.fn>;
 }
 
 // Replacement for the `@stomp/stompjs` Client (wired up in setupTests.ts). It never opens a
@@ -21,8 +27,12 @@ export class Client {
         this.activated = true;
     });
     deactivate = vi.fn();
-    subscribe = vi.fn();
-    unsubscribe = vi.fn();
+    subscriptions: FakeSubscription[] = [];
+    subscribe = vi.fn((_destination: string, _callback: (message: unknown) => void): FakeSubscription => {
+        const subscription = { id: `sub-${this.subscriptions.length}`, unsubscribe: vi.fn() };
+        this.subscriptions.push(subscription);
+        return subscription;
+    });
     publish = vi.fn();
 
     constructor(config: FakeClientConfig) {
@@ -36,6 +46,10 @@ export class Client {
 
     simulateDisconnect(): void {
         this.config.onDisconnect?.();
+    }
+
+    simulateSocketClose(): void {
+        this.config.onWebSocketClose?.();
     }
 }
 

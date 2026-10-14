@@ -81,7 +81,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         event.detail.complete();
     };
 
-    useWebSocketConnection('/topic/rounds', getQuestions);
+    useWebSocketConnection('/topic/questions', getQuestions);
 
     const renderQuestion = (question: QuestionReturnDTO) => {
         const toggleQuestionAccordion = () => toggleAccordion(question.id.toString());

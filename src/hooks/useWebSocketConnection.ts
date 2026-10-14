@@ -1,67 +1,30 @@
-import { App as CapacitorApp } from '@capacitor/app';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useWebSocket } from '../components/WebSocketContext';
 
-export const useWebSocketConnection = (url: string, onMessageReceived: () => void) => {
-    const [isConnected, setIsConnected] = useState<boolean>(false);
+export const useWebSocketConnection = (topic: string, onMessageReceived: () => void) => {
     const wsService = useWebSocket();
+    const [isConnected, setIsConnected] = useState<boolean>(wsService.isConnected());
 
-    const setupSubscriptions = useCallback(() => {
-        if (wsService.isConnected()) {
-            wsService.subscribe(url, onMessageReceived);
-        }
-    }, [wsService, onMessageReceived, url]);
+    const callbackRef = useRef(onMessageReceived);
+    useEffect(() => {
+        callbackRef.current = onMessageReceived;
+    });
 
     useEffect(() => {
-        const checkConnection = setInterval(() => {
-            if (wsService.isConnected()) {
-                setIsConnected(true);
-                clearInterval(checkConnection);
+        setIsConnected(wsService.isConnected());
+        const unsubscribe = wsService.subscribe(topic, () => callbackRef.current());
+        const removeConnectionListener = wsService.addConnectionListener((connected, reconnected) => {
+            setIsConnected(connected);
+            if (reconnected) {
+                callbackRef.current();
             }
-        }, 500);
-
-        const setupAppStateListener = async () => {
-            const subscription = await CapacitorApp.addListener('appStateChange', (state) => {
-                if (state.isActive) {
-                    const reconnectInterval = setInterval(() => {
-                        if (wsService.isConnected()) {
-                            setIsConnected(true);
-                            setupSubscriptions();
-                            clearInterval(reconnectInterval);
-                        }
-                    }, 1000);
-
-                    setTimeout(() => clearInterval(reconnectInterval), 10000);
-                }
-            });
-            return subscription;
-        };
-
-        let subscription: any;
-        setupAppStateListener().then(sub => {
-            subscription = sub;
-        }).catch(error => {
-            console.error("Error setting up app state listener:", error);
         });
 
         return () => {
-            clearInterval(checkConnection);
-            if (subscription) {
-                subscription.remove();
-            }
+            unsubscribe();
+            removeConnectionListener();
         };
-    }, [wsService, setupSubscriptions]);
-
-    useEffect(() => {
-        if (isConnected) {
-            setupSubscriptions();
-
-            return () => {
-                wsService.unsubscribe('/topic/rounds');
-                wsService.unsubscribe('/topic/messages');
-            };
-        }
-    }, [isConnected, setupSubscriptions, wsService]);
+    }, [wsService, topic]);
 
     return isConnected;
 };

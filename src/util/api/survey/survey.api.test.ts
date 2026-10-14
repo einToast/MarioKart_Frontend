@@ -49,6 +49,13 @@ describe('PublicSurveyApi', () => {
             .rejects.toThrow(new Error('Du hast diese Frage bereits beantwortet'));
     });
 
+    it('submitAnswer tells an invalid answer apart from a missing login on HTTP 400', async () => {
+        backend.fail('POST', '/public/survey/answer', 400, 'Invalid answer: the answer type does not match the question.');
+
+        await expect(PublicSurveyApi.submitAnswer(answerInput, 1))
+            .rejects.toThrow(new Error('Die Antwort ist ungültig'));
+    });
+
     describeEndpoint('getVisibleQuestions', {
         call: () => PublicSurveyApi.getVisibleQuestions(),
         method: 'GET',

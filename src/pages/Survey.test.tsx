@@ -106,7 +106,7 @@ describe('Survey', () => {
         await screen.findByText(EMPTY);
 
         stompClient().simulateConnect();
-        await waitFor(() => expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/rounds', expect.any(Function)), { timeout: 2000 });
+        await waitFor(() => expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/questions', expect.any(Function)), { timeout: 2000 });
         backend.get(VISIBLE_URL, [makeQuestion({ id: 1, questionText: 'Neue Frage' })]);
         const onMessage = stompClient().subscribe.mock.calls[0][1] as () => void;
         onMessage();

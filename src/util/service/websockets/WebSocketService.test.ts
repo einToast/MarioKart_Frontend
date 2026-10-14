@@ -5,10 +5,31 @@ import WebSocketService from './WebSocketService';
 
 describe('WebSocketService', () => {
     let service: WebSocketService;
+    let cleanups: (() => void)[];
 
     beforeAll(() => {
         service = WebSocketService.getInstance();
     });
+
+    beforeEach(() => {
+        cleanups = [];
+    });
+
+    afterEach(() => {
+        cleanups.forEach(cleanup => cleanup());
+    });
+
+    const subscribe = (topic: string, callback = vi.fn()) => {
+        const unsubscribe = service.subscribe(topic, callback);
+        cleanups.push(unsubscribe);
+        return unsubscribe;
+    };
+
+    const listenToConnection = () => {
+        const listener = vi.fn();
+        cleanups.push(service.addConnectionListener(listener));
+        return listener;
+    };
 
     it('is a singleton that creates a single STOMP client', () => {
         expect(WebSocketService.getInstance()).toBe(service);
@@ -40,17 +61,38 @@ describe('WebSocketService', () => {
         expect(service.isConnected()).toBe(false);
     });
 
+    it('notices a socket that closed without a DISCONNECT frame', () => {
+        stompClient().simulateConnect();
+
+        stompClient().simulateSocketClose();
+
+        expect(service.isConnected()).toBe(false);
+    });
+
     describe('while disconnected', () => {
-        it('does not subscribe', () => {
-            service.subscribe('/topic/rounds', vi.fn());
+        it('does not subscribe yet', () => {
+            subscribe('/topic/rounds');
 
             expect(stompClient().subscribe).not.toHaveBeenCalled();
         });
 
-        it('does not unsubscribe', () => {
-            service.unsubscribe('/topic/rounds');
+        it('subscribes once the socket connects', () => {
+            const callback = vi.fn();
+            subscribe('/topic/rounds', callback);
 
-            expect(stompClient().unsubscribe).not.toHaveBeenCalled();
+            stompClient().simulateConnect();
+
+            expect(stompClient().subscribe).toHaveBeenCalledTimes(1);
+            expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/rounds', callback);
+        });
+
+        it('forgets a subscription that ended before the socket connected', () => {
+            const unsubscribe = subscribe('/topic/rounds');
+            unsubscribe();
+
+            stompClient().simulateConnect();
+
+            expect(stompClient().subscribe).not.toHaveBeenCalled();
         });
 
         it('does not send messages', () => {
@@ -74,15 +116,41 @@ describe('WebSocketService', () => {
         it('subscribes the callback to the topic', () => {
             const callback = vi.fn();
 
-            service.subscribe('/topic/rounds', callback);
+            subscribe('/topic/rounds', callback);
 
             expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/rounds', callback);
         });
 
-        it('unsubscribes from the topic', () => {
-            service.unsubscribe('/topic/rounds');
+        it('ends exactly the subscription it started', () => {
+            const unsubscribe = subscribe('/topic/rounds');
+            subscribe('/topic/questions');
 
-            expect(stompClient().unsubscribe).toHaveBeenCalledWith('/topic/rounds');
+            unsubscribe();
+
+            const [rounds, questions] = stompClient().subscriptions.slice(-2);
+            expect(rounds.unsubscribe).toHaveBeenCalledTimes(1);
+            expect(questions.unsubscribe).not.toHaveBeenCalled();
+        });
+
+        it('subscribes again after the connection came back', () => {
+            const callback = vi.fn();
+            subscribe('/topic/rounds', callback);
+            stompClient().subscribe.mockClear();
+
+            stompClient().simulateSocketClose();
+            stompClient().simulateConnect();
+
+            expect(stompClient().subscribe).toHaveBeenCalledTimes(1);
+            expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/rounds', callback);
+        });
+
+        it('tells connection listeners about a drop and the reconnect', () => {
+            const listener = listenToConnection();
+
+            stompClient().simulateSocketClose();
+            stompClient().simulateConnect();
+
+            expect(listener.mock.calls).toEqual([[false, false], [true, true]]);
         });
 
         it('publishes messages as JSON', () => {
