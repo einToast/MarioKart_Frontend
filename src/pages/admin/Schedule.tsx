@@ -7,7 +7,7 @@ import BackLink from "../../components/admin/BackLink";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminScheduleService, PublicCookiesService, PublicRegistrationService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService, PublicCookiesService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Schedule.css";
@@ -39,6 +39,18 @@ const Schedule: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const getTeams = () => {
+        AdminRegistrationService.getTeamsSortedByFinalPoints()
+            .then((response) => {
+                setTeams([...response].sort((a, b) => a.teamName.localeCompare(b.teamName)));
+            })
+            .catch((error) => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+    };
+
     useEffect(() => {
         const loadTeams = async () => {
             const isAuthenticated = await PublicCookiesService.checkToken();
@@ -47,14 +59,7 @@ const Schedule: React.FC = () => {
                 return;
             }
 
-            const teamNames = PublicRegistrationService.getTeamsSortedByTeamName();
-            teamNames.then((response) => {
-                setTeams(response);
-            }).catch((error) => {
-                setError(error.message);
-                setIsError(true);
-                setShowToast(true);
-            });
+            getTeams();
         };
 
         loadTeams().catch(error => {
@@ -172,7 +177,7 @@ const Schedule: React.FC = () => {
                             finalScheduleCreated={false}
                             setModalClosed={setModalClosed}
                             modalClosed={modalClosed}
-                            getTeams={PublicRegistrationService.getTeamsSortedByTeamName}
+                            getTeams={getTeams}
                         />
 
                     ) : (

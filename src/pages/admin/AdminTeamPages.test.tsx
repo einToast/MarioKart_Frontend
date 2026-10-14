@@ -174,7 +174,7 @@ describe('admin Final', () => {
 });
 
 describe('admin Schedule', () => {
-    const TEAMS_URL = '/public/teams/sortedByTeamName';
+    const TEAMS_URL = '/admin/teams/sortedByFinalPoints';
     const CREATE_URL = '/admin/schedule/create/schedule';
     const CREATE = 'Spielplan erzeugen';
 
@@ -195,11 +195,23 @@ describe('admin Schedule', () => {
 
     itRequiresAnAdminSession(renderPage);
 
-    it('counts and lists the registered teams', async () => {
+    it('counts and lists the registered teams by name', async () => {
         const { container } = renderPage();
 
         expect(await screen.findByText('Anzahl der angemeldeten Teams: 4')).toBeInTheDocument();
-        expect(teamNames(container)).toEqual(['Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']);
+        expect(teamNames(container)).toEqual(['Team Luigi', 'Team Mario', 'Team Peach', 'Team Toad']);
+    });
+
+    it('keeps a team out of the final when it is deactivated and activated again', async () => {
+        backend.get(TEAMS_URL, makeTeams().map(team => (team.id === 1 ? { ...team, active: false, finalReady: false } : team)));
+        backend.put('/admin/teams/1', makeTeam());
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(row('Team Mario').getByTitle('Team aktivieren'));
+
+        await waitFor(() => expect(backend.requestsTo('PUT', '/admin/teams/1')).toHaveLength(1));
+        expect(backend.requestsTo('PUT', '/admin/teams/1')[0].body).toMatchObject({ active: true, finalReady: false });
     });
 
     it('still allows deleting teams, since no schedule exists yet', async () => {
@@ -406,7 +418,7 @@ describe('admin Schedule', () => {
 
         renderPage();
 
-        await expectErrorToast('Teams konnten nicht geladen werden');
+        await expectErrorToast('Teams konnten nicht abgerufen werden');
         expect(screen.getByText('Anzahl der angemeldeten Teams: 0')).toBeInTheDocument();
     });
 
