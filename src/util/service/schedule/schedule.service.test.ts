@@ -77,6 +77,16 @@ describe('AdminScheduleService', () => {
             }]);
         });
 
+        it('createSchedule passes the teams of every field on', async () => {
+            backend.post('/admin/schedule/create/schedule', [makeRound()]);
+
+            await AdminScheduleService.createSchedule(4, 3, 8, 8, [8, 4, 4]);
+
+            expect(backend.requests[0].body).toEqual({
+                version: 4, numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4],
+            });
+        });
+
         it('createFinalSchedule returns the final rounds', async () => {
             const rounds = [makeRound({ finalGame: true })];
             backend.post('/admin/schedule/create/final_schedule', rounds);
