@@ -22,6 +22,9 @@ export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Prom
             } else if (error.response?.status === 404) {
                 throw new Error("Frage nicht gefunden");
             } else if (error.response?.status === 400) {
+                if (String(error.response.data).includes("Invalid answer")) {
+                    throw new Error("Die Antwort ist ungültig");
+                }
                 throw new Error("Du bist nicht authentifiziert, bitte melde dich erneut an");
             } else {
                 throw new Error("Antwort konnte nicht übermittelt werden");
