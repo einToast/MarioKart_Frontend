@@ -24,7 +24,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
         if (!checkBoxQuestion.active) {
             showResults();
         }
-    }, []);
+    }, [checkBoxQuestion.active]);
 
     const getVote = () => {
         const vote = PublicSurveyService.getAnswerCookie(checkBoxQuestion.questionText + checkBoxQuestion.id);

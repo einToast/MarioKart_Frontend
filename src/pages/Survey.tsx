@@ -1,5 +1,5 @@
 import { IonAccordionGroup, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
@@ -18,8 +18,7 @@ import './Survey.css';
 
 const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
-    const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [openAccordions, setOpenAccordions] = useState<string[]>([]);
+    const [openQuestion, setOpenQuestion] = useState<string | undefined>(undefined);
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -46,6 +45,9 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 });
 
                 setCurrentQuestions(questionsWithAnswers);
+                setOpenQuestion(open => questionsWithAnswers.some(question => question.active && question.id.toString() === open)
+                    ? open
+                    : undefined);
                 return questionsWithAnswers;
             })
             .catch(error => {
@@ -67,10 +69,13 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         });
     }
 
-    const toggleAccordion = (id: string) => {
-        setOpenAccordions([id]);
-        setOpenAccordions([])
-    }
+    const closeQuestion = () => setOpenQuestion(undefined);
+
+    const handleAccordionChange = (event: CustomEvent<{ value?: string }>) => {
+        if (event.target === event.currentTarget) {
+            setOpenQuestion(event.detail.value);
+        }
+    };
 
     const handleRefresh = async (event: CustomEvent) => {
         updateShowTab2();
@@ -84,15 +89,13 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     useWebSocketConnection('/topic/questions', getQuestions);
 
     const renderQuestion = (question: QuestionReturnDTO) => {
-        const toggleQuestionAccordion = () => toggleAccordion(question.id.toString());
-
         switch (question.questionType) {
             case QuestionType.MULTIPLE_CHOICE:
                 return (
                     <MultipleChoiceCard
                         key={question.id}
                         multipleChoiceQuestion={question}
-                        toggleAccordion={toggleQuestionAccordion}
+                        toggleAccordion={closeQuestion}
                     />
                 );
             case QuestionType.CHECKBOX:
@@ -100,7 +103,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <CheckBoxCard
                         key={question.id}
                         checkBoxQuestion={question}
-                        toggleAccordion={toggleQuestionAccordion}
+                        toggleAccordion={closeQuestion}
                     />
                 );
             case QuestionType.FREE_TEXT:
@@ -108,7 +111,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <FreeTextCard
                         key={question.id}
                         freeTextQuestion={question}
-                        toggleAccordion={toggleQuestionAccordion}
+                        toggleAccordion={closeQuestion}
                     />
                 );
             case QuestionType.TEAM:
@@ -116,7 +119,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <TeamCard
                         key={question.id}
                         teamQuestion={question}
-                        toggleAccordion={toggleQuestionAccordion}
+                        toggleAccordion={closeQuestion}
                     />
                 );
             case QuestionType.TEAM_ONE_FREE_TEXT:
@@ -124,7 +127,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <TeamOneFreeTextCard
                         key={question.id}
                         teamOneFreeTextQuestion={question}
-                        toggleAccordion={toggleQuestionAccordion}
+                        toggleAccordion={closeQuestion}
                     />
                 );
             default:
@@ -163,7 +166,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     </LinearGradient>
                 </h1>
                 {currentQuestions.length > 0 ? (
-                    <IonAccordionGroup ref={accordionGroupRef} value={openAccordions}>
+                    <IonAccordionGroup value={openQuestion} onIonChange={handleAccordionChange}>
                         {currentQuestions.map(renderQuestion)}
                     </IonAccordionGroup>
                 ) : (

@@ -45,7 +45,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
         setUser(PublicCookiesService.getUser());
 
         handleVoteStatus();
-    }, []);
+    }, [freeTextQuestion.active]);
 
     return (
         <IonAccordion value={freeTextQuestion.id.toString()}>

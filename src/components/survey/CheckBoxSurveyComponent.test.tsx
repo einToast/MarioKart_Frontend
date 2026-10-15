@@ -173,6 +173,24 @@ describe('CheckBoxSurveyComponent', () => {
     });
 
     describe('a closed question', () => {
+        it('switches to the results when it is closed while being shown', async () => {
+            const { container, rerender, toggleAccordion } = renderQuestion();
+            await waitFor(() => expect(statusIcon(container).icon).toBe(megaphoneOutline));
+            backend.get('/public/survey/7/statistics', [6, 3, 1]);
+
+            const closed = makeQuestion({
+                id: 7,
+                questionText: 'Welche Strecken?',
+                questionType: QuestionType.CHECKBOX,
+                options: ['Regenbogen', 'Kuhmuh', 'Bowsers Festung'],
+                active: false,
+            });
+            rerender(<CheckBoxSurveyComponent checkBoxQuestion={closed} toggleAccordion={toggleAccordion} />);
+
+            await waitFor(() => expect(buttonOf('Regenbogen')).toHaveTextContent('60%'));
+            expect(statusIcon(container).icon).toBe(statsChartOutline);
+        });
+
         it('shows the share of votes per option and a statistics icon', async () => {
             backend.get('/public/survey/7/statistics', [6, 3, 1]);
 

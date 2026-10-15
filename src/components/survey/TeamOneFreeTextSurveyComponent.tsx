@@ -61,7 +61,7 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
         setUser(PublicCookiesService.getUser());
 
         getVote();
-    }, []);
+    }, [teamOneFreeTextQuestion.active]);
 
     return (
         <IonAccordion value={teamOneFreeTextQuestion.id.toString()}>

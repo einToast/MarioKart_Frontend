@@ -109,6 +109,17 @@ describe('FreeTextSurveyComponent', () => {
         expect(header(container).disabled).toBe(true);
     });
 
+    it('shows the statistics icon when it is closed while being shown', async () => {
+        const { container, rerender, toggleAccordion } = renderQuestion();
+        await waitFor(() => expect(statusIcon(container).icon).toBe(megaphoneOutline));
+
+        const closed = makeQuestion({ id: 7, questionText: 'Feedback?', questionType: QuestionType.FREE_TEXT, options: [], active: false });
+        rerender(<FreeTextSurveyComponent freeTextQuestion={closed} toggleAccordion={toggleAccordion} />);
+
+        await waitFor(() => expect(statusIcon(container).icon).toBe(statsChartOutline));
+        expect(screen.getByPlaceholderText('Umfrage geschlossen')).toBeDisabled();
+    });
+
     it('accepts long feedback up to the limit', async () => {
         renderQuestion();
         const textarea = screen.getByPlaceholderText('Dein Feedback');
