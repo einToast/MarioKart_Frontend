@@ -78,6 +78,7 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
                         placeholder={!teamOneFreeTextQuestion.active ? "Umfrage geschlossen" : "Deine Team-Antwort (nur ein Eintrag pro Team möglich)"}
                         style={{ height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px" }}
                         value={text}
+                        maxLength={PublicSurveyService.MAX_FREE_TEXT_ANSWER_LENGTH}
                         onChange={(e) => setText(e.target.value)}
                         disabled={!teamOneFreeTextQuestion.active || votedId !== -1}
                     />

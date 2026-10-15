@@ -3,11 +3,15 @@ import { PublicSurveyApi } from "../../../api";
 import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionReturnDTO } from "../../../api/config/dto";
 import { QuestionType } from "../../util";
 
+export const MAX_FREE_TEXT_ANSWER_LENGTH = 1000;
+
 export const submitAnswer = async (question: QuestionReturnDTO, vote: string | number | number[], teamId: number): Promise<AnswerReturnDTO> => {
     if (!question.active) {
         throw new Error('Die Umfrage ist bereits beendet');
     } else if (vote === '') {
         throw new Error('Die Antwort darf nicht leer sein');
+    } else if (typeof vote === 'string' && vote.length > MAX_FREE_TEXT_ANSWER_LENGTH) {
+        throw new Error(`Die Antwort darf höchstens ${MAX_FREE_TEXT_ANSWER_LENGTH} Zeichen lang sein`);
     } else if (
         (typeof vote === 'number' && vote === -1) ||
         (Array.isArray(vote) && (vote.length === 0 || vote.includes(-1)))

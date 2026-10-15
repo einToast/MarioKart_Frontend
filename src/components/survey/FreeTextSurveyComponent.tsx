@@ -62,6 +62,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
                         placeholder={!freeTextQuestion.active ? "Umfrage geschlossen" : "Dein Feedback"}
                         style={{ height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px" }}
                         value={text}
+                        maxLength={PublicSurveyService.MAX_FREE_TEXT_ANSWER_LENGTH}
                         onChange={(e) => setText(e.target.value)}
                         disabled={!freeTextQuestion.active}
                     />

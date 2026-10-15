@@ -108,6 +108,19 @@ describe('FreeTextSurveyComponent', () => {
         expect(statusIcon(container).icon).toBe(statsChartOutline);
         expect(header(container).disabled).toBe(true);
     });
+
+    it('accepts long feedback up to the limit', async () => {
+        renderQuestion();
+        const textarea = screen.getByPlaceholderText('Dein Feedback');
+        backend.post(ANSWER_URL, makeAnswer());
+
+        expect(textarea).toHaveAttribute('maxLength', '1000');
+        type(textarea, 'a'.repeat(1000));
+        fireEvent.click(screen.getByText(SAVE));
+
+        await waitFor(() => expect(backend.requestsTo('POST', ANSWER_URL)).toHaveLength(1));
+        expect(backend.requestsTo('POST', ANSWER_URL)[0].body).toMatchObject({ freeTextAnswer: 'a'.repeat(1000) });
+    });
 });
 
 describe('TeamOneFreeTextSurveyComponent', () => {
