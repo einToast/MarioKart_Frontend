@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage, } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
@@ -16,6 +16,7 @@ const Login: React.FC = () => {
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = () => {
         PublicUserService.login(username, password)
@@ -31,6 +32,9 @@ const Login: React.FC = () => {
     };
 
     useEffect(() => {
+        if (location.pathname !== '/admin/login') {
+            return;
+        }
         const fetchData = async () => {
             if (await PublicCookiesService.checkToken()) {
                 navigate('/admin/dashboard');
@@ -40,7 +44,7 @@ const Login: React.FC = () => {
             setError(error.message);
             setShowToast(true);
         });
-    }, []);
+    }, [location]);
 
 
     return (
