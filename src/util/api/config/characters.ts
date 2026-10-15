@@ -27,7 +27,6 @@ const characters: string[] = [
     "Mario",
     "Melinda",
     "Metall-Mario",
-    "Mii",
     "Morton-Koopa-Jr",
     "Peach",
     "Rosagold-Peach",

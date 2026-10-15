@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import Cookies from 'js-cookie';
 import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
 import { makeQuestion } from '../test/fixtures';
@@ -112,6 +112,28 @@ describe('Survey', () => {
         onMessage();
 
         await waitFor(() => expect(questionTitles()).toEqual(['Neue Frage']));
+    });
+
+    it('keeps an open question open while it can be answered and collapses it once it is closed', async () => {
+        backend.get(VISIBLE_URL, [makeQuestion({ id: 1 })]);
+        const { container } = renderPage();
+        await waitFor(() => expect(questionTitles()).toEqual(['Wer gewinnt?']));
+        stompClient().simulateConnect();
+        await waitFor(() => expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/questions', expect.any(Function)), { timeout: 2000 });
+        const onMessage = stompClient().subscribe.mock.calls.find(call => call[0] === '/topic/questions')?.[1] as () => void;
+        const group = container.querySelector('ion-accordion-group') as HTMLIonAccordionGroupElement;
+
+        fireEvent(group, new CustomEvent('ionChange', { detail: { value: '1' } }));
+        await waitFor(() => expect(group.value).toBe('1'));
+
+        backend.get(VISIBLE_URL, [makeQuestion({ id: 1 }), makeQuestion({ id: 2, questionText: 'Neue Frage' })]);
+        onMessage();
+        await waitFor(() => expect(questionTitles()).toHaveLength(2));
+        expect(group.value).toBe('1');
+
+        backend.get(VISIBLE_URL, [makeQuestion({ id: 1, active: false })]).get('/public/survey/1/statistics', [1, 0, 0, 0]);
+        onMessage();
+        await waitFor(() => expect(group.value).toBeUndefined());
     });
 
     it('reloads the questions on pull-to-refresh', async () => {

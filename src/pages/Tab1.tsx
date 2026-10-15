@@ -34,9 +34,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         refreshRounds
     } = useRoundData();
 
-    const switches = useSwitches(location);
-
     useWebSocketConnection('/topic/rounds', refreshRounds);
+
+    const { switches, reloadSwitches } = useSwitches(location);
 
     const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedOption(event.target.value);
@@ -59,6 +59,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         setLoading(true);
 
         updateShowTab2();
+        reloadSwitches();
         await Promise.all([
             refreshRounds(),
             new Promise(resolve => setTimeout(resolve, 500)),

@@ -12,6 +12,8 @@ import FloorPlanView from "../components/floorplan/FloorPlanView";
 import Header from "../components/Header";
 import QRCodeComponent from "../components/QRCodeComponent";
 import Toast from '../components/Toast';
+import { SETTINGS_TOPIC } from '../hooks/useSwitches';
+import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
 import { SwitchDTO } from '../util/api/config/dto';
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { FloorPlan, parseFloorPlan } from '../util/layout/floorPlan';
@@ -46,8 +48,25 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         });
     }
 
+    const loadSettings = async () => {
+        const settings = await PublicSettingsService.getSettings();
+        setSwitches(settings.switches ?? []);
+        setFloorPlan(parseFloorPlan(settings.floorPlan));
+        setProgram(resolveProgram(settings.program));
+        return settings;
+    };
+
+    useWebSocketConnection(SETTINGS_TOPIC, () => {
+        loadSettings().catch(error => {
+            console.error("Error fetching settings:", error);
+        });
+    });
+
     const handleRefresh = async (event: CustomEvent) => {
         updateShowTab2();
+        loadSettings().catch(error => {
+            console.error("Error fetching settings:", error);
+        });
         setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
         await new Promise(resolve => setTimeout(resolve, 500));
         event.detail.complete();
@@ -58,15 +77,10 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         updateShowTab2();
         setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
 
-        const settings = PublicSettingsService.getSettings();
-
-        settings.then((response) => {
+        loadSettings().then((response) => {
             if (!response.tournamentOpen) {
                 navigate('/admin');
             }
-            setSwitches(response.switches ?? []);
-            setFloorPlan(parseFloorPlan(response.floorPlan));
-            setProgram(resolveProgram(response.program));
         }).catch(error => {
             console.error("Error fetching tournament status:", error);
         });

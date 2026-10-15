@@ -74,7 +74,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
         if (!multipleChoiceQuestion.active) {
             showResults();
         }
-    }, []);
+    }, [multipleChoiceQuestion.active]);
 
     return (
         <IonAccordion value={multipleChoiceQuestion.id.toString()} >

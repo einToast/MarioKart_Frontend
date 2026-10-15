@@ -1,11 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SwitchDTO } from '../util/api/config/dto';
 import { PublicSettingsService } from '../util/service';
+import { useWebSocketConnection } from './useWebSocketConnection';
 
-// Loads the configured switches; reloads whenever `refreshKey` changes.
-// Without them games fall back to numbered switches, so a failed request is not an error
-export const useSwitches = (refreshKey?: unknown): SwitchDTO[] => {
+export const SETTINGS_TOPIC = '/topic/settings';
+
+export const useSwitches = (refreshKey?: unknown): { switches: SwitchDTO[]; reloadSwitches: () => void } => {
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
+    const [reloadCount, setReloadCount] = useState<number>(0);
+
+    const reloadSwitches = useCallback(() => setReloadCount(count => count + 1), []);
+
+    useWebSocketConnection(SETTINGS_TOPIC, reloadSwitches);
 
     useEffect(() => {
         let cancelled = false;
@@ -21,7 +27,7 @@ export const useSwitches = (refreshKey?: unknown): SwitchDTO[] => {
         return () => {
             cancelled = true;
         };
-    }, [refreshKey]);
+    }, [refreshKey, reloadCount]);
 
-    return switches;
+    return { switches, reloadSwitches };
 };

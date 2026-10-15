@@ -4,6 +4,7 @@ import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend'
 import { expectErrorToast, expectSuccessToast, queryToast } from '../test/overlays';
 import { buttonOf, currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
 import { makeSwitches } from '../test/fixtures';
+import { stompClient } from '../test/stomp';
 import { createDefaultFloorPlan, serializeFloorPlan } from '../util/layout/floorPlan';
 import { serializeProgram } from '../util/layout/program';
 import { NotificationService } from '../util/service';
@@ -97,6 +98,26 @@ describe('Tab3 (details)', () => {
         expect(screen.getByRole('heading', { name: 'Raumplan' })).toBeInTheDocument();
         expect(screen.getByText('switch blau')).toBeInTheDocument();
         expect(screen.getByText('switch rot')).toBeInTheDocument();
+    });
+
+    it('redraws the room plan when the backend announces changed settings over the WebSocket', async () => {
+        const floorPlan = serializeFloorPlan(createDefaultFloorPlan(2));
+        backend.get('/public/settings', { tournamentOpen: true, switches: makeSwitches().slice(0, 2), floorPlan });
+        renderPage();
+        expect(await screen.findByText('switch rot')).toBeInTheDocument();
+
+        stompClient().simulateConnect();
+        await waitFor(() => expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/settings', expect.any(Function)), { timeout: 2000 });
+        backend.get('/public/settings', {
+            tournamentOpen: true,
+            switches: [makeSwitches()[0], { name: 'Pink', color: '#FFC0CB' }],
+            floorPlan,
+        });
+        const onMessage = stompClient().subscribe.mock.calls.find(call => call[0] === '/topic/settings')?.[1] as () => void;
+        onMessage();
+
+        expect(await screen.findByText('switch pink')).toBeInTheDocument();
+        expect(screen.queryByText('switch rot')).not.toBeInTheDocument();
     });
 
     it.each([

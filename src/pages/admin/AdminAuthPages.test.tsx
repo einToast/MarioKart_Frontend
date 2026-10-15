@@ -1,10 +1,15 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { MemoryRouter, useLocation } from 'react-router';
+import { Link } from 'react-router-dom';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend, stubLoggedOutAdmin, stubScheduleState } from '../../test/backend';
 import { expectErrorToast, queryToast } from '../../test/overlays';
 import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import Dashboard from './Dashboard';
 import Login from './Login';
+
+const ProbeLocation: React.FC = () => <span data-testid="probe">{useLocation().pathname}</span>;
 
 describe('admin Login', () => {
     const ENTER = 'Admin Bereich betreten';
@@ -36,6 +41,24 @@ describe('admin Login', () => {
         renderPage();
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+    });
+
+    it('skips the form again when it is opened another time while staying mounted', async () => {
+        stubDefaultBackend();
+        render(
+            <MemoryRouter initialEntries={['/tab3']}>
+                <Login />
+                <Link to="/admin/login">Admin Login</Link>
+                <ProbeLocation />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => expect(screen.getByTestId('probe').textContent).toBe('/tab3'));
+        expect(backend.requestsTo('GET', '/public/user/login/check')).toHaveLength(0);
+
+        fireEvent.click(screen.getByRole('link', { name: 'Admin Login' }));
+
+        await waitFor(() => expect(screen.getByTestId('probe').textContent).toBe('/admin/dashboard'));
     });
 
     it('logs in with the entered credentials and opens the dashboard', async () => {

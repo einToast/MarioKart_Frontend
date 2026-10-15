@@ -226,6 +226,14 @@ describe('PublicSurveyService', () => {
             expect(backend.requests).toEqual([]);
         });
 
+        it('rejects a text answer longer than the backend accepts', async () => {
+            const tooLong = 'a'.repeat(PublicSurveyService.MAX_FREE_TEXT_ANSWER_LENGTH + 1);
+
+            await expect(PublicSurveyService.submitAnswer(makeQuestion({ questionType: QuestionType.FREE_TEXT }), tooLong, 4))
+                .rejects.toThrow('Die Antwort darf höchstens 1000 Zeichen lang sein');
+            expect(backend.requests).toEqual([]);
+        });
+
         it.each([
             ['no selected option', -1],
             ['an empty selection', []],
