@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { TeamGraphProps } from "../../util/api/config/interfaces";
 import { loadImage } from "../../util/service/util";
+import { drawScore } from "./drawScore";
 import './RankingGraph.css';
 
 Chart.register(...registerables);
@@ -142,13 +143,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
             const score = Math.round(sortedTeamsData.finalData[index]);
             if (score > 0) {
-                ctx.save();
-                ctx.fillStyle = '#ffffff';
-                ctx.font = '800 20px Poppins';
-                ctx.textAlign = 'center';
-                const textY = bar.y + 30;
-                ctx.fillText(score.toString(), bar.x, textY);
-                ctx.restore();
+                drawScore(ctx, score, bar.x, bar.y + 30);
             }
         });
         ctx.restore();

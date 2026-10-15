@@ -14,7 +14,11 @@ export const chartContext = {
     clearRect: vi.fn(),
     drawImage: vi.fn(),
     fillText: vi.fn(),
+    strokeText: vi.fn(),
     fillStyle: '',
+    strokeStyle: '',
+    lineWidth: 0,
+    lineJoin: '',
     font: '',
     textAlign: '',
 };
@@ -60,4 +64,7 @@ export const completeChartAnimation = (): void => {
 
 export const resetCharts = (): void => {
     barRenders.length = 0;
+    chartContext.fillStyle = '';
+    chartContext.strokeStyle = '';
+    chartContext.lineWidth = 0;
 };
