@@ -254,15 +254,15 @@ const Schedule: React.FC = () => {
                     {version !== LEGACY_VERSION && teamsNeeded !== null && (
                         <p className="scheduleHint">Mindestens {teamsNeeded} Teams nötig</p>
                     )}
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
-                        <div onClick={handleScheduleCreation}
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    handleScheduleCreation();
-                                }
-                            }}
-                        >
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleScheduleCreation}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleScheduleCreation();
+                            }
+                        }}
+                    >
+                        <div>
                             <p>Spielplan erzeugen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>

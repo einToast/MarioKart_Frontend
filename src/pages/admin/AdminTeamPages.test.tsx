@@ -133,6 +133,28 @@ describe('admin Final', () => {
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
     });
 
+    it('creates the final schedule once when the arrow of the button is clicked', async () => {
+        backend.post(CREATE_URL, [makeRound({ finalGame: true })]);
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf('Finale erzeugen').querySelector('ion-icon') as HTMLElement);
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
+    });
+
+    it('resets the teams once when the arrow of the button is clicked', async () => {
+        backend.put(RESET_URL, makeTeams());
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf('Teams zurücksetzen').querySelector('ion-icon') as HTMLElement);
+
+        await expectSuccessToast('Teams zurückgesetzt');
+        expect(backend.requestsTo('PUT', RESET_URL)).toHaveLength(1);
+    });
+
     it('shows the error and stays on the page when the final cannot be created yet', async () => {
         backend.fail('POST', CREATE_URL, 400);
         renderPage();
@@ -431,7 +453,39 @@ describe('admin Schedule', () => {
         expect(currentPath()).toBe('/admin/dashboard');
     });
 
-    it.todo('refreshes the list after a team was (de)activated (currently the reloaded teams are discarded)');
+    it('refreshes the list after a team was deactivated', async () => {
+        backend.put('/admin/teams/1', makeTeam());
+        renderPage();
+        await screen.findByText('Team Mario');
+        backend.get(TEAMS_URL, makeTeams().map(team => (team.id === 1 ? { ...team, active: false, finalReady: false } : team)));
+
+        fireEvent.click(row('Team Mario').getByTitle('Team deaktivieren'));
+
+        expect(await row('Team Mario').findByTitle('Team aktivieren')).toBeInTheDocument();
+        expect(backend.requestsTo('GET', TEAMS_URL)).toHaveLength(2);
+    });
+
+    it('creates the schedule once when the arrow of the button is clicked', async () => {
+        backend.post(CREATE_URL, [makeRound()]);
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf(CREATE).querySelector('ion-icon') as HTMLElement);
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
+    });
+
+    it('creates the schedule when the edge of the button is clicked, outside its label', async () => {
+        backend.post(CREATE_URL, [makeRound()]);
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf(CREATE));
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
+    });
 });
 
 describe('admin Teams', () => {
