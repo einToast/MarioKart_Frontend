@@ -63,6 +63,29 @@ describe('admin Login', () => {
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
     });
 
+    it.each([
+        ['the username field', usernameInput],
+        ['the password field', passwordInput],
+    ])('does not log in when a space is typed into %s', async (_name, element) => {
+        renderPage();
+        await waitFor(() => expect(backend.requestsTo('GET', '/public/user/login/check')).toHaveLength(1));
+        enterCredentials('admin', 'secret');
+
+        fireEvent.keyDown(element(), { key: ' ' });
+
+        expect(backend.requestsTo('POST', '/public/user/login')).toHaveLength(0);
+    });
+
+    it('still logs in when space is pressed on the button', async () => {
+        backend.post('/public/user/login', {});
+        renderPage();
+        enterCredentials('admin', 'secret');
+
+        fireEvent.keyDown(buttonOf(ENTER), { key: ' ' });
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+    });
+
     it('shows the error and keeps the input when the credentials are wrong', async () => {
         backend.fail('POST', '/public/user/login', 401);
         renderPage();
@@ -173,6 +196,17 @@ describe('admin Dashboard', () => {
 
         await waitFor(() => expect(currentPath()).toBe('/admin/login'));
         expect(backend.requestsTo('POST', '/public/user/logout')).toHaveLength(1);
+    });
+
+    it('shows the error and stays on the dashboard when the logout fails', async () => {
+        backend.fail('POST', '/public/user/logout', 500);
+        renderPage();
+        await waitForDashboard();
+
+        fireEvent.click(screen.getByText('Logout'));
+
+        await expectErrorToast('Logout fehlgeschlagen');
+        expect(currentPath()).toBe('/admin/dashboard');
     });
 
     it('shows an error when the schedule state cannot be loaded', async () => {

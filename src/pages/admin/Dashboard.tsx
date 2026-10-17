@@ -24,8 +24,10 @@ const Dashboard: React.FC = () => {
     const handleLogout = async () => {
         try {
             await PublicUserService.logout();
-        } finally {
             navigate('/admin/login');
+        } catch (error) {
+            setError(error instanceof Error ? error.message : 'Logout fehlgeschlagen');
+            setShowToast(true);
         }
     }
 

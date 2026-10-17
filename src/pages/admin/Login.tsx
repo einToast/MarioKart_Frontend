@@ -67,7 +67,7 @@ const Login: React.FC = () => {
                                 onChange={(e) => setUsername(e.target.value)}
                                 tabIndex={0}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
+                                    if (e.key === 'Enter') {
                                         handleLogin();
                                     }
                                 }}
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
                                 onChange={(e) => setPassword(e.target.value)}
                                 tabIndex={0}
                                 onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
+                                    if (e.key === 'Enter') {
                                         handleLogin();
                                     }
                                 }}
