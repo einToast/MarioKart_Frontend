@@ -13,9 +13,9 @@ export const subscribe = async (subscriptionData: NotificationSubscriptionDTO): 
             if (error.response?.status === 401) {
                 throw new Error('Nicht autorisierter Zugriff');
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error('Benachrichtigungen konnten nicht aktiviert werden');
             } else {
-                throw new Error('Finalrunden konnten nicht erstellt werden');
+                throw new Error('Benachrichtigungen konnten nicht aktiviert werden');
             }
         }
         throw error;

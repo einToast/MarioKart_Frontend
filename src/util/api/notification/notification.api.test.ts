@@ -10,9 +10,8 @@ const subscription: NotificationSubscriptionDTO = {
     teamId: 4,
 };
 
-// The notification endpoints reuse the final-schedule wording as their generic error message.
-// These tests pin the current behaviour; a clearer message would have to be updated here too
-const NOTIFICATION_FALLBACK = 'Finalrunden konnten nicht erstellt werden';
+const SEND_FAILED = 'Benachrichtigung konnte nicht gesendet werden';
+const SUBSCRIBE_FAILED = 'Benachrichtigungen konnten nicht aktiviert werden';
 
 describe('PublicNotificationApi', () => {
     describeEndpoint('subscribe', {
@@ -23,9 +22,9 @@ describe('PublicNotificationApi', () => {
         returnsVoid: true,
         errors: {
             401: 'Nicht autorisierter Zugriff',
-            500: 'Benachrichtigung konnte nicht gesendet werden',
+            500: SUBSCRIBE_FAILED,
         },
-        fallback: NOTIFICATION_FALLBACK,
+        fallback: SUBSCRIBE_FAILED,
     });
 
     describeEndpoint('getPublicKey', {
@@ -47,9 +46,9 @@ describe('AdminNotificationApi', () => {
         returnsVoid: true,
         errors: {
             401: 'Nicht autorisierter Zugriff',
-            500: 'Benachrichtigung konnte nicht gesendet werden',
+            500: SEND_FAILED,
         },
-        fallback: NOTIFICATION_FALLBACK,
+        fallback: SEND_FAILED,
     });
 
     describeEndpoint('sendNotificationToTeam', {
@@ -60,8 +59,8 @@ describe('AdminNotificationApi', () => {
         returnsVoid: true,
         errors: {
             401: 'Nicht autorisierter Zugriff',
-            500: 'Benachrichtigung konnte nicht gesendet werden',
+            500: SEND_FAILED,
         },
-        fallback: NOTIFICATION_FALLBACK,
+        fallback: SEND_FAILED,
     });
 });

@@ -14,7 +14,7 @@ export const sendNotificationToAll = async (notification: NotificationRequestDTO
             } else if (error.response?.status === 500) {
                 throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
-                throw new Error('Finalrunden konnten nicht erstellt werden');
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             }
         }
         throw error;
@@ -33,7 +33,7 @@ export const sendNotificationToTeam = async (teamId: number, notification: Notif
             } else if (error.response?.status === 500) {
                 throw new Error('Benachrichtigung konnte nicht gesendet werden');
             } else {
-                throw new Error('Finalrunden konnten nicht erstellt werden');
+                throw new Error('Benachrichtigung konnte nicht gesendet werden');
             }
         }
         throw error;
