@@ -4,7 +4,8 @@ import { check as checkAuthCookie } from "../../user/public/PublicUserAuthServic
 
 export const getUser = (): User | null => {
     try {
-        return JSON.parse(Cookies.get('user') ?? '{}') as User;
+        const cookie = Cookies.get('user');
+        return cookie ? JSON.parse(cookie) as User : null;
     } catch (e) {
         console.error('Error getting user:', e);
         return null;

@@ -46,4 +46,10 @@ describe('Toast', () => {
 
         expect(screen.getByRole('alert')).toHaveClass('tab-toast');
     });
+
+    it('keeps its default position when no team is logged in, as there is no tab bar', () => {
+        render(<Toast message="Fehler" showToast={true} setShowToast={vi.fn()} />);
+
+        expect(screen.getByRole('alert')).not.toHaveClass('tab-toast');
+    });
 });
