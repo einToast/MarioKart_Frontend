@@ -46,6 +46,12 @@ updates:
           - "@types/react"
           - "@types/react-dom"
 
+  - package-ecosystem: "npm"
+    directory: "/docker/runtime"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
