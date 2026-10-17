@@ -19,7 +19,7 @@ const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[], ocrProvider?: string }> = ({ game, roundId, isOpen, toggleAccordion, switches, ocrProvider }) => {
     const pointsOfTeam = (teamId: number) => game.points?.find(point => point.team.id === teamId);
 
-    const [points, setPoints] = useState<number[]>(() => game.teams.map(team => pointsOfTeam(team.id)?.points ?? 0));
+    const [points, setPoints] = useState<(number | '')[]>(() => game.teams.map(team => pointsOfTeam(team.id)?.points ?? 0));
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -32,17 +32,18 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
 
     const gameSwitch = resolveSwitch(switches, game.switchIndex);
 
-    const changePoints = (index: number, newValue: number) => {
+    const changePoints = (index: number, newValue: number | '') => {
         setPoints(previous => previous.map((value, position) => position === index ? newValue : value));
 
         const teamPoints = pointsOfTeam(game.teams[index].id);
         if (teamPoints) {
-            teamPoints.points = newValue;
+            teamPoints.points = newValue === '' ? 0 : newValue;
         }
     };
 
     const handleChangePoints = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-        changePoints(index, Number.parseInt(event.target.value));
+        const parsed = Number.parseInt(event.target.value);
+        changePoints(index, Number.isNaN(parsed) ? '' : parsed);
     };
 
     const handleChoosePhoto = (event: React.ChangeEvent<HTMLInputElement>) => {
