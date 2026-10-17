@@ -38,7 +38,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         });
         pointGroups.push(currentGroup);
 
-        const isFirstPlaceAlone = sorted.length === 0 || sorted[1].groupPoints < sorted[0].groupPoints;
+        const isFirstPlaceAlone = sorted.length < 2 || sorted[1].groupPoints < sorted[0].groupPoints;
 
         return {
             teams: sorted,
@@ -65,6 +65,8 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     }, [sortedTeamsData.icons]);
 
     const revealNext = React.useCallback(() => {
+        if (sortedTeamsData.teams.length === 0) return;
+
         const totalGroups = sortedTeamsData.pointGroups.length;
         const maxSteps = totalGroups;
 
