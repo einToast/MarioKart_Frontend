@@ -19,6 +19,7 @@ export interface FakeSubscription {
 // socket; tests drive the connection state with `simulateConnect` / `simulateDisconnect`
 export class Client {
     static instances: Client[] = [];
+    private static nextSubscriptionId = 0;
 
     config: FakeClientConfig;
     // Plain state rather than mock history, which Vitest clears before every test
@@ -29,7 +30,7 @@ export class Client {
     deactivate = vi.fn();
     subscriptions: FakeSubscription[] = [];
     subscribe = vi.fn((_destination: string, _callback: (message: unknown) => void): FakeSubscription => {
-        const subscription = { id: `sub-${this.subscriptions.length}`, unsubscribe: vi.fn() };
+        const subscription = { id: `sub-${Client.nextSubscriptionId++}`, unsubscribe: vi.fn() };
         this.subscriptions.push(subscription);
         return subscription;
     });
