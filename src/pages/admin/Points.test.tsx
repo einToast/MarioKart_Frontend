@@ -403,10 +403,24 @@ describe('admin Points', () => {
         const { container } = renderPage();
         await waitForRound(container, '17:10 - 17:30');
         expect(roundSelect()).toHaveValue('12');
+        expect(roundSelect().selectedOptions[0]).toHaveTextContent('Runde 2');
 
         fireEvent.change(roundSelect(), { target: { value: '11' } });
 
         await waitForRound(container, '16:45 - 17:05');
+        expect(backend.requestsTo('GET', `${ROUNDS_URL}/11`)).toHaveLength(1);
     });
-    it.todo('explains that no rounds exist yet (currently shows a raw TypeError message)');
+
+    it('explains that no rounds exist yet and saves nothing', async () => {
+        backend.get(ROUNDS_URL, []);
+
+        const { container } = renderPage();
+
+        await expectErrorToast('Es gibt noch keine Runden. Erstelle zuerst einen Spielplan.');
+        expect(timeStamp(container)).toBeUndefined();
+
+        fireEvent.click(screen.getByText(SAVE));
+
+        expect(backend.requests.filter(request => request.method === 'PUT')).toEqual([]);
+    });
 });
