@@ -332,6 +332,27 @@ describe('PublicSurveyService', () => {
             expect(PublicSurveyService.getAnswerCookie('Wer gewinnt?7')).toEqual({ answerId: '2' });
         });
 
+        it('remembers every selected option of a checkbox question', async () => {
+            backend.post(ANSWER_URL, makeAnswer());
+            const question = makeQuestion({ id: 7, questionText: 'Welche Strecken?', questionType: QuestionType.CHECKBOX });
+
+            await PublicSurveyService.submitAnswer(question, [0, 2], 4);
+
+            expect(PublicSurveyService.getAnswerCookie('Welche Strecken?7')).toEqual({ answerId: '0,2' });
+        });
+
+        it.each([
+            [QuestionType.FREE_TEXT, 'Mehr Pizza'],
+            [QuestionType.TEAM_ONE_FREE_TEXT, 'Unser Motto'],
+        ])('marks a %s question as answered without storing "NaN"', async (type, vote) => {
+            backend.post(ANSWER_URL, makeAnswer());
+            const question = makeQuestion({ id: 7, questionText: 'Frage', questionType: type });
+
+            await PublicSurveyService.submitAnswer(question, vote, 4);
+
+            expect(PublicSurveyService.getAnswerCookie('Frage7')).toEqual({ answerId: '0' });
+        });
+
         it.each([
             [QuestionType.CHECKBOX, [1, 3]],
             [QuestionType.FREE_TEXT, 'Mehr Pizza'],
