@@ -1,5 +1,5 @@
 #Stage 1: Build
-FROM node:24.21.0-slim AS build
+FROM node:24.22.0-slim AS build
 
 WORKDIR /app
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run ionic_build
 
 #Stage 2: Run
-FROM node:24.21.0-slim AS runtime
+FROM node:24.22.0-slim AS runtime
 
 WORKDIR /app
 
