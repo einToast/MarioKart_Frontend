@@ -42,12 +42,13 @@ body {
 
 h1 {
     font-size: 32px;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 h2 {
-    font-size: 20px;
+    font-size: 32px;
     font-weight: bold;
+    margin-bottom: 10px;
 }
 
 h3 {
@@ -73,7 +74,6 @@ ion-content {
     align-items: center;
     padding-left: 20px;
     padding-right: 20px;
-    padding-top: 20px;
     margin-bottom: 20px;
 }
 
@@ -101,7 +101,6 @@ ion-tab-button.tab-selected {
 .title-large {
     text-align: start;
     align-items: start;
-    color: linear-gradient(to right, var(--ion-color-text01) 100%, var(--ion-color-text02) 100%) !important;
 }
 
 .toast {
@@ -113,8 +112,8 @@ ion-tab-button.tab-selected {
 
 .tab-toast {
     --box-shadow: none;
-    bottom: 60px !important;
-    top: auto !important;
+    bottom: 60px;
+    top: auto;
 }
 
 /* Styling für Lazy Loading Fallback */

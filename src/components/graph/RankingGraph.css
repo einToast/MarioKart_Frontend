@@ -8,7 +8,7 @@
 
 .ranking-button {
     background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
-    color: white !important;
+    color: white;
     border: none;
     border-radius: 25px;
     padding: 12px 24px;
