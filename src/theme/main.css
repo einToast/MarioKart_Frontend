@@ -36,7 +36,7 @@ body {
 }
 
 * {
-    font-family: "Tofino-Wide-Ultra";
+    font-family: "Tofino-Wide-Ultra", sans-serif;
     color: #ffffff !important;
 }
 
@@ -52,7 +52,7 @@ h2 {
 }
 
 h3 {
-    font-family: Poppins;
+    font-family: Poppins, sans-serif;
     font-weight: 800;
 }
 

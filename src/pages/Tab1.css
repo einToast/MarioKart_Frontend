@@ -30,7 +30,7 @@
     margin-bottom: 10px;
 
     select {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         background-color: #2F315B;
         border: none;
         padding: 3px 7px;
@@ -185,13 +185,13 @@ body:not(.all-games-selected) .flexSpiel {
 .swiper-slide,
 .slide {
     p:first-of-type {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         font-weight: 900;
         font-size: 18px;
     }
 
     p:last-of-type {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         font-size: 14px;
         color: #9DAEDA !important;
     }
