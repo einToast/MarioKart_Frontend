@@ -133,6 +133,28 @@ describe('admin Final', () => {
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
     });
 
+    it('creates the final schedule only once when the arrow is clicked', async () => {
+        backend.post(CREATE_URL, [makeRound({ finalGame: true })]);
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf('Finale erzeugen').querySelector('ion-icon') as HTMLElement);
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
+    });
+
+    it('resets the teams only once when the arrow is clicked', async () => {
+        backend.put(RESET_URL, makeTeams());
+        renderPage();
+        await screen.findByText('Team Mario');
+
+        fireEvent.click(buttonOf('Teams zurücksetzen').querySelector('ion-icon') as HTMLElement);
+
+        await expectSuccessToast('Teams zurückgesetzt');
+        expect(backend.requestsTo('PUT', RESET_URL)).toHaveLength(1);
+    });
+
     it('shows the error and stays on the page when the final cannot be created yet', async () => {
         backend.fail('POST', CREATE_URL, 400);
         renderPage();

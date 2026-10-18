@@ -157,45 +157,16 @@ const Final: React.FC = () => {
                 <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round secondary"}>
-                        <div onClick={handleTeamsReset}
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    handleTeamsReset();
-                                }
-                            }}
-                        >
+                    <IonButton slot="start" shape="round" className={"round secondary"} onClick={handleTeamsReset}>
+                        <div>
                             <p>Teams zurücksetzen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleTeamsReset}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        handleTeamsReset();
-                                    }
-                                }}
-                            ></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    {/* TODO: fix, does not work properly, idk */}
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled}>
-                        <div onClick={handleFinalCreation}
-                            tabIndex={0}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === ' ') {
-                                    handleFinalCreation();
-                                }
-                            }}
-                        >
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleFinalCreation}>
+                        <div>
                             <p>Finale erzeugen</p>
-                            <IonIcon slot="end" icon={arrowForwardOutline} onClick={handleFinalCreation}
-                                tabIndex={0}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        handleFinalCreation();
-                                    }
-                                }}
-                            ></IonIcon>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
                 </div>
