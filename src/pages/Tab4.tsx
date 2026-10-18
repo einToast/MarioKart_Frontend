@@ -78,8 +78,9 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </div>
                 <h2>Spielregeln</h2>
                 <ul>
-                    <li>Es treten 4 Teams gegeneinander an</li>
+                    <li>Es treten 4 oder 8 Teams gegeneinander an</li>
                     <li>Es wird im Versus-Rennen gespielt</li>
+                    <li>Jedes Team wählt den Charakter aus mit dem es sich angemeldet hat</li>
                     <li>Alle Teams fahren im Standard-Kart</li>
                     <li>Die Geschwindigkeit beträgt 100ccm</li>
                     <li>Es wird mit Standardeinstellungen gespielt</li>
