@@ -158,7 +158,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
             <Header />
             <IonContent fullscreen>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-                    <IonRefresherContent refreshingSpinner="circles" />
+                    <IonRefresherContent refreshingSpinner="crescent" />
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
