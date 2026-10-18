@@ -4,8 +4,9 @@ import { backend, stubDefaultBackend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { currentPath, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
-import { DEFAULT_PROGRAM, parseProgram, ProgramEntry, serializeProgram } from '../../util/layout/program';
+import { DEFAULT_PROGRAM, parseProgram, serializeProgram } from '../../util/layout/program';
 import Program from './Program';
+import { ProgramEntry } from '../../util/api/config/interfaces';
 
 const SETTINGS_URL = '/public/settings';
 const ADMIN_SETTINGS_URL = '/admin/settings';

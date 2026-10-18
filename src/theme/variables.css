@@ -5,7 +5,7 @@ http://ionicframework.com/docs/theming/ */
 :root {
   --ion-color-text: linear-gradient(to bottom,
       var(--ion-color-text01) 100%,
-      var(--ion-color-text02) 100%) !important;
+      var(--ion-color-text02) 100%);
 
   --ion-color-text01: #C0B5F3;
   --ion-color-text01-rgb: 192, 181, 243;

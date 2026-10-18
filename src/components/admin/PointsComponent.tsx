@@ -10,9 +10,9 @@ import "../../pages/admin/Points.css";
 import { GameReturnDTO, SwitchDTO } from "../../util/api/config/dto";
 import { resolveSwitch } from "../../util/layout/switches";
 import { AdminOcrService, AdminScheduleService } from "../../util/service";
-import { GamePhoto } from "../../util/service/ocr/admin/AdminOcrPhotoService";
 import Toast from "../Toast";
 import ZoomablePhoto from "./ZoomablePhoto";
+import { GamePhoto } from "../../util/api/config/interfaces";
 
 const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 

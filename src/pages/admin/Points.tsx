@@ -35,7 +35,9 @@ const Points: React.FC = () => {
         round.then((round) => {
             round.games ??= [];
             round.games.sort((a, b) => a.id - b.id);
-            round.games.forEach(game => game.teams.sort((a, b) => a.id - b.id));
+            round.games.forEach(game => {
+                game.teams.sort((a, b) => a.id - b.id);
+            });
             setRound(round);
             setRoundPlayed(round.played);
             setOpenAccordion(undefined); // Close all accordions initially

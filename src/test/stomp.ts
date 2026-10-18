@@ -18,7 +18,7 @@ export interface FakeSubscription {
 // Replacement for the `@stomp/stompjs` Client (wired up in setupTests.ts). It never opens a
 // socket; tests drive the connection state with `simulateConnect` / `simulateDisconnect`
 export class Client {
-    static instances: Client[] = [];
+    static readonly instances: Client[] = [];
     private static nextSubscriptionId = 0;
 
     config: FakeClientConfig;

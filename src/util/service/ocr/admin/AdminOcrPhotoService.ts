@@ -1,9 +1,4 @@
-export interface GamePhoto {
-    file: File;
-    // Object URL to show the photo without uploading it
-    url: string;
-}
-
+import { GamePhoto } from '../../../api/config/interfaces';
 // The photos are kept outside of the components, so they stay available for comparing
 // until the page is reloaded
 const photos = new Map<number, GamePhoto>();

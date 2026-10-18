@@ -5,7 +5,7 @@
     align-items: center;
     margin-top: 15px;
     font-size: inherit;
-    color: inherit !important;
+    color: inherit;
     text-decoration: none;
 
     span {
@@ -31,7 +31,7 @@ ion-accordion-group {
 ion-checkbox {
     margin-bottom: 10px;
     font-size: 16px;
-    font-family: Poppins;
+    font-family: Poppins, sans-serif;
 }
 
 ion-accordion {
@@ -41,8 +41,9 @@ ion-accordion {
 
     .ion-color-light,
     .ion-padding {
-        --ion-color-base: #32345E !important;
-        background: #32345E !important;
+        --ion-color-light: #32345E;
+        --ion-color-base: #32345E;
+        background: #32345E;
     }
 
     .inputContainer {

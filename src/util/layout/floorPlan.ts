@@ -1,3 +1,4 @@
+import { ElementOverrides, FloorPlan, FloorPlanElement, FloorPlanPoint, Station } from '../api/config/interfaces';
 export const FLOOR_PLAN_VERSION = 1;
 export const FLOOR_PLAN_WIDTH = 1000;
 export const FLOOR_PLAN_HEIGHT = 640;
@@ -8,33 +9,7 @@ export const MAX_FLOOR_PLAN_TEXT_LENGTH = 40;
 // row: a line of seats, text: free label
 export type FloorPlanElementType = 'switch' | 'table' | 'row' | 'text';
 
-const ELEMENT_TYPES: FloorPlanElementType[] = ['switch', 'table', 'row', 'text'];
-
-export interface FloorPlanElement {
-    id: string;
-    type: FloorPlanElementType;
-    // Centre of the element in plan units
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    // Degrees, clockwise
-    rotation: number;
-    switchIndex?: number;
-    text?: string;
-}
-
-export interface FloorPlanPoint {
-    x: number;
-    y: number;
-}
-
-export interface FloorPlan {
-    version: number;
-    elements: FloorPlanElement[];
-    // Corners of the room; a plan without an outline is framed by the whole canvas
-    outline?: FloorPlanPoint[];
-}
+const ELEMENT_TYPES = new Set<FloorPlanElementType>(['switch', 'table', 'row', 'text']);
 
 const DEFAULT_SIZES: Record<FloorPlanElementType, { width: number; height: number }> = {
     switch: { width: 60, height: 60 },
@@ -72,7 +47,7 @@ const sanitizeElement = (raw: unknown, index: number): FloorPlanElement | null =
     }
     const candidate = raw as Record<string, unknown>;
     const type = candidate.type as FloorPlanElementType;
-    if (!ELEMENT_TYPES.includes(type)) {
+    if (!ELEMENT_TYPES.has(type)) {
         return null;
     }
     if (type === 'switch' && !(Number.isInteger(candidate.switchIndex) && (candidate.switchIndex as number) >= 0)) {
@@ -92,7 +67,7 @@ const sanitizeElement = (raw: unknown, index: number): FloorPlanElement | null =
         element.switchIndex = candidate.switchIndex as number;
     }
     if (type === 'text') {
-        element.text = String(candidate.text ?? '').slice(0, MAX_FLOOR_PLAN_TEXT_LENGTH);
+        element.text = typeof candidate.text === 'string' ? candidate.text.slice(0, MAX_FLOOR_PLAN_TEXT_LENGTH) : '';
     }
     return element;
 };
@@ -157,14 +132,6 @@ export const createElement = (
     ...(type === 'text' ? { text: 'Text' } : {}),
     ...overrides,
 });
-
-type ElementOverrides = Partial<Omit<FloorPlanElement, 'id' | 'type'>>;
-
-interface Station {
-    // Position of the switch marker; its rotation tilts the name the same way as the screen
-    marker: ElementOverrides;
-    furniture: { type: FloorPlanElementType; overrides: ElementOverrides }[];
-}
 
 // The room of the classic tournament: the main switch in front of the audience, one switch
 // in the middle of the back wall and one in each back corner, turned towards the room

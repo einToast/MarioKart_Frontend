@@ -1,9 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { makeSwitches } from '../../test/fixtures';
-import { createDefaultFloorPlan, createElement, FloorPlan, FloorPlanElement } from '../../util/layout/floorPlan';
+import { createDefaultFloorPlan, createElement } from '../../util/layout/floorPlan';
 import FloorPlanEditor from './FloorPlanEditor';
 import FloorPlanView from './FloorPlanView';
+import { FloorPlan, FloorPlanElement } from '../../util/api/config/interfaces';
 
 const twoSwitches = () => makeSwitches().slice(0, 2);
 const groups = (container: HTMLElement) => Array.from(container.querySelectorAll<SVGGElement>('g.floorPlanElement'));

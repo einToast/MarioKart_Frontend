@@ -1,13 +1,9 @@
-import React, { createContext, ReactNode, useContext, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import WebSocketService from "../util/service/websockets/WebSocketService";
+import { WebSocketProviderProps } from '../util/api/config/interfaces';
 
 // Erstelle den WebSocketContext
 const WebSocketContext = createContext<WebSocketService | null>(null);
-
-// Typ für den Provider (mit children Prop als ReactNode)
-interface WebSocketProviderProps {
-    children: ReactNode; // Typ für children explizit festlegen
-}
 
 export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
     const wsService = WebSocketService.getInstance();

@@ -15,9 +15,9 @@ import Toast from '../components/Toast';
 import { SETTINGS_TOPIC } from '../hooks/useSwitches';
 import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
 import { SwitchDTO } from '../util/api/config/dto';
-import { ShowTab2Props } from '../util/api/config/interfaces';
-import { FloorPlan, parseFloorPlan } from '../util/layout/floorPlan';
-import { defaultProgram, PROGRAM_ICONS, ProgramEntry, resolveProgram } from '../util/layout/program';
+import { FloorPlan, ProgramEntry, ShowTab2Props } from '../util/api/config/interfaces';
+import { parseFloorPlan } from '../util/layout/floorPlan';
+import { defaultProgram, PROGRAM_ICONS, resolveProgram } from '../util/layout/program';
 import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 

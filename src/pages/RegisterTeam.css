@@ -4,18 +4,11 @@
 
 p {
     font-size: 20px;
-    font-family: Poppins;
+    font-family: Poppins, sans-serif;
 }
 
 h2 {
-    font-size: 32px !important;
-    margin-bottom: 10px !important;
     padding-bottom: 0;
-}
-
-h1 {
-    font-size: 32px !important;
-    margin: 0 !important;
 }
 
 .contentLogin {
@@ -54,10 +47,10 @@ h1 {
         border: none;
         width: 100%;
         padding: 10px;
-        font-weight: normal !important;
-        font-family: Poppins !important;
+        font-weight: normal;
+        font-family: Poppins, sans-serif;
         color: #fff;
-        font-size: 16px !important;
+        font-size: 16px;
 
         &:focus-visible {
             outline: none;
@@ -66,7 +59,7 @@ h1 {
         option {
             color: #fff;
             background: #1a1a1a;
-            font-family: Poppins !important;
+            font-family: Poppins, sans-serif;
         }
 
     }
@@ -78,9 +71,9 @@ h1 {
         appearance: none;
         border: none;
         width: 100%;
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         color: #fff;
-        font-size: 16px !important;
+        font-size: 16px;
 
         &:focus-visible {
             outline: none;
@@ -128,17 +121,17 @@ ion-button {
         p {
             margin: 0;
             text-transform: none;
-            font-family: Poppins;
+            font-family: Poppins, sans-serif;
             color: #fff;
             letter-spacing: normal;
-            font-size: 16px !important;
+            font-size: 16px;
             text-align: left;
         }
     }
 }
 
 ion-button.bsurvey::part(native) {
-    --ion-color-base: #32345E !important;
+    --ion-color-base: #32345E;
     background: var(--ion-color-gradient02);
     background: linear-gradient(to right, var(--ion-color-gradient02) var(--gradient-percentage), var(--ion-color-base) var(--gradient-percentage));
     padding: 8px 16px;
@@ -146,7 +139,6 @@ ion-button.bsurvey::part(native) {
 
 ion-button.bsurvey:hover::part(native) {
     --ion-color-gradient01: #6b6dfa;
-    --ion-color-base: #454678;
 }
 
 .adminDashboard {
@@ -166,14 +158,14 @@ ion-button.secondary::part(native) {
 }
 
 a {
-    font-family: Poppins;
+    font-family: Poppins, sans-serif;
     font-size: 12px;
     margin-top: 15px;
-    color: #ffffff !important;
+    color: #ffffff;
 }
 
 .custom-alert {
     h2 {
-        font-size: 20px !important;
+        font-size: 20px;
     }
 }

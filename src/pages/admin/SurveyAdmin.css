@@ -1,4 +1,7 @@
 .newSurvey {
+    width: 100%;
+    font: inherit;
+    text-align: start;
     background-color: #32345E;
     border: 1px solid #32345E;
     display: flex;
@@ -20,7 +23,7 @@
 }
 
 h4 {
-    font-size: 18px !important;
+    font-size: 18px;
 }
 
 ul li {

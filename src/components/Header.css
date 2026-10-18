@@ -9,9 +9,7 @@
 
 ion-header {
   background-color: rgba(40, 43, 91, 0.75);
-  padding: 10px !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
+  padding: 10px 20px;
 }
 
 

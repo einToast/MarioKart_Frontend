@@ -10,6 +10,7 @@ import {
     timeOutline,
     trophyOutline,
 } from "ionicons/icons";
+import { ProgramEntry } from "../api/config/interfaces";
 
 export const MAX_PROGRAM_ENTRIES = 30;
 export const MAX_PROGRAM_TIME_LENGTH = 20;
@@ -32,13 +33,6 @@ export const PROGRAM_ICONS = {
 export type ProgramIcon = keyof typeof PROGRAM_ICONS;
 
 export const DEFAULT_PROGRAM_ICON: ProgramIcon = 'time';
-
-export interface ProgramEntry {
-    icon: ProgramIcon;
-    // Free text such as "16:00 - 16:45" or "21:00"
-    time: string;
-    text: string;
-}
 
 // Shown until an admin saves a programme of their own
 export const DEFAULT_PROGRAM: ProgramEntry[] = [

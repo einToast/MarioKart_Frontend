@@ -3,7 +3,7 @@
     align-items: center;
 
     p {
-        margin: 0 !important;
+        margin: 0;
         padding-left: 10px;
     }
 
@@ -30,7 +30,7 @@
     margin-bottom: 10px;
 
     select {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         background-color: #2F315B;
         border: none;
         padding: 3px 7px;
@@ -39,7 +39,7 @@
     }
 
     h2 {
-        margin-bottom: 0 !important;
+        margin-bottom: 0;
     }
 }
 
@@ -67,7 +67,7 @@ body:not(.all-games-selected) .flexSpiel {
         }
 
         &.switchColored:after {
-            background-color: var(--switch-color) !important;
+            background-color: var(--switch-color);
         }
     }
 }
@@ -110,27 +110,27 @@ body:not(.all-games-selected) .flexSpiel {
 
 
         &:last-of-type {
-            margin-bottom: 0 !important;
+            margin-bottom: 0;
         }
 
         .imageContainer {
             .round {
                 img {
                     /* Placed around the switch circle by TeamComponent4 */
-                    width: 35px !important;
+                    width: 35px;
                     position: absolute;
                 }
             }
 
             .round.crowded {
                 img {
-                    width: 28px !important;
+                    width: 28px;
                 }
             }
 
             .pause {
                 img {
-                    width: 55px !important;
+                    width: 55px;
                     position: absolute;
                     left: 55px;
                     top: 28px;
@@ -149,7 +149,7 @@ body:not(.all-games-selected) .flexSpiel {
             }
 
             &.switchColored:after {
-                background-color: var(--switch-color) !important;
+                background-color: var(--switch-color);
             }
         }
 
@@ -185,13 +185,13 @@ body:not(.all-games-selected) .flexSpiel {
 .swiper-slide,
 .slide {
     p:first-of-type {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         font-weight: 900;
         font-size: 18px;
     }
 
     p:last-of-type {
-        font-family: Poppins;
+        font-family: Poppins, sans-serif;
         font-size: 14px;
         color: #9DAEDA !important;
     }
@@ -199,7 +199,7 @@ body:not(.all-games-selected) .flexSpiel {
 
 .swiper-button-prev:after,
 .swiper-button-next:after {
-    font-size: 14px !important;
+    font-size: 14px;
     color: #fff;
     font-weight: bold;
 }

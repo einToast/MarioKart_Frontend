@@ -9,7 +9,6 @@ import Toast from "../../components/Toast";
 import { SwitchDTO } from "../../util/api/config/dto";
 import {
     createDefaultFloorPlan,
-    FloorPlan,
     isDefaultFloorPlan,
     parseFloorPlan,
     serializeFloorPlan,
@@ -20,6 +19,7 @@ import { AdminSettingsService, PublicCookiesService, PublicSettingsService } fro
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Venue.css";
+import { FloorPlan } from "../../util/api/config/interfaces";
 
 const Venue: React.FC = () => {
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
