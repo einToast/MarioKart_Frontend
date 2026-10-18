@@ -11,7 +11,16 @@ permissions:
 
 jobs:
   ionic-build:
-    runs-on: ubuntu-latest
+    name: ionic-build (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - name: Checkout repository
@@ -36,7 +45,16 @@ jobs:
         run: npm run build
 
   e2e-tests:
-    runs-on: ubuntu-latest
+    name: e2e-tests (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-24.04
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
 
     env:
       REACT_APP_BACKEND_PROTOCOL: http

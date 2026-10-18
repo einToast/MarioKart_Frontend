@@ -196,52 +196,9 @@ describe('admin Points', () => {
         expect(currentPath()).toBe('/admin/dashboard');
     });
 
-    describe('relative points', () => {
-        const relativePointsCheckbox = () => screen.getByLabelText('Relative Punkte') as HTMLInputElement;
-
-        it('shows the stored setting', async () => {
-            stubRounds();
-            backend.get('/public/settings', { switches: makeSwitches(), relativePoints: true });
-
-            renderPage();
-
-            await waitFor(() => expect(relativePointsCheckbox()).toBeChecked());
-        });
-
-        it('saves the setting when it is toggled', async () => {
-            stubRounds();
-            backend
-                .get('/public/settings', { switches: makeSwitches(), relativePoints: false })
-                .put('/admin/settings', {});
-            const { container } = renderPage();
-            await waitForRound(container, '17:10 - 17:30');
-
-            fireEvent.click(relativePointsCheckbox());
-
-            await expectSuccessToast('Einstellung gespeichert');
-            expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ relativePoints: true });
-            expect(relativePointsCheckbox()).toBeChecked();
-        });
-
-        it('keeps the setting when it cannot be saved', async () => {
-            stubRounds();
-            backend
-                .get('/public/settings', { switches: makeSwitches(), relativePoints: false })
-                .fail('PUT', '/admin/settings', 500);
-            const { container } = renderPage();
-            await waitForRound(container, '17:10 - 17:30');
-
-            fireEvent.click(relativePointsCheckbox());
-
-            await expectErrorToast('Einstellungen konnten nicht aktualisiert werden');
-            expect(relativePointsCheckbox()).not.toBeChecked();
-        });
-    });
-
     describe('with point detection', () => {
         const providerSelect = () => screen.getByLabelText('Punkteerkennung:') as HTMLSelectElement;
         const photo = new File(['image'], 'result.jpg', { type: 'image/jpeg' });
-        const STANDARD = 'Als Standard festlegen';
 
         beforeEach(() => {
             // jsdom has no object URLs
@@ -272,7 +229,6 @@ describe('admin Points', () => {
 
             await waitFor(() => expect(providerSelect()).toHaveValue('openai'));
             expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini', 'openai (Standard)']);
-            expect(screen.getByText(STANDARD)).toBeDisabled();
         });
 
         it('selects the first provider when the standard provider is not available', async () => {
@@ -285,41 +241,6 @@ describe('admin Points', () => {
 
             await waitFor(() => expect(providerSelect().options).toHaveLength(2));
             expect(providerSelect()).toHaveValue('gemini');
-            expect(screen.getByText(STANDARD)).toBeEnabled();
-        });
-
-        it('saves the selected provider as the standard provider', async () => {
-            stubRounds();
-            backend
-                .get('/admin/ocr/available', ['gemini', 'openai'])
-                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'gemini' })
-                .put('/admin/settings', {});
-            renderPage();
-            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
-
-            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
-            fireEvent.click(screen.getByText(STANDARD));
-
-            await expectSuccessToast('Standard-Anbieter gespeichert');
-            expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ ocrProvider: 'openai' });
-            expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini', 'openai (Standard)']);
-            expect(screen.getByText(STANDARD)).toBeDisabled();
-        });
-
-        it('shows the error and keeps the standard provider when it cannot be saved', async () => {
-            stubRounds();
-            backend
-                .get('/admin/ocr/available', ['gemini', 'openai'])
-                .get('/public/settings', { switches: makeSwitches(), ocrProvider: 'gemini' })
-                .fail('PUT', '/admin/settings', 500);
-            renderPage();
-            await waitFor(() => expect(providerSelect().options).toHaveLength(2));
-
-            fireEvent.change(providerSelect(), { target: { value: 'openai' } });
-            fireEvent.click(screen.getByText(STANDARD));
-
-            await expectErrorToast('Einstellungen konnten nicht aktualisiert werden');
-            expect(Array.from(providerSelect().options).map(option => option.textContent)).toEqual(['gemini (Standard)', 'openai']);
         });
 
         it('opens the game a photo is dropped on', async () => {

@@ -7,7 +7,7 @@ import BackLink from "../../components/admin/BackLink";
 import PointsComponent from "../../components/admin/PointsComponent";
 import Toast from '../../components/Toast';
 import { RoundReturnDTO, SwitchDTO } from "../../util/api/config/dto";
-import { AdminOcrService, AdminScheduleService, AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
+import { AdminOcrService, AdminScheduleService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
 
@@ -26,7 +26,6 @@ const Points: React.FC = () => {
     const [ocrProviders, setOcrProviders] = useState<string[]>([]);
     const [selectedOcrProvider, setSelectedOcrProvider] = useState<string>('');
     const [standardOcrProvider, setStandardOcrProvider] = useState<string>('');
-    const [relativePoints, setRelativePoints] = useState<boolean>(false);
     const ocrProvider = selectedOcrProvider || (ocrProviders.includes(standardOcrProvider) ? standardOcrProvider : ocrProviders[0] ?? '');
 
     const location = useLocation();
@@ -45,38 +44,6 @@ const Points: React.FC = () => {
             setIsError(true);
             setShowToast(true);
         });
-    };
-
-    const handleSaveStandardOcrProvider = () => {
-        AdminSettingsService.updateOcrProvider(ocrProvider)
-            .then(() => {
-                setStandardOcrProvider(ocrProvider);
-                setError('Standard-Anbieter gespeichert');
-                setIsError(false);
-            })
-            .catch(error => {
-                setError(error.message);
-                setIsError(true);
-            })
-            .finally(() => {
-                setShowToast(true);
-            });
-    };
-
-    const handleRelativePointsChange = (checked: boolean) => {
-        AdminSettingsService.updateRelativePoints(checked)
-            .then(() => {
-                setRelativePoints(checked);
-                setError('Einstellung gespeichert');
-                setIsError(false);
-            })
-            .catch(error => {
-                setError(error.message);
-                setIsError(true);
-            })
-            .finally(() => {
-                setShowToast(true);
-            });
     };
 
     const handleSavePoints = () => {
@@ -120,7 +87,6 @@ const Points: React.FC = () => {
                 .then(settings => {
                     setSwitches(settings.switches ?? []);
                     setStandardOcrProvider(settings.ocrProvider ?? '');
-                    setRelativePoints(settings.relativePoints ?? false);
                 })
                 .catch(error => console.error("Error fetching settings:", error));
 
@@ -214,20 +180,8 @@ const Points: React.FC = () => {
                                 <option value={provider} key={provider}>{provider === standardOcrProvider ? `${provider} (Standard)` : provider}</option>
                             ))}
                         </select>
-                        <button type="button" disabled={ocrProvider === standardOcrProvider} onClick={handleSaveStandardOcrProvider}>
-                            Als Standard festlegen
-                        </button>
                     </div>
                 )}
-                <div className="relativePoints">
-                    <input
-                        type="checkbox"
-                        id="relativePoints"
-                        checked={relativePoints}
-                        onChange={(e) => handleRelativePointsChange(e.target.checked)}
-                    />
-                    <label htmlFor="relativePoints">Relative Punkte</label>
-                </div>
                 {round && (
                     <>
                         <div className="timeContainer">

@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import Cookies from 'js-cookie';
 import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
-import { makeBreak, makeGame, makeRound, makeTeam } from '../test/fixtures';
+import { makeBreak, makeGame, makeRound, makeSwitches, makeTeam } from '../test/fixtures';
 import { expectErrorToast } from '../test/overlays';
 import { currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
 import { stompClient } from '../test/stomp';
@@ -182,6 +182,39 @@ describe('Tab1 (schedule)', () => {
         onMessage();
 
         expect(await screen.findAllByText('Switch Rot')).toHaveLength(2);
+    });
+
+    const renameRedSwitch = () => {
+        const switches = makeSwitches();
+        switches[1] = { name: 'Pink', color: '#FFC0CB' };
+        backend.get('/public/settings', { tournamentOpen: true, switches });
+    };
+
+    it('shows renamed switches when the backend announces changed settings over the WebSocket', async () => {
+        stubTwoRounds();
+        renderPage();
+        expect(await screen.findAllByText('Switch Rot')).toHaveLength(2);
+
+        stompClient().simulateConnect();
+        await waitFor(() => expect(stompClient().subscribe).toHaveBeenCalledWith('/topic/settings', expect.any(Function)), { timeout: 2000 });
+        renameRedSwitch();
+        const onMessage = stompClient().subscribe.mock.calls.find(call => call[0] === '/topic/settings')?.[1] as () => void;
+        onMessage();
+
+        expect(await screen.findAllByText('Switch Pink')).toHaveLength(2);
+        expect(screen.queryByText('Switch Rot')).not.toBeInTheDocument();
+    });
+
+    it('shows renamed switches after pull-to-refresh', async () => {
+        stubTwoRounds();
+        const { container } = renderPage();
+        expect(await screen.findAllByText('Switch Rot')).toHaveLength(2);
+        renameRedSwitch();
+
+        const complete = pullToRefresh(container);
+
+        await waitFor(() => expect(complete).toHaveBeenCalledTimes(1), { timeout: 2000 });
+        expect(screen.getAllByText('Switch Pink')).toHaveLength(2);
     });
 
     it('shows placeholders instead of the rounds while reloading on pull-to-refresh', async () => {

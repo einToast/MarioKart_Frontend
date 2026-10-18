@@ -53,6 +53,13 @@ const drawnImages = () => chartContext.drawImage.mock.calls.map(call => (call[0]
 // [text, x, y] of everything written onto the canvas, in drawing order
 const writtenTexts = () => chartContext.fillText.mock.calls;
 
+const expectWhiteScoresWithDarkOutline = () => {
+    expect(chartContext.strokeText.mock.calls).toEqual(writtenTexts());
+    expect(chartContext.strokeStyle).toBe('#10112E');
+    expect(chartContext.lineWidth).toBe(4);
+    expect(chartContext.fillStyle).toBe('#ffffff');
+};
+
 const waitForImages = async () => {
     await waitFor(() => expect(chartContext.drawImage).toHaveBeenCalled());
     chartContext.drawImage.mockClear();
@@ -255,6 +262,14 @@ describe('GroupGraph', () => {
         expect(writtenTexts().map(call => call[0])).toEqual(['30', '20', '10', '10']);
     });
 
+    it('writes the scores in white with a dark outline', () => {
+        render(<GroupGraph teams={teams()} />);
+
+        completeChartAnimation();
+
+        expectWhiteScoresWithDarkOutline();
+    });
+
     it('leaves 20% headroom above the best score', () => {
         render(<GroupGraph teams={teams()} />);
 
@@ -360,6 +375,21 @@ describe('FinalGraph', () => {
 
         expect(data()).toEqual([30, 20, 10, 5]);
         expect(colors()).toEqual([GOLD, SILVER, BRONZE, GREY]);
+    });
+
+    it('writes the scores in white with a dark outline, also on the medal bars', async () => {
+        keepOrder();
+        loadImagesInstantly();
+        render(<FinalGraph teams={teams()} />);
+        pressTimes(7);
+
+        await waitFor(() => {
+            completeChartAnimation();
+            expect(chartContext.drawImage).toHaveBeenCalled();
+        });
+
+        expect(writtenTexts().map(call => call[0])).toContain('30');
+        expectWhiteScoresWithDarkOutline();
     });
 
     it('stays on the final picture when the presentation is advanced further', () => {

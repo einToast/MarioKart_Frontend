@@ -182,6 +182,19 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
     });
 
     describe('a closed question', () => {
+        it('switches to the results when it is closed while being shown', async () => {
+            const toggleAccordion = vi.fn();
+            const { container, rerender } = render(renderCard(question(), toggleAccordion));
+            await waitFor(() => expect(statusIcon(container).icon).toBe(megaphoneOutline));
+            backend.get('/public/survey/7/statistics', [3, 1, 0, 4]);
+
+            rerender(renderCard(question({ active: false }), toggleAccordion));
+
+            await waitFor(() => expect(buttonOf('Mario')).toHaveTextContent('38%'));
+            expect(statusIcon(container).icon).toBe(statsChartOutline);
+            expect(header(container).disabled).toBe(true);
+        });
+
         it('shows the share of votes per option and a statistics icon', async () => {
             backend.get('/public/survey/7/statistics', [3, 1, 0, 4]);
 

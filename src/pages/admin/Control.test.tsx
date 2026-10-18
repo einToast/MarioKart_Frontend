@@ -193,7 +193,7 @@ describe('admin Control', () => {
 
         it('saves the configuration of a provider and confirms', async () => {
             stubOcr();
-            backend.put('/admin/ocr/openai/config', {});
+            backend.put('/admin/ocr/openai/config', {}).put('/admin/settings', {});
             renderPage();
 
             fireEvent.click(await screen.findByText('Punkteerkennung konfigurieren'));

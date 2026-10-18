@@ -108,6 +108,30 @@ describe('FreeTextSurveyComponent', () => {
         expect(statusIcon(container).icon).toBe(statsChartOutline);
         expect(header(container).disabled).toBe(true);
     });
+
+    it('shows the statistics icon when it is closed while being shown', async () => {
+        const { container, rerender, toggleAccordion } = renderQuestion();
+        await waitFor(() => expect(statusIcon(container).icon).toBe(megaphoneOutline));
+
+        const closed = makeQuestion({ id: 7, questionText: 'Feedback?', questionType: QuestionType.FREE_TEXT, options: [], active: false });
+        rerender(<FreeTextSurveyComponent freeTextQuestion={closed} toggleAccordion={toggleAccordion} />);
+
+        await waitFor(() => expect(statusIcon(container).icon).toBe(statsChartOutline));
+        expect(screen.getByPlaceholderText('Umfrage geschlossen')).toBeDisabled();
+    });
+
+    it('accepts long feedback up to the limit', async () => {
+        renderQuestion();
+        const textarea = screen.getByPlaceholderText('Dein Feedback');
+        backend.post(ANSWER_URL, makeAnswer());
+
+        expect(textarea).toHaveAttribute('maxLength', '1000');
+        type(textarea, 'a'.repeat(1000));
+        fireEvent.click(screen.getByText(SAVE));
+
+        await waitFor(() => expect(backend.requestsTo('POST', ANSWER_URL)).toHaveLength(1));
+        expect(backend.requestsTo('POST', ANSWER_URL)[0].body).toMatchObject({ freeTextAnswer: 'a'.repeat(1000) });
+    });
 });
 
 describe('TeamOneFreeTextSurveyComponent', () => {

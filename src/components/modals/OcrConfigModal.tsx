@@ -1,10 +1,10 @@
-import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
+import { IonButton, IonCheckbox, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { OcrConfigModalResult } from "../../util/api/config/interfaces";
-import { AdminOcrService } from '../../util/service';
+import { AdminOcrService, AdminSettingsService, PublicSettingsService } from '../../util/service';
 import Toast from '../Toast';
 
 const THINKING_LEVELS = ['minimal', 'low', 'medium', 'high'];
@@ -16,12 +16,27 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     const [models, setModels] = useState<string[]>([]);
     const [model, setModel] = useState<string>('');
     const [thinking, setThinking] = useState<string>('');
+    const [standardProvider, setStandardProvider] = useState<string>('');
+    const [relativePoints, setRelativePoints] = useState<boolean>(false);
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [isError, setIsError] = useState<boolean>(true);
 
     const showError = (message: string) => {
         setError(message);
+        setIsError(true);
         setShowToast(true);
+    };
+
+    const handleSetStandardProvider = () => {
+        AdminSettingsService.updateOcrProvider(provider)
+            .then(() => {
+                setStandardProvider(provider);
+                setError('Standard-Anbieter gespeichert');
+                setIsError(false);
+                setShowToast(true);
+            })
+            .catch(error => showError(error.message));
     };
 
     const selectProvider = (providerName: string) => {
@@ -40,7 +55,10 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     };
 
     const handleChange = () => {
-        AdminOcrService.updateProviderConfig(provider, { model: model.trim(), thinking })
+        Promise.all([
+            AdminOcrService.updateProviderConfig(provider, { model: model.trim(), thinking }),
+            AdminSettingsService.updateRelativePoints(relativePoints),
+        ])
             .then(() => closeModal({ ocrConfigChanged: true }))
             .catch(error => showError(error.message));
     };
@@ -49,11 +67,14 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
         if (!showModal) {
             return;
         }
-        AdminOcrService.getAvailableProviders()
-            .then(available => {
+        Promise.all([AdminOcrService.getAvailableProviders(), PublicSettingsService.getSettings()])
+            .then(([available, settings]) => {
+                const standard = available.find(providerName => providerName === settings.ocrProvider) ?? available[0];
                 setProviders(available);
-                if (available.length > 0) {
-                    selectProvider(available[0]);
+                setStandardProvider(standard ?? '');
+                setRelativePoints(settings.relativePoints ?? false);
+                if (standard) {
+                    selectProvider(standard);
                 }
             })
             .catch(error => showError(error.message));
@@ -71,16 +92,30 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                     <p>Kein Anbieter verfügbar. Für mindestens einen Anbieter muss ein API-Key hinterlegt sein.</p>
                 ) : (
                     <form onSubmit={handleChange}>
+                        <IonCheckbox labelPlacement="end"
+                            checked={relativePoints}
+                            onIonChange={(e) => setRelativePoints(e.detail.checked)}
+                        >
+                            Relative Punkte
+                        </IonCheckbox>
                         <div className={"borderContainer"}>
                             <p>Anbieter</p>
                             <select value={provider} onChange={(e) => selectProvider(e.target.value)}
                                 style={{ cursor: "pointer" }}
                             >
                                 {providers.map((providerName) => (
-                                    <option value={providerName} key={providerName}>{providerName}</option>
+                                    <option value={providerName} key={providerName}>
+                                        {providerName === standardProvider ? `${providerName} (Standard)` : providerName}
+                                    </option>
                                 ))}
                             </select>
                         </div>
+                        <IonButton className={"secondary"} expand="block"
+                            disabled={provider === standardProvider}
+                            onClick={handleSetStandardProvider}
+                        >
+                            {provider === standardProvider ? 'Standard-Anbieter' : 'Als Standard festlegen'}
+                        </IonButton>
                         <div className={"borderContainer"}>
                             <p>Modell</p>
                             {models.length > 0 ? (
@@ -147,7 +182,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                 message={error}
                 showToast={showToast}
                 setShowToast={setShowToast}
-                isError={true}
+                isError={isError}
             />
         </IonModal>
     );

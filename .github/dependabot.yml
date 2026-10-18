@@ -8,7 +8,7 @@ updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 50
     ignore:
       - dependency-name: "eslint"
@@ -46,16 +46,22 @@ updates:
           - "@types/react"
           - "@types/react-dom"
 
+  - package-ecosystem: "npm"
+    directory: "/docker/runtime"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 10
 
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "node"
@@ -65,5 +71,5 @@ updates:
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 10

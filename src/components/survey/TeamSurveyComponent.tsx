@@ -74,7 +74,7 @@ const TeamSurveyComponent: React.FC<{ teamQuestion: QuestionReturnDTO, toggleAcc
         if (!teamQuestion.active) {
             showResults();
         }
-    }, []);
+    }, [teamQuestion.active]);
 
     return (
         <IonAccordion value={teamQuestion.id.toString()} >

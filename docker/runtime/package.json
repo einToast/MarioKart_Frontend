@@ -1,0 +1,9 @@
+{
+  "name": "mario-kart-turnier-runtime",
+  "private": true,
+  "version": "0.0.1",
+  "dependencies": {
+    "react-inject-env": "2.1.0",
+    "serve": "14.2.6"
+  }
+}
