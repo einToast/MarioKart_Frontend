@@ -8,7 +8,7 @@ export const MAX_FLOOR_PLAN_TEXT_LENGTH = 40;
 // row: a line of seats, text: free label
 export type FloorPlanElementType = 'switch' | 'table' | 'row' | 'text';
 
-const ELEMENT_TYPES: FloorPlanElementType[] = ['switch', 'table', 'row', 'text'];
+const ELEMENT_TYPES = new Set<FloorPlanElementType>(['switch', 'table', 'row', 'text']);
 
 export interface FloorPlanElement {
     id: string;
@@ -72,7 +72,7 @@ const sanitizeElement = (raw: unknown, index: number): FloorPlanElement | null =
     }
     const candidate = raw as Record<string, unknown>;
     const type = candidate.type as FloorPlanElementType;
-    if (!ELEMENT_TYPES.includes(type)) {
+    if (!ELEMENT_TYPES.has(type)) {
         return null;
     }
     if (type === 'switch' && !(Number.isInteger(candidate.switchIndex) && (candidate.switchIndex as number) >= 0)) {
@@ -92,7 +92,7 @@ const sanitizeElement = (raw: unknown, index: number): FloorPlanElement | null =
         element.switchIndex = candidate.switchIndex as number;
     }
     if (type === 'text') {
-        element.text = String(candidate.text ?? '').slice(0, MAX_FLOOR_PLAN_TEXT_LENGTH);
+        element.text = typeof candidate.text === 'string' ? candidate.text.slice(0, MAX_FLOOR_PLAN_TEXT_LENGTH) : '';
     }
     return element;
 };

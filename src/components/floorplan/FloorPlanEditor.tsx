@@ -150,7 +150,7 @@ const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], onChan
                         <p><strong>{elementLabel(selected, switches)}</strong></p>
                         {selected.type === 'text' && (
                             <label>
-                                Text
+                                {'Text'}
                                 <input
                                     type="text"
                                     maxLength={MAX_FLOOR_PLAN_TEXT_LENGTH}

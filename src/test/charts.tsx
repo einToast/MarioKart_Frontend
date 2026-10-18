@@ -39,15 +39,15 @@ export const fakeChart = {
 
 // Replacement for the react-chartjs-2 Bar (wired up in setupTests.ts). It captures the props of
 // every render and hands the component a fake chart instance through its ref
-export const Bar = forwardRef<unknown, BarProps>((props, ref) => {
+export const Bar = forwardRef<unknown, BarProps>(({ data, options }, ref) => {
     useImperativeHandle(ref, () => fakeChart);
-    barRenders.push(props);
+    barRenders.push({ data, options });
     return <canvas data-testid="bar-chart" />;
 });
 Bar.displayName = 'FakeBar';
 
 export const lastBarProps = (): BarProps => {
-    const props = barRenders[barRenders.length - 1];
+    const props = barRenders.at(-1);
     if (!props) {
         throw new Error('No Bar chart has been rendered');
     }

@@ -18,7 +18,7 @@ export interface FakeSubscription {
 // Replacement for the `@stomp/stompjs` Client (wired up in setupTests.ts). It never opens a
 // socket; tests drive the connection state with `simulateConnect` / `simulateDisconnect`
 export class Client {
-    static instances: Client[] = [];
+    static readonly instances: Client[] = [];
 
     config: FakeClientConfig;
     // Plain state rather than mock history, which Vitest clears before every test
