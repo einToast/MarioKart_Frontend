@@ -1,26 +1,14 @@
 import React, { useId } from 'react';
 import { SwitchDTO } from '../../util/api/config/dto';
-import { FLOOR_PLAN_HEIGHT, FLOOR_PLAN_WIDTH, FloorPlan, FloorPlanElement } from '../../util/layout/floorPlan';
+import { FLOOR_PLAN_HEIGHT, FLOOR_PLAN_WIDTH } from '../../util/layout/floorPlan';
 import { resolveSwitch } from '../../util/layout/switches';
 import './FloorPlan.css';
+import { FloorPlanElement, FloorPlanViewProps } from '../../util/api/config/interfaces';
 
 const SWITCH_RADIUS = 30;
 const SELECTION_PADDING = 10;
 // Rows are thin lines, the invisible area around them makes them easier to grab
 const MIN_HIT_SIZE = 28;
-
-export interface FloorPlanViewProps {
-    plan: FloorPlan;
-    switches: SwitchDTO[];
-    // The following props turn the plan into the canvas of the editor
-    selectedId?: string | null;
-    svgRef?: React.Ref<SVGSVGElement>;
-    onElementPointerDown?: (event: React.PointerEvent<SVGGElement>, element: FloorPlanElement) => void;
-    onElementKeyDown?: (event: React.KeyboardEvent<SVGGElement>, element: FloorPlanElement) => void;
-    onElementFocus?: (element: FloorPlanElement) => void;
-    onPointerMove?: (event: React.PointerEvent<SVGSVGElement>) => void;
-    onPointerUp?: (event: React.PointerEvent<SVGSVGElement>) => void;
-}
 
 export const elementLabel = (element: FloorPlanElement, switches: SwitchDTO[]): string => {
     switch (element.type) {

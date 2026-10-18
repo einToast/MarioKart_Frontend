@@ -3,7 +3,6 @@ import {
     createElement,
     FLOOR_PLAN_HEIGHT,
     FLOOR_PLAN_WIDTH,
-    FloorPlan,
     isDefaultFloorPlan,
     normalizeRotation,
     parseFloorPlan,
@@ -13,6 +12,7 @@ import {
     updateElement,
 } from './floorPlan';
 import { resolveSwitch, suggestSwitch, SWITCH_PALETTE, switchColorStyle } from './switches';
+import { FloorPlan } from '../api/config/interfaces';
 
 const markers = (plan: FloorPlan) => plan.elements.filter(element => element.type === 'switch');
 const markerIndexes = (plan: FloorPlan) => markers(plan).map(element => element.switchIndex);

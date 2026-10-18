@@ -1,19 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Position, View } from "../../util/api/config/interfaces";
 
 const MAX_SCALE = 8;
 const DOUBLE_CLICK_SCALE = 3;
-
-interface View {
-    scale: number;
-    // Offset of the photo inside of its frame
-    x: number;
-    y: number;
-}
-
-interface Position {
-    x: number;
-    y: number;
-}
 
 const FITTED: View = { scale: 1, x: 0, y: 0 };
 

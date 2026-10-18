@@ -5,7 +5,7 @@ import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
 import Toast from "../../components/Toast";
-import { ProgramRow } from "../../util/api/config/interfaces";
+import { ProgramEntry, ProgramRow } from "../../util/api/config/interfaces";
 import {
     DEFAULT_PROGRAM_ICON,
     defaultProgram,
@@ -13,7 +13,6 @@ import {
     MAX_PROGRAM_TEXT_LENGTH,
     MAX_PROGRAM_TIME_LENGTH,
     PROGRAM_ICONS,
-    ProgramEntry,
     ProgramIcon,
     resolveProgram,
     serializeProgram,

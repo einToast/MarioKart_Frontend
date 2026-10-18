@@ -5,8 +5,6 @@ import {
     createElement,
     FLOOR_PLAN_HEIGHT,
     FLOOR_PLAN_WIDTH,
-    FloorPlan,
-    FloorPlanElement,
     FloorPlanElementType,
     MAX_FLOOR_PLAN_ELEMENTS,
     MAX_FLOOR_PLAN_TEXT_LENGTH,
@@ -14,6 +12,7 @@ import {
     updateElement,
 } from '../../util/layout/floorPlan';
 import FloorPlanView, { elementLabel } from './FloorPlanView';
+import { Drag, FloorPlan, FloorPlanElement } from '../../util/api/config/interfaces';
 
 const KEY_STEP = 10;
 const FINE_KEY_STEP = 1;
@@ -24,13 +23,6 @@ const KEY_DIRECTIONS: Record<string, { x: number; y: number }> = {
     ArrowUp: { x: 0, y: -1 },
     ArrowDown: { x: 0, y: 1 },
 };
-
-interface Drag {
-    id: string;
-    // Distance between the pointer and the centre of the element when the drag started
-    offsetX: number;
-    offsetY: number;
-}
 
 const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], onChange: (plan: FloorPlan) => void }> = ({ plan, switches, onChange }) => {
     const [selectedId, setSelectedId] = useState<string | null>(null);

@@ -1,13 +1,8 @@
 // src/services/WebSocketService.ts
-import { Client, Message, StompSubscription } from '@stomp/stompjs';
+import { Client, Message } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { WS_BASE_URL } from "../../api/config/constants";
-
-interface TopicListener {
-    topic: string;
-    callback: (message: Message) => void;
-    subscription?: StompSubscription;
-}
+import { TopicListener } from '../../api/config/interfaces';
 
 export type ConnectionListener = (connected: boolean, reconnected: boolean) => void;
 
