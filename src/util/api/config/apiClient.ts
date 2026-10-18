@@ -4,6 +4,7 @@ import { API_BASE_URL } from './constants';
 // Create an Axios instance
 const apiClient = axios.create({
     withCredentials: true,
+    withXSRFToken: true,
     baseURL: API_BASE_URL,
 });
 

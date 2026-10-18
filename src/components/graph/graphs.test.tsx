@@ -284,7 +284,23 @@ describe('GroupGraph', () => {
         expect(labels()).toEqual([]);
     });
 
-    it.todo('renders a ranking with a single team (currently throws while comparing it with a second place)');
+    it('stays empty when the presentation is advanced without teams', () => {
+        render(<GroupGraph teams={[]} />);
+
+        pressKey('ArrowRight');
+
+        expect(labels()).toEqual([]);
+    });
+
+    it('renders and reveals a ranking with a single team', () => {
+        render(<GroupGraph teams={[team(1, 'Mario', 10)]} />);
+        expect(labels()).toEqual(['1. Platz']);
+        expect(data()).toEqual([10]);
+
+        pressKey('ArrowRight');
+
+        expect(labels()).toEqual(['Team Mario']);
+    });
 });
 
 describe('FinalGraph', () => {
@@ -472,7 +488,25 @@ describe('FinalGraph', () => {
         expect(writtenTexts()).toEqual([]);
     });
 
-    it.todo('renders a ranking with a single team (currently throws while comparing it with a second place)');
+    it('stays empty when the presentation is advanced without teams', () => {
+        render(<FinalGraph teams={[]} />);
+
+        pressKey('ArrowRight');
+
+        expect(labels()).toEqual([]);
+        expect(data()).toEqual([]);
+    });
+
+    it('renders a ranking with a single team and crowns it', () => {
+        render(<FinalGraph teams={[team(1, 'Mario', 0, 10)]} />);
+        expect(labels()).toEqual(['Team Mario']);
+        expect(data()).toEqual([0]);
+
+        pressKey('ArrowRight');
+
+        expect(data()).toEqual([10]);
+        expect(colors()).toEqual([GOLD]);
+    });
 });
 
 describe('QuestionGraph', () => {

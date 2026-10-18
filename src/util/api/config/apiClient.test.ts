@@ -37,4 +37,10 @@ describe('apiClient', () => {
     it('sends the session cookie with every request', () => {
         expect(apiClient.defaults.withCredentials).toBe(true);
     });
+
+    it('sends the CSRF token cookie back as header', () => {
+        expect(apiClient.defaults.withXSRFToken).toBe(true);
+        expect(apiClient.defaults.xsrfCookieName).toBe('XSRF-TOKEN');
+        expect(apiClient.defaults.xsrfHeaderName).toBe('X-XSRF-TOKEN');
+    });
 });

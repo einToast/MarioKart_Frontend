@@ -11,9 +11,11 @@ import { AdminOcrService, AdminScheduleService, PublicCookiesService, PublicSett
 import "../RegisterTeam.css";
 import "./Points.css";
 
+const NO_ROUNDS = 'Es gibt noch keine Runden. Erstelle zuerst einen Spielplan.';
+
 const Points: React.FC = () => {
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
-    const [round, setRound] = useState<RoundReturnDTO>({ id: -1, roundNumber: -1, startTime: '2025-01-08T20:35:32.271488', endTime: '2025-01-08T20:35:32.271488', played: false, games: [], finalGame: false });
+    const [round, setRound] = useState<RoundReturnDTO | null>(null);
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); 
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
@@ -47,6 +49,13 @@ const Points: React.FC = () => {
     };
 
     const handleSavePoints = () => {
+        if (!round) {
+            setError(NO_ROUNDS);
+            setIsError(true);
+            setShowToast(true);
+            return;
+        }
+
         // AdminScheduleService.saveRound(round)
         AdminScheduleService.saveRoundFull(round)
             .then(savedRound => {
@@ -95,6 +104,11 @@ const Points: React.FC = () => {
                 const selectedRound = rounds.find(round => !round.played) ?? rounds.at(-1);
                 if (selectedRound) {
                     getSelectedRound(selectedRound.id);
+                } else {
+                    setRound(null);
+                    setError(NO_ROUNDS);
+                    setIsError(true);
+                    setShowToast(true);
                 }
             }).catch((error) => {
                 setError(error.message);
@@ -138,7 +152,7 @@ const Points: React.FC = () => {
                         <select
                             name="round"
                             id="round"
-                            value={round.id}
+                            value={round?.id ?? ''}
                             onChange={(e) => getSelectedRound(Number.parseInt(e.target.value))}
                         >
                             {(() => {
@@ -196,7 +210,9 @@ const Points: React.FC = () => {
                         checked={roundPlayed}
                         onIonChange={(e) => {
                             setRoundPlayed(e.detail.checked);
-                            round.played = e.detail.checked;
+                            if (round) {
+                                round.played = e.detail.checked;
+                            }
                         }}
                     >
                         Runde gespielt

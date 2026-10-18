@@ -5,6 +5,8 @@ import { QuestionType } from "../../util";
 
 export const MAX_FREE_TEXT_ANSWER_LENGTH = 1000;
 
+const TEXT_ANSWERED = '0';
+
 export const submitAnswer = async (question: QuestionReturnDTO, vote: string | number | number[], teamId: number): Promise<AnswerReturnDTO> => {
     if (!question.active) {
         throw new Error('Die Umfrage ist bereits beendet');
@@ -35,11 +37,18 @@ export const submitAnswer = async (question: QuestionReturnDTO, vote: string | n
     }
 
     const response = await PublicSurveyApi.submitAnswer(answer, teamId);
-    setAnswerCookie(question.questionText + question.id, Number(Array.isArray(vote) ? vote[0] : vote));
+    setAnswerCookie(question.questionText + question.id, answerCookieValue(vote));
     return response;
 }
 
-export const setAnswerCookie = (questionString: string, answer: number): void => {
+const answerCookieValue = (vote: string | number | number[]): string | number => {
+    if (Array.isArray(vote)) {
+        return vote.join(',');
+    }
+    return typeof vote === 'number' ? vote : TEXT_ANSWERED;
+}
+
+export const setAnswerCookie = (questionString: string, answer: string | number): void => {
     const answerCookie: AnswerCookieDTO = {
         answerId: answer.toString(),
     }

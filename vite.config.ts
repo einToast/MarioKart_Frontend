@@ -1,8 +1,15 @@
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+
+const skipEnvScriptOnDevServer = (): Plugin => ({
+  name: 'skip-env-script-on-dev-server',
+  apply: 'serve',
+  transformIndexHtml: (html) => html.replace(/[ \t]*<script src=["']\/env\.js["']><\/script>\r?\n?/, ''),
+});
+
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -19,6 +26,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [
       react(),
+      skipEnvScriptOnDevServer(),
       VitePWA({
         registerType: 'autoUpdate',
         strategies: 'injectManifest',

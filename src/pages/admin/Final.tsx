@@ -157,13 +157,27 @@ const Final: React.FC = () => {
                 <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round secondary"} onClick={handleTeamsReset}>
+                    <IonButton slot="start" shape="round" className={"round secondary"} onClick={handleTeamsReset}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleTeamsReset();
+                            }
+                        }}
+                    >
                         <div>
                             <p>Teams zurücksetzen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleFinalCreation}>
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleFinalCreation}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleFinalCreation();
+                            }
+                        }}
+                    >
                         <div>
                             <p>Finale erzeugen</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
