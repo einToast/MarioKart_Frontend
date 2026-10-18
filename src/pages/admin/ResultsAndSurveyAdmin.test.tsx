@@ -164,15 +164,11 @@ describe('admin SurveyAdmin', () => {
     });
 
     describe('creating a survey', () => {
-        it.each([
-            ['click', (element: HTMLElement) => fireEvent.click(element)],
-            ['Enter key', (element: HTMLElement) => fireEvent.keyDown(element, { key: 'Enter' })],
-            ['space key', (element: HTMLElement) => fireEvent.keyDown(element, { key: ' ' })],
-        ])('opens the form for a new survey (%s)', async (_name, activate) => {
-            const { container } = renderPage();
+        it('opens the form for a new survey', async () => {
+            renderPage();
             await screen.findByText('Wer gewinnt?');
 
-            activate(container.querySelector('.newSurvey') as HTMLElement);
+            fireEvent.click(screen.getByRole('button', { name: 'Neue Abstimmung' }));
 
             expect(dialog().getByPlaceholderText('Frage eingeben')).toHaveValue('');
         });

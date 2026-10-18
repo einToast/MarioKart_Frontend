@@ -116,20 +116,13 @@ const SurveyAdmin: React.FC = () => {
                         Umfragen
                     </LinearGradient>
                 </h2>
-                <div className="newSurvey"
-                    role="button"
+                <button type="button" className="newSurvey"
                     onClick={() => setShowAddModal(true)}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            setShowAddModal(true);
-                        }
-                    }}
                     style={{ cursor: 'pointer' }}
                 >
-                    <IonIcon slot="end" icon={addCircleOutline} />
+                    <IonIcon slot="end" icon={addCircleOutline} aria-hidden="true" />
                     <p>Neue Abstimmung</p>
-                </div>
+                </button>
 
                 <div className="surveyKeyMode">
                     <p>Umfrage-Schlüssel</p>

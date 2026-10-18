@@ -52,7 +52,7 @@ export const FakeIonModal: React.FC<FakeIonModalProps> = ({ isOpen, onDidDismiss
         wasOpen.current = Boolean(isOpen);
     }, [isOpen]);
 
-    return isOpen ? <div role="dialog">{children}</div> : null;
+    return isOpen ? <dialog open>{children}</dialog> : null;
 };
 
 export const findToast = (message: string | RegExp): Promise<HTMLElement> =>
