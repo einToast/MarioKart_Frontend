@@ -83,6 +83,20 @@ describe('PointsComponent', () => {
         expect(inputs().map(input => input.value)).toEqual(['15', '14', '9', '1']);
     });
 
+    it('lets a field be cleared while typing and saves it as 0 points', async () => {
+        const game = gameWithPoints();
+        backend.put('/admin/schedule/games/3', game);
+        renderPoints(game);
+
+        setPoints(1, '');
+        expect(inputs()[1]).toHaveValue(null);
+        fireEvent.click(screen.getByText(SAVE));
+
+        await expectSuccessToast('Spiel erfolgreich gespeichert');
+        const body = backend.requests[0].body as { points: { points: number }[] };
+        expect(body.points.map(entry => entry.points)).toEqual([15, 0, 9, 6]);
+    });
+
     it('saves the game with the edited points', async () => {
         const game = gameWithPoints();
         backend.put('/admin/schedule/games/3', game);

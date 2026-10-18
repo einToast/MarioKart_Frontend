@@ -24,8 +24,8 @@ describe('PublicCookiesService', () => {
             expect(set).toHaveBeenCalledWith('user', JSON.stringify(user), ONE_DAY_STRICT_SECURE);
         });
 
-        it('returns an object without a teamId when nobody is logged in', () => {
-            expect(PublicCookiesService.getUser()?.teamId).toBeUndefined();
+        it('returns null when nobody is logged in', () => {
+            expect(PublicCookiesService.getUser()).toBeNull();
         });
 
         it('returns null when the cookie is not valid JSON', () => {
@@ -40,7 +40,7 @@ describe('PublicCookiesService', () => {
             PublicCookiesService.removeUser();
 
             expect(Cookies.get('user')).toBeUndefined();
-            expect(PublicCookiesService.getUser()?.teamId).toBeUndefined();
+            expect(PublicCookiesService.getUser()).toBeNull();
         });
     });
 

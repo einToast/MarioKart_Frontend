@@ -48,7 +48,7 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         });
         pointGroups.push(currentGroup);
 
-        const isFirstPlaceAlone = sorted.length === 0 || sorted[1].finalPoints < sorted[0].finalPoints;
+        const isFirstPlaceAlone = sorted.length < 2 || sorted[1].finalPoints < sorted[0].finalPoints;
 
         return {
             teams: sorted,
@@ -80,6 +80,8 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     const colors = React.useMemo(() => ["#FFD700", "#C0C0C0", "#CD7F32", "#696969"], []);
 
     const revealNext = React.useCallback(() => {
+        if (sortedTeamsData.teams.length === 0) return;
+
         const totalGroups = sortedTeamsData.pointGroups.length;
         const maxSteps = (totalGroups - 1) * 2 + 1;
 
