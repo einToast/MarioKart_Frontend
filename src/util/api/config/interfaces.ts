@@ -8,6 +8,7 @@ import {
   SwitchDTO,
   TeamReturnDTO,
 } from "./dto";
+import { ProgramEntry } from "../../layout/program";
 
 export type RoundOrBreak = RoundReturnDTO | BreakReturnDTO | null;
 
@@ -154,4 +155,9 @@ export interface SkeletonTeamComponentProps {
 
 export interface SkeletonTeamStatisticProps {
   rows?: number;
+}
+
+export interface ProgramRow {
+  key: number;
+  entry: ProgramEntry;
 }

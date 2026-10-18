@@ -5,6 +5,7 @@ import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
 import Toast from "../../components/Toast";
+import { ProgramRow } from "../../util/api/config/interfaces";
 import {
     DEFAULT_PROGRAM_ICON,
     defaultProgram,
@@ -22,8 +23,11 @@ import '../RegisterTeam.css';
 import "./Points.css";
 import "./Program.css";
 
+let nextRowKey = 0;
+const toRow = (entry: ProgramEntry): ProgramRow => ({ key: nextRowKey++, entry });
+
 const Program: React.FC = () => {
-    const [entries, setEntries] = useState<ProgramEntry[]>([]);
+    const [rows, setRows] = useState<ProgramRow[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
 
     const [error, setError] = useState<string>('Error');
@@ -47,18 +51,18 @@ const Program: React.FC = () => {
             }
 
             const settings = await PublicSettingsService.getSettings();
-            setEntries(resolveProgram(settings.program));
+            setRows(resolveProgram(settings.program).map(toRow));
         };
 
         loadProgram().catch(error => showError(error.message));
     }, [location]);
 
     const handleChange = (index: number, changes: Partial<ProgramEntry>) => {
-        setEntries(current => current.map((entry, position) => position === index ? { ...entry, ...changes } : entry));
+        setRows(current => current.map((row, position) => position === index ? { ...row, entry: { ...row.entry, ...changes } } : row));
     };
 
     const handleMove = (index: number, offset: number) => {
-        setEntries(current => {
+        setRows(current => {
             const moved = [...current];
             [moved[index], moved[index + offset]] = [moved[index + offset], moved[index]];
             return moved;
@@ -66,7 +70,7 @@ const Program: React.FC = () => {
     };
 
     const handleSave = () => {
-        const trimmed = entries.map(entry => ({ ...entry, time: entry.time.trim(), text: entry.text.trim() }));
+        const trimmed = rows.map(({ entry }) => ({ ...entry, time: entry.time.trim(), text: entry.text.trim() }));
         if (trimmed.some(entry => entry.text === '')) {
             showError('Jeder Programmpunkt braucht einen Text');
             return;
@@ -75,7 +79,7 @@ const Program: React.FC = () => {
         setButtonDisabled(true);
         AdminSettingsService.updateProgram(serializeProgram(trimmed))
             .then(() => {
-                setEntries(trimmed);
+                setRows(rows.map((row, position) => ({ ...row, entry: trimmed[position] })));
                 setError('Programm gespeichert');
                 setIsError(false);
                 setShowToast(true);
@@ -96,9 +100,8 @@ const Program: React.FC = () => {
                 <p>Das Programm steht bei den Teams unter Details. Ohne Programmpunkte wird es dort ausgeblendet.</p>
 
                 <div className="programList">
-                    {entries.map((entry, index) => (
-                        // The position is the identity of an entry
-                        <div className="programRow" key={index}>
+                    {rows.map(({ key: rowKey, entry }, index) => (
+                        <div className="programRow" key={rowKey}>
                             <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
                             <select
                                 aria-label={`Symbol von Programmpunkt ${index + 1}`}
@@ -127,20 +130,20 @@ const Program: React.FC = () => {
                                 onChange={(e) => handleChange(index, { text: e.target.value })}
                             />
                             <button type="button" aria-label={`Programmpunkt ${index + 1} nach oben`} disabled={index === 0} onClick={() => handleMove(index, -1)}>↑</button>
-                            <button type="button" aria-label={`Programmpunkt ${index + 1} nach unten`} disabled={index === entries.length - 1} onClick={() => handleMove(index, 1)}>↓</button>
-                            <button type="button" aria-label={`Programmpunkt ${index + 1} entfernen`} onClick={() => setEntries(entries.filter((_, position) => position !== index))}>✕</button>
+                            <button type="button" aria-label={`Programmpunkt ${index + 1} nach unten`} disabled={index === rows.length - 1} onClick={() => handleMove(index, 1)}>↓</button>
+                            <button type="button" aria-label={`Programmpunkt ${index + 1} entfernen`} onClick={() => setRows(rows.filter((_, position) => position !== index))}>✕</button>
                         </div>
                     ))}
-                    {entries.length === 0 && <p>Keine Programmpunkte.</p>}
+                    {rows.length === 0 && <p>Keine Programmpunkte.</p>}
                     <div className="programActions">
                         <button
                             type="button"
-                            disabled={entries.length >= MAX_PROGRAM_ENTRIES}
-                            onClick={() => setEntries([...entries, { icon: DEFAULT_PROGRAM_ICON, time: '', text: '' }])}
+                            disabled={rows.length >= MAX_PROGRAM_ENTRIES}
+                            onClick={() => setRows([...rows, toRow({ icon: DEFAULT_PROGRAM_ICON, time: '', text: '' })])}
                         >
                             + Programmpunkt hinzufügen
                         </button>
-                        <button type="button" onClick={() => setEntries(defaultProgram())}>Standard-Programm</button>
+                        <button type="button" onClick={() => setRows(defaultProgram().map(toRow))}>Standard-Programm</button>
                     </div>
                 </div>
                 <div style={{ marginBottom: '115px' }}></div>
