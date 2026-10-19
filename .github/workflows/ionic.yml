@@ -80,7 +80,7 @@ jobs:
         run: npm ci --ignore-scripts
 
       - name: Install Cypress binary
-        run: npx cypress install
+        run: ./node_modules/.bin/cypress install
 
       - name: Start dev server
         run: |

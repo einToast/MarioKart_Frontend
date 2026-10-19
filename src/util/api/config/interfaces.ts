@@ -164,6 +164,11 @@ export interface ProgramRow {
   entry: ProgramEntry;
 }
 
+export interface SwitchRow {
+  key: number;
+  gameSwitch: SwitchDTO;
+}
+
 export interface View {
   scale: number;
   // Offset of the photo inside of its frame

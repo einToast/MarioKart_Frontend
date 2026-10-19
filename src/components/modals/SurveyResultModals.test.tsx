@@ -44,7 +44,7 @@ describe('SurveyAnswerModal', () => {
 
     it('lists the texts of a free text question', async () => {
         backend
-            .get('/admin/survey/7/answers', [makeAnswer({ freeTextAnswer: 'Mehr Pizza' }), makeAnswer({ freeTextAnswer: 'Tolles Turnier' })])
+            .get('/admin/survey/7/answers', [makeAnswer({ id: 1, freeTextAnswer: 'Mehr Pizza' }), makeAnswer({ id: 2, freeTextAnswer: 'Tolles Turnier' })])
             .get('/admin/survey/7/answers/count', 2);
 
         renderModal({ questionType: QuestionType.FREE_TEXT, options: [] });
@@ -56,8 +56,8 @@ describe('SurveyAnswerModal', () => {
     it('lists the texts of a one-per-team question next to the answering team', async () => {
         backend
             .get('/admin/survey/7/answers', [
-                makeAnswer({ freeTextAnswer: 'Immer Vollgas', teamSelectedOption: 2 }),
-                makeAnswer({ freeTextAnswer: 'Pilze für alle', teamSelectedOption: 4 }),
+                makeAnswer({ id: 1, freeTextAnswer: 'Immer Vollgas', teamSelectedOption: 2 }),
+                makeAnswer({ id: 2, freeTextAnswer: 'Pilze für alle', teamSelectedOption: 4 }),
             ])
             .get('/admin/survey/7/answers/count', 2)
             .get('/public/teams', makeTeams());

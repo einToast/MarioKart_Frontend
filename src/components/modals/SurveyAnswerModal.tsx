@@ -61,12 +61,12 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     const renderResults = () => {
         switch (question.questionType) {
             case QuestionType.FREE_TEXT:
-                return answers.map((answer, index) => (
-                    <li key={index}> {answer.freeTextAnswer} </li>
+                return answers.map(answer => (
+                    <li key={answer.id}> {answer.freeTextAnswer} </li>
                 ));
             case QuestionType.TEAM_ONE_FREE_TEXT:
-                return answers.map((answer, index) => (
-                    <li key={index}> {teams.find(team => team.id === answer.teamSelectedOption)?.teamName}: {answer.freeTextAnswer} </li>
+                return answers.map(answer => (
+                    <li key={answer.id}> {teams.find(team => team.id === answer.teamSelectedOption)?.teamName}: {answer.freeTextAnswer} </li>
                 ));
             default:
                 return question.options.map((option, index) => (

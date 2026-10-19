@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 const skipEnvScriptOnDevServer = (): Plugin => ({
   name: 'skip-env-script-on-dev-server',
   apply: 'serve',
-  transformIndexHtml: (html) => html.replace(/[ \t]*<script src=["']\/env\.js["']><\/script>\r?\n?/, ''),
+  transformIndexHtml: (html) => html.replace(/^[ \t]*<script src=["']\/env\.js["']><\/script>\r?\n?/m, ''),
 });
 
 // https://vitejs.dev/config/

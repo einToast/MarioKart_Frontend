@@ -1,5 +1,6 @@
 import type React from "react";
 import { SwitchDTO } from "../api/config/dto";
+import { SwitchRow } from "../api/config/interfaces";
 
 export const MAX_SWITCHES = 16;
 export const MAX_SWITCH_NAME_LENGTH = 30;
@@ -43,5 +44,8 @@ export const suggestSwitch = (switches: SwitchDTO[]): SwitchDTO => {
     };
 };
 
-export const switchColorStyle = (color: string): React.CSSProperties =>
+let nextSwitchRowKey = 0;
+export const toSwitchRow = (gameSwitch: SwitchDTO): SwitchRow => ({ key: nextSwitchRowKey++, gameSwitch });
+
+export const switchColorStyle =(color: string): React.CSSProperties =>
     ({ '--switch-color': color }) as React.CSSProperties;

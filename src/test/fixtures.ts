@@ -94,6 +94,7 @@ export const makeQuestion = (overrides: Partial<QuestionReturnDTO> = {}): Questi
 });
 
 export const makeAnswer = (overrides: Partial<AnswerReturnDTO> = {}): AnswerReturnDTO => ({
+    id: 1,
     questionId: 1,
     answerType: QuestionType.MULTIPLE_CHOICE,
     freeTextAnswer: '',

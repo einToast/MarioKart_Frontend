@@ -171,6 +171,7 @@ export interface QuestionReturnDTO {
 }
 
 export interface AnswerReturnDTO {
+    id: number;
     questionId: number;
     answerType: QuestionType;
     freeTextAnswer: string;
