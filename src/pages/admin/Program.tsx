@@ -16,14 +16,12 @@ import {
     ProgramIcon,
     resolveProgram,
     serializeProgram,
+    toProgramRow,
 } from "../../util/layout/program";
 import { AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Program.css";
-
-let nextRowKey = 0;
-const toRow = (entry: ProgramEntry): ProgramRow => ({ key: nextRowKey++, entry });
 
 const Program: React.FC = () => {
     const [rows, setRows] = useState<ProgramRow[]>([]);
@@ -50,7 +48,7 @@ const Program: React.FC = () => {
             }
 
             const settings = await PublicSettingsService.getSettings();
-            setRows(resolveProgram(settings.program).map(toRow));
+            setRows(resolveProgram(settings.program).map(toProgramRow));
         };
 
         loadProgram().catch(error => showError(error.message));
@@ -138,11 +136,11 @@ const Program: React.FC = () => {
                         <button
                             type="button"
                             disabled={rows.length >= MAX_PROGRAM_ENTRIES}
-                            onClick={() => setRows([...rows, toRow({ icon: DEFAULT_PROGRAM_ICON, time: '', text: '' })])}
+                            onClick={() => setRows([...rows, toProgramRow({ icon: DEFAULT_PROGRAM_ICON, time: '', text: '' })])}
                         >
                             + Programmpunkt hinzufügen
                         </button>
-                        <button type="button" onClick={() => setRows(defaultProgram().map(toRow))}>Standard-Programm</button>
+                        <button type="button" onClick={() => setRows(defaultProgram().map(toProgramRow))}>Standard-Programm</button>
                     </div>
                 </div>
                 <div style={{ marginBottom: '115px' }}></div>

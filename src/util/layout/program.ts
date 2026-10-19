@@ -10,7 +10,7 @@ import {
     timeOutline,
     trophyOutline,
 } from "ionicons/icons";
-import { ProgramEntry } from "../api/config/interfaces";
+import { ProgramEntry, ProgramRow } from "../api/config/interfaces";
 
 export const MAX_PROGRAM_ENTRIES = 30;
 export const MAX_PROGRAM_TIME_LENGTH = 20;
@@ -45,6 +45,9 @@ export const DEFAULT_PROGRAM: ProgramEntry[] = [
 ];
 
 export const defaultProgram = (): ProgramEntry[] => DEFAULT_PROGRAM.map(entry => ({ ...entry }));
+
+let nextProgramRowKey = 0;
+export const toProgramRow = (entry: ProgramEntry): ProgramRow => ({ key: nextProgramRowKey++, entry });
 
 const sanitizeEntry = (raw: unknown): ProgramEntry | null => {
     if (typeof raw !== 'object' || raw === null) {

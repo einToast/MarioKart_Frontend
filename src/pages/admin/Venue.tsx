@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
@@ -14,15 +14,16 @@ import {
     serializeFloorPlan,
     syncSwitchMarkers,
 } from "../../util/layout/floorPlan";
-import { MAX_SWITCH_NAME_LENGTH, MAX_SWITCHES, suggestSwitch } from "../../util/layout/switches";
+import { MAX_SWITCH_NAME_LENGTH, MAX_SWITCHES, suggestSwitch, toSwitchRow } from "../../util/layout/switches";
 import { AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Venue.css";
-import { FloorPlan } from "../../util/api/config/interfaces";
+import { FloorPlan, SwitchRow } from "../../util/api/config/interfaces";
 
 const Venue: React.FC = () => {
-    const [switches, setSwitches] = useState<SwitchDTO[]>([]);
+    const [rows, setRows] = useState<SwitchRow[]>([]);
+    const switches = useMemo(() => rows.map(row => row.gameSwitch), [rows]);
     const [plan, setPlan] = useState<FloorPlan>(createDefaultFloorPlan(0));
     const [buttonDisabled, setButtonDisabled] = useState(false);
 
@@ -49,7 +50,7 @@ const Venue: React.FC = () => {
             const settings = await PublicSettingsService.getSettings();
             const loadedSwitches = settings.switches ?? [];
             const loadedPlan = parseFloorPlan(settings.floorPlan) ?? createDefaultFloorPlan(loadedSwitches.length);
-            setSwitches(loadedSwitches);
+            setRows(loadedSwitches.map(toSwitchRow));
             setPlan(syncSwitchMarkers(loadedPlan, loadedSwitches.length));
         };
 
@@ -57,8 +58,8 @@ const Venue: React.FC = () => {
     }, [location]);
 
     // Games refer to switches by their position, so only the last switch can be removed
-    const changeSwitches = (changed: SwitchDTO[]) => {
-        setSwitches(changed);
+    const changeSwitches = (changed: SwitchRow[]) => {
+        setRows(changed);
         // An untouched default plan follows the number of switches, an edited one only gets its markers adjusted
         setPlan(current => isDefaultFloorPlan(current, switches.length)
             ? createDefaultFloorPlan(changed.length)
@@ -66,7 +67,7 @@ const Venue: React.FC = () => {
     };
 
     const handleSwitchChange = (index: number, changes: Partial<SwitchDTO>) => {
-        setSwitches(current => current.map((existing, position) => position === index ? { ...existing, ...changes } : existing));
+        setRows(current => current.map((row, position) => position === index ? { ...row, gameSwitch: { ...row.gameSwitch, ...changes } } : row));
     };
 
     const handleSave = () => {
@@ -79,7 +80,7 @@ const Venue: React.FC = () => {
         setButtonDisabled(true);
         AdminSettingsService.updateVenue(trimmed, plan.elements.length > 0 ? serializeFloorPlan(plan) : '')
             .then(() => {
-                setSwitches(trimmed);
+                setRows(rows.map((row, position) => ({ ...row, gameSwitch: trimmed[position] })));
                 setError('Switches und Raumplan gespeichert');
                 setIsError(false);
                 setShowToast(true);
@@ -101,9 +102,8 @@ const Venue: React.FC = () => {
                 <h3>Switches</h3>
                 <p>Die Spiele einer Runde werden der Reihe nach auf die Switches verteilt. Das Finale findet an der ersten Switch statt.</p>
                 <div className="switchList">
-                    {switches.map((existing, index) => (
-                        // The position is the identity of a switch
-                        <div className="switchRow" key={index}>
+                    {rows.map(({ key, gameSwitch: existing }, index) => (
+                        <div className="switchRow" key={key}>
                             <span className="switchNumber" style={{ backgroundColor: existing.color }}>{index + 1}</span>
                             <input
                                 type="text"
@@ -119,7 +119,7 @@ const Venue: React.FC = () => {
                                 onChange={(e) => handleSwitchChange(index, { color: e.target.value })}
                             />
                             {index === switches.length - 1 && (
-                                <button type="button" onClick={() => changeSwitches(switches.slice(0, -1))}>Entfernen</button>
+                                <button type="button" onClick={() => changeSwitches(rows.slice(0, -1))}>Entfernen</button>
                             )}
                         </div>
                     ))}
@@ -127,7 +127,7 @@ const Venue: React.FC = () => {
                     <button
                         type="button"
                         disabled={switches.length >= MAX_SWITCHES}
-                        onClick={() => changeSwitches([...switches, suggestSwitch(switches)])}
+                        onClick={() => changeSwitches([...rows, toSwitchRow(suggestSwitch(switches))])}
                     >
                         + Switch hinzufügen
                     </button>

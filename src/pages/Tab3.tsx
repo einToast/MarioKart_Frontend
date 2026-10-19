@@ -15,9 +15,9 @@ import Toast from '../components/Toast';
 import { SETTINGS_TOPIC } from '../hooks/useSwitches';
 import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
 import { SwitchDTO } from '../util/api/config/dto';
-import { FloorPlan, ProgramEntry, ShowTab2Props } from '../util/api/config/interfaces';
+import { FloorPlan, ProgramRow, ShowTab2Props } from '../util/api/config/interfaces';
 import { parseFloorPlan } from '../util/layout/floorPlan';
-import { defaultProgram, PROGRAM_ICONS, resolveProgram } from '../util/layout/program';
+import { defaultProgram, PROGRAM_ICONS, resolveProgram, toProgramRow } from '../util/layout/program';
 import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
 
@@ -27,7 +27,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [floorPlan, setFloorPlan] = useState<FloorPlan | null>(null);
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
-    const [program, setProgram] = useState<ProgramEntry[]>(defaultProgram);
+    const [program, setProgram] = useState<ProgramRow[]>(() => defaultProgram().map(toProgramRow));
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -52,7 +52,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         const settings = await PublicSettingsService.getSettings();
         setSwitches(settings.switches ?? []);
         setFloorPlan(parseFloorPlan(settings.floorPlan));
-        setProgram(resolveProgram(settings.program));
+        setProgram(resolveProgram(settings.program).map(toProgramRow));
         return settings;
     };
 
@@ -151,9 +151,8 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     <>
                         <h3>Programm</h3>
                         <div className={"progressContainer"}>
-                            {program.map((entry, index) => (
-                                // The position is the identity of an entry
-                                <div key={index}>
+                            {program.map(({ key, entry }) => (
+                                <div key={key}>
                                     <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
                                     <p><span>{entry.time}</span> {entry.text}</p>
                                 </div>
