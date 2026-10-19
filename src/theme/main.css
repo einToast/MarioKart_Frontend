@@ -37,7 +37,13 @@ body {
 
 * {
     font-family: "Tofino-Wide-Ultra", sans-serif;
-    color: #ffffff !important;
+    color: #ffffff;
+}
+
+ion-refresher {
+    --ion-text-color: #ffffff;
+    --ion-color-primary: #ffffff;
+    --ion-color-step-450: #ffffff;
 }
 
 h1 {
@@ -106,7 +112,7 @@ ion-tab-button.tab-selected {
 .toast {
     --background: var(--toast-background, #CD7070);
     /*#68964C*/
-    color: #000000 !important;
+    color: #000000;
     text-align: center;
 }
 
