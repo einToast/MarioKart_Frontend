@@ -46,7 +46,7 @@ self.addEventListener('push', (event) => {
   self.addEventListener('notificationclick', (event) => {
     event.notification.close();
   
-    if (event.action === 'explore') {
+    if (event.action !== 'close') {
       event.waitUntil(
         clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
           for (const client of clientList) {
