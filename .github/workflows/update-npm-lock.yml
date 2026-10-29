@@ -1,0 +1,53 @@
+name: Update npm lockfiles
+
+on:
+  schedule:
+    - cron: "23 5 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-lockfile:
+    name: Update ${{ matrix.name }} lockfile
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: app
+            directory: .
+            branch: automation/npm-lockfile-update
+          - name: runtime
+            directory: docker/runtime
+            branch: automation/npm-runtime-lockfile-update
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+
+      - name: Update lockfile
+        run: npm update --package-lock-only --ignore-scripts
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          commit-message: "chore(deps): update ${{ matrix.name }} npm lockfile"
+          title: "chore(deps): update ${{ matrix.name }} npm lockfile"
+          body: |
+            Monthly refresh of the npm dependencies in `${{ matrix.directory }}`.
+            Generated using `npm update --package-lock-only --ignore-scripts`.
+          branch: ${{ matrix.branch }}
+          add-paths: ${{ matrix.directory }}/package-lock.json
+          delete-branch: true
