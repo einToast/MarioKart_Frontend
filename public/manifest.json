@@ -25,7 +25,7 @@
       "purpose": "maskable any"
     },
     {
-      "src": "assets/icons/pwa-64x64.png",
+      "src": "assets/icon/pwa-64x64.png",
       "sizes": "64x64",
       "type": "image/png",
       "purpose": "any maskable"
@@ -33,15 +33,15 @@
   ],
     "screenshots": [
       {
-        "src": "assets/screenshots/screenshot-2880x1919.png",
+        "src": "assets/screenshots/screenshot-2880x1919.webp",
         "sizes": "2880x1919",
-        "type": "image/png",
+        "type": "image/webp",
         "form_factor": "wide"
     },
     {
-      "src": "assets/screenshots/screenshot-1008x1940.png",
+      "src": "assets/screenshots/screenshot-1008x1940.webp",
       "sizes": "1008x1940",
-      "type": "image/png",
+      "type": "image/webp",
       "form_factor": "narrow"
     }
   ],
