@@ -3,7 +3,7 @@
     font-family: "Tofino-Wide-Ultra";
     font-style: normal;
     font-weight: normal;
-    src: url("/fonts/TofinoWide-UltraPersonal.otf");
+    src: url("/fonts/TofinoWide-UltraPersonal.woff2") format("woff2");
     font-display: swap;
 }
 
@@ -11,7 +11,7 @@
     font-family: "Tofino-Wide-Ultra";
     font-style: normal;
     font-weight: bold;
-    src: url("/fonts/TofinoWide-BlackPersonal.otf");
+    src: url("/fonts/TofinoWide-BlackPersonal.woff2") format("woff2");
     font-display: swap;
 }
 
@@ -19,7 +19,7 @@
     font-family: "Poppins";
     font-style: normal;
     font-weight: normal;
-    src: url("/fonts/Poppins-Regular.ttf");
+    src: url("/fonts/Poppins-Regular.woff2") format("woff2");
     font-display: swap;
 }
 
@@ -27,7 +27,7 @@
     font-family: "Poppins";
     font-style: normal;
     font-weight: 800;
-    src: url("/fonts/Poppins-ExtraBold.ttf");
+    src: url("/fonts/Poppins-ExtraBold.woff2") format("woff2");
     font-display: swap;
 }
 
