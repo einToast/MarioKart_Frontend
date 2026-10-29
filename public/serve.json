@@ -5,7 +5,7 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
     },
     {
-      "source": "{characters,media,fonts,assets/icon,assets/screenshots}/**",
+      "source": "{characters,media,fonts,assets/icons,assets/screenshots}/**",
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
     },
     {
