@@ -131,7 +131,7 @@ describe('StaticTeamGraph', () => {
 
         completeChartAnimation();
 
-        expect(drawnImages()).toEqual(['Luigi.png', 'Peach.png', 'Mario.png', 'Toad.png']);
+        expect(drawnImages()).toEqual(['Luigi.webp', 'Peach.webp', 'Mario.webp', 'Toad.webp']);
         expect(chartContext.drawImage.mock.calls[0].slice(1)).toEqual([barPosition(0).x - 20, barPosition(0).y - 40, 40, 40]);
         expect(writtenTexts()).toEqual([
             ['30', barPosition(0).x, barPosition(0).y + 30],
@@ -251,7 +251,7 @@ describe('GroupGraph', () => {
         pressKey('ArrowRight');
         chartContext.drawImage.mockClear();
         completeChartAnimation();
-        expect(drawnImages()).toEqual(['missingno.png', 'missingno.png', 'Mario.png', 'Toad.png']);
+        expect(drawnImages()).toEqual(['missingno.png', 'missingno.png', 'Mario.webp', 'Toad.webp']);
     });
 
     it('writes every score into its bar', async () => {
@@ -458,7 +458,7 @@ describe('FinalGraph', () => {
         await waitFor(() => {
             chartContext.drawImage.mockClear();
             completeChartAnimation();
-            expect(drawnImages()).toEqual(['Luigi.png', 'Peach.png', 'Mario.png', 'Toad.png']);
+            expect(drawnImages()).toEqual(['Luigi.webp', 'Peach.webp', 'Mario.webp', 'Toad.webp']);
         });
 
         expect(writtenTexts()).toEqual([]);

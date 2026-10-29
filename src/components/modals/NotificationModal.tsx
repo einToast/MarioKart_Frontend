@@ -45,7 +45,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 {teams?.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
-                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.png)` }}
+                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.webp)` }}
                                     >
                                         {team.teamName}
                                     </option>
@@ -55,7 +55,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 <div className="selected-character">
                                     {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
-                                            src={`/characters/${character}.png`}
+                                            src={`/characters/${character}.webp`}
                                             alt={`${character} character`}
                                             key={character}
                                         />

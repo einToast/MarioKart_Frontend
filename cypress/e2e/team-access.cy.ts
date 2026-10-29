@@ -11,7 +11,7 @@ describe('team access', () => {
       cy.location('pathname').should('eq', '/login');
 
       cy.get('select').select('Team Peach');
-      cy.get('.selected-character img').should('have.attr', 'src', '/characters/Peach.png');
+      cy.get('.selected-character img').should('have.attr', 'src', '/characters/Peach.webp');
       cy.contains('ion-button', 'Zum Team Team Peach anmelden').click();
 
       cy.location('pathname').should('eq', '/tab1');

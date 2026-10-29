@@ -10,7 +10,7 @@ const PauseComponent = ({ team }: { team: TeamReturnDTO }) => {
             <div className="imageContainer switchColored">
                 <div className="pause">
                     <img
-                        src={`/characters/${character}.png`}
+                        src={`/characters/${character}.webp`}
                         alt="teamcharacter"
                         className="iconTeam"
                     />

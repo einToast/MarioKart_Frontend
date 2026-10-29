@@ -23,7 +23,7 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
         <div className="teamContainer">
             <div className="imageContainer">
                 <img
-                    src={`/characters/${team.character.characterName}.png`}
+                    src={`/characters/${team.character.characterName}.webp`}
                     alt={team.character.characterName}
                     className="iconTeam"
                 />

@@ -45,7 +45,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             teams: sorted,
             initialData: new Array(sorted.length).fill(0),
             finalData: sorted.map(team => team.groupPoints),
-            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.webp`),
             labels: sorted.map(team => team.teamName),
             pointGroups: [[0], ...pointGroups],
             ranks: ranks,

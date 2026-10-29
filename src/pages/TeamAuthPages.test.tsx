@@ -39,7 +39,7 @@ describe('LoginTeam', () => {
 
         fireEvent.change(teamSelect(), { target: { value: '3' } });
 
-        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.png');
+        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.webp');
         expect(screen.getByText('Zum Team Team Peach anmelden')).toBeInTheDocument();
     });
 
@@ -169,7 +169,7 @@ describe('RegisterTeam', () => {
 
         fireEvent.change(characterSelect(), { target: { value: 'Wario' } });
 
-        expect(screen.getByAltText('Wario character')).toHaveAttribute('src', '/characters/Wario.png');
+        expect(screen.getByAltText('Wario character')).toHaveAttribute('src', '/characters/Wario.webp');
     });
 
     it('registers the team, logs it in and opens the schedule', async () => {

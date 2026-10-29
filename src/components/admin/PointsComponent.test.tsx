@@ -49,10 +49,10 @@ describe('PointsComponent', () => {
 
         expect(inputs().map(input => input.value)).toEqual(['15', '12', '9', '6']);
         expect(Array.from(container.querySelectorAll('img')).map(img => img.getAttribute('src'))).toEqual([
-            '/characters/Mario.png',
-            '/characters/Luigi.png',
-            '/characters/Peach.png',
-            '/characters/Toad.png',
+            '/characters/Mario.webp',
+            '/characters/Luigi.webp',
+            '/characters/Peach.webp',
+            '/characters/Toad.webp',
         ]);
     });
 

@@ -29,7 +29,7 @@ const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, gameS
                     {game.teams.map((team, index) => {
                         return (
                             <img
-                                src={`/characters/${team.character.characterName}.png`}
+                                src={`/characters/${team.character.characterName}.webp`}
                                 alt="teamcharacter"
                                 className="iconTeam"
                                 key={team.character.characterName}
