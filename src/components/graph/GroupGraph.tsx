@@ -54,13 +54,13 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     }, [teams]);
 
     useEffect(() => {
-        setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.png'));
+        setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.webp'));
         setRevealedLabels(new Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
         setStep(0);
     }, [sortedTeamsData]);
 
     useEffect(() => {
-        Promise.all([...sortedTeamsData.icons, '/media/missingno.png'].map(loadImage))
+        Promise.all([...sortedTeamsData.icons, '/media/missingno.webp'].map(loadImage))
             .then(setLoadedImages)
             .catch(error => console.error('Error preloading images:', error));
     }, [sortedTeamsData.icons]);

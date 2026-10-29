@@ -245,13 +245,13 @@ describe('GroupGraph', () => {
         await waitFor(() => {
             chartContext.drawImage.mockClear();
             completeChartAnimation();
-            expect(drawnImages()).toEqual(['missingno.png', 'missingno.png', 'missingno.png', 'missingno.png']);
+            expect(drawnImages()).toEqual(['missingno.webp', 'missingno.webp', 'missingno.webp', 'missingno.webp']);
         });
 
         pressKey('ArrowRight');
         chartContext.drawImage.mockClear();
         completeChartAnimation();
-        expect(drawnImages()).toEqual(['missingno.png', 'missingno.png', 'Mario.webp', 'Toad.webp']);
+        expect(drawnImages()).toEqual(['missingno.webp', 'missingno.webp', 'Mario.webp', 'Toad.webp']);
     });
 
     it('writes every score into its bar', async () => {
