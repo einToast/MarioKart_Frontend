@@ -21,8 +21,8 @@ describe('Tab4 (how to play)', () => {
         expect(screen.getByRole('heading', { name: 'Spielregeln' })).toBeInTheDocument();
         expect(screen.getAllByRole('listitem')).toHaveLength(8);
         expect(screen.getByText('Die Geschwindigkeit beträgt 100ccm')).toBeInTheDocument();
-        expect(screen.getByAltText('pro controller')).toHaveAttribute('src', '/media/procon_how_to_play.jpg');
-        expect(screen.getByAltText('joycon')).toHaveAttribute('src', '/media/joycon_how_to_play.jpg');
+        expect(screen.getByAltText('pro controller')).toHaveAttribute('src', '/media/procon_how_to_play.webp');
+        expect(screen.getByAltText('joycon')).toHaveAttribute('src', '/media/joycon_how_to_play.webp');
     });
 
     it('embeds the explanation video', () => {
