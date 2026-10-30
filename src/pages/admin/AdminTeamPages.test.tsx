@@ -307,45 +307,26 @@ describe('admin Schedule', () => {
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(0);
     });
 
-    it('fixes the parameters of schedule version 1', async () => {
-        backend.post(CREATE_URL, [makeRound()]);
-        renderPage();
-        await screen.findByText('Team Mario');
-        set(fields(), '3');
-        set(rounds(), '10');
-
-        set(version(), '1');
-
-        expect([fields().value, rounds().value, teamsPerGame().value]).toEqual(['4', '8', '4']);
-        expect(fields()).toBeDisabled();
-        expect(rounds()).toBeDisabled();
-        expect(teamsPerGame()).toBeDisabled();
-
-        fireEvent.click(screen.getByText(CREATE));
-        await waitFor(() => expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 1, numFields: 4, numRounds: 8, teamsPerGame: 4 });
-    });
-
-    it.each(['4', '5'])('asks schedule version %s for the teams of every switch', async (selected) => {
+    it('asks schedule version 5 for the teams of every switch', async () => {
         renderPage();
         await screen.findByText('Team Mario');
         set(fields(), '3');
         set(teamsPerGame(), '2');
         expect(teamsPerField()).toEqual([]);
 
-        set(version(), selected);
+        set(version(), '5');
 
         expect(screen.queryByLabelText('Teams pro Spiel:')).not.toBeInTheDocument();
         expect(teamsPerField()).toEqual(['2', '2', '2']);
         expect(screen.getByText('Mindestens 6 Teams nötig')).toBeInTheDocument();
     });
 
-    it.each(['4', '5'])('creates a version %s schedule with a different number of teams on every switch', async (selected) => {
+    it('creates a version 5 schedule with a different number of teams on every switch', async () => {
         backend.post(CREATE_URL, [makeRound()]);
         renderPage();
         await screen.findByText('Team Mario');
 
-        set(version(), selected);
+        set(version(), '5');
         set(fields(), '3');
         set(teamsOfField(1), '8');
         expect(teamsPerField()).toEqual(['8', '4', '4']);
@@ -354,7 +335,7 @@ describe('admin Schedule', () => {
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({
-            version: Number(selected), numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4],
+            version: 5, numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4],
         });
     });
 
@@ -362,7 +343,7 @@ describe('admin Schedule', () => {
         backend.post(CREATE_URL, [makeRound()]);
         renderPage();
         await screen.findByText('Team Mario');
-        set(version(), '4');
+        set(version(), '5');
         set(teamsOfField(2), '6');
 
         set(fields(), '5');
@@ -378,10 +359,10 @@ describe('admin Schedule', () => {
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toMatchObject({ numFields: 2, teamsPerField: [4, 6] });
     });
 
-    it.each(['9', '1', ''])('rejects "%s" teams on a switch of version 4 without asking the backend', async (value) => {
+    it.each(['9', '1', ''])('rejects "%s" teams on a switch of version 5 without asking the backend', async (value) => {
         renderPage();
         await screen.findByText('Team Mario');
-        set(version(), '4');
+        set(version(), '5');
 
         set(teamsOfField(3), value);
         fireEvent.click(screen.getByText(CREATE));
@@ -390,18 +371,18 @@ describe('admin Schedule', () => {
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(0);
     });
 
-    it('sends one number of teams again after returning from version 4', async () => {
+    it('sends one number of teams again after returning from version 5', async () => {
         backend.post(CREATE_URL, [makeRound()]);
         renderPage();
         await screen.findByText('Team Mario');
-        set(version(), '4');
+        set(version(), '5');
         set(teamsOfField(1), '8');
 
-        set(version(), '3');
+        set(version(), '2');
         fireEvent.click(screen.getByText(CREATE));
 
         await waitFor(() => expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 3, numFields: 4, numRounds: 8, teamsPerGame: 4 });
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 4, numRounds: 8, teamsPerGame: 4 });
     });
 
     it('allows clearing a number field while typing', async () => {
