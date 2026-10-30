@@ -30,7 +30,7 @@ const Schedule: React.FC = () => {
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
-    const [version, setVersion] = useState<number>(3);
+    const [version, setVersion] = useState<number>(2);
     const [switchCount, setSwitchCount] = useState<number | ''>(4);
     const [teamsPerGame, setTeamsPerGame] = useState<number | ''>(4);
     const [teamsPerField, setTeamsPerField] = useState<(number | '')[]>([]);
@@ -197,6 +197,7 @@ const Schedule: React.FC = () => {
                                 <option value="2">v2</option>
                                 <option value="3">v3</option>
                                 <option value="4">v4</option>
+                                <option value="5">v5</option>
                             </select>
                         </div>
 
