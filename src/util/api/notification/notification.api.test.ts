@@ -51,6 +51,15 @@ describe('AdminNotificationApi', () => {
         fallback: SEND_FAILED,
     });
 
+    describeEndpoint('getSubscriptionCount', {
+        call: () => AdminNotificationApi.getSubscriptionCount(),
+        method: 'GET',
+        url: '/admin/notification/subscriptions/count',
+        response: 12,
+        errors: { 401: 'Nicht autorisierter Zugriff' },
+        fallback: 'Anzahl der Abonnements konnte nicht geladen werden',
+    });
+
     describeEndpoint('sendNotificationToTeam', {
         call: () => AdminNotificationApi.sendNotificationToTeam(4, notification),
         method: 'POST',

@@ -257,11 +257,13 @@ describe('admin Control', () => {
     });
 
     describe('notifications', () => {
-        const stubTeams = () => backend.get('/admin/teams/sortedByFinalPoints', [
-            makeTeam({ id: 3, teamName: 'Team Peach' }),
-            makeTeam({ id: 1, teamName: 'Team Mario' }),
-            makeTeam({ id: 2, teamName: 'Team Luigi' }),
-        ]);
+        const stubTeams = () => backend
+            .get('/admin/notification/subscriptions/count', 2)
+            .get('/admin/teams/sortedByFinalPoints', [
+                makeTeam({ id: 3, teamName: 'Team Peach' }),
+                makeTeam({ id: 1, teamName: 'Team Mario' }),
+                makeTeam({ id: 2, teamName: 'Team Luigi' }),
+            ]);
 
         it('offers the teams as recipients in alphabetical order', async () => {
             stubTeams();

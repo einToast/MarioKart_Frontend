@@ -198,6 +198,12 @@ describe('AdminNotificationService', () => {
         }]);
     });
 
+    it('getSubscriptionCount returns the number of push subscriptions', async () => {
+        backend.get('/admin/notification/subscriptions/count', 12);
+
+        await expect(AdminNotificationService.getSubscriptionCount()).resolves.toBe(12);
+    });
+
     it('propagates the API error message', async () => {
         backend.fail('POST', '/admin/notification/send', 401);
 
