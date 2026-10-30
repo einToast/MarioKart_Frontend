@@ -166,7 +166,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                                     value={points[index]}
                                     onChange={(e) => handleChangePoints(e, index)}
                                 />
-                                <img src={`/characters/${team.character.characterName}.png`} alt="Character" />
+                                <img src={`/characters/${team.character.characterName}.webp`} alt="Character" />
                             </div>
                         ))}
                     </div>

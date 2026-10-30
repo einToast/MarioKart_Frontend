@@ -30,6 +30,9 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         strategies: 'injectManifest',
+        injectManifest: {
+          globPatterns: ['**/*.{js,css,html}', 'characters/*.webp', 'media/missingno.webp'],
+        },
         devOptions: {
           enabled: true,
           type: 'module',

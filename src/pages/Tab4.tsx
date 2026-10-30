@@ -90,11 +90,11 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <h2>Steuerung</h2>
                 <h3>Pro Controller</h3>
                 <div>
-                    <img src={"/media/procon_how_to_play.jpg"} alt="pro controller" />
+                    <img src={"/media/procon_how_to_play.webp"} alt="pro controller" />
                 </div>
                 <h3>JoyCon</h3>
                 <div>
-                    <img src={"/media/joycon_how_to_play.jpg"} alt="joycon" />
+                    <img src={"/media/joycon_how_to_play.webp"} alt="joycon" />
                 </div>
                 <div style={{ marginBottom: "10px" }}></div>
             </IonContent>

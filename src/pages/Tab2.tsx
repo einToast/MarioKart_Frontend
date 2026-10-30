@@ -140,7 +140,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                                 .map((team, index) => (
                                     <div key={team.id} className={`teamContainer ${team.id === user?.teamId ? 'userTeam' : ''}`}>
                                         <div className={"imageContainer"}>
-                                            <img src={`/characters/${team.character.characterName}.png`} alt={team.character.characterName}
+                                            <img src={`/characters/${team.character.characterName}.webp`} alt={team.character.characterName}
                                                 className={"iconTeam"} />
                                         </div>
                                         <div>

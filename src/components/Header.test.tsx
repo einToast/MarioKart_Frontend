@@ -12,7 +12,7 @@ describe('Header', () => {
         renderWithRouter(<Header />);
 
         expect(screen.getByText('Team Yoshi')).toBeInTheDocument();
-        expect(screen.getByAltText('Yoshi')).toHaveAttribute('src', '/characters/Yoshi.png');
+        expect(screen.getByAltText('Yoshi')).toHaveAttribute('src', '/characters/Yoshi.webp');
     });
 
     it('shows no avatar when nobody is logged in', () => {

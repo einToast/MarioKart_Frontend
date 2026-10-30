@@ -40,7 +40,7 @@ describe('Tab2 (ranking)', () => {
             'Team Mario2. Platz3/8 Spiele',
             'Team Peach3. Platz4/8 Spiele',
         ]);
-        expect(rows(container)[1].querySelector('img')).toHaveAttribute('src', '/characters/Mario.png');
+        expect(rows(container)[1].querySelector('img')).toHaveAttribute('src', '/characters/Mario.webp');
     });
 
     it('keeps the scores secret during the group phase', async () => {

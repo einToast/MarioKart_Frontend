@@ -204,7 +204,7 @@ describe('NotificationModal', () => {
 
         fill(screen.getByRole('combobox'), '3');
 
-        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.png');
+        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.webp');
     });
 
     it('sends the notification to everyone and reports it', async () => {
