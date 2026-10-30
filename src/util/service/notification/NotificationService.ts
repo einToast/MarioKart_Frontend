@@ -20,7 +20,9 @@ export class NotificationService {
         }
 
         try {
-            return await navigator.serviceWorker.register('/sw.js');
+            return import.meta.env.DEV
+                ? await navigator.serviceWorker.register('/dev-sw.js?dev-sw', { type: 'module' })
+                : await navigator.serviceWorker.register('/sw.js');
         } catch (err) {
             console.error('Service worker registration failed:', err);
             return null;

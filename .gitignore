@@ -12,6 +12,7 @@ android/
 www/
 build/
 dist/
+dev-dist/
 
 # Cypress run artifacts
 cypress/screenshots/

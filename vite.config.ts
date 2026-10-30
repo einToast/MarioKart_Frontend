@@ -30,6 +30,10 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         strategies: 'injectManifest',
+        devOptions: {
+          enabled: true,
+          type: 'module',
+        },
       }),
       legacy()
     ],
