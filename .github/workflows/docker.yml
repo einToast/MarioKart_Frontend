@@ -22,6 +22,9 @@ jobs:
       - docker-test
       - ionic-build
     runs-on: ubuntu-24.04
+    concurrency:
+      group: docker-push-${{ github.repository }}-${{ github.ref }}
+      cancel-in-progress: false
 
     steps:
       - name: Checkout repository
