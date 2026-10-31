@@ -157,14 +157,14 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         animation: {
             duration: 500,
             easing: "easeInOutCubic" as const,
-            onProgress: function (animation) {
+            onProgress: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');
                 if (!ctx) return;
                 drawImages(chart, ctx);
             },
-            onComplete: function (animation) {
+            onComplete: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');

@@ -21,6 +21,9 @@ export default [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   {
+    settings: {
+      react: { version: "detect" },
+    },
     rules: {
       // "no-console": "off",
       // "no-unused-vars": "off",
