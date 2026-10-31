@@ -23,7 +23,7 @@ describe('TeamComponent', () => {
 
         expect(screen.getByText('Team Peach')).toBeInTheDocument();
         expect(screen.getByText('Switch Blau')).toBeInTheDocument();
-        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Peach.png');
+        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Peach.webp');
         expect((container.firstElementChild as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#9DAEDA');
     });
 });
@@ -37,10 +37,10 @@ describe('TeamComponent4', () => {
         expect(screen.getByText('Team Luigi')).toBeInTheDocument();
         expect(screen.getByText('Switch Rot')).toBeInTheDocument();
         expect(imageSources(container)).toEqual([
-            '/characters/Mario.png',
-            '/characters/Luigi.png',
-            '/characters/Peach.png',
-            '/characters/Toad.png',
+            '/characters/Mario.webp',
+            '/characters/Luigi.webp',
+            '/characters/Peach.webp',
+            '/characters/Toad.webp',
         ]);
         expect((container.firstElementChild as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#DA9DC9');
         expect(container.querySelector('.round')).not.toHaveClass('crowded');
@@ -79,7 +79,7 @@ describe('PauseComponent', () => {
 
         expect(screen.getByText('Team Toad')).toBeInTheDocument();
         expect(screen.getByText('Pause')).toBeInTheDocument();
-        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Toad.png');
+        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Toad.webp');
     });
 });
 

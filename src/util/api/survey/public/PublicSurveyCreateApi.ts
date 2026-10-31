@@ -21,7 +21,7 @@ const answerErrorMessage = (status: number | undefined, details: string): string
     }
 }
 
-export const submitAnswer = async (answer: AnswerInputDTO, teamId: number): Promise<AnswerReturnDTO> => {
+export const submitAnswer = async (answer: AnswerInputDTO): Promise<AnswerReturnDTO> => {
     try {
         const response = await apiClient.post(`${BASE_URL}/answer`, answer);
         return response.data;

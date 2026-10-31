@@ -29,7 +29,7 @@ const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         return {
             teams: sorted,
             finalData: sorted.map(team => team.groupPoints),
-            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.webp`),
             labels: sorted.map(team => team.teamName),
             ranks: ranks
         };

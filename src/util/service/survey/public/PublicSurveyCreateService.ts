@@ -36,7 +36,7 @@ export const submitAnswer = async (question: QuestionReturnDTO, vote: string | n
         answer.teamSelectedOption = teamId;
     }
 
-    const response = await PublicSurveyApi.submitAnswer(answer, teamId);
+    const response = await PublicSurveyApi.submitAnswer(answer);
     setAnswerCookie(question.questionText + question.id, answerCookieValue(vote));
     return response;
 }

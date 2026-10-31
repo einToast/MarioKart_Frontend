@@ -53,17 +53,32 @@ describe('NotificationService', () => {
             Object.defineProperty(navigator, 'serviceWorker', { configurable: true, value: { register } });
         };
 
+        afterEach(() => {
+            vi.unstubAllEnvs();
+        });
+
         it('resolves to null when the browser does not support service workers', async () => {
             await expect(NotificationService.registerServiceWorker()).resolves.toBeNull();
         });
 
         it('registers /sw.js and returns the registration', async () => {
+            vi.stubEnv('DEV', false);
             const registration = makeRegistration(vi.fn());
             const register = vi.fn().mockResolvedValue(registration);
             stubServiceWorker(register);
 
             await expect(NotificationService.registerServiceWorker()).resolves.toBe(registration);
             expect(register).toHaveBeenCalledWith('/sw.js');
+        });
+
+        it('registers the dev server worker as a module during development', async () => {
+            vi.stubEnv('DEV', true);
+            const registration = makeRegistration(vi.fn());
+            const register = vi.fn().mockResolvedValue(registration);
+            stubServiceWorker(register);
+
+            await expect(NotificationService.registerServiceWorker()).resolves.toBe(registration);
+            expect(register).toHaveBeenCalledWith('/dev-sw.js?dev-sw', { type: 'module' });
         });
 
         it('resolves to null when the registration fails', async () => {
@@ -196,6 +211,12 @@ describe('AdminNotificationService', () => {
             url: '/admin/notification/send/4',
             body: { title: 'Runde 3', message: 'Ihr seid dran' },
         }]);
+    });
+
+    it('getSubscriptionCount returns the number of push subscriptions', async () => {
+        backend.get('/admin/notification/subscriptions/count', 12);
+
+        await expect(AdminNotificationService.getSubscriptionCount()).resolves.toBe(12);
     });
 
     it('propagates the API error message', async () => {

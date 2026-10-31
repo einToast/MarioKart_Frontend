@@ -1,6 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import {
     heart,
+    helpCircleOutline,
     notificationsOutline,
     notificationsSharp
 } from "ionicons/icons";
@@ -10,6 +11,7 @@ import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import FloorPlanView from "../components/floorplan/FloorPlanView";
 import Header from "../components/Header";
+import NotificationHelpModal from "../components/modals/NotificationHelpModal";
 import QRCodeComponent from "../components/QRCodeComponent";
 import Toast from '../components/Toast';
 import { SETTINGS_TOPIC } from '../hooks/useSwitches';
@@ -24,6 +26,7 @@ import './Tab3.css';
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const [notificationEnabled, setNotificationEnabled] = useState<boolean>(PublicCookiesService.getNotificationsEnabled());
+    const [showNotificationHelp, setShowNotificationHelp] = useState<boolean>(false);
 
     const [floorPlan, setFloorPlan] = useState<FloorPlan | null>(null);
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
@@ -212,13 +215,15 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         <IonIcon slot="start" icon={notificationEnabled ? notificationsSharp : notificationsOutline} />
                         {notificationEnabled ? 'Benachrichtigungen aktiviert' : 'Benachrichtigungen aktivieren'}
                     </IonButton>
-                </div>
-                <div>
-                    Hinweise
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Aktiviere Benachrichtigung, um über deine nächste Runden, Pausen und Umfragen informiert zu werden.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn die Registrierung fehlschlägt, lade die Seite bitte komplett neu.</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}><strong style={{ fontWeight: 'bold' }}>ACHTUNG:</strong> Unter iOS muss die Webseite vorher als PWA hinzugefügt werden. (Teilen --{'>'} Mehr --{'>'} Zum Home-Bildschirm --{'>'} Hinzufügen)</p>
-                    <p style={{ margin: 5, fontSize: 'inherit' }}>Wenn alles funktioniert hat, erhältst du eine Testbenachrichtigung</p>
+                    <IonButton
+                        expand="block"
+                        className="notificationHelpButton"
+                        onClick={() => setShowNotificationHelp(true)}
+                        style={{ marginBottom: '16px' }}
+                    >
+                        <IonIcon slot="start" icon={helpCircleOutline} />
+                        Hilfe zu Benachrichtigungen
+                    </IonButton>
                 </div>
 
                 <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
@@ -233,6 +238,10 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <br />
                 <a href="https://github.com/einToast/MarioKart_Tournament">Source Code</a>
             </IonContent>
+            <NotificationHelpModal
+                showModal={showNotificationHelp}
+                closeModal={() => setShowNotificationHelp(false)}
+            />
             <Toast
                 message={error}
                 showToast={showToast}

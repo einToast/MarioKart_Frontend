@@ -8,7 +8,7 @@ const TeamComponent = ({ team, gameSwitch }: { team: TeamReturnDTO, gameSwitch: 
         <div className="switchColored" style={switchColorStyle(gameSwitch.color)}>
             <div className="imageContainer switchColored">
                 <img
-                    src={`/characters/${character}.png`}
+                    src={`/characters/${character}.webp`}
                     alt="teamcharacter"
                     className="iconTeam"
                 />

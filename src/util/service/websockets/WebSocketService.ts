@@ -74,7 +74,7 @@ class WebSocketService {
         };
     }
 
-    public sendMessage(destination: string, body: any): void {
+    public sendMessage(destination: string, body: unknown): void {
         if (this.connected) {
             this.client.publish({ destination, body: JSON.stringify(body) });
         } else {

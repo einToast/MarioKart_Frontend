@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from 'ionicons/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TeamReturnDTO } from '../../util/api/config/dto';
 import { NotificationModalResult } from '../../util/api/config/interfaces';
 import Toast from '../Toast';
@@ -13,7 +13,19 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
 
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
+    const [subscriptionCount, setSubscriptionCount] = useState<number | null>(null);
 
+    useEffect(() => {
+        if (!showModal) {
+            return;
+        }
+        AdminNotificationService.getSubscriptionCount()
+            .then(setSubscriptionCount)
+            .catch((error) => {
+                setError(error.message);
+                setShowToast(true);
+            });
+    }, [showModal]);
 
     const handleNotification = () => {
         const sendNotification = teamId === "-1" 
@@ -37,6 +49,9 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ notificationSent: false })}>
             <IonContent>
                 <h4>Benachrichtigung senden</h4>
+                {subscriptionCount !== null && (
+                    <p>Aktive Abonnements: {subscriptionCount}</p>
+                )}
                 <form onSubmit={handleNotification}>
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
@@ -45,7 +60,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 {teams?.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
-                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.png)` }}
+                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.webp)` }}
                                     >
                                         {team.teamName}
                                     </option>
@@ -55,7 +70,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 <div className="selected-character">
                                     {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
-                                            src={`/characters/${character}.png`}
+                                            src={`/characters/${character}.webp`}
                                             alt={`${character} character`}
                                             key={character}
                                         />

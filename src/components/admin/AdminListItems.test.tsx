@@ -174,7 +174,7 @@ describe('TeamAdminListItem', () => {
         expect(screen.getByText('Team Toad')).toBeInTheDocument();
         expect(screen.getByText('30 Punkte')).toBeInTheDocument();
         expect(screen.getByText('12 Finalpunkte')).toBeInTheDocument();
-        expect(screen.getByAltText('Toad')).toHaveAttribute('src', '/characters/Toad.png');
+        expect(screen.getByAltText('Toad')).toHaveAttribute('src', '/characters/Toad.webp');
     });
 
     it('offers every action before the schedule exists', () => {

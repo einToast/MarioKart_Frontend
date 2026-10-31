@@ -54,7 +54,7 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             teams: sorted,
             initialData: new Array(sorted.length).fill(0),
             finalData: sorted.map(team => team.finalPoints),
-            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.webp`),
             labels: sorted.map(team => team.teamName),
             pointGroups: [[0], ...pointGroups],
             ranks: ranks,
@@ -201,14 +201,14 @@ const FinalGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         animation: {
             duration: 500,
             easing: "easeInOutCubic" as const,
-            onProgress: function (animation) {
+            onProgress: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');
                 if (!ctx) return;
                 drawImages(chart, ctx);
             },
-            onComplete: function (animation) {
+            onComplete: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');

@@ -146,6 +146,11 @@ describe('BreakChangeModal', () => {
 
 describe('NotificationModal', () => {
     const SEND = 'Benachrichtigung senden';
+    const COUNT_URL = '/admin/notification/subscriptions/count';
+
+    beforeEach(() => {
+        backend.get(COUNT_URL, 7);
+    });
 
     const renderModal = (showModal = true) => {
         const closeModal = vi.fn();
@@ -164,6 +169,26 @@ describe('NotificationModal', () => {
         expect(screen.queryByPlaceholderText('Titel eingeben')).not.toBeInTheDocument();
     });
 
+    it('shows how many push subscriptions exist', async () => {
+        renderModal();
+
+        expect(await screen.findByText('Aktive Abonnements: 7')).toBeInTheDocument();
+    });
+
+    it('does not load the subscription count while closed', () => {
+        renderModal(false);
+
+        expect(backend.requestsTo('GET', COUNT_URL)).toEqual([]);
+    });
+
+    it('shows an error when the subscription count cannot be loaded', async () => {
+        backend.fail('GET', COUNT_URL, 401);
+        renderModal();
+
+        await expectErrorToast('Nicht autorisierter Zugriff');
+        expect(screen.queryByText(/Aktive Abonnements/)).not.toBeInTheDocument();
+    });
+
     it('offers all teams as recipients, preselecting everyone', () => {
         renderModal();
 
@@ -179,7 +204,7 @@ describe('NotificationModal', () => {
 
         fill(screen.getByRole('combobox'), '3');
 
-        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.png');
+        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.webp');
     });
 
     it('sends the notification to everyone and reports it', async () => {
@@ -191,7 +216,7 @@ describe('NotificationModal', () => {
         fireEvent.click(sendButton());
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ notificationSent: true }));
-        expect(backend.requests).toEqual([{
+        expect(backend.requestsTo('POST', '/admin/notification/send')).toEqual([{
             method: 'POST',
             url: '/admin/notification/send',
             body: { title: 'Pause', message: 'Pizza ist da' },
@@ -208,7 +233,7 @@ describe('NotificationModal', () => {
         fireEvent.click(sendButton());
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ notificationSent: true }));
-        expect(backend.requests).toEqual([{
+        expect(backend.requestsTo('POST', '/admin/notification/send/3')).toEqual([{
             method: 'POST',
             url: '/admin/notification/send/3',
             body: { title: 'Runde 3', message: 'Ihr seid dran' },
@@ -255,7 +280,7 @@ describe('NotificationModal', () => {
         fireEvent.click(screen.getByText('Abbrechen'));
 
         expect(closeModal).toHaveBeenCalledWith({ notificationSent: false });
-        expect(backend.requests).toEqual([]);
+        expect(backend.requests.filter(request => request.method !== 'GET')).toEqual([]);
     });
 });
 

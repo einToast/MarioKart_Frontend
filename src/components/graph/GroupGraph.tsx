@@ -45,7 +45,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
             teams: sorted,
             initialData: new Array(sorted.length).fill(0),
             finalData: sorted.map(team => team.groupPoints),
-            icons: sorted.map(team => `/characters/${team.character.characterName}.png`),
+            icons: sorted.map(team => `/characters/${team.character.characterName}.webp`),
             labels: sorted.map(team => team.teamName),
             pointGroups: [[0], ...pointGroups],
             ranks: ranks,
@@ -54,13 +54,13 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     }, [teams]);
 
     useEffect(() => {
-        setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.png'));
+        setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.webp'));
         setRevealedLabels(new Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
         setStep(0);
     }, [sortedTeamsData]);
 
     useEffect(() => {
-        Promise.all([...sortedTeamsData.icons, '/media/missingno.png'].map(loadImage))
+        Promise.all([...sortedTeamsData.icons, '/media/missingno.webp'].map(loadImage))
             .then(setLoadedImages)
             .catch(error => console.error('Error preloading images:', error));
     }, [sortedTeamsData.icons]);
@@ -157,14 +157,14 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
         animation: {
             duration: 500,
             easing: "easeInOutCubic" as const,
-            onProgress: function (animation) {
+            onProgress: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');
                 if (!ctx) return;
                 drawImages(chart, ctx);
             },
-            onComplete: function (animation) {
+            onComplete: function () {
                 const chart = chartRef.current;
                 if (!chart) return;
                 const ctx = chart.canvas.getContext('2d');

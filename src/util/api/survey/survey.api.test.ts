@@ -27,7 +27,7 @@ const answerInput: AnswerInputDTO = {
 
 describe('PublicSurveyApi', () => {
     describeEndpoint('submitAnswer', {
-        call: () => PublicSurveyApi.submitAnswer(answerInput, 1),
+        call: () => PublicSurveyApi.submitAnswer(answerInput),
         method: 'POST',
         url: '/public/survey/answer',
         body: answerInput,
@@ -45,14 +45,14 @@ describe('PublicSurveyApi', () => {
     it('submitAnswer distinguishes a used survey key from the team rate limit on HTTP 429', async () => {
         backend.fail('POST', '/public/survey/answer', 429, 'Answer already submitted for this survey key');
 
-        await expect(PublicSurveyApi.submitAnswer(answerInput, 1))
+        await expect(PublicSurveyApi.submitAnswer(answerInput))
             .rejects.toThrow(new Error('Du hast diese Frage bereits beantwortet'));
     });
 
     it('submitAnswer tells an invalid answer apart from a missing login on HTTP 400', async () => {
         backend.fail('POST', '/public/survey/answer', 400, 'Invalid answer: the answer type does not match the question.');
 
-        await expect(PublicSurveyApi.submitAnswer(answerInput, 1))
+        await expect(PublicSurveyApi.submitAnswer(answerInput))
             .rejects.toThrow(new Error('Die Antwort ist ungültig'));
     });
 

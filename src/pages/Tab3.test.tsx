@@ -274,5 +274,17 @@ describe('Tab3 (details)', () => {
             await expectErrorToast('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
             expect(alert).toHaveBeenCalledWith('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
         });
+
+        it('opens and closes the notification help', async () => {
+            renderPage();
+
+            fireEvent.click(screen.getByText('Hilfe zu Benachrichtigungen'));
+
+            expect(await screen.findByText('Es klappt nicht?')).toBeInTheDocument();
+
+            fireEvent.click(screen.getByText('Schließen'));
+
+            await waitFor(() => expect(screen.queryByText('Es klappt nicht?')).not.toBeInTheDocument());
+        });
     });
 });
