@@ -22,7 +22,7 @@
     "@ionic/react": "9.0.9",
     "@ionic/react-router": "9.0.9",
     "@stomp/stompjs": "7.5.0",
-    "axios": "1.20.0",
+    "axios": "1.21.0",
     "chart.js": "4.6.1",
     "date-fns": "4.4.0",
     "ionicons": "8.1.0",
