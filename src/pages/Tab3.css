@@ -100,4 +100,16 @@ h2 {
     height: 100%;
     border: none;
   }
-  
+
+.notificationHelpButton {
+    --ion-color-gradient01: var(--ion-color-text01);
+    --ion-color-gradient02: var(--ion-color-text01-shade);
+
+    ion-icon {
+        color: var(--ion-color-bg02);
+    }
+}
+
+.notificationHelpButton::part(native) {
+    color: var(--ion-color-bg02);
+}

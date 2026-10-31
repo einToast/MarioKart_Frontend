@@ -1,0 +1,47 @@
+.notificationHelp {
+    padding-bottom: 30px;
+
+    ion-segment {
+        margin: 10px 0 15px;
+    }
+
+    ol {
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 12px;
+
+        p {
+            margin: 0 0 8px;
+        }
+    }
+
+    .helpNote {
+        font-style: italic;
+    }
+
+    .helpImage {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        border-radius: 12px;
+    }
+
+    .helpImagePlaceholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 320px;
+        min-height: 120px;
+        padding: 12px;
+        border: 2px dashed #9DAEDA;
+        border-radius: 12px;
+        text-align: center;
+
+        p {
+            margin: 0;
+            font-size: 14px;
+        }
+    }
+}
