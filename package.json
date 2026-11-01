@@ -8,6 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
+    "serve.integration": "npm run build && react-inject-env set -d dist && vite preview --port 5173 --strictPort",
+    "test.integration": "cypress run --config-file cypress.integration.config.ts",
     "test.unit": "vitest",
     "lint": "eslint",
     "ionic_serve": "ionic serve --no-open",
