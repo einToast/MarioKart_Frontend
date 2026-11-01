@@ -129,14 +129,19 @@ const scoreRound = (round: string, pointsByCharacter: Record<string, number>, pl
   cy.get('select#round').select(round);
   cy.get('ion-accordion').its('length').then(games => {
     for (let game = 0; game < games; game++) {
-      cy.get('ion-accordion').eq(game).find('ion-item[slot="header"]').click();
+      cy.get('ion-accordion').eq(game).should(accordion => {
+        if (accordion.hasClass('accordion-collapsed')) {
+          accordion.find('ion-item[slot="header"]')[0].click();
+        }
+        expect(accordion).to.have.class('accordion-expanded');
+      });
       cy.get('ion-accordion').eq(game).find('.characterInput').its('length').then(players => {
         for (let player = 0; player < players; player++) {
           cy.get('ion-accordion').eq(game).find('.characterInput').eq(player).find('img').invoke('attr', 'src')
             .then(src => {
               const characterName = decodeURIComponent(String(src)).replace('/characters/', '').replace('.webp', '');
               cy.get('ion-accordion').eq(game).find('.characterInput').eq(player).find('input')
-                .clear({ force: true }).type(String(pointsByCharacter[characterName]), { force: true });
+                .clear().type(String(pointsByCharacter[characterName]));
             });
         }
       });
@@ -238,6 +243,10 @@ const statisticsOf = (questionText: string) =>
 
 const countVotes = (options: string[], votes: string[]) =>
   options.map(option => votes.filter(vote => vote === option).length);
+
+const showView = (view: string) => {
+  cy.contains('.ion-page:not(.ion-page-hidden) .flexStart', 'Spielplan').find('select').select(view, { force: true });
+};
 
 const currentGame = () => cy.contains('h3', 'Aktuelles Spiel').parents('.flexSpiel');
 
@@ -341,13 +350,13 @@ describe('a whole tournament', () => {
 
       loginAsTeam(playing);
       currentGame().should('contain', playing).and('contain', 'Switch');
-      cy.get('select').first().select('Alle Spiele', { force: true });
+      showView('Alle Spiele');
       cy.contains('h3', 'Aktuelle Spiele').parents('.flexSpiel').within(() => {
         for (const gameSwitch of SWITCHES) {
           cy.contains(`Switch ${gameSwitch.name}`);
         }
       });
-      cy.get('select').first().select('Deine Spiele', { force: true });
+      showView('Deine Spiele');
 
       loginAsTeam(pausing);
       currentGame().should('contain', pausing).and('contain', 'Pause');

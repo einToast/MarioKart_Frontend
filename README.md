@@ -117,7 +117,7 @@ npm run ionic_serve
   docker compose -f cypress/integration/compose.yml up -d --wait
   npm run serve.integration &   # needs the variables from the .env example above
   npm run test.integration
-  docker compose -f cypress/integration/compose.yml down
+  docker compose -p mariokart-integration down
   ```
   
   To test local changes, build them and pass their names:

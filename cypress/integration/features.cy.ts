@@ -107,7 +107,7 @@ describe('frontend with the real backend', () => {
 
     cy.visit('/login');
 
-    cy.get('input[name="username"]');
+    cy.get('input[name="username"]').should('be.visible');
   });
 
   it('counts the answer a team gives to a survey', () => {
