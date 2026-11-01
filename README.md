@@ -113,6 +113,7 @@ npm run ionic_serve
   here either. They expect the backend address from the `.env` example above.
 - Integration tests (Cypress against the real backend, schedule service and PostgreSQL):
   ```bash
+  export SECRET_KEY=$(openssl rand -base64 32)
   docker compose -f cypress/integration/compose.yml up -d --wait
   npm run serve.integration &   # needs the variables from the .env example above
   npm run test.integration
