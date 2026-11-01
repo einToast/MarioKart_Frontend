@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_BACKEND_WS_PORT': JSON.stringify(env.REACT_APP_BACKEND_WS_PORT),
       'process.env.REACT_APP_BACKEND_WS_PATH': JSON.stringify(env.REACT_APP_BACKEND_WS_PATH),
     },
+    optimizeDeps: {
+      include: ['workbox-precaching'],
+    },
     plugins: [
       react(),
       skipEnvScriptOnDevServer(),
