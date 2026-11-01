@@ -19,7 +19,7 @@ import LoginToTeam from './pages/LoginTeam';
 import RegisterTeam from './pages/RegisterTeam';
 import Survey from "./pages/Survey";
 import Tab1 from './pages/Tab1';
-import Tab2 from './pages/Tab2';
+import './theme/teams.css';
 import Tab3 from './pages/Tab3';
 import Tab4 from './pages/Tab4';
 import './theme/variables.css';
@@ -29,9 +29,10 @@ import './theme/main.css';
 import { ShowTab2Props, User } from "./util/api/config/interfaces";
 import { PublicCookiesService, PublicScheduleService } from './util/service';
 
-// Lazy-Import nur für die Login-Komponente und den Admin-Router
+// Lazy-Import only for login, admin and Tab2 components
 const Login = lazy(() => import('./pages/admin/Login'));
 const AdminRouter = lazy(() => import('./pages/admin/AdminRouter'));
+const Tab2 = lazy(() => import('./pages/Tab2'));
 
 setupIonicReact();
 
@@ -66,7 +67,7 @@ const App: React.FC = () => {
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
                                 <Route path="/tab1" element={<Tab1 {...showTab2Props} />} />
-                                <Route path="/tab2" element={<Tab2 {...showTab2Props} />} />
+                                <Route path="/tab2" element={<Suspense fallback={<div className="loading-container">Rangliste wird geladen...</div>}><Tab2 {...showTab2Props} /></Suspense>} />
                                 <Route path="/tab3" element={<Tab3 {...showTab2Props} />} />
                                 <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
                                 <Route path="/survey" element={<Survey {...showTab2Props} />} />
