@@ -1,5 +1,5 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../components/Header";
 import './Tab1.css';
 
@@ -24,12 +24,14 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const location = useLocation();
+    const isFirstLocation = useRef(true);
 
     const {
         currentRound,
         nextRound,
         teamsNotInCurrentRound,
         teamsNotInNextRound,
+        showTab2,
         error,
         refreshRounds
     } = useRoundData();
@@ -44,12 +46,8 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     };
 
     const updateShowTab2 = () => {
-        Promise.all([
-            PublicScheduleService.isScheduleCreated(),
-            PublicScheduleService.isFinalScheduleCreated(),
-            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
-        ]).then(([scheduleValue, finalScheduleValue, roundsLessTwoValue]) => {
-            props.setShowTab2(!scheduleValue || finalScheduleValue || !roundsLessTwoValue);
+        PublicScheduleService.getOverview().then(overview => {
+            props.setShowTab2(PublicScheduleService.isTab2Shown(overview));
         }).catch(error => {
             console.error("Error fetching schedule data:", error);
         });
@@ -58,7 +56,6 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const handleRefresh = async (event: CustomEvent) => {
         setLoading(true);
 
-        updateShowTab2();
         reloadSwitches();
         await Promise.all([
             refreshRounds(),
@@ -71,8 +68,13 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     useEffect(() => {
         setUser(PublicCookiesService.getUser());
-        updateShowTab2();
     }, []);
+
+    useEffect(() => {
+        if (showTab2 !== null) {
+            props.setShowTab2(showTab2);
+        }
+    }, [showTab2]);
 
     useEffect(() => {
         if (error) {
@@ -96,6 +98,10 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     useEffect(() => {
         setSelectedOption(PublicCookiesService.getSelectedGamesOption() || 'Deine Spiele');
+        if (isFirstLocation.current) {
+            isFirstLocation.current = false;
+            return;
+        }
         updateShowTab2();
     }, [location]);
 

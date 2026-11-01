@@ -31,6 +31,16 @@ export const team = (id: number, name: string, overrides: Partial<TeamFixture> =
     ...overrides,
 });
 
+export const scheduleOverview = (overrides: Record<string, unknown> = {}) => ({
+    currentRounds: [],
+    teamsNotInRound: {},
+    scheduleCreated: true,
+    finalScheduleCreated: false,
+    numberOfRoundsUnplayed: 5,
+    tournamentOpen: true,
+    ...overrides,
+});
+
 export const teams = (): TeamFixture[] => [team(1, 'Mario'), team(2, 'Luigi'), team(3, 'Peach'), team(4, 'Toad')];
 
 // Where the app under test expects its backend, see README ("Testing")
@@ -65,6 +75,7 @@ Cypress.Commands.add('stubBackend', () => {
     cy.stubApi('GET', '/public/schedule/create/final_schedule', false);
     cy.stubApi('GET', '/public/schedule/rounds/unplayed', 5);
     cy.stubApi('GET', '/public/schedule/rounds/current', []);
+    cy.stubApi('GET', '/public/schedule/overview', scheduleOverview());
     cy.stubApi('GET', '/public/teams/sortedByTeamName', teams());
     cy.stubApi('GET', '/public/user/login/check', '', 401);
 });

@@ -1,10 +1,11 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { backend, stubDefaultBackend } from '../test/backend';
+import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
 import { makeBreak, makeGame, makeRound, makeTeam } from '../test/fixtures';
 import { createAppWrapper, currentPath } from '../test/render';
 import { useRoundData } from './useRoundData';
 
 const CURRENT_ROUNDS_URL = '/public/schedule/rounds/current';
+const OVERVIEW_URL = '/public/schedule/overview';
 
 const resting = makeTeam({ id: 9, teamName: 'Team Yoshi', character: { id: 9, characterName: 'Yoshi' } });
 const waiting = makeTeam({ id: 8, teamName: 'Team Wario', character: { id: 8, characterName: 'Wario' } });
@@ -68,7 +69,7 @@ describe('useRoundData', () => {
 
         const { result } = renderRoundData();
 
-        await waitFor(() => expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(1));
+        await waitFor(() => expect(backend.requestsTo('GET', OVERVIEW_URL)).toHaveLength(1));
         expect(result.current.currentRound).toBeNull();
         expect(result.current.nextRound).toBeNull();
         expect(result.current.error).toBe('');
@@ -76,7 +77,7 @@ describe('useRoundData', () => {
 
     it('shows a running break as current and the round after it as next', async () => {
         const afterBreak = { ...round6(), breakTime: makeBreak({ id: 2, startTime: '2025-01-08T18:30:00', endTime: '2025-01-08T19:00:00', breakEnded: false }) };
-        backend.get(CURRENT_ROUNDS_URL, [afterBreak, makeRound({ id: 7 })]);
+        backend.get(CURRENT_ROUNDS_URL, [afterBreak, makeRound({ id: 7 })]).get('/public/teams/notInRound/7', []);
 
         const { result } = renderRoundData();
 
@@ -108,7 +109,7 @@ describe('useRoundData', () => {
     it('stays on the page while the tournament is open', async () => {
         renderRoundData();
 
-        await waitFor(() => expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(1));
+        await waitFor(() => expect(backend.requestsTo('GET', OVERVIEW_URL)).toHaveLength(1));
         expect(currentPath()).toBe('/tab1');
     });
 
@@ -117,7 +118,7 @@ describe('useRoundData', () => {
 
         const { result } = renderRoundData();
 
-        await waitFor(() => expect(result.current.error).toBe('Aktuelle Runden konnten nicht geladen werden'));
+        await waitFor(() => expect(result.current.error).toBe('Spielplan konnte nicht geladen werden'));
     });
 
     it('exposes the error message when the tournament state cannot be loaded', async () => {
@@ -125,7 +126,26 @@ describe('useRoundData', () => {
 
         const { result } = renderRoundData();
 
-        await waitFor(() => expect(result.current.error).toBe('Einstellungen konnten nicht geladen werden'));
+        await waitFor(() => expect(result.current.error).toBe('Spielplan konnte nicht geladen werden'));
+    });
+
+    it('loads rounds, pausing teams and tournament state in a single request', async () => {
+        backend.get(CURRENT_ROUNDS_URL, [round5(), round6()]);
+
+        const { result } = renderRoundData();
+
+        await waitFor(() => expect(result.current.teamsNotInNextRound).toEqual([waiting]));
+        expect(backend.requests.map(request => request.url)).toEqual([OVERVIEW_URL]);
+    });
+
+    it('shows the ranking tab while enough group rounds are left and hides it for the last one', async () => {
+        const { result } = renderRoundData();
+        await waitFor(() => expect(result.current.showTab2).toBe(true));
+
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 1 });
+        await act(() => result.current.refreshRounds());
+
+        expect(result.current.showTab2).toBe(false);
     });
 
     it('loads the rounds again on refreshRounds', async () => {

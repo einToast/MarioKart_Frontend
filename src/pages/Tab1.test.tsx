@@ -1,4 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { useNavigate } from 'react-router';
 import Cookies from 'js-cookie';
 import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
 import { makeBreak, makeGame, makeRound, makeSwitches, makeTeam } from '../test/fixtures';
@@ -145,7 +147,7 @@ describe('Tab1 (schedule)', () => {
 
         renderPage();
 
-        await expectErrorToast('Aktuelle Runden konnten nicht geladen werden');
+        await expectErrorToast('Spielplan konnte nicht geladen werden');
     });
 
     it('sends the team to the admin area while the tournament is closed', async () => {
@@ -162,6 +164,23 @@ describe('Tab1 (schedule)', () => {
         const { setShowTab2 } = renderPage();
 
         await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(false));
+    });
+
+    it('checks again whether the ranking tab is shown after navigating', async () => {
+        const NavigateButton: React.FC = () => {
+            const navigate = useNavigate();
+            return <button onClick={() => navigate('/tab1#again')}>navigate</button>;
+        };
+        const setShowTab2 = vi.fn();
+        renderWithRouter(<><Tab1 showTab2={true} setShowTab2={setShowTab2} /><NavigateButton /></>, { route: '/tab1' });
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(true));
+        expect(backend.requestsTo('GET', '/public/schedule/overview')).toHaveLength(1);
+
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 1 });
+        fireEvent.click(screen.getByText('navigate'));
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(false));
+        expect(backend.requestsTo('GET', '/public/schedule/overview')).toHaveLength(2);
     });
 
     it('keeps the ranking tab while more rounds are open', async () => {

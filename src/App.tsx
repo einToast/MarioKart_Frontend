@@ -50,12 +50,8 @@ const App: React.FC = () => {
             setCurrentUser(user);
         }
 
-        Promise.all([
-            PublicScheduleService.isScheduleCreated(),
-            PublicScheduleService.isFinalScheduleCreated(),
-            PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()
-        ]).then(([scheduleValue, finalScheduleValue, roundsLessTwoValue]) => {
-            setShowTab2(!scheduleValue || finalScheduleValue || !roundsLessTwoValue);
+        PublicScheduleService.getOverview().then(overview => {
+            setShowTab2(PublicScheduleService.isTab2Shown(overview));
         }).catch(error => {
             console.error("Error fetching schedule data:", error);
         });

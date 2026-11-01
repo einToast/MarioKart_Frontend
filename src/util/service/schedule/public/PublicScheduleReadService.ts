@@ -1,8 +1,16 @@
 import { PublicScheduleApi } from "../../../api";
-import { RoundReturnDTO } from "../../../api/config/dto";
+import { RoundReturnDTO, ScheduleOverviewDTO } from "../../../api/config/dto";
 
 export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
     return PublicScheduleApi.getCurrentRounds();
+}
+
+export const getOverview = async (): Promise<ScheduleOverviewDTO> => {
+    return PublicScheduleApi.getOverview();
+}
+
+export const isTab2Shown = (overview: Pick<ScheduleOverviewDTO, 'scheduleCreated' | 'finalScheduleCreated' | 'numberOfRoundsUnplayed'>): boolean => {
+    return !overview.scheduleCreated || overview.finalScheduleCreated || overview.numberOfRoundsUnplayed >= 2;
 }
 
 export const getNumberOfRoundsUnplayed = async (): Promise<number> => {

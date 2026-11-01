@@ -27,6 +27,15 @@ export interface RoundReturnDTO {
     breakTime?: BreakReturnDTO;
 }
 
+export interface ScheduleOverviewDTO {
+    currentRounds: RoundReturnDTO[];
+    teamsNotInRound: Record<number, TeamReturnDTO[]>;
+    scheduleCreated: boolean;
+    finalScheduleCreated: boolean;
+    numberOfRoundsUnplayed: number;
+    tournamentOpen: boolean;
+}
+
 export interface GameReturnDTO {
     id: number;
     switchIndex: number;

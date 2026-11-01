@@ -1,4 +1,4 @@
-import { team } from '../support/commands';
+import { scheduleOverview, team } from '../support/commands';
 
 const game = (id: number, switchIndex: number, teams: ReturnType<typeof team>[]) => ({ id, switchIndex, teams, points: null });
 
@@ -19,9 +19,10 @@ const rounds = () => [
 describe('team tabs', () => {
   beforeEach(() => {
     cy.stubBackend();
-    cy.stubApi('GET', '/public/schedule/rounds/current', rounds());
-    cy.stubApi('GET', '/public/teams/notInRound/5', []);
-    cy.stubApi('GET', '/public/teams/notInRound/6', [team(1, 'Mario'), team(2, 'Luigi')]);
+    cy.stubApi('GET', '/public/schedule/overview', scheduleOverview({
+      currentRounds: rounds(),
+      teamsNotInRound: { 5: [], 6: [team(1, 'Mario'), team(2, 'Luigi')] },
+    }));
     cy.stubApi('GET', '/public/teams/sortedByGroupPoints', [
       team(2, 'Luigi', { groupPoints: 45, numberOfGamesPlayed: 4 }),
       team(1, 'Mario', { groupPoints: 30, numberOfGamesPlayed: 3 }),
@@ -72,6 +73,7 @@ describe('team tabs', () => {
 
   it('hides the ranking during the last round of the group phase', () => {
     cy.stubApi('GET', '/public/schedule/rounds/unplayed', 1);
+    cy.stubApi('GET', '/public/schedule/overview', scheduleOverview({ currentRounds: rounds(), numberOfRoundsUnplayed: 1 }));
 
     cy.visit('/tab1');
     cy.get('ion-tab-bar ion-tab-button').should('have.length', 3);
