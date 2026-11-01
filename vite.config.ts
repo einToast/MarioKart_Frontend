@@ -1,4 +1,3 @@
-import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
@@ -38,7 +37,6 @@ export default defineConfig(({ mode }) => {
           type: 'module',
         },
       }),
-      legacy()
     ],
     test: {
       globals: true,
