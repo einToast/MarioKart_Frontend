@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
         strategies: 'injectManifest',
         injectManifest: {
           globPatterns: ['**/*.{js,css,html}', 'characters/*.webp', 'media/missingno.webp'],
+          globIgnores: ['**/AdminRouter-*', '**/Login-*.js'],
         },
         devOptions: {
           enabled: true,
