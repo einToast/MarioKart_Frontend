@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useWebSocket } from '../components/WebSocketContext';
+import { reloadDelay } from '../util/service/websockets/reloadDelay';
 
 export const useWebSocketConnection = (topic: string, onMessageReceived: () => void) => {
     const wsService = useWebSocket();
@@ -11,18 +12,28 @@ export const useWebSocketConnection = (topic: string, onMessageReceived: () => v
     });
 
     useEffect(() => {
+        const pendingReloads = new Set<ReturnType<typeof setTimeout>>();
+        const reloadSoon = () => {
+            const timer = setTimeout(() => {
+                pendingReloads.delete(timer);
+                callbackRef.current();
+            }, reloadDelay());
+            pendingReloads.add(timer);
+        };
+
         setIsConnected(wsService.isConnected());
-        const unsubscribe = wsService.subscribe(topic, () => callbackRef.current());
+        const unsubscribe = wsService.subscribe(topic, reloadSoon);
         const removeConnectionListener = wsService.addConnectionListener((connected, reconnected) => {
             setIsConnected(connected);
             if (reconnected) {
-                callbackRef.current();
+                reloadSoon();
             }
         });
 
         return () => {
             unsubscribe();
             removeConnectionListener();
+            pendingReloads.forEach(clearTimeout);
         };
     }, [wsService, topic]);
 

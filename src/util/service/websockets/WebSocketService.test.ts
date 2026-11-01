@@ -40,8 +40,8 @@ describe('WebSocketService', () => {
         expect(stompClient().activated).toBe(true);
         expect(stompClient().config).toMatchObject({
             reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
+            heartbeatIncoming: 15000,
+            heartbeatOutgoing: 15000,
         });
     });
 

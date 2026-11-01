@@ -18,8 +18,8 @@ class WebSocketService {
         this.client = new Client({
             webSocketFactory: () => new SockJS(WS_BASE_URL),
             reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
+            heartbeatIncoming: 15000,
+            heartbeatOutgoing: 15000,
             onConnect: () => {
                 const reconnected = this.hasConnected;
                 this.connected = true;
