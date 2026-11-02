@@ -87,6 +87,8 @@ npm run ionic_serve
 - `lint`: Run ESLint
 - `test.unit`: Run Vitest unit tests (jsdom)
 - `test.e2e`: Run Cypress E2E tests (baseUrl `http://localhost:5173`)
+- `serve.integration`: Build the app and serve it on port 5173 for the integration tests
+- `test.integration`: Run the Cypress integration tests against the real backend
 - `ionic_serve`: Ionic dev server
 - `ionic_build`: Ionic production build
 
@@ -109,6 +111,22 @@ npm run ionic_serve
   The specs in `cypress/e2e/` drive the real app in a browser and stub every backend request
   with `cy.intercept` (see `cypress/support/commands.ts`), so no backend has to be running
   here either. They expect the backend address from the `.env` example above.
+- Integration tests (Cypress against the real backend, schedule service and PostgreSQL):
+  ```bash
+  export SECRET_KEY=$(openssl rand -base64 32)
+  docker compose -f cypress/integration/compose.yml up -d --wait
+  npm run serve.integration &   # needs the variables from the .env example above
+  npm run test.integration
+  docker compose -p mariokart-integration down
+  ```
+  
+  To test local changes, build them and pass their names:
+  ```bash
+  docker build -t mariokart_backend:local ../Backend
+  docker build -t mariokart_schedule:local ../Schedule
+  export BACKEND_IMAGE=mariokart_backend:local SCHEDULE_IMAGE=mariokart_schedule:local
+  docker compose -f cypress/integration/compose.yml up -d --wait
+  ```
 
 ### Linting
 

@@ -76,6 +76,18 @@ class FakeBackend {
         return this;
     }
 
+    resolve(method: Method, url: string): BackendReply {
+        const request: BackendRequest = { method, url, body: undefined };
+        const route = this.routes.find(candidate => candidate.method === method && this.matches(candidate.url, url));
+        if (!route || route.responder === 'network-error') {
+            if (!route) {
+                this.unhandled.push(request);
+            }
+            return { status: 501 };
+        }
+        return typeof route.responder === 'function' ? route.responder(request) : route.responder;
+    }
+
     requestsTo(method: Method, url: string | RegExp): BackendRequest[] {
         return this.requests.filter(request => request.method === method && this.matches(url, request.url));
     }
@@ -140,6 +152,41 @@ class FakeBackend {
 
 export const backend = new FakeBackend();
 
+const failed = (reply: BackendReply): boolean => (reply.status ?? 200) >= 300;
+
+const composeScheduleOverview = (): BackendReply => {
+    const rounds = backend.resolve('GET', '/public/schedule/rounds/current');
+    const scheduleCreated = backend.resolve('GET', '/public/schedule/create/schedule');
+    const finalScheduleCreated = backend.resolve('GET', '/public/schedule/create/final_schedule');
+    const numberOfRoundsUnplayed = backend.resolve('GET', '/public/schedule/rounds/unplayed');
+    const settings = backend.resolve('GET', '/public/settings');
+    const failedPart = [rounds, scheduleCreated, finalScheduleCreated, numberOfRoundsUnplayed, settings].find(failed);
+    if (failedPart) {
+        return failedPart;
+    }
+
+    const currentRounds = (rounds.data ?? []) as { id: number }[];
+    const teamsNotInRound: Record<number, unknown> = {};
+    for (const round of currentRounds) {
+        const teams = backend.resolve('GET', `/public/teams/notInRound/${round.id}`);
+        if (failed(teams)) {
+            return teams;
+        }
+        teamsNotInRound[round.id] = teams.data;
+    }
+
+    return {
+        data: {
+            currentRounds,
+            teamsNotInRound,
+            scheduleCreated: scheduleCreated.data,
+            finalScheduleCreated: finalScheduleCreated.data,
+            numberOfRoundsUnplayed: numberOfRoundsUnplayed.data,
+            tournamentOpen: (settings.data as { tournamentOpen?: boolean } | undefined)?.tournamentOpen ?? false,
+        },
+    };
+};
+
 // Stubs the read-only endpoints nearly every page calls on mount: an open tournament with a
 // running group phase. Individual tests override single routes afterwards
 export const stubDefaultBackend = (): void => {
@@ -158,6 +205,7 @@ export const stubDefaultBackend = (): void => {
         .get('/public/schedule/create/final_schedule', false)
         .get('/public/schedule/rounds/unplayed', 5)
         .get('/public/schedule/rounds/current', [])
+        .on('GET', '/public/schedule/overview', composeScheduleOverview)
         .get('/public/user/login/check', { user: { username: 'admin', isAdmin: true, ID: 1 } });
 };
 

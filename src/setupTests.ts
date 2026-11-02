@@ -13,6 +13,8 @@ import apiClient from './util/api/config/apiClient';
 vi.mock('@stomp/stompjs', async () => await import('./test/stomp'));
 vi.mock('sockjs-client', () => ({ default: vi.fn() }));
 
+vi.mock('./util/service/websockets/reloadDelay', () => ({ MAX_RELOAD_DELAY_MS: 1000, reloadDelay: vi.fn(() => 0) }));
+
 // The two overlays are the only Ionic components that are replaced, see test/overlays.tsx for
 // the reasons. Everything else is the real Ionic component
 vi.mock('@ionic/react', async (importOriginal) => {

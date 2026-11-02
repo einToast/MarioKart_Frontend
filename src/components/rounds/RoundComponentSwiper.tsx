@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigation } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/swiper-bundle.css';
 import { GameReturnDTO, SwitchDTO } from "../../util/api/config/dto";
 import { User } from '../../util/api/config/interfaces';
 import TeamComponent4 from "./TeamComponent4";

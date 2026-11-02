@@ -1,11 +1,10 @@
-import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
+import { Chart as ChartJS, ChartOptions } from "chart.js";
 import React, { useEffect, useRef, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { TeamGraphProps } from "../../util/api/config/interfaces";
 import { loadImage } from "../../util/service/util";
 import './RankingGraph.css';
-
-Chart.register(...registerables);
+import './registerBarChart';
 
 const StaticTeamGraph: React.FC<TeamGraphProps> = ({ teams }) => {
     const chartRef = useRef<ChartJS<"bar">>(null);

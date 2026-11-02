@@ -1,6 +1,6 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { RoundReturnDTO } from '../../config/dto';
+import { RoundReturnDTO, ScheduleOverviewDTO } from '../../config/dto';
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'SCHEDULE');
 
@@ -11,6 +11,18 @@ export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             throw new Error('Aktuelle Runden konnten nicht geladen werden');
+        }
+        throw error;
+    }
+};
+
+export const getOverview = async (): Promise<ScheduleOverviewDTO> => {
+    try {
+        const response = await apiClient.get<ScheduleOverviewDTO>(`${BASE_URL}/overview`);
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error('Spielplan konnte nicht geladen werden');
         }
         throw error;
     }

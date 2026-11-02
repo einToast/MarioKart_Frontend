@@ -9,7 +9,6 @@ import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
-import './Tab2.css';
 
 const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 

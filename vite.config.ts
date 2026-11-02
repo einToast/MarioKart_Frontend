@@ -1,4 +1,3 @@
-import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, loadEnv, type Plugin } from 'vite';
@@ -24,6 +23,9 @@ export default defineConfig(({ mode }) => {
       'process.env.REACT_APP_BACKEND_WS_PORT': JSON.stringify(env.REACT_APP_BACKEND_WS_PORT),
       'process.env.REACT_APP_BACKEND_WS_PATH': JSON.stringify(env.REACT_APP_BACKEND_WS_PATH),
     },
+    optimizeDeps: {
+      include: ['workbox-precaching'],
+    },
     plugins: [
       react(),
       skipEnvScriptOnDevServer(),
@@ -32,13 +34,13 @@ export default defineConfig(({ mode }) => {
         strategies: 'injectManifest',
         injectManifest: {
           globPatterns: ['**/*.{js,css,html}', 'characters/*.webp', 'media/missingno.webp'],
+          globIgnores: ['**/AdminRouter-*', '**/Login-*.js'],
         },
         devOptions: {
           enabled: true,
           type: 'module',
         },
       }),
-      legacy()
     ],
     test: {
       globals: true,

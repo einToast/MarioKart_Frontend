@@ -1,10 +1,9 @@
-import { Chart, Chart as ChartJS, ChartOptions, registerables } from "chart.js";
+import { Chart as ChartJS, ChartOptions } from "chart.js";
 import React, { useEffect, useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import { QuestionGraphProps } from "../../util/api/config/interfaces";
 import './RankingGraph.css';
-
-Chart.register(...registerables);
+import './registerBarChart';
 
 const QuestionGraph: React.FC<QuestionGraphProps> = ({ question, answers }) => {
     const chartRef = useRef<ChartJS<"bar">>(null);
