@@ -75,6 +75,11 @@ export default defineConfig(({ mode }) => {
     build: {
       cssMinify: 'esbuild',
       rolldownOptions: {
+        treeshake: {
+          moduleSideEffects: [
+            { test: /node_modules[\\/]@ionic[\\/]core[\\/]components[\\/]ion-[^\\/]+\.js$/, sideEffects: false },
+          ],
+        },
         output: {
           codeSplitting: {
             groups: [
