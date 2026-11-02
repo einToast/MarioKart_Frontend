@@ -1,6 +1,6 @@
 import { IonAccordionGroup, IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import CheckBoxCard from "../components/survey/CheckBoxSurveyComponent";
@@ -12,7 +12,7 @@ import Toast from '../components/Toast';
 import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
 import { QuestionReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props } from '../util/api/config/interfaces';
-import { PublicScheduleService, PublicSettingsService, PublicSurveyService } from '../util/service';
+import { PublicScheduleService, PublicSurveyService } from '../util/service';
 import { QuestionType } from "../util/service/util";
 import './Survey.css';
 
@@ -23,7 +23,6 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [error, setError] = useState<string>('Error');
     const [showToast, setShowToast] = useState<boolean>(false);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
 
@@ -138,15 +137,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     useEffect(() => {
 
         updateShowTab2();
-        Promise.all([
-            getQuestions(),
-            PublicSettingsService.getTournamentOpen()
-        ])
-            .then(([, tournamentOpen]) => {
-                if (!tournamentOpen) {
-                    navigate('/admin');
-                }
-            })
+        getQuestions()
             .catch(error => {
                 setError(error.message);
                 setShowToast(true);

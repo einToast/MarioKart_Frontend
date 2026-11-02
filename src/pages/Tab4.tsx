@@ -1,15 +1,14 @@
 import { IonContent, IonPage, IonRefresher, IonRefresherContent } from '@ionic/react';
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import Header from "../components/Header";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
-import { PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
+import { PublicCookiesService, PublicScheduleService } from "../util/service";
 import './Tab3.css';
 
 const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
-    const navigate = useNavigate();
     const location = useLocation();
     const [user] = useState<User | null>(PublicCookiesService.getUser());
 
@@ -34,16 +33,6 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     useEffect(() => {
 
         updateShowTab2();
-
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        tournamentOpen.then((response) => {
-            if (!response) {
-                navigate('/admin');
-            }
-        }).catch(error => {
-            console.error("Error fetching tournament status:", error);
-        });
     }, [location])
 
     return (

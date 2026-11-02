@@ -82,6 +82,9 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
             PublicSettingsService.getTournamentOpen()
         ])
             .then(([registrationOpen, tournamentOpen]) => {
+                if (location.pathname !== '/register') {
+                    return;
+                }
                 if (!registrationOpen) {
                     navigate('/login');
                 }
