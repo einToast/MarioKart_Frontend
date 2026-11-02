@@ -97,3 +97,57 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test.e2e
+
+  e2e-tests-build:
+    name: e2e-tests-build (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-26.04
+          - arch: arm64
+            runner: ubuntu-26.04-arm
+    runs-on: ${{ matrix.runner }}
+
+    env:
+      REACT_APP_BACKEND_PROTOCOL: http
+      REACT_APP_BACKEND_URL: localhost
+      REACT_APP_BACKEND_PORT: 8080
+      REACT_APP_BACKEND_PATH: api
+      REACT_APP_BACKEND_WS_PROTOCOL: http
+      REACT_APP_BACKEND_WS_URL: localhost
+      REACT_APP_BACKEND_WS_PORT: 8080
+      REACT_APP_BACKEND_WS_PATH: api/ws
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Install Cypress binary
+        run: ./node_modules/.bin/cypress install
+
+      - name: Build and serve production build
+        run: |
+          npm run serve.build > preview-server.log 2>&1 &
+          for attempt in $(seq 1 120); do
+            if curl --silent --fail --output /dev/null http://localhost:4173; then
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Production build was not served within 120 seconds:"
+          cat preview-server.log
+          exit 1
+
+      - name: Run E2E tests against production build
+        run: npm run test.e2e.build

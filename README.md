@@ -87,6 +87,8 @@ npm run ionic_serve
 - `lint`: Run ESLint
 - `test.unit`: Run Vitest unit tests (jsdom)
 - `test.e2e`: Run Cypress E2E tests (baseUrl `http://localhost:5173`)
+- `serve.build`: Build the app and serve it on port 4173 for the E2E tests against the production build
+- `test.e2e.build`: Run the Cypress E2E tests against the production build (baseUrl `http://localhost:4173`)
 - `serve.integration`: Build the app and serve it on port 5173 for the integration tests
 - `test.integration`: Run the Cypress integration tests against the real backend
 - `ionic_serve`: Ionic dev server
@@ -111,6 +113,13 @@ npm run ionic_serve
   The specs in `cypress/e2e/` drive the real app in a browser and stub every backend request
   with `cy.intercept` (see `cypress/support/commands.ts`), so no backend has to be running
   here either. They expect the backend address from the `.env` example above.
+
+  To run the same specs against the production build, which is bundled and tree-shaken
+  differently from the dev server:
+  ```bash
+  npm run serve.build &   # needs the .env from above
+  npm run test.e2e.build
+  ```
 - Integration tests (Cypress against the real backend, schedule service and PostgreSQL):
   ```bash
   export SECRET_KEY=$(openssl rand -base64 32)
