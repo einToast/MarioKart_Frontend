@@ -13,17 +13,17 @@ const LocationProbe: React.FC = () => {
 };
 
 // Hosts a page, component or hook the way App.tsx does: inside the WebSocket provider and
-// mounted on its own route only. The pages reload their data on every location change, so one
-// that stayed mounted after navigating away would redirect forever. The current route is
-// exposed through `currentPath()`
-export const createAppWrapper = (route = '/'): React.FC<{ children: React.ReactNode }> => {
+// mounted on its own route only. With `keepMounted` it stays mounted after navigating away,
+// as Ionic keeps visited pages alive. The current route is exposed through `currentPath()`
+export const createAppWrapper = (route = '/', { keepMounted = false } = {}): React.FC<{ children: React.ReactNode }> => {
     const AppWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
         <WebSocketProvider>
             <MemoryRouter initialEntries={[route]}>
                 <Routes>
-                    <Route path={route} element={children} />
+                    <Route path={route} element={keepMounted ? null : children} />
                     <Route path="*" element={null} />
                 </Routes>
+                {keepMounted && children}
                 <LocationProbe />
             </MemoryRouter>
         </WebSocketProvider>
@@ -31,8 +31,10 @@ export const createAppWrapper = (route = '/'): React.FC<{ children: React.ReactN
     return AppWrapper;
 };
 
-export const renderWithRouter = (ui: React.ReactElement, { route = '/' }: { route?: string } = {}): RenderResult =>
-    render(ui, { wrapper: createAppWrapper(route) });
+export const renderWithRouter = (
+    ui: React.ReactElement,
+    { route = '/', keepMounted = false }: { route?: string; keepMounted?: boolean } = {},
+): RenderResult => render(ui, { wrapper: createAppWrapper(route, { keepMounted }) });
 
 export const currentPath = (): string | null => screen.getByTestId('location').textContent;
 

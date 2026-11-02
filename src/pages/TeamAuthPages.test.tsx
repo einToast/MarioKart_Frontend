@@ -11,9 +11,9 @@ const TEAMS_URL = '/public/teams/sortedByTeamName';
 const CHARACTERS_URL = '/public/teams/characters/available';
 
 describe('LoginTeam', () => {
-    const renderPage = () => {
+    const renderPage = (keepMounted = false) => {
         const setUser = vi.fn();
-        const view = renderWithRouter(<LoginTeam setUser={setUser} />, { route: '/login' });
+        const view = renderWithRouter(<LoginTeam setUser={setUser} />, { route: '/login', keepMounted });
         return { ...view, setUser };
     };
 
@@ -93,6 +93,17 @@ describe('LoginTeam', () => {
         await waitFor(() => expect(currentPath()).toBe('/admin/login'));
     });
 
+    it('redirects only once while it stays mounted behind the admin login', async () => {
+        backend.get('/public/settings', { tournamentOpen: false });
+
+        renderPage(true);
+
+        await waitFor(() => expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(2));
+        await new Promise(resolve => setTimeout(resolve, 50));
+        expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(2);
+        expect(currentPath()).toBe('/admin/login');
+    });
+
     it('stays on the login while the tournament is open', async () => {
         renderPage();
 
@@ -132,9 +143,9 @@ describe('LoginTeam', () => {
 describe('RegisterTeam', () => {
     const REGISTER = 'Team registrieren';
 
-    const renderPage = () => {
+    const renderPage = (keepMounted = false) => {
         const setUser = vi.fn();
-        const view = renderWithRouter(<RegisterTeam setUser={setUser} />, { route: '/register' });
+        const view = renderWithRouter(<RegisterTeam setUser={setUser} />, { route: '/register', keepMounted });
         return { ...view, setUser };
     };
 
@@ -268,6 +279,17 @@ describe('RegisterTeam', () => {
         renderPage();
 
         await waitFor(() => expect(currentPath()).toBe('/admin/login'));
+    });
+
+    it('redirects only once while it stays mounted behind the admin login', async () => {
+        backend.get('/public/settings', { tournamentOpen: false, registrationOpen: true });
+
+        renderPage(true);
+
+        await waitFor(() => expect(backend.requestsTo('GET', '/public/settings').length).toBeGreaterThanOrEqual(4));
+        await new Promise(resolve => setTimeout(resolve, 50));
+        expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(4);
+        expect(currentPath()).toBe('/admin/login');
     });
 
     it('shows an error when the characters cannot be loaded', async () => {

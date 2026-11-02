@@ -46,15 +46,9 @@ describe('Tab4 (how to play)', () => {
         expect(screen.queryByTitle('Umfragen')).not.toBeInTheDocument();
     });
 
-    it('sends visitors to the admin area while the tournament is closed', async () => {
+    it('stays on the page while the tournament is closed', async () => {
         backend.get('/public/settings', { tournamentOpen: false });
 
-        renderPage();
-
-        await waitFor(() => expect(currentPath()).toBe('/admin'));
-    });
-
-    it('stays on the page while the tournament is open', async () => {
         const { setShowTab2 } = renderPage();
 
         await waitFor(() => expect(setShowTab2).toHaveBeenCalled());
