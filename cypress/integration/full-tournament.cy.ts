@@ -219,7 +219,12 @@ const answer = (questionText: string, choose: () => void) => {
     choose();
     cy.contains('ion-button', /speichern/i).click();
   });
-  return cy.wait('@answer').its('response.statusCode');
+  return cy.wait('@answer').its('response.statusCode').then(status => {
+    if (status < 300) {
+      cy.contains('ion-accordion', questionText).should('have.class', 'accordion-collapsed');
+    }
+    return cy.wrap(status);
+  });
 };
 
 const pick = (...options: string[]) => () => {
