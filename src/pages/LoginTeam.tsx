@@ -63,7 +63,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
         const tournamentOpen = PublicSettingsService.getTournamentOpen();
 
         tournamentOpen.then((response) => {
-            if (!response) {
+            if (!response && location.pathname === '/login') {
                 navigate('/admin/login');
             }
         }).catch((error) => {

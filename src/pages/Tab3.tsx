@@ -6,7 +6,7 @@ import {
     notificationsSharp
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import FloorPlanView from "../components/floorplan/FloorPlanView";
@@ -36,7 +36,6 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
-    const navigate = useNavigate();
     const location = useLocation();
 
     const updateShowTab2 = () => {
@@ -80,12 +79,8 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         updateShowTab2();
         setNotificationEnabled(PublicCookiesService.getNotificationsEnabled());
 
-        loadSettings().then((response) => {
-            if (!response.tournamentOpen) {
-                navigate('/admin');
-            }
-        }).catch(error => {
-            console.error("Error fetching tournament status:", error);
+        loadSettings().catch(error => {
+            console.error("Error fetching settings:", error);
         });
     }, [location])
 

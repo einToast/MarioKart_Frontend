@@ -86,12 +86,13 @@ describe('Tab2 (ranking)', () => {
         await waitFor(() => expect(currentPath()).toBe('/tab1'));
     });
 
-    it('sends the team to the admin area while the tournament is closed', async () => {
+    it('stays on the page while the tournament is closed', async () => {
         backend.get('/public/settings', { tournamentOpen: false });
 
-        renderPage();
+        const { setShowTab2 } = renderPage();
 
-        await waitFor(() => expect(currentPath()).toBe('/admin'));
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalled());
+        expect(currentPath()).toBe('/tab2');
     });
 
     it('hides the ranking tab during the last round of the group phase', async () => {

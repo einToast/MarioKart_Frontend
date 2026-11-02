@@ -74,17 +74,6 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         getRanking();
         updateShowTab2();
 
-        const tournamentOpen = PublicSettingsService.getTournamentOpen();
-
-        tournamentOpen.then((response) => {
-            if (!response) {
-                navigate('/admin');
-            }
-        }).catch((error) => {
-            setError(error.message);
-            setShowToast(true);
-        });
-
     }, [location]);
 
     useEffect(() => {
