@@ -1,7 +1,7 @@
-import { IonApp, IonIcon, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
+import { IonApp, IonRouterOutlet, IonTabBar, IonTabButton, IonTabs, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import '@ionic/react/css/core.css';
-import { barChartOutline, gameControllerOutline, homeOutline, informationCircleOutline } from 'ionicons/icons';
+import { barChart, barChartOutline, gameController, gameControllerOutline, home, homeOutline, informationCircle, informationCircleOutline } from 'ionicons/icons';
 import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Navigate, Route } from 'react-router-dom';
 
@@ -24,6 +24,7 @@ import Tab3 from './pages/Tab3';
 import Tab4 from './pages/Tab4';
 import './theme/variables.css';
 
+import { RouteIcon } from "./components/RouteIcon";
 import { WebSocketProvider } from "./components/WebSocketContext";
 import './theme/main.css';
 import { ShowTab2Props, User } from "./util/api/config/interfaces";
@@ -82,18 +83,18 @@ const App: React.FC = () => {
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
-                                    <IonIcon aria-hidden="true" icon={homeOutline} title="Spielplan" />
+                                    <RouteIcon path="/tab1" icon={homeOutline} selectedIcon={home} title="Spielplan" />
                                 </IonTabButton>
                                 {showTab2 && (
                                     <IonTabButton tab="tab2" href="/tab2">
-                                        <IonIcon aria-hidden="true" icon={barChartOutline} title="Rangliste" />
+                                        <RouteIcon path="/tab2" icon={barChartOutline} selectedIcon={barChart} title="Rangliste" />
                                     </IonTabButton>
                                 )}
                                 <IonTabButton tab="tab3" href="/tab3">
-                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} title="Details" />
+                                    <RouteIcon path="/tab3" icon={informationCircleOutline} selectedIcon={informationCircle} title="Details" />
                                 </IonTabButton>
                                 <IonTabButton tab="tab4" href="/tab4">
-                                    <IonIcon aria-hidden="true" icon={gameControllerOutline} title="How to play" />
+                                    <RouteIcon path="/tab4" icon={gameControllerOutline} selectedIcon={gameController} title="How to play" />
                                 </IonTabButton>
                             </IonTabBar>
                         </IonTabs>

@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { barChart, barChartOutline, gameController, gameControllerOutline, home, homeOutline, informationCircle, informationCircleOutline } from 'ionicons/icons';
 import App from './App';
 import { backend, stubDefaultBackend, stubLoggedOutAdmin, stubScheduleState } from './test/backend';
 import { makeTeams } from './test/fixtures';
@@ -114,6 +115,34 @@ describe('App', () => {
 
             await screen.findByRole('heading', { name: 'So wird gespielt' });
             expect(tabs(container)).toEqual(['tab1', 'tab2', 'tab3', 'tab4']);
+        });
+
+        it.each([
+            ['/tab1', 'Spielplan'],
+            ['/tab2', 'Rangliste'],
+            ['/tab3', 'Details'],
+            ['/tab4', 'So wird gespielt'],
+        ])('marks the tab of %s as selected', async (start, heading) => {
+            const { container } = renderAppAt(start);
+
+            await screen.findByRole('heading', { name: heading });
+            await waitFor(() => {
+                const selected = Array.from(container.querySelectorAll('ion-tab-button.tab-selected')).map(tab => tab.getAttribute('tab'));
+                expect(selected).toEqual([start.slice(1)]);
+            });
+        });
+
+        it.each([
+            ['/tab1', 'Spielplan', [home, barChartOutline, informationCircleOutline, gameControllerOutline]],
+            ['/tab2', 'Rangliste', [homeOutline, barChart, informationCircleOutline, gameControllerOutline]],
+            ['/tab3', 'Details', [homeOutline, barChartOutline, informationCircle, gameControllerOutline]],
+            ['/tab4', 'So wird gespielt', [homeOutline, barChartOutline, informationCircleOutline, gameController]],
+        ])('shows the filled icon only for the tab of %s', async (start, heading, icons) => {
+            const { container } = renderAppAt(start);
+
+            await screen.findByRole('heading', { name: heading });
+            const shown = Array.from(container.querySelectorAll('ion-tab-button ion-icon')).map(icon => (icon as HTMLElement & { icon: string }).icon);
+            expect(shown).toEqual(icons);
         });
 
         it.each([
