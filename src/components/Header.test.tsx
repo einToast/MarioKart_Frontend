@@ -1,4 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
+import { pieChart, pieChartOutline } from 'ionicons/icons';
 import Cookies from 'js-cookie';
 import { currentPath, loginAsTeam, renderWithRouter, stubLocationAssign } from '../test/render';
 import Header from './Header';
@@ -120,6 +121,16 @@ describe('Header', () => {
             renderWithRouter(<Header />, { route: '/tab1' });
 
             expect(screen.getByRole('link', { name: 'Umfragen' })).toHaveAttribute('href', '/survey');
+        });
+
+        it.each([
+            ['/tab1', pieChartOutline],
+            ['/survey', pieChart],
+        ])('shows the matching icon on %s', (route, icon) => {
+            renderWithRouter(<Header />, { route });
+
+            const shown = screen.getByRole('link', { name: 'Umfragen' }).querySelector('ion-icon') as HTMLElement & { icon: string };
+            expect(shown.icon).toBe(icon);
         });
     });
 });
