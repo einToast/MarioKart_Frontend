@@ -32,8 +32,8 @@ export const getNotificationsEnabled = (): boolean => {
 
 export const checkToken = async (): Promise<boolean> => {
     try {
-        await checkAuthCookie();
-        return true;
+        const { user } = await checkAuthCookie();
+        return user !== null;
     } catch (error) {
         console.error('Cookie validation failed:', error);
         return false;

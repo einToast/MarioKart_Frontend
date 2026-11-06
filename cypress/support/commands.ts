@@ -77,7 +77,7 @@ Cypress.Commands.add('stubBackend', () => {
     cy.stubApi('GET', '/public/schedule/rounds/current', []);
     cy.stubApi('GET', '/public/schedule/overview', scheduleOverview());
     cy.stubApi('GET', '/public/teams/sortedByTeamName', teams());
-    cy.stubApi('GET', '/public/user/login/check', '', 401);
+    cy.stubApi('GET', '/public/user/login/check', { user: null });
 });
 
 Cypress.Commands.add('loginAsTeam', (id = 1, name = 'Mario') => {

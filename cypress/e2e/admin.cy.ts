@@ -109,7 +109,7 @@ describe('admin area', () => {
       cy.contains('ion-button', 'Punkte eintragen');
 
       // After the logout the backend no longer accepts the session
-      cy.stubApi('GET', '/public/user/login/check', '', 401);
+      cy.stubApi('GET', '/public/user/login/check', { user: null });
       cy.contains('ion-button', 'Logout').click();
 
       cy.wait('@logout');

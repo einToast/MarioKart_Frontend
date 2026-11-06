@@ -3,6 +3,8 @@ http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
 :root {
+  --ion-font-family: "Poppins", sans-serif;
+
   --ion-color-text: linear-gradient(to bottom,
       var(--ion-color-text01) 100%,
       var(--ion-color-text02) 100%);

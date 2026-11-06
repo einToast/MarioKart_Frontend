@@ -219,5 +219,5 @@ export const stubScheduleState = (state: { schedule: boolean; finalSchedule: boo
 
 // Makes the admin session check fail, as it does for a visitor who is not logged in
 export const stubLoggedOutAdmin = (): void => {
-    backend.fail('GET', '/public/user/login/check', 401);
+    backend.get('/public/user/login/check', { user: null });
 };

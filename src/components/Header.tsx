@@ -1,10 +1,11 @@
-import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
-import { pieChartOutline } from 'ionicons/icons';
+import { IonAvatar, IonHeader } from '@ionic/react';
+import { pieChart, pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from "react-router-dom";
 import { User } from '../util/api/config/interfaces';
 import { PublicCookiesService } from '../util/service';
 import './Header.css';
+import { RouteIcon } from './RouteIcon';
 
 const Header: React.FC = () => {
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -71,7 +72,7 @@ const Header: React.FC = () => {
                 )}
             </div>
             <Link to="/survey" title="Umfragen">
-                <IonIcon aria-hidden="true" icon={pieChartOutline} />
+                <RouteIcon path="/survey" icon={pieChartOutline} selectedIcon={pieChart} />
             </Link>
         </IonHeader>
     );
