@@ -199,7 +199,7 @@ export interface AuthenticationRequestDTO {
 }
 
 export interface AuthenticationResponseDTO {
-    user: UserDTO;
+    user: UserDTO | null;
 }
 
 export interface UserDTO {

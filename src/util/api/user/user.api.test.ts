@@ -32,6 +32,12 @@ describe('PublicUserApi', () => {
             expect(backend.requests).toEqual([{ method: 'GET', url: '/public/user/login/check', body: undefined }]);
         });
 
+        it('returns a session without user when nobody is logged in', async () => {
+            backend.get('/public/user/login/check', { user: null });
+
+            await expect(PublicUserApi.check()).resolves.toEqual({ user: null });
+        });
+
         it('translates HTTP 401 into "Login abgelaufen"', async () => {
             backend.fail('GET', '/public/user/login/check', 401);
 
