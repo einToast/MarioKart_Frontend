@@ -72,8 +72,8 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
 
             fireEvent.click(screen.getByText('Peach'));
 
-            expect(buttonOf('Peach')).toHaveStyle({ opacity: '1' });
-            expect(buttonOf('Mario')).toHaveStyle({ opacity: '0.5' });
+            expect(buttonOf('Peach').style.opacity).toBe('1');
+            expect(buttonOf('Mario').style.opacity).toBe('0.5');
             expect(buttonOf(SAVE).disabled).toBe(false);
         });
 
@@ -82,7 +82,7 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
 
             fireEvent.keyDown(buttonOf('Peach'), { key });
 
-            expect(buttonOf('Peach')).toHaveStyle({ opacity: '1' });
+            expect(buttonOf('Peach').style.opacity).toBe('1');
         });
 
         it('submits the selected option for the logged in team', async () => {
@@ -161,10 +161,10 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
 
             await waitFor(() => expect(statusIcon(container).icon).toBe(checkmarkCircleOutline));
             expect(header(container).disabled).toBe(true);
-            expect(buttonOf('Luigi')).toHaveStyle({ opacity: '1' });
+            expect(buttonOf('Luigi').style.opacity).toBe('1');
             expect(buttonOf('Luigi').disabled).toBe(false);
             ['Mario', 'Peach', 'Toad'].forEach(option => {
-                expect(buttonOf(option)).toHaveStyle({ opacity: '0.5' });
+                expect(buttonOf(option).style.opacity).toBe('0.5');
                 expect(buttonOf(option).disabled).toBe(true);
             });
         });
@@ -177,7 +177,7 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
 
             expect(screen.queryByText(SAVE)).not.toBeInTheDocument();
             fireEvent.click(screen.getByText('Peach'));
-            expect(buttonOf('Peach')).toHaveStyle({ opacity: '0.5' });
+            expect(buttonOf('Peach').style.opacity).toBe('0.5');
         });
     });
 
@@ -225,7 +225,7 @@ describe.each(variants)('$name', ({ type, renderCard, submittedSelection }) => {
             expect(screen.queryByText(SAVE)).not.toBeInTheDocument();
             expect(header(container).disabled).toBe(true);
             expect(buttonOf('Mario')).toHaveClass('bsurvey');
-            expect(buttonOf('Mario')).toHaveStyle({ pointerEvents: 'none' });
+            expect(buttonOf('Mario').style.pointerEvents).toBe('none');
         });
 
         it('reloads the results when the header is activated', async () => {

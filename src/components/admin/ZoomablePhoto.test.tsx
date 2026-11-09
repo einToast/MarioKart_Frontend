@@ -14,7 +14,7 @@ const renderPhoto = (width = 200, height = 100) => {
 };
 
 const transformOf = (image: HTMLElement) => {
-    const [, x, y, scale] = /translate\((-?[\d.]+)px, (-?[\d.]+)px\) scale\(([\d.]+)\)/.exec(image.style.transform) ?? [];
+    const [, x, y = '0', scale] = /translate\((-?[\d.]+)px(?:, (-?[\d.]+)px)?\) scale\(([\d.]+)\)/.exec(image.style.transform) ?? [];
     return { x: Number(x), y: Number(y), scale: Number(scale) };
 };
 
