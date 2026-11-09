@@ -52,9 +52,9 @@ describe('CheckBoxSurveyComponent', () => {
             fireEvent.click(screen.getByText('Regenbogen'));
             fireEvent.click(screen.getByText('Bowsers Festung'));
 
-            expect(buttonOf('Regenbogen')).toHaveStyle({ opacity: '1' });
-            expect(buttonOf('Kuhmuh')).toHaveStyle({ opacity: '0.5' });
-            expect(buttonOf('Bowsers Festung')).toHaveStyle({ opacity: '1' });
+            expect(buttonOf('Regenbogen').style.opacity).toBe('1');
+            expect(buttonOf('Kuhmuh').style.opacity).toBe('0.5');
+            expect(buttonOf('Bowsers Festung').style.opacity).toBe('1');
             expect(buttonOf(SAVE).disabled).toBe(false);
         });
 
@@ -64,7 +64,7 @@ describe('CheckBoxSurveyComponent', () => {
             fireEvent.click(screen.getByText('Regenbogen'));
             fireEvent.click(screen.getByText('Regenbogen'));
 
-            expect(buttonOf('Regenbogen')).toHaveStyle({ opacity: '0.5' });
+            expect(buttonOf('Regenbogen').style.opacity).toBe('0.5');
             expect(buttonOf(SAVE).disabled).toBe(true);
         });
 
@@ -73,7 +73,7 @@ describe('CheckBoxSurveyComponent', () => {
 
             fireEvent.keyDown(buttonOf('Kuhmuh'), { key });
 
-            expect(buttonOf('Kuhmuh')).toHaveStyle({ opacity: '1' });
+            expect(buttonOf('Kuhmuh').style.opacity).toBe('1');
         });
 
         it('submits all selected options', async () => {
@@ -145,8 +145,8 @@ describe('CheckBoxSurveyComponent', () => {
 
             await waitFor(() => expect(statusIcon(container).icon).toBe(checkmarkCircleOutline));
             expect(header(container).disabled).toBe(true);
-            expect(buttonOf('Kuhmuh')).toHaveStyle({ opacity: '1' });
-            expect(buttonOf('Regenbogen')).toHaveStyle({ opacity: '0.5' });
+            expect(buttonOf('Kuhmuh').style.opacity).toBe('1');
+            expect(buttonOf('Regenbogen').style.opacity).toBe('0.5');
             expect(screen.queryByText(SAVE)).not.toBeInTheDocument();
         });
 
@@ -156,9 +156,9 @@ describe('CheckBoxSurveyComponent', () => {
             const { container } = renderQuestion();
 
             await waitFor(() => expect(statusIcon(container).icon).toBe(checkmarkCircleOutline));
-            expect(buttonOf('Regenbogen')).toHaveStyle({ opacity: '1' });
-            expect(buttonOf('Kuhmuh')).toHaveStyle({ opacity: '0.5' });
-            expect(buttonOf('Bowsers Festung')).toHaveStyle({ opacity: '1' });
+            expect(buttonOf('Regenbogen').style.opacity).toBe('1');
+            expect(buttonOf('Kuhmuh').style.opacity).toBe('0.5');
+            expect(buttonOf('Bowsers Festung').style.opacity).toBe('1');
         });
 
         it('ignores clicks on the options', async () => {
@@ -168,7 +168,7 @@ describe('CheckBoxSurveyComponent', () => {
 
             fireEvent.click(screen.getByText('Regenbogen'));
 
-            expect(buttonOf('Regenbogen')).toHaveStyle({ opacity: '0.5' });
+            expect(buttonOf('Regenbogen').style.opacity).toBe('0.5');
         });
     });
 
@@ -210,7 +210,7 @@ describe('CheckBoxSurveyComponent', () => {
             await waitFor(() => expect(buttonOf('Regenbogen')).toHaveTextContent('60%'));
             expect(screen.queryByText(SAVE)).not.toBeInTheDocument();
             expect(header(container).disabled).toBe(true);
-            expect(buttonOf('Regenbogen')).toHaveStyle({ pointerEvents: 'none' });
+            expect(buttonOf('Regenbogen').style.pointerEvents).toBe('none');
         });
 
         it('reloads the results when the header is activated', async () => {

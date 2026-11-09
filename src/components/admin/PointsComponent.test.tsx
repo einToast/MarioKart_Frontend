@@ -35,13 +35,13 @@ describe('PointsComponent', () => {
     it('names the switch the game is played on', () => {
         renderPoints(gameWithPoints({ switchIndex: 0 }));
 
-        expect(screen.getByRole('heading', { name: 'Switch Blau' })).toHaveStyle({ color: '#9DAEDA' });
+        expect(screen.getByRole('heading', { name: 'Switch Blau' }).style.color).toBe('rgb(157, 174, 218)');
     });
 
     it('numbers a switch that has not been configured', () => {
         renderPoints(gameWithPoints({ switchIndex: 2 }), []);
 
-        expect(screen.getByRole('heading', { name: 'Switch 3' })).toHaveStyle({ color: '#9DDAAA' });
+        expect(screen.getByRole('heading', { name: 'Switch 3' }).style.color).toBe('rgb(157, 218, 170)');
     });
 
     it('shows the points of every team next to its character', () => {
