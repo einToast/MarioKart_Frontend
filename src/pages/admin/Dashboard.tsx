@@ -8,14 +8,17 @@ import '../RegisterTeam.css';
 
 import Toast from "../../components/Toast";
 import { PublicCookiesService, PublicScheduleService, PublicUserService } from "../../util/service";
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from '../../components/LanguageSwitch';
 
 const Dashboard: React.FC = () => {
+    const { t } = useTranslation();
 
     const [isSchedule, setIsSchedule] = useState<boolean>(false);
     const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
     const [isRoundsUnplayedZero, setIsRoundsUnplayedZero] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState(false);
 
     const navigate = useNavigate();
@@ -26,7 +29,7 @@ const Dashboard: React.FC = () => {
             await PublicUserService.logout();
             navigate('/admin/login');
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'Logout fehlgeschlagen');
+            setError(error instanceof Error ? error.message : t('errors.logoutFailed'));
             setShowToast(true);
         }
     }
@@ -65,18 +68,21 @@ const Dashboard: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
+                <div slot="fixed" className="languageSwitchCorner">
+                    <LanguageSwitch />
+                </div>
                 <div className={"contentLogin"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Admin
+                            {t('admin.title')}
                         </LinearGradient>
                     </h2>
-                    <h1>Dashboard</h1>
+                    <h1>{t('admin.dashboard.title')}</h1>
                     <div className={"adminDashboard"}>
                         {isSchedule ?
                             <IonButton slot="start" onClick={() => navigate('/admin/points')}>
                                 <div>
-                                    <p>Punkte eintragen</p>
+                                    <p>{t('admin.dashboard.points')}</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
@@ -85,7 +91,7 @@ const Dashboard: React.FC = () => {
                         {!isSchedule ?
                             <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/schedule')}>
                                 <div>
-                                    <p>Spielplan erzeugen</p>
+                                    <p>{t('admin.dashboard.schedule')}</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
@@ -94,7 +100,7 @@ const Dashboard: React.FC = () => {
                         {!isFinalSchedule && isSchedule && isRoundsUnplayedZero ?
                             <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/final')}>
                                 <div>
-                                    <p>Finalspiele erzeugen</p>
+                                    <p>{t('admin.dashboard.final')}</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
@@ -104,9 +110,9 @@ const Dashboard: React.FC = () => {
                             <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/results')}>
                                 <div>
                                     {isFinalSchedule ?
-                                        <p>Endergebnis</p>
+                                        <p>{t('admin.results.final')}</p>
                                         :
-                                        <p>Zwischenergebnis</p>
+                                        <p>{t('admin.results.intermediate')}</p>
                                     }
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
@@ -115,43 +121,43 @@ const Dashboard: React.FC = () => {
                         }
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/teams')}>
                             <div>
-                                <p>Teams</p>
+                                <p>{t('admin.dashboard.teams')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/survey')}>
                             <div>
-                                <p>Umfragen</p>
+                                <p>{t('admin.dashboard.surveys')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/venue')}>
                             <div>
-                                <p>Switches & Raumplan</p>
+                                <p>{t('admin.venue.title')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/program')}>
                             <div>
-                                <p>Programm</p>
+                                <p>{t('admin.program.title')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/control')}>
                             <div>
-                                <p>Kontrollzentrum</p>
+                                <p>{t('admin.control.title')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={handleLogout}>
                             <div>
-                                <p>Logout</p>
+                                <p>{t('admin.dashboard.logout')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                     </div>
                     <Link to="/login" style={{ textDecoration: "underline" }}>
-                        Zurück zum Team Login
+                        {t('admin.backToTeamLogin')}
                     </Link>
                 </div>
             </IonContent>

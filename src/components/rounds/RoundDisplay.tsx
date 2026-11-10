@@ -4,6 +4,7 @@ import { RoundDisplayProps } from '../../util/api/config/interfaces';
 import { GameList } from './GameList';
 import { IonSkeletonText } from '@ionic/react';
 import SkeletonRoundComponentAll from '../skeletons/SkeletonRoundComponentAll';
+import { useTranslation } from 'react-i18next';
 
 export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     round,
@@ -14,6 +15,7 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
     loading,
     switches
 }) => {
+    const { t } = useTranslation();
 
     if (loading) {
         return (
@@ -35,7 +37,7 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
                 <div className="timeContainer">
                     <h3>{title}</h3>
                 </div>
-                <p>Keine Spiele gefunden.</p>
+                <p>{t('schedule.noGamesFound')}</p>
             </div>
         );
     }
@@ -50,7 +52,7 @@ export const RoundDisplay: React.FC<RoundDisplayProps> = ({
             </div>
 
             {isBreak ? (
-                <p>It&apos;s pizza time! 🍕</p>
+                <p>{t('schedule.pizzaTime')}</p>
             ) : (
                 <GameList
                     games={(round as RoundReturnDTO).games || []}

@@ -9,6 +9,7 @@ import {
 } from 'ionicons/icons';
 import React from 'react';
 import { TeamAdminListItemProps } from "../../util/api/config/interfaces";
+import { useTranslation } from 'react-i18next';
 
 const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
     team,
@@ -19,6 +20,7 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
     onOpenChangeModal,
     onOpenDeleteModal
 }) => {
+    const { t } = useTranslation();
     return (
         <div className="teamContainer">
             <div className="imageContainer">
@@ -30,14 +32,14 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
             </div>
             <div className="stats">
                 <p>{team.teamName}</p>
-                <p className="punkte">{team.groupPoints} Punkte</p>
-                <p className="punkte">{team.finalPoints} Finalpunkte</p>
+                <p className="punkte">{t('admin.teams.groupPoints', { count: team.groupPoints })}</p>
+                <p className="punkte">{t('admin.teams.finalPoints', { count: team.finalPoints })}</p>
             </div>
             <div style={{ marginLeft: 'auto' }}>
                 <IonIcon
                     slot="end"
                     icon={createOutline}
-                    title="Team bearbeiten"
+                    title={t('admin.teams.edit')}
                     style={{ cursor: "pointer" }}
                     onClick={() => onOpenChangeModal(team)}
                 />
@@ -46,14 +48,14 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
                         <IonIcon
                             slot="end"
                             icon={team.finalReady ? removeCircleOutline : addCircleOutline}
-                            title={team.finalReady ? "Team nicht am Finale teilnehmen lassen" : "Team am Finale teilnehmen lassen"}
+                            title={team.finalReady ? t('admin.teams.excludeFromFinal') : t('admin.teams.includeInFinal')}
                             style={{ cursor: "pointer" }}
                             onClick={() => onToggleFinalParticipation(team)}
                         />
                         <IonIcon
                             slot="end"
                             icon={team.active ? eyeOutline : eyeOffOutline}
-                            title={team.active ? "Team deaktivieren" : "Team aktivieren"}
+                            title={team.active ? t('admin.teams.deactivate') : t('admin.teams.activate')}
                             style={{ cursor: "pointer" }}
                             onClick={() => onToggleActive(team)}
                         />
@@ -64,7 +66,7 @@ const TeamAdminListItem: React.FC<TeamAdminListItemProps> = ({
                     <IonIcon
                         slot="end"
                         icon={trashOutline}
-                        title="Team löschen"
+                        title={t('admin.teams.delete')}
                         style={{ cursor: "pointer" }}
                         onClick={() => onOpenDeleteModal(team)}
                     />

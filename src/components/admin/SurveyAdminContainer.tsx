@@ -9,12 +9,14 @@ import SurveyChangeModal from '../modals/SurveyChangeModal';
 import SurveyDeleteModal from '../modals/SurveyDeleteModal';
 import SurveyStatisticsModal from '../modals/SurveyStatisticsModal';
 import SurveyAdminListItem from './SurveyAdminListItem';
+import { useTranslation } from 'react-i18next';
 
 const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
     surveys,
     getQuestions,
     handleModalClose
 }) => {
+    const { t } = useTranslation();
     const [selectedQuestion, setSelectedQuestion] = useState<QuestionReturnDTO>({
         id: -1,
         questionText: '',
@@ -38,7 +40,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
         const question = surveys.find(survey => survey.id === id);
 
         if (!question) {
-            setError('Frage nicht gefunden');
+            setError(t('errors.questionNotFound'));
             setShowToast(true);
             return;
         }
@@ -51,7 +53,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                 if (response) {
                     return getQuestions();
                 } else {
-                    setError('Frage konnte nicht aktualisiert werden');
+                    setError(t('errors.questionNotUpdated'));
                     setShowToast(true);
                 }
             })
@@ -65,7 +67,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
         const question = surveys.find(survey => survey.id === id);
 
         if (!question) {
-            setError('Frage nicht gefunden');
+            setError(t('errors.questionNotFound'));
             setShowToast(true);
             return;
         }
@@ -77,7 +79,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
                 if (updatedQuestion) {
                     return getQuestions();
                 } else {
-                    setError('Aktivität konnte nicht geändert werden');
+                    setError(t('admin.activityNotChanged'));
                     setShowToast(true);
                 }
             })
@@ -111,7 +113,7 @@ const SurveyAdminContainer: React.FC<SurveyAdminContainerProps> = ({
 
     return (
         <>
-            <h3>Aktuelle Abstimmungen</h3>
+            <h3>{t('admin.surveys.current')}</h3>
             <div className="currentSurveyContainer">
                 {surveys.map(survey => (
                     <SurveyAdminListItem

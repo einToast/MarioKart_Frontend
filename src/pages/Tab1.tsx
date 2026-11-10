@@ -7,17 +7,19 @@ import { useLocation } from "react-router";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { RoundDisplay } from "../components/rounds/RoundDisplay";
-import { RoundHeader } from "../components/rounds/RoundHeader";
+import { ALL_GAMES, OWN_GAMES, RoundHeader } from "../components/rounds/RoundHeader";
 import Toast from '../components/Toast';
 import { useRoundData } from "../hooks/useRoundData";
 import { useSwitches } from "../hooks/useSwitches";
 import { useWebSocketConnection } from "../hooks/useWebSocketConnection";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicScheduleService } from '../util/service';
+import { useTranslation } from 'react-i18next';
 
 const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
+    const { t } = useTranslation();
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [selectedOption, setSelectedOption] = useState('Deine Spiele');
+    const [selectedOption, setSelectedOption] = useState(OWN_GAMES);
 
     const [showToast, setShowToast] = useState<boolean>(false);
 
@@ -89,7 +91,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }, [currentRound, nextRound, error]);
 
     useEffect(() => {
-        if (selectedOption === 'Alle Spiele') {
+        if (selectedOption === ALL_GAMES) {
             document.body.classList.add('all-games-selected');
         } else {
             document.body.classList.remove('all-games-selected');
@@ -97,7 +99,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     }, [selectedOption]);
 
     useEffect(() => {
-        setSelectedOption(PublicCookiesService.getSelectedGamesOption() || 'Deine Spiele');
+        setSelectedOption(PublicCookiesService.getSelectedGamesOption() || OWN_GAMES);
         if (isFirstLocation.current) {
             isFirstLocation.current = false;
             return;
@@ -114,7 +116,7 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </IonRefresher>
 
                 <RoundHeader
-                    title="Spielplan"
+                    title={t('schedule.title')}
                     onOptionChange={handleOptionChange}
                     selectedOption={selectedOption}
                     loading={loading}
@@ -122,9 +124,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <div>
                     <RoundDisplay
                         round={currentRound}
-                        title={selectedOption === 'Alle Spiele' ? 'Aktuelle Spiele' : 'Aktuelles Spiel'}
+                        title={selectedOption === ALL_GAMES ? t('schedule.currentGames') : t('schedule.currentGame')}
                         user={user ?? null}
-                        viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
+                        viewType={selectedOption === ALL_GAMES ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInCurrentRound}
                         switches={switches}
                         loading={loading}
@@ -132,9 +134,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
                     <RoundDisplay
                         round={nextRound}
-                        title={selectedOption === 'Alle Spiele' ? 'Nächste Spiele' : 'Nächstes Spiel'}
+                        title={selectedOption === ALL_GAMES ? t('schedule.nextGames') : t('schedule.nextGame')}
                         user={user ?? null}
-                        viewType={selectedOption === 'Alle Spiele' ? 'all' : 'personal'}
+                        viewType={selectedOption === ALL_GAMES ? 'all' : 'personal'}
                         teamsNotInRound={teamsNotInNextRound}
                         switches={switches}
                         loading={loading}

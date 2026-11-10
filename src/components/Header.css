@@ -27,6 +27,37 @@ ion-header {
   cursor: pointer;
 }
 
+.loggedInUserHead {
+  min-width: 0;
+}
+
+.loggedInUserHead p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 14px;
+  margin-left: 12px;
+}
+
+.headerActions .headerIconButton {
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+
+.headerActions .headerIconButton ion-icon {
+  width: 32px;
+  height: 32px;
+}
+
 .dropdownMenu {
   position: absolute;
   top: 100%;

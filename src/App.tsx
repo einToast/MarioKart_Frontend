@@ -28,6 +28,7 @@ import { WebSocketProvider } from "./components/WebSocketContext";
 import './theme/main.css';
 import { ShowTab2Props, User } from "./util/api/config/interfaces";
 import { PublicCookiesService, PublicScheduleService } from './util/service';
+import { useTranslation } from 'react-i18next';
 
 // Lazy-Import only for login, admin and Tab2 components
 const Login = lazy(() => import('./pages/admin/Login'));
@@ -37,6 +38,7 @@ const Tab2 = lazy(() => import('./pages/Tab2'));
 setupIonicReact();
 
 const App: React.FC = () => {
+    const { t } = useTranslation();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [showTab2, setShowTab2] = useState<boolean>(true);
 
@@ -67,13 +69,13 @@ const App: React.FC = () => {
                         <IonTabs>
                             <IonRouterOutlet animated={false} mode="md">
                                 <Route path="/tab1" element={<Tab1 {...showTab2Props} />} />
-                                <Route path="/tab2" element={<Suspense fallback={<div className="loading-container">Rangliste wird geladen...</div>}><Tab2 {...showTab2Props} /></Suspense>} />
+                                <Route path="/tab2" element={<Suspense fallback={<div className="loading-container">{t('app.loadingRanking')}</div>}><Tab2 {...showTab2Props} /></Suspense>} />
                                 <Route path="/tab3" element={<Tab3 {...showTab2Props} />} />
                                 <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
                                 <Route path="/survey" element={<Survey {...showTab2Props} />} />
 
-                                <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><Login /></Suspense>} />
-                                <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><AdminRouter /></Suspense>} />
+                                <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">{t('app.loadingAdmin')}</div>}><Login /></Suspense>} />
+                                <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">{t('app.loadingAdmin')}</div>}><AdminRouter /></Suspense>} />
                                 <Route path="/register" element={<Navigate to="/tab1" />} />
                                 <Route path="/login" element={<Navigate to="/tab1" />} />
                                 <Route path="/" element={<Navigate to="/tab1" />} />
@@ -82,18 +84,18 @@ const App: React.FC = () => {
                             </IonRouterOutlet>
                             <IonTabBar slot="bottom">
                                 <IonTabButton tab="tab1" href="/tab1">
-                                    <IonIcon aria-hidden="true" icon={homeOutline} title="Spielplan" />
+                                    <IonIcon aria-hidden="true" icon={homeOutline} title={t('app.tabs.schedule')} />
                                 </IonTabButton>
                                 {showTab2 && (
                                     <IonTabButton tab="tab2" href="/tab2">
-                                        <IonIcon aria-hidden="true" icon={barChartOutline} title="Rangliste" />
+                                        <IonIcon aria-hidden="true" icon={barChartOutline} title={t('app.tabs.ranking')} />
                                     </IonTabButton>
                                 )}
                                 <IonTabButton tab="tab3" href="/tab3">
-                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} title="Details" />
+                                    <IonIcon aria-hidden="true" icon={informationCircleOutline} title={t('app.tabs.details')} />
                                 </IonTabButton>
                                 <IonTabButton tab="tab4" href="/tab4">
-                                    <IonIcon aria-hidden="true" icon={gameControllerOutline} title="How to play" />
+                                    <IonIcon aria-hidden="true" icon={gameControllerOutline} title={t('app.tabs.howToPlay')} />
                                 </IonTabButton>
                             </IonTabBar>
                         </IonTabs>
@@ -101,8 +103,8 @@ const App: React.FC = () => {
                         <IonRouterOutlet animated={false} mode="md">
                             <Route path="/register" element={<RegisterTeam setUser={setCurrentUser} />} />
                             <Route path="/login" element={<LoginToTeam setUser={setCurrentUser} />} />
-                            <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><Login /></Suspense>} />
-                            <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">Admin-Bereich wird geladen...</div>}><AdminRouter /></Suspense>} />
+                            <Route path="/admin/login" element={<Suspense fallback={<div className="loading-container">{t('app.loadingAdmin')}</div>}><Login /></Suspense>} />
+                            <Route path="/admin/*" element={<Suspense fallback={<div className="loading-container">{t('app.loadingAdmin')}</div>}><AdminRouter /></Suspense>} />
                             <Route path="/tab4" element={<Tab4 {...showTab2Props} />} />
                             <Route path="/healthcheck" element={<div>OK</div>} />
                             <Route path="/" element={<Navigate to="/login" />} />

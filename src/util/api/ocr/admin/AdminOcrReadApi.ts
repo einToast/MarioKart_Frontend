@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { ProviderReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'OCR');
 
@@ -11,9 +12,9 @@ export const getAvailableProviders = async (): Promise<string[]> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Anbieter konnten nicht geladen werden');
+                throw new Error(i18n.t('errors.providersNotLoaded'));
             }
         }
         throw error;
@@ -27,9 +28,9 @@ export const getProviderModels = async (providerName: string): Promise<string[]>
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Modelle konnten nicht geladen werden');
+                throw new Error(i18n.t('errors.modelsNotLoaded'));
             }
         }
         throw error;
@@ -43,9 +44,9 @@ export const getProviderConfig = async (providerName: string): Promise<ProviderR
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Konfiguration des Anbieters konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.providerConfigNotLoaded'));
             }
         }
         throw error;

@@ -9,14 +9,16 @@ import { TeamReturnDTO } from "../../util/api/config/dto";
 import { PublicCookiesService, PublicScheduleService } from "../../util/service";
 import { AdminRegistrationService } from "../../util/service/registration";
 import "./Final.css";
+import { useTranslation } from 'react-i18next';
 
 const Teams: React.FC = () => {
+    const { t } = useTranslation();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [scheduleCreated, setScheduleCreated] = useState<boolean>(false);
     const [finalScheduleCreated, setFinalScheduleCreated] = useState<boolean>(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState(false);
 
     const location = useLocation();
@@ -59,10 +61,10 @@ const Teams: React.FC = () => {
             <IonContent fullscreen>
                 <BackLink />
                 <h2>
-                    <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>Teams</LinearGradient>
+                    <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>{t('admin.dashboard.teams')}</LinearGradient>
                 </h2>
                 <h3>
-                    Anzahl der angemeldeten Teams: {teams.length}
+                    {t('admin.teams.registeredCount', { count: teams.length })}
                 </h3>
 
                 <TeamAdminContainer

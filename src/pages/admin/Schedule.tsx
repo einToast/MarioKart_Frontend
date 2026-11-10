@@ -11,6 +11,7 @@ import { AdminRegistrationService, AdminScheduleService, PublicCookiesService } 
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Schedule.css";
+import { useTranslation } from 'react-i18next';
 
 const LEGACY_VERSION = 1;
 const PER_FIELD_VERSION = 4;
@@ -22,11 +23,12 @@ const isBetween = (value: number | '', min: number, max: number): value is numbe
     value !== '' && Number.isInteger(value) && value >= min && value <= max;
 
 const Schedule: React.FC = () => {
+    const { t } = useTranslation();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
@@ -91,14 +93,14 @@ const Schedule: React.FC = () => {
             return null;
         }
         if (!isBetween(switchCount, 1, MAX_SWITCH_COUNT)) {
-            return `Die Anzahl der Spielfelder muss zwischen 1 und ${MAX_SWITCH_COUNT} liegen`;
+            return t('admin.schedule.invalidFieldCount', { max: MAX_SWITCH_COUNT });
         }
         if (!isBetween(roundCount, 1, Number.MAX_SAFE_INTEGER)) {
-            return 'Es muss mindestens eine Runde geben';
+            return t('admin.schedule.invalidRoundCount');
         }
         const sizes = perField ? fieldSizes : [teamsPerGame];
         if (!sizes.every(size => isBetween(size, MIN_TEAMS_PER_GAME, MAX_TEAMS_PER_GAME))) {
-            return `Pro Spiel können ${MIN_TEAMS_PER_GAME} bis ${MAX_TEAMS_PER_GAME} Teams antreten`;
+            return t('admin.schedule.invalidTeamsPerGame', { min: MIN_TEAMS_PER_GAME, max: MAX_TEAMS_PER_GAME });
         }
         return null;
     };
@@ -119,12 +121,12 @@ const Schedule: React.FC = () => {
         creation
             .then(newRounds => {
                 if (newRounds) {
-                    setError('Spielplan erfolgreich erstellt');
+                    setError(t('admin.schedule.created'));
                     setIsError(false);
                     setShowToast(true);
                     navigate('/admin/dashboard');
                 } else {
-                    setError('Spielplan konnte nicht erstellt werden');
+                    setError(t('errors.scheduleNotCreated'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -162,11 +164,11 @@ const Schedule: React.FC = () => {
                 <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Spielplan erstellen
+                        {t('admin.schedule.title')}
                     </LinearGradient>
                 </h2>
                 <h3>
-                    Anzahl der angemeldeten Teams: {teams.length}
+                    {t('admin.teams.registeredCount', { count: teams.length })}
                 </h3>
 
                 <div className={"flexContainer"} style={{ paddingBottom: "50px" }}>
@@ -181,14 +183,14 @@ const Schedule: React.FC = () => {
                         />
 
                     ) : (
-                        <p>loading...</p>
+                        <p>{t('common.loading')}</p>
                     )}
                 </div>
 
                 <div className={"playedContainer scheduleControls"}>
                     <div className="scheduleFields">
                         <div className="scheduleField">
-                            <label htmlFor="scheduleVersion">Schedule Version:</label>
+                            <label htmlFor="scheduleVersion">{t('admin.schedule.version')}</label>
                             <select id="scheduleVersion"
                                 value={version}
                                 onChange={handleVersionChange}
@@ -199,7 +201,7 @@ const Schedule: React.FC = () => {
                         </div>
 
                         <div className="scheduleField">
-                            <label htmlFor="switchCount">Anzahl Spielfelder:</label>
+                            <label htmlFor="switchCount">{t('admin.schedule.fieldCount')}</label>
                             <input id="switchCount"
                                 type="number"
                                 min={1}
@@ -210,7 +212,7 @@ const Schedule: React.FC = () => {
                             />
                         </div>
                         <div className="scheduleField">
-                            <label htmlFor="roundCount">Anzahl Runden:</label>
+                            <label htmlFor="roundCount">{t('admin.schedule.roundCount')}</label>
                             <input id="roundCount"
                                 type="number"
                                 min={1}
@@ -221,7 +223,7 @@ const Schedule: React.FC = () => {
                         </div>
                         {!perField && (
                             <div className="scheduleField">
-                                <label htmlFor="teamsPerGame">Teams pro Spiel:</label>
+                                <label htmlFor="teamsPerGame">{t('admin.schedule.teamsPerGame')}</label>
                                 <input id="teamsPerGame"
                                     type="number"
                                     min={MIN_TEAMS_PER_GAME}
@@ -237,7 +239,7 @@ const Schedule: React.FC = () => {
                         <div className="scheduleFields">
                             {fieldSizes.map((size, index) => (
                                 <div className="scheduleField" key={`teamsPerField${index + 1}`}>
-                                    <label htmlFor={`teamsPerField${index + 1}`}>Teams Spielfeld {index + 1}:</label>
+                                    <label htmlFor={`teamsPerField${index + 1}`}>{t('admin.schedule.teamsPerField', { number: index + 1 })}</label>
                                     <input id={`teamsPerField${index + 1}`}
                                         type="number"
                                         min={MIN_TEAMS_PER_GAME}
@@ -250,7 +252,7 @@ const Schedule: React.FC = () => {
                         </div>
                     )}
                     {version !== LEGACY_VERSION && teamsNeeded !== null && (
-                        <p className="scheduleHint">Mindestens {teamsNeeded} Teams nötig</p>
+                        <p className="scheduleHint">{t('admin.schedule.teamsNeeded', { count: teamsNeeded })}</p>
                     )}
                     <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleScheduleCreation}
                         tabIndex={0}
@@ -261,7 +263,7 @@ const Schedule: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Spielplan erzeugen</p>
+                            <p>{t('admin.dashboard.schedule')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

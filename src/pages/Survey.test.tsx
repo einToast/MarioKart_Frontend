@@ -9,7 +9,7 @@ import { QuestionType } from '../util/service/util';
 import Survey from './Survey';
 
 const VISIBLE_URL = '/public/survey/visible';
-const EMPTY = 'Gerade finden keine Abstimmungen statt.';
+const EMPTY = 'Gerade finden keine Umfragen statt.';
 
 const renderPage = () => {
     const setShowTab2 = vi.fn();
@@ -30,7 +30,7 @@ describe('Survey', () => {
     it('says that there are no surveys when none is visible', async () => {
         renderPage();
 
-        expect(screen.getByRole('heading', { name: 'Abstimmungen' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Umfragen' })).toBeInTheDocument();
         expect(await screen.findByText(EMPTY)).toBeInTheDocument();
     });
 

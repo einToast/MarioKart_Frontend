@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { CharacterReturnDTO, TeamReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'REGISTRATION');
 
@@ -10,7 +11,7 @@ export const getTeams = async (): Promise<TeamReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.teamsNotLoaded'));
         }
         throw error;
     }
@@ -22,7 +23,7 @@ export const getTeamsSortedByGroupPoints = async (): Promise<TeamReturnDTO[]> =>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.teamsNotLoaded'));
         }
         throw error;
     }
@@ -34,7 +35,7 @@ export const getTeamsSortedByTeamName = async (): Promise<TeamReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.teamsNotLoaded'));
         }
         throw error;
     }
@@ -46,7 +47,7 @@ export const getAvailableCharacters = async (): Promise<CharacterReturnDTO[]> =>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Charaktere konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.charactersNotLoaded'));
         }
         throw error;
     }
@@ -58,7 +59,7 @@ export const getTeamsNotInRound = async (roundId: number): Promise<TeamReturnDTO
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Teams konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.teamsNotLoaded'));
         }
         throw error;
     }

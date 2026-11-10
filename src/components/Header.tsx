@@ -5,8 +5,11 @@ import { Link } from "react-router-dom";
 import { User } from '../util/api/config/interfaces';
 import { PublicCookiesService } from '../util/service';
 import './Header.css';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from './LanguageSwitch';
 
 const Header: React.FC = () => {
+    const { t } = useTranslation();
     const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -64,15 +67,18 @@ const Header: React.FC = () => {
                                         handleLogout();
                                     }
                                 }}
-                            >Abmelden
+                            >{t('header.logout')}
                             </li>
                         </ul>
                     </div>
                 )}
             </div>
-            <Link to="/survey" title="Umfragen">
-                <IonIcon aria-hidden="true" icon={pieChartOutline} />
-            </Link>
+            <div className="headerActions">
+                <LanguageSwitch />
+                <Link to="/survey" title={t('header.surveys')} className="headerIconButton">
+                    <IonIcon aria-hidden="true" icon={pieChartOutline} />
+                </Link>
+            </div>
         </IonHeader>
     );
 };

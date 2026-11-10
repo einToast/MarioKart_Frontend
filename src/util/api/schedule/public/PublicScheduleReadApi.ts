@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { RoundReturnDTO, ScheduleOverviewDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'SCHEDULE');
 
@@ -10,7 +11,7 @@ export const getCurrentRounds = async (): Promise<RoundReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Aktuelle Runden konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.currentRoundsNotLoaded'));
         }
         throw error;
     }
@@ -22,7 +23,7 @@ export const getOverview = async (): Promise<ScheduleOverviewDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Spielplan konnte nicht geladen werden');
+            throw new Error(i18n.t('errors.scheduleNotLoaded'));
         }
         throw error;
     }
@@ -34,7 +35,7 @@ export const getNumberOfRoundsUnplayed = async (): Promise<number> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Anzahl der ungespielten Runden konnte nicht geladen werden');
+            throw new Error(i18n.t('errors.unplayedRoundsNotLoaded'));
         }
         throw error;
     }
@@ -46,7 +47,7 @@ export const isScheduleCreated = async (): Promise<boolean> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Spielplan-Status konnte nicht geladen werden');
+            throw new Error(i18n.t('errors.scheduleStatusNotLoaded'));
         }
         throw error;
     }
@@ -58,7 +59,7 @@ export const isFinalScheduleCreated = async (): Promise<boolean> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Finalrunden-Status konnte nicht geladen werden');
+            throw new Error(i18n.t('errors.finalStatusNotLoaded'));
         }
         throw error;
     }

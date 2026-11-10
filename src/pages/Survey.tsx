@@ -15,12 +15,14 @@ import { ShowTab2Props } from '../util/api/config/interfaces';
 import { PublicScheduleService, PublicSurveyService } from '../util/service';
 import { QuestionType } from "../util/service/util";
 import './Survey.css';
+import { useTranslation } from 'react-i18next';
 
 const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
+    const { t } = useTranslation();
     const [currentQuestions, setCurrentQuestions] = useState<QuestionReturnDTO[]>([]);
     const [openQuestion, setOpenQuestion] = useState<string | undefined>(undefined);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const location = useLocation();
@@ -130,7 +132,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     />
                 );
             default:
-                return <p key={question.id}> Fehler </p>;
+                return <p key={question.id}> {t('survey.error')} </p>;
         }
     };
 
@@ -153,7 +155,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Abstimmungen
+                        {t('survey.title')}
                     </LinearGradient>
                 </h1>
                 {currentQuestions.length > 0 ? (
@@ -161,7 +163,7 @@ const Survey: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         {currentQuestions.map(renderQuestion)}
                     </IonAccordionGroup>
                 ) : (
-                    <p>Gerade finden keine Abstimmungen statt.</p>
+                    <p>{t('survey.none')}</p>
                 )}
             </IonContent>
             <Toast

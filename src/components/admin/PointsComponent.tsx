@@ -13,15 +13,17 @@ import { AdminOcrService, AdminScheduleService } from "../../util/service";
 import Toast from "../Toast";
 import ZoomablePhoto from "./ZoomablePhoto";
 import { GamePhoto } from "../../util/api/config/interfaces";
+import { useTranslation } from 'react-i18next';
 
 const PHOTO_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 
 const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: boolean, toggleAccordion: () => void, switches?: SwitchDTO[], ocrProvider?: string }> = ({ game, roundId, isOpen, toggleAccordion, switches, ocrProvider }) => {
+    const { t } = useTranslation();
     const pointsOfTeam = (teamId: number) => game.points?.find(point => point.team.id === teamId);
 
     const [points, setPoints] = useState<(number | '')[]>(() => game.teams.map(team => pointsOfTeam(team.id)?.points ?? 0));
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
@@ -77,7 +79,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
 
         const file = Array.from(event.dataTransfer.files).find(candidate => PHOTO_TYPES.includes(candidate.type));
         if (!file) {
-            setError(`Switch ${gameSwitch.name}: Nur PNG, JPEG, WebP oder GIF können ausgewertet werden`);
+            setError(t('admin.points.unsupportedPhoto', { name: gameSwitch.name }));
             setIsError(true);
             setShowToast(true);
             return;
@@ -108,15 +110,15 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
 
                 // Several photos can be evaluated at once, so the message names its game
                 if (detected === game.teams.length) {
-                    setError(`Switch ${gameSwitch.name}: Punkte erkannt, bitte prüfen und speichern`);
+                    setError(t('admin.points.pointsDetected', { name: gameSwitch.name }));
                     setIsError(false);
                 } else {
-                    setError(`Switch ${gameSwitch.name}: ${detected === 0 ? 'Auf dem Foto wurden keine Punkte erkannt' : 'Nicht alle Charaktere wurden erkannt'}`);
+                    setError(t(detected === 0 ? 'admin.points.noPointsDetected' : 'admin.points.notAllDetected', { name: gameSwitch.name }));
                     setIsError(true);
                 }
             })
             .catch(error => {
-                setError(`Switch ${gameSwitch.name}: ${error.message}`);
+                setError(t('admin.points.switchError', { name: gameSwitch.name, message: error.message }));
                 setIsError(true);
             })
             .finally(() => {
@@ -130,15 +132,15 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
         AdminScheduleService.saveGameDirect(game)
             .then(newPoints => {
                 if (newPoints) {
-                    setError('Spiel erfolgreich gespeichert');
+                    setError(t('admin.points.gameSaved'));
                     setIsError(false);
                 } else {
-                    setError('Das Spiel konnte nicht gespeichert werden.');
+                    setError(t('admin.points.gameNotSaved'));
                     setIsError(true);
                 }
             })
             .catch(error => {
-                setError(`Fehler beim Speichern: ${error.message}`);
+                setError(t('admin.points.saveError', { message: error.message }));
                 setIsError(true);
             })
             .finally(() => {
@@ -153,7 +155,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
             {...(ocrProvider ? { onDragOver: handleDragOver, onDragLeave: handleDragLeave, onDrop: handleDrop } : {})}
         >
             <IonItem slot="header" color="light">
-                <h3 style={{ color: gameSwitch.color }}>Switch {gameSwitch.name}</h3>
+                <h3 style={{ color: gameSwitch.color }}>{t('schedule.switchName', { name: gameSwitch.name })}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
@@ -166,18 +168,18 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                                     value={points[index]}
                                     onChange={(e) => handleChangePoints(e, index)}
                                 />
-                                <img src={`/characters/${team.character.characterName}.webp`} alt="Character" />
+                                <img src={`/characters/${team.character.characterName}.webp`} alt={team.character.characterName} />
                             </div>
                         ))}
                     </div>
-                    {photo && <ZoomablePhoto key={photo.url} src={photo.url} alt={`Ergebnis von Switch ${gameSwitch.name}`} />}
+                    {photo && <ZoomablePhoto key={photo.url} src={photo.url} alt={t('admin.points.resultPhoto', { name: gameSwitch.name })} />}
                 </div>
                 {ocrProvider && (
                     <>
                         <input
                             type="file"
                             accept={PHOTO_TYPES.join(',')}
-                            aria-label={`Foto von Switch ${gameSwitch.name}`}
+                            aria-label={t('admin.points.photoOf', { name: gameSwitch.name })}
                             ref={photoInputRef}
                             onChange={handleChoosePhoto}
                             hidden
@@ -191,7 +193,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                             }}
                         >
                             <div>
-                                <p>{photo ? 'Anderes Foto auswählen' : 'Foto auswählen'}</p>
+                                <p>{photo ? t('admin.points.chooseOtherPhoto') : t('admin.points.choosePhoto')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -205,7 +207,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                                 }}
                             >
                                 <div>
-                                    <p>{detecting ? 'Foto wird ausgewertet...' : 'Foto auswerten'}</p>
+                                    <p>{detecting ? t('admin.points.detecting') : t('admin.points.detect')}</p>
                                     <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                                 </div>
                             </IonButton>
@@ -221,7 +223,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                     }}
                 >
                     <div>
-                        <p>Spiel speichern</p>
+                        <p>{t('admin.points.saveGame')}</p>
                         <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                     </div>
                 </IonButton>

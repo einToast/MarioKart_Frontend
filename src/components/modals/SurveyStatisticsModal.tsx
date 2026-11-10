@@ -7,11 +7,13 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
 import QuestionGraph from '../graph/QuestionGraph';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
+    const { t } = useTranslation();
     const [answersCount, setAnswersCount] = useState<number[]>([]);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const getAnswersToQuestion = () => {
@@ -52,7 +54,7 @@ const SurveyStatisticsModal: React.FC<{ showModal: boolean, closeModal: (survey:
                         }}
                     >
                         <div>
-                            <p>Ergebnisse schließen</p>
+                            <p>{t('admin.surveys.closeResults')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

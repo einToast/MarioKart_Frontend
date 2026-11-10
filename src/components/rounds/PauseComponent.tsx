@@ -1,8 +1,10 @@
 import React from 'react';
 import { TeamReturnDTO } from '../../util/api/config/dto';
 import { PAUSE_COLOR, switchColorStyle } from '../../util/layout/switches';
+import { useTranslation } from 'react-i18next';
 
 const PauseComponent = ({ team }: { team: TeamReturnDTO }) => {
+    const { t } = useTranslation();
     const character = team.character.characterName || [];
 
     return (
@@ -11,14 +13,14 @@ const PauseComponent = ({ team }: { team: TeamReturnDTO }) => {
                 <div className="pause">
                     <img
                         src={`/characters/${character}.webp`}
-                        alt="teamcharacter"
+                        alt={team.character.characterName}
                         className="iconTeam"
                     />
                 </div>
             </div>
             <div>
                 <p>{team.teamName}</p>
-                <p className="punkte">Pause</p>
+                <p className="punkte">{t('schedule.pause')}</p>
             </div>
         </div >
     );

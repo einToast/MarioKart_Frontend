@@ -1,6 +1,7 @@
 import { PublicNotificationApi } from "../../api";
 import { NotificationSubscriptionDTO } from "../../api/config/dto";
 import { PublicCookiesService } from "../cookies";
+import i18n from "../../../i18n";
 
 export class NotificationService {
     private static convertedVapidKey: Uint8Array<ArrayBuffer> | undefined;
@@ -55,7 +56,7 @@ export class NotificationService {
             if (vapidPublicKey && !vapidPublicKey.includes('<!DOCTYPE html>')) {
                 this.convertedVapidKey = this.urlBase64ToUint8Array(vapidPublicKey.trim());
             } else {
-                throw new Error('Ungültiger Public Key vom Server erhalten');
+                throw new Error(i18n.t('errors.invalidPublicKey'));
             }
         }
         return this.convertedVapidKey;

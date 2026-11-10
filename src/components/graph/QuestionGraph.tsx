@@ -4,8 +4,10 @@ import { Bar } from "react-chartjs-2";
 import { QuestionGraphProps } from "../../util/api/config/interfaces";
 import './RankingGraph.css';
 import './registerBarChart';
+import { useTranslation } from 'react-i18next';
 
 const QuestionGraph: React.FC<QuestionGraphProps> = ({ question, answers }) => {
+    const { t } = useTranslation();
     const chartRef = useRef<ChartJS<"bar">>(null);
 
     const answerData = React.useMemo(() => {
@@ -23,7 +25,7 @@ const QuestionGraph: React.FC<QuestionGraphProps> = ({ question, answers }) => {
     const chartData = React.useMemo(() => ({
         labels: answerData.labels,
         datasets: [{
-            label: "Antworten",
+            label: t('admin.surveys.answers'),
             data: answerData.counts,
             backgroundColor: '#6351F9',
             borderColor: "transparent",

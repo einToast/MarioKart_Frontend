@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { BreakInputDTO, BreakReturnDTO, GameInputFullDTO, GameReturnDTO, PointsInputDTO, PointsReturnDTO, RoundInputDTO, RoundInputFullDTO, RoundReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
@@ -11,15 +12,15 @@ export const updateRoundPlayed = async (roundId: number, round: RoundInputDTO): 
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Pause wurde noch nicht beendet');
+                throw new Error(i18n.t('errors.breakNotEnded'));
             } else if (error.response?.status === 404) {
-                throw new Error('Runde nicht gefunden');
+                throw new Error(i18n.t('errors.roundNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Runde konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.roundNotUpdated'));
             }
         }
         throw error;
@@ -41,11 +42,11 @@ export const updatePoints = async (
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Eintrag nicht gefunden');
+                throw new Error(i18n.t('errors.entryNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Punkte konnten nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.pointsNotUpdated'));
             }
         }
         throw error;
@@ -59,13 +60,13 @@ export const updateBreak = async (breakData: BreakInputDTO): Promise<BreakReturn
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Pause nicht gefunden');
+                throw new Error(i18n.t('errors.breakNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Pause konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.breakNotUpdated'));
             }
         }
         throw error;
@@ -79,15 +80,15 @@ export const updateRoundFull = async (roundId: number, round: RoundInputFullDTO)
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Pause wurde noch nicht beendet');
+                throw new Error(i18n.t('errors.breakNotEnded'));
             } else if (error.response?.status === 404) {
-                throw new Error('Runde nicht gefunden');
+                throw new Error(i18n.t('errors.roundNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Runde konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.roundNotUpdated'));
             }
         }
         throw error;
@@ -101,11 +102,11 @@ export const updateGame = async (gameId: number, game: GameInputFullDTO): Promis
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Spiel nicht gefunden');
+                throw new Error(i18n.t('errors.gameNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Spiel konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.gameNotUpdated'));
             }
         }
         throw error;

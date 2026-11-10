@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { BreakReturnDTO, RoundReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SCHEDULE');
 
@@ -11,9 +12,9 @@ export const getRounds = async (): Promise<RoundReturnDTO[]> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Runden konnten nicht geladen werden');
+                throw new Error(i18n.t('errors.roundsNotLoaded'));
             }
         }
         throw error;
@@ -27,11 +28,11 @@ export const getRoundById = async (roundId: number): Promise<RoundReturnDTO> => 
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Runde nicht gefunden');
+                throw new Error(i18n.t('errors.roundNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Runde konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.roundNotLoaded'));
             }
         }
         throw error;
@@ -45,9 +46,9 @@ export const getBreak = async (): Promise<BreakReturnDTO> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Pause konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.breakNotLoaded'));
             }
         }
         throw error;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { BreakReturnDTO, RoundReturnDTO, TeamReturnDTO } from '../util/api/config/dto';
 import { RoundOrBreak, UseRoundDataReturn } from '../util/api/config/interfaces';
 import { PublicScheduleService } from '../util/service';
+import i18n from '../i18n';
 
 export const useRoundData = (): UseRoundDataReturn => {
     const [currentRound, setCurrentRound] = useState<RoundOrBreak>(null);
@@ -54,7 +55,7 @@ export const useRoundData = (): UseRoundDataReturn => {
                 navigate('/admin');
             }
         } catch (error) {
-            setError(error instanceof Error ? error.message : String(error));
+            setError(error instanceof Error ? error.message : i18n.t('errors.currentRoundsNotLoaded'));
         }
     };
 

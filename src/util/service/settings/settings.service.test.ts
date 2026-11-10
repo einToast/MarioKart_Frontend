@@ -131,7 +131,7 @@ describe('AdminSettingsService', () => {
         });
 
         it('rejects an unknown change type without calling the backend', async () => {
-            await expect(AdminSettingsService.changeService('Sonstiges' as ChangeType)).rejects.toThrow('Error');
+            await expect(AdminSettingsService.changeService('Sonstiges' as ChangeType)).rejects.toThrow('Ein unbekannter Fehler ist aufgetreten');
             expect(backend.requests).toEqual([]);
         });
 

@@ -15,8 +15,10 @@ import { BreakReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult, NotificationModalResult, OcrConfigModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../../util/service";
 import { ChangeType } from "../../util/service/util";
+import { useTranslation } from 'react-i18next';
 
 const Control: React.FC = () => {
+    const { t } = useTranslation();
 
     const [isSchedule, setIsSchedule] = useState<boolean>(false);
     const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
@@ -31,7 +33,7 @@ const Control: React.FC = () => {
     const [showOcrConfigModal, setShowOcrConfigModal] = useState<boolean>(false);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
@@ -79,28 +81,28 @@ const Control: React.FC = () => {
         setIsError(false);
         switch (changeT) {
             case ChangeType.TOURNAMENT:
-                setError('Das Turnier wurde ' + (isTournamentOpen ? 'geschlossen' : 'geöffnet'));
+                setError(isTournamentOpen ? t('admin.control.tournamentClosed') : t('admin.control.tournamentOpened'));
                 break;
             case ChangeType.REGISTRATION:
-                setError('Die Registrierung wurde ' + (isRegistrationOpen ? 'geschlossen' : 'geöffnet'));
+                setError(isRegistrationOpen ? t('admin.control.registrationClosed') : t('admin.control.registrationOpened'));
                 break;
             case ChangeType.SURVEYS:
-                setError('Alle Umfragen wurden gelöscht');
+                setError(t('admin.control.surveysDeleted'));
                 break;
             case ChangeType.TEAMS:
-                setError('Alle Teams wurden gelöscht');
+                setError(t('admin.control.teamsDeleted'));
                 break;
             case ChangeType.SCHEDULE:
-                setError('Der Spielplan wurde gelöscht');
+                setError(t('admin.control.scheduleDeleted'));
                 break;
             case ChangeType.FINAL_SCHEDULE:
-                setError('Alle Finalspiele wurden gelöscht');
+                setError(t('admin.control.finalDeleted'));
                 break;
             case ChangeType.ALL:
-                setError('Die Anwendung wurde zurückgesetzt');
+                setError(t('admin.control.reset'));
                 break;
             default:
-                setError('Error');
+                setError(t('errors.unknown'));
                 setIsError(true);
                 break;
         }
@@ -111,7 +113,7 @@ const Control: React.FC = () => {
         setModalClosed(prev => !prev);
 
         if (changeBreak.breakChanged) {
-            setError('Die Pause wurde geändert');
+            setError(t('admin.control.breakChanged'));
             setIsError(false);
             setShowToast(true);
         }
@@ -120,7 +122,7 @@ const Control: React.FC = () => {
     const closeNotificationModal = (notify: NotificationModalResult) => {
         setModalClosed(prev => !prev);
         if (notify.notificationSent) {
-            setError('Benachrichtigung wurde gesendet');
+            setError(t('admin.control.notificationSent'));
             setIsError(false);
             setShowToast(true);
         }
@@ -128,7 +130,7 @@ const Control: React.FC = () => {
 
     const closeOcrConfigModal = (result: OcrConfigModalResult) => {
         if (result.ocrConfigChanged) {
-            setError('Die Punkteerkennung wurde konfiguriert');
+            setError(t('admin.control.ocrConfigured'));
             setIsError(false);
             setShowToast(true);
         }
@@ -174,7 +176,7 @@ const Control: React.FC = () => {
                 <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Kontrollzentrum
+                        {t('admin.control.title')}
                     </LinearGradient>
                 </h2>
                 <div className={"adminDashboard"}>
@@ -188,7 +190,7 @@ const Control: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>Pause ändern</p>
+                                <p>{t('admin.break.change')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -202,7 +204,7 @@ const Control: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>{isTournamentOpen ? 'Turnier schließen' : 'Turnier öffnen'}</p>
+                            <p>{isTournamentOpen ? t('admin.control.closeTournament') : t('admin.control.openTournament')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -217,7 +219,7 @@ const Control: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>{isRegistrationOpen ? 'Registrierung schließen' : 'Registrierung öffnen'}</p>
+                                <p>{isRegistrationOpen ? t('admin.control.closeRegistration') : t('admin.control.openRegistration')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -232,7 +234,7 @@ const Control: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Benachrichtigung senden</p>
+                            <p>{t('admin.notification.send')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -245,7 +247,7 @@ const Control: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Punkteerkennung konfigurieren</p>
+                            <p>{t('admin.control.configureOcr')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -259,7 +261,7 @@ const Control: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>Alle Teams löschen</p>
+                                <p>{t('admin.control.deleteTeams')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -274,7 +276,7 @@ const Control: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>Gesamten Spielplan löschen</p>
+                                <p>{t('admin.control.deleteSchedule')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -289,7 +291,7 @@ const Control: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>Alle Finalspiele löschen</p>
+                                <p>{t('admin.control.deleteFinal')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
@@ -303,7 +305,7 @@ const Control: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Alle Umfragen löschen</p>
+                            <p>{t('admin.control.deleteSurveys')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -316,7 +318,7 @@ const Control: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Anwendung zurücksetzen</p>
+                            <p>{t('admin.control.resetAll')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

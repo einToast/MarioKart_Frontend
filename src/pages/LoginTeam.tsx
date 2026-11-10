@@ -8,12 +8,15 @@ import { TeamReturnDTO } from "../util/api/config/dto";
 import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from '../components/LanguageSwitch';
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [teamId, setTeamId] = useState<string>("-1");
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState(false);
     const [isError, setIsError] = useState<boolean>(true);
 
@@ -31,7 +34,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
             props.setUser(user);
             navigate('/tab1');
         } else {
-            setError("Ausgewähltes Team nicht in der Liste gefunden.");
+            setError(t('login.teamNotFound'));
             setIsError(true);
             setShowToast(true);
         }
@@ -78,22 +81,24 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
+                <div slot="fixed" className="languageSwitchCorner">
+                    <LanguageSwitch />
+                </div>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent refreshingSpinner="circles" />
                 </IonRefresher>
                 <div className="contentLogin">
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Team
+                            {t('login.team')}
                         </LinearGradient>
                     </h2>
-                    <h1>Login</h1>
-                    <p>Melde dich zu deinem bereits bestehenden (registrierten) Team an. Wenn es bislang nicht in der
-                        Liste auftaucht, lade neu oder registriere dein Team.</p>
+                    <h1>{t('login.title')}</h1>
+                    <p>{t('login.description')}</p>
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
                             <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value={-1} hidden>Select Team</option>
+                                <option value={-1} hidden>{t('login.selectTeam')}</option>
                                 {teams?.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
@@ -108,7 +113,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
                                             src={`/characters/${character}.webp`}
-                                            alt={`${character} character`}
+                                            alt={t('characterImage', { name: character })}
                                             key={character}
                                         />
                                     ))}
@@ -124,7 +129,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             }}
                         >
                             <div>
-                                <p>Zum Team {teams.find(team => team.id === Number(teamId))?.teamName} anmelden</p>
+                                <p>{t('login.submit', { team: teams.find(team => team.id === Number(teamId))?.teamName ?? '' })}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>

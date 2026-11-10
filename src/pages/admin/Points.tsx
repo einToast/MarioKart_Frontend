@@ -10,17 +10,17 @@ import { RoundReturnDTO, SwitchDTO } from "../../util/api/config/dto";
 import { AdminOcrService, AdminScheduleService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import "../RegisterTeam.css";
 import "./Points.css";
-
-const NO_ROUNDS = 'Es gibt noch keine Runden. Erstelle zuerst einen Spielplan.';
+import { useTranslation } from 'react-i18next';
 
 const Points: React.FC = () => {
+    const { t } = useTranslation();
     const accordionGroupRef = useRef<null | HTMLIonAccordionGroupElement>(null);
     const [round, setRound] = useState<RoundReturnDTO | null>(null);
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]); 
     const [roundPlayed, setRoundPlayed] = useState<boolean>(false);
     const [openAccordion, setOpenAccordion] = useState<string | undefined>(undefined);
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
     const [ocrProviders, setOcrProviders] = useState<string[]>([]);
@@ -50,7 +50,7 @@ const Points: React.FC = () => {
 
     const handleSavePoints = () => {
         if (!round) {
-            setError(NO_ROUNDS);
+            setError(t('admin.points.noRounds'));
             setIsError(true);
             setShowToast(true);
             return;
@@ -60,10 +60,10 @@ const Points: React.FC = () => {
         AdminScheduleService.saveRoundFull(round)
             .then(savedRound => {
                 if (savedRound) {
-                    setError('Runde erfolgreich gespeichert');
+                    setError(t('admin.points.roundSaved'));
                     setIsError(false);
                 } else {
-                    setError('Runde konnte nicht gespeichert werden');
+                    setError(t('admin.points.roundNotSaved'));
                     setIsError(true);
                 }
             })
@@ -106,7 +106,7 @@ const Points: React.FC = () => {
                     getSelectedRound(selectedRound.id);
                 } else {
                     setRound(null);
-                    setError(NO_ROUNDS);
+                    setError(t('admin.points.noRounds'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -145,7 +145,7 @@ const Points: React.FC = () => {
                 <div className={"flexStart"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Punkte eintragen
+                            {t('admin.dashboard.points')}
                         </LinearGradient>
                     </h2>
                     <div>
@@ -161,7 +161,7 @@ const Points: React.FC = () => {
                                     if (r.finalGame) finalCount++;
                                     return (
                                         <option value={r.id} key={r.id}>
-                                            {r.finalGame ? `Finale ${finalCount}` : `Runde ${r.roundNumber}`}
+                                            {r.finalGame ? t('admin.points.finalRound', { number: finalCount }) : t('admin.points.round', { number: r.roundNumber })}
                                         </option>
                                     );
                                 });
@@ -171,7 +171,7 @@ const Points: React.FC = () => {
                 </div>
                 {ocrProviders.length > 0 && (
                     <div className="ocrProvider">
-                        <label htmlFor="ocrProvider">Punkteerkennung:</label>
+                        <label htmlFor="ocrProvider">{t('admin.points.ocr')}</label>
                         <select
                             name="ocrProvider"
                             id="ocrProvider"
@@ -179,7 +179,7 @@ const Points: React.FC = () => {
                             onChange={(e) => setSelectedOcrProvider(e.target.value)}
                         >
                             {ocrProviders.map((provider) => (
-                                <option value={provider} key={provider}>{provider === standardOcrProvider ? `${provider} (Standard)` : provider}</option>
+                                <option value={provider} key={provider}>{provider === standardOcrProvider ? t('admin.points.defaultProvider', { provider }) : provider}</option>
                             ))}
                         </select>
                     </div>
@@ -215,7 +215,7 @@ const Points: React.FC = () => {
                             }
                         }}
                     >
-                        Runde gespielt
+                        {t('admin.points.roundPlayed')}
                     </IonCheckbox>
 
                     <IonButton slot="start" shape="round" className={"round"} onClick={handleSavePoints}
@@ -227,7 +227,7 @@ const Points: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Punkte speichern</p>
+                            <p>{t('admin.points.save')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

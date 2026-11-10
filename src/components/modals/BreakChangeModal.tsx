@@ -8,14 +8,16 @@ import { BreakReturnDTO, RoundReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
 import { AdminScheduleService } from '../../util/service';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
+    const { t } = useTranslation();
 
     const [breakDuration, setBreakDuration] = useState<number>(0);
     const [breakEnded, setBreakEnded] = useState<boolean>(false);
     const [beforeRound, setBeforeRound] = useState<number>(0);
     const [rounds, setRounds] = useState<RoundReturnDTO[]>([]);
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const resetBreak = () => {
@@ -30,7 +32,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                     resetBreak();
                     return closeModal({ breakChanged: true });
                 } else {
-                    setError('Pause konnte nicht geändert werden');
+                    setError(t('admin.break.notChanged'));
                     setShowToast(true);
                 }
             })
@@ -66,21 +68,21 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ breakChanged: false })}>
             <IonContent>
-                <h4>Break</h4>
+                <h4>{t('admin.break.title')}</h4>
                 <form onSubmit={handleChange}>
 
                     <div className="borderContainer">
-                        <p>Dauer der Pause</p>
+                        <p>{t('admin.break.duration')}</p>
                         <input
                             type="number"
                             value={breakDuration}
                             onChange={(e) => setBreakDuration(Number.parseInt(e.target.value))}
-                            placeholder={"Dauer der Pause"}
+                            placeholder={t('admin.break.duration')}
                             required
                         />
                     </div>
                     <div className={"borderContainer"}>
-                        <p>Vor Runde</p>
+                        <p>{t('admin.break.beforeRound')}</p>
                         <select value={beforeRound} onChange={(e) => setBeforeRound(Number.parseInt(e.target.value))}
                             style={{ cursor: "pointer" }}
                         >
@@ -94,12 +96,12 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                         </select>
                     </div>
                     <div className={"borderContainer"}>
-                        <p>Pause beendet</p>
+                        <p>{t('admin.break.ended')}</p>
                         <select value={breakEnded ? 1 : 0} onChange={(e) => setBreakEnded(e.target.value === '1')}
                             style={{ cursor: "pointer" }}
                         >
-                            <option value={0}>Nein</option>
-                            <option value={1}>Ja</option>
+                            <option value={0}>{t('common.no')}</option>
+                            <option value={1}>{t('common.yes')}</option>
                         </select>
                     </div>
                 </form>
@@ -114,7 +116,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -128,7 +130,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                     >
 
                         <div>
-                            <p>Pause ändern</p>
+                            <p>{t('admin.break.change')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

@@ -7,12 +7,15 @@ import { LinearGradient } from "react-text-gradients";
 import Toast from '../../components/Toast';
 import { PublicCookiesService, PublicUserService } from "../../util/service";
 import '../RegisterTeam.css';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from '../../components/LanguageSwitch';
 
 const Login: React.FC = () => {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const navigate = useNavigate();
@@ -50,15 +53,18 @@ const Login: React.FC = () => {
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
+                <div slot="fixed" className="languageSwitchCorner">
+                    <LanguageSwitch />
+                </div>
                 <div className="contentLogin">
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Admin
+                            {t('admin.title')}
                         </LinearGradient>
                     </h2>
-                    <h1>Bereich</h1>
-                    <p>Hier haben nur die Organisatoren Zutritt. Also versuche es gar nicht erst.</p>
-                    <p>(Das Password ist 12345678)</p>
+                    <h1>{t('admin.login.title')}</h1>
+                    <p>{t('admin.login.description')}</p>
+                    <p>{t('admin.login.joke')}</p>
 
                     <div className="loginContainer">
                         <div className="borderContainer">
@@ -66,7 +72,7 @@ const Login: React.FC = () => {
                                 type="text"
                                 id="username"
                                 name="username"
-                                placeholder="Benutzername"
+                                placeholder={t('admin.login.username')}
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 tabIndex={0}
@@ -82,7 +88,7 @@ const Login: React.FC = () => {
                                 type="password"
                                 id="pass"
                                 name="password"
-                                placeholder="Passwort"
+                                placeholder={t('admin.login.password')}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 tabIndex={0}
@@ -103,13 +109,13 @@ const Login: React.FC = () => {
                             }}
                         >
                             <div>
-                                <p>Admin Bereich betreten</p>
+                                <p>{t('admin.login.submit')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                     </div>
                     <Link to="/login" style={{ textDecoration: "underline" }}>
-                        Zurück zum Team Login
+                        {t('admin.backToTeamLogin')}
                     </Link>
                 </div>
             </IonContent>

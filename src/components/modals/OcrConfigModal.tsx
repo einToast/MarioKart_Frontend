@@ -6,10 +6,12 @@ import "../../pages/admin/SurveyAdmin.css";
 import { OcrConfigModalResult } from "../../util/api/config/interfaces";
 import { AdminOcrService, AdminSettingsService, PublicSettingsService } from '../../util/service';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const THINKING_LEVELS = ['minimal', 'low', 'medium', 'high'];
 
 const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrConfigModalResult) => void }> = ({ showModal, closeModal }) => {
+    const { t } = useTranslation();
 
     const [providers, setProviders] = useState<string[]>([]);
     const [provider, setProvider] = useState<string>('');
@@ -18,7 +20,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     const [thinking, setThinking] = useState<string>('');
     const [standardProvider, setStandardProvider] = useState<string>('');
     const [relativePoints, setRelativePoints] = useState<boolean>(false);
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
@@ -32,7 +34,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
         AdminSettingsService.updateOcrProvider(provider)
             .then(() => {
                 setStandardProvider(provider);
-                setError('Standard-Anbieter gespeichert');
+                setError(t('admin.ocr.defaultSaved'));
                 setIsError(false);
                 setShowToast(true);
             })
@@ -87,25 +89,25 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ ocrConfigChanged: false })}>
             <IonContent>
-                <h4>Punkteerkennung</h4>
+                <h4>{t('admin.ocr.title')}</h4>
                 {providers.length === 0 ? (
-                    <p>Kein Anbieter verfügbar. Für mindestens einen Anbieter muss ein API-Key hinterlegt sein.</p>
+                    <p>{t('admin.ocr.noProvider')}</p>
                 ) : (
                     <form onSubmit={handleChange}>
                         <IonCheckbox labelPlacement="end"
                             checked={relativePoints}
                             onIonChange={(e) => setRelativePoints(e.detail.checked)}
                         >
-                            Relative Punkte
+                            {t('admin.ocr.relativePoints')}
                         </IonCheckbox>
                         <div className={"borderContainer"}>
-                            <p>Anbieter</p>
+                            <p>{t('admin.ocr.provider')}</p>
                             <select value={provider} onChange={(e) => selectProvider(e.target.value)}
                                 style={{ cursor: "pointer" }}
                             >
                                 {providers.map((providerName) => (
                                     <option value={providerName} key={providerName}>
-                                        {providerName === standardProvider ? `${providerName} (Standard)` : providerName}
+                                        {providerName === standardProvider ? t('admin.points.defaultProvider', { provider: providerName }) : providerName}
                                     </option>
                                 ))}
                             </select>
@@ -114,10 +116,10 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                             disabled={provider === standardProvider}
                             onClick={handleSetStandardProvider}
                         >
-                            {provider === standardProvider ? 'Standard-Anbieter' : 'Als Standard festlegen'}
+                            {provider === standardProvider ? t('admin.ocr.defaultProvider') : t('admin.ocr.makeDefault')}
                         </IonButton>
                         <div className={"borderContainer"}>
-                            <p>Modell</p>
+                            <p>{t('admin.ocr.model')}</p>
                             {models.length > 0 ? (
                                 <select value={model} onChange={(e) => setModel(e.target.value)}
                                     style={{ cursor: "pointer" }}
@@ -131,12 +133,12 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                                     type="text"
                                     value={model}
                                     onChange={(e) => setModel(e.target.value)}
-                                    placeholder={"Modell eingeben"}
+                                    placeholder={t('admin.ocr.modelPlaceholder')}
                                 />
                             )}
                         </div>
                         <div className={"borderContainer"}>
-                            <p>Denkaufwand</p>
+                            <p>{t('admin.ocr.thinking')}</p>
                             <select value={thinking} onChange={(e) => setThinking(e.target.value)}
                                 style={{ cursor: "pointer" }}
                             >
@@ -158,7 +160,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -172,7 +174,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                     >
 
                         <div>
-                            <p>Konfiguration speichern</p>
+                            <p>{t('admin.ocr.save')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

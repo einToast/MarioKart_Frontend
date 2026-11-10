@@ -7,10 +7,12 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
+    const { t } = useTranslation();
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const handleDelete = () => {
@@ -27,9 +29,9 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyDeleted: false })}>
             <IonContent>
-                <h4>Umfrage löschen</h4>
-                <p> Willst du die Umfrage <span>{question.questionText} </span> wirklich löschen?</p>
-                <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
+                <h4>{t('admin.surveys.delete')}</h4>
+                <p> {t('admin.surveys.deleteConfirmBefore')} <span>{question.questionText} </span> {t('admin.surveys.deleteConfirmAfter')}</p>
+                <p> {t('common.irreversible')}</p>
 
                 <div className={"playedContainer"}>
                     <IonButton className={"secondary round"} onClick={() => closeModal({ surveyDeleted: false })}
@@ -41,7 +43,7 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -55,7 +57,7 @@ const SurveyDeleteModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     >
 
                         <div>
-                            <p>Umfrage löschen</p>
+                            <p>{t('admin.surveys.delete')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

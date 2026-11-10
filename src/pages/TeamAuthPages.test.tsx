@@ -29,7 +29,7 @@ describe('LoginTeam', () => {
     it('offers every registered team', async () => {
         renderPage();
 
-        await waitFor(() => expect(teamOptions()).toEqual(['Select Team', 'Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']));
+        await waitFor(() => expect(teamOptions()).toEqual(['Team auswählen', 'Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']));
         expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
     });
 
@@ -39,7 +39,7 @@ describe('LoginTeam', () => {
 
         fireEvent.change(teamSelect(), { target: { value: '3' } });
 
-        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.webp');
+        expect(screen.getByAltText('Charakter Peach')).toHaveAttribute('src', '/characters/Peach.webp');
         expect(screen.getByText('Zum Team Team Peach anmelden')).toBeInTheDocument();
     });
 
@@ -170,7 +170,7 @@ describe('RegisterTeam', () => {
         renderPage();
 
         await waitFor(() => expect(characterOptions()).toEqual(['Wähle deinen Charakter', 'Yoshi', 'Wario']));
-        expect(screen.getByRole('heading', { name: 'Register' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Registrieren' })).toBeInTheDocument();
         expect(screen.queryByAltText(/character$/)).not.toBeInTheDocument();
     });
 
@@ -180,7 +180,7 @@ describe('RegisterTeam', () => {
 
         fireEvent.change(characterSelect(), { target: { value: 'Wario' } });
 
-        expect(screen.getByAltText('Wario character')).toHaveAttribute('src', '/characters/Wario.webp');
+        expect(screen.getByAltText('Charakter Wario')).toHaveAttribute('src', '/characters/Wario.webp');
     });
 
     it('registers the team, logs it in and opens the schedule', async () => {

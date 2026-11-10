@@ -6,8 +6,10 @@ import PauseComponentAll from './PauseComponentAll';
 import PauseComponentSwiper from './PauseComponentSwiper';
 import RoundComponentAll from './RoundComponentAll';
 import RoundComponentSwiper from './RoundComponentSwiper';
+import { useTranslation } from 'react-i18next';
 
 export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teamsNotInRound, switches }) => {
+    const { t } = useTranslation();
     const sortGamesForUser = (games: GameReturnDTO[]) => {
 
         const gamesWithSortedTeams = games.map(game => {
@@ -54,7 +56,7 @@ export const GameList: React.FC<GameListProps> = ({ games, user, viewType, teams
             );
         } else {
             return (
-                <p>Du hast kein Spiel in dieser Runde.</p>
+                <p>{t('schedule.noGameInRound')}</p>
             );
         }
     }

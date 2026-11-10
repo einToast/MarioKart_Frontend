@@ -180,9 +180,9 @@ const createQuestion = (questionText: string, questionType: string,
     options?: string[]; finalTeamsOnly?: boolean; oneAnswerPerKey?: boolean;
   } = {}) => {
   asAdmin('/admin/survey');
-  cy.contains('button.newSurvey', 'Neue Abstimmung').click();
+  cy.contains('button.newSurvey', 'Neue Umfrage').click();
   cy.get('ion-modal input[placeholder="Frage eingeben"]').type(questionText);
-  cy.get('ion-modal').contains('.borderContainer', 'Abstimmungsoptionen').find('select').select(questionType);
+  cy.get('ion-modal').contains('.borderContainer', 'Umfrageoptionen').find('select').select(questionType);
   options.forEach((option, index) => {
     cy.get(`ion-modal input[placeholder="Option ${index + 1} eingeben"]`).type(option);
   });
@@ -335,7 +335,7 @@ describe('a whole tournament', () => {
     cy.get('#switchCount').clear().type(String(SCHEDULE.numFields));
     cy.get('#roundCount').clear().type(String(SCHEDULE.numRounds));
     cy.get('#teamsPerGame').clear().type(String(SCHEDULE.teamsPerGame));
-    cy.contains('ion-button', 'Spielplan erzeugen').click();
+    cy.contains('ion-button', 'Spielplan erstellen').click();
     cy.toast('Spielplan erfolgreich erstellt');
 
     cy.adminApi('GET', '/admin/schedule/rounds').its('body').then(body => {
@@ -501,7 +501,7 @@ describe('a whole tournament', () => {
       cy.contains(finalist.teamName);
     }
     cy.contains(GROUP_WINNER.teamName).should('not.exist');
-    cy.contains('ion-button', 'Finale erzeugen').click();
+    cy.contains('ion-button', 'Finalspiele erstellen').click();
     cy.location('pathname').should('eq', '/admin/dashboard');
 
     loginAsTeam(FIRST.teamName);

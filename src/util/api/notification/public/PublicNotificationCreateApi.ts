@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { NotificationSubscriptionDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'NOTIFICATION');
 
@@ -11,11 +12,11 @@ export const subscribe = async (subscriptionData: NotificationSubscriptionDTO): 
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigungen konnten nicht aktiviert werden');
+                throw new Error(i18n.t('errors.notificationsNotEnabled'));
             } else {
-                throw new Error('Benachrichtigungen konnten nicht aktiviert werden');
+                throw new Error(i18n.t('errors.notificationsNotEnabled'));
             }
         }
         throw error;

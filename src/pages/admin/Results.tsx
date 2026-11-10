@@ -10,12 +10,14 @@ import { TeamReturnDTO } from "../../util/api/config/dto";
 import { AdminRegistrationService, PublicCookiesService, PublicScheduleService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
+import { useTranslation } from 'react-i18next';
 
 const Results: React.FC = () => {
+    const { t } = useTranslation();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [isFinalSchedule, setIsFinalSchedule] = useState<boolean>(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState(false);
 
     const location = useLocation();
@@ -54,7 +56,7 @@ const Results: React.FC = () => {
                 <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        {isFinalSchedule ? 'Endergebnis' : 'Zwischenergebnis'}
+                        {isFinalSchedule ? t('admin.results.final') : t('admin.results.intermediate')}
                     </LinearGradient>
                 </h2>
 

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { TeamInputDTO, TeamReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'REGISTRATION');
 
@@ -11,13 +12,13 @@ export const updateTeam = async (id: number, team: TeamInputDTO): Promise<TeamRe
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Team nicht gefunden');
+                throw new Error(i18n.t('errors.teamNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 400) {
-                throw new Error('Charakter ist bereits vergeben');
+                throw new Error(i18n.t('errors.characterTaken'));
             } else {
-                throw new Error('Team konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.teamNotUpdated'));
             }
         }
         throw error;
@@ -31,9 +32,9 @@ export const resetEveryTeamFinalParticipation = async (): Promise<TeamReturnDTO[
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Teams konnten nicht zurückgesetzt werden');
+                throw new Error(i18n.t('errors.teamsNotReset'));
             }
         }
         throw error;

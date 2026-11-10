@@ -5,6 +5,7 @@ import { AdminRegistrationService } from "../../registration";
 import { AdminScheduleService } from "../../schedule";
 import { AdminSurveyService } from "../../survey";
 import { ChangeType, SurveyKeyMode } from "../../util";
+import i18n from "../../../../i18n";
 
 export const updateSettings = async (tournament: TournamentDTO): Promise<TournamentDTO> => {
     return await AdminSettingsApi.updateSettings(tournament);
@@ -96,6 +97,6 @@ export const changeService = async (deleteType: ChangeType): Promise<void> => {
             await reset();
             break;
         default:
-            throw new Error('Error');
+            throw new Error(i18n.t('errors.unknown'));
     }
 }

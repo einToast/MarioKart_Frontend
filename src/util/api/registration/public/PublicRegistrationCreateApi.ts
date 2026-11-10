@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { TeamInputDTO, TeamReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'REGISTRATION');
 
@@ -11,13 +12,13 @@ export const registerTeam = async (team: TeamInputDTO): Promise<TeamReturnDTO> =
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Registrierung ist nicht möglich');
+                throw new Error(i18n.t('errors.registrationClosed'));
             } else if (error.response?.status === 404) {
-                throw new Error('Charakter nicht gefunden');
+                throw new Error(i18n.t('errors.characterNotFound'));
             } else if (error.response?.status === 400) {
-                throw new Error('Charakter schon registriert');
+                throw new Error(i18n.t('errors.characterRegistered'));
             } else {
-                throw new Error('Registrierung fehlgeschlagen');
+                throw new Error(i18n.t('errors.registrationFailed'));
             }
         }
         throw error;

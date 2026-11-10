@@ -23,7 +23,7 @@ describe('TeamComponent', () => {
 
         expect(screen.getByText('Team Peach')).toBeInTheDocument();
         expect(screen.getByText('Switch Blau')).toBeInTheDocument();
-        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Peach.webp');
+        expect(screen.getByAltText('Peach')).toHaveAttribute('src', '/characters/Peach.webp');
         expect((container.firstElementChild as HTMLElement).style.getPropertyValue('--switch-color')).toBe('#9DAEDA');
     });
 });
@@ -79,7 +79,7 @@ describe('PauseComponent', () => {
 
         expect(screen.getByText('Team Toad')).toBeInTheDocument();
         expect(screen.getByText('Pause')).toBeInTheDocument();
-        expect(screen.getByAltText('teamcharacter')).toHaveAttribute('src', '/characters/Toad.webp');
+        expect(screen.getByAltText('Toad')).toHaveAttribute('src', '/characters/Toad.webp');
     });
 });
 

@@ -6,16 +6,42 @@ import "../../pages/admin/SurveyAdmin.css";
 import { AdminSettingsService, PublicSettingsService } from '../../util/service';
 import { ChangeType } from "../../util/service/util";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
+
+type ChangeSubject = 'tournament' | 'registration' | 'surveys' | 'teams' | 'schedule' | 'finalSchedule' | 'all';
+type ChangeAction = 'open' | 'close' | 'delete' | 'reset';
+
+const CHANGE_SUBJECTS: Record<ChangeType, ChangeSubject> = {
+    [ChangeType.TOURNAMENT]: 'tournament',
+    [ChangeType.REGISTRATION]: 'registration',
+    [ChangeType.SURVEYS]: 'surveys',
+    [ChangeType.TEAMS]: 'teams',
+    [ChangeType.SCHEDULE]: 'schedule',
+    [ChangeType.FINAL_SCHEDULE]: 'finalSchedule',
+    [ChangeType.ALL]: 'all',
+};
+
+const changeAction = (changeType: ChangeType, isTournamentOpen: boolean, isRegistrationOpen: boolean): ChangeAction => {
+    switch (changeType) {
+        case ChangeType.TOURNAMENT:
+            return isTournamentOpen ? 'close' : 'open';
+        case ChangeType.REGISTRATION:
+            return isRegistrationOpen ? 'close' : 'open';
+        case ChangeType.ALL:
+            return 'reset';
+        default:
+            return 'delete';
+    }
+};
 
 const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: ChangeType) => void, changeType: ChangeType }> = ({ showModal, closeModal, changeType }) => {
 
-    const [message, setMessage] = useState<string>('');
-    const [secondaryMessage, setSecondaryMessage] = useState<string>('');
+    const { t } = useTranslation();
     const [isRegistrationOpen, setIsRegistrationOpen] = useState<boolean>(false);
     const [isTournamentOpen, setIsTournamentOpen] = useState<boolean>(false);
 
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const handleChange = () => {
@@ -28,46 +54,6 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: Cha
                 setShowToast(true);
             });
     };
-
-    const changeMessage = () => {
-        const message_template = "Willst du wirklich <span>___</span> ...?";
-
-        switch (changeType) {
-            case ChangeType.TOURNAMENT:
-                setMessage(message_template.replace('___', 'das Turnier'));
-                setSecondaryMessage((isTournamentOpen ? 'schließen' : 'öffnen'));
-                break;
-            case ChangeType.REGISTRATION:
-                setMessage(message_template.replace('___', 'die Registrierung'));
-                setSecondaryMessage((isRegistrationOpen ? 'schließen' : 'öffnen'));
-                break;
-            case ChangeType.SURVEYS:
-                setMessage(message_template.replace('___', 'alle Umfragen'));
-                setSecondaryMessage('löschen');
-                break;
-            case ChangeType.TEAMS:
-                setMessage(message_template.replace('___', 'alle Teams'));
-                setSecondaryMessage('löschen');
-                break;
-            case ChangeType.SCHEDULE:
-                setMessage(message_template.replace('___', 'den Spielplan'));
-                setSecondaryMessage('löschen');
-                break;
-            case ChangeType.FINAL_SCHEDULE:
-                setMessage(message_template.replace('___', 'die Finalspiele'));
-                setSecondaryMessage('löschen');
-                break;
-            case ChangeType.ALL:
-                setMessage(message_template.replace('___', 'ALLES'));
-                setSecondaryMessage('zurücksetzen');
-                break;
-            default:
-                setMessage('Error');
-                setSecondaryMessage('Error');
-                break;
-        }
-    }
-
 
     useEffect(() => {
         Promise.all([
@@ -82,17 +68,20 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: Cha
                 setError(error.message);
                 setShowToast(true);
             });
-
-        changeMessage();
     }, [showModal]);
+
+    const subject = CHANGE_SUBJECTS[changeType];
+    const action = changeAction(changeType, isTournamentOpen, isRegistrationOpen);
+    const title = t(`admin.change.titles.${action}`, { subject: t(`admin.change.subjects.${subject}`) });
+    const confirmation = t('admin.change.confirm', { target: t(`admin.change.targets.${subject}`), action: t(`admin.change.actions.${action}`) });
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal()}>
             <IonContent>
-                <h4>{changeType} {secondaryMessage}</h4>
-                <p dangerouslySetInnerHTML={{ __html: message.replace('...', secondaryMessage) }}></p>
+                <h4>{title}</h4>
+                <p dangerouslySetInnerHTML={{ __html: confirmation }}></p>
                 {(changeType !== ChangeType.TOURNAMENT && changeType !== ChangeType.REGISTRATION) &&
-                    <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
+                    <p> {t('common.irreversible')}</p>
                 }
 
                 <div className={"playedContainer"}>
@@ -105,7 +94,7 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: Cha
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -119,7 +108,7 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: Cha
                     >
 
                         <div>
-                            <p>{changeType} {secondaryMessage}</p>
+                            <p>{title}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
