@@ -8,6 +8,8 @@ import { backend } from './test/backend';
 import { resetCharts } from './test/charts';
 import { resetStomp } from './test/stomp';
 import apiClient from './util/api/config/apiClient';
+import i18n from './i18n';
+import { DEFAULT_LANGUAGE } from './i18n/languages';
 
 // The WebSocket layer would otherwise open a real SockJS connection as soon as it is imported
 vi.mock('@stomp/stompjs', async () => await import('./test/stomp'));
@@ -60,6 +62,7 @@ afterEach(() => {
   resetStomp();
   resetCharts();
   vi.useRealTimers();
+  void i18n.changeLanguage(DEFAULT_LANGUAGE);
 
   // A request without a stubbed route means the test does not control what the app sees
   expect(unhandled, 'requests without a fake backend route').toEqual([]);
