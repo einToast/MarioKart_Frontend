@@ -221,9 +221,18 @@ export interface NotificationSubscriptionDTO {
     p256dh: string;
     auth: string;
     teamId: number;
+    language: string;
 }
+
+export interface NotificationSubscriptionLanguageDTO {
+    endpoint: string;
+    language: string;
+}
+
+export type NotificationTranslation = { title: string; message: string };
 
 export interface NotificationRequestDTO {
     title: string;
     message: string;
+    translations?: Translations<NotificationTranslation>;
 }

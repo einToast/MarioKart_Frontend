@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { changeLanguage, currentLanguage } from '../i18n';
 import { Language, LANGUAGES, SUPPORTED_LANGUAGES } from '../i18n/languages';
 import './LanguageSwitch.css';
+import { NotificationService } from '../util/service';
 
 const LanguageSwitch: React.FC = () => {
     const { t, i18n } = useTranslation();
@@ -35,7 +36,9 @@ const LanguageSwitch: React.FC = () => {
 
     const choose = (language: Language) => {
         if (language !== i18n.language) {
-            changeLanguage(language).catch(error => console.error('Error changing language:', error));
+            changeLanguage(language)
+                .then(() => NotificationService.updateLanguage(language))
+                .catch(error => console.error('Error changing language:', error));
         }
         close();
     };

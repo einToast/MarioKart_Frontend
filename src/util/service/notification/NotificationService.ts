@@ -1,7 +1,7 @@
 import { PublicNotificationApi } from "../../api";
 import { NotificationSubscriptionDTO } from "../../api/config/dto";
 import { PublicCookiesService } from "../cookies";
-import i18n from "../../../i18n";
+import i18n, { currentLanguage } from "../../../i18n";
 
 export class NotificationService {
     private static convertedVapidKey: Uint8Array<ArrayBuffer> | undefined;
@@ -67,10 +67,22 @@ export class NotificationService {
             endpoint: subscription.endpoint,
             p256dh: btoa(String.fromCodePoint(...new Uint8Array(subscription.getKey('p256dh') || new ArrayBuffer(0)))),
             auth: btoa(String.fromCodePoint(...new Uint8Array(subscription.getKey('auth') || new ArrayBuffer(0)))),
-            teamId: PublicCookiesService.getUser()?.teamId || 0
+            teamId: PublicCookiesService.getUser()?.teamId || 0,
+            language: currentLanguage()
         };
 
         await PublicNotificationApi.subscribe(subscriptionData);
+    }
+
+    static async updateLanguage(language: string): Promise<void> {
+        if (!PublicCookiesService.getNotificationsEnabled() || !('serviceWorker' in navigator)) {
+            return;
+        }
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscription = await registration?.pushManager.getSubscription();
+        if (subscription) {
+            await PublicNotificationApi.updateLanguage({ endpoint: subscription.endpoint, language });
+        }
     }
 
     private static urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {

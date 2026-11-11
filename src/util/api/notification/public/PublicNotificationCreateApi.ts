@@ -1,6 +1,6 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
-import { NotificationSubscriptionDTO } from '../../config/dto';
+import { NotificationSubscriptionDTO, NotificationSubscriptionLanguageDTO } from '../../config/dto';
 import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'NOTIFICATION');
@@ -21,4 +21,8 @@ export const subscribe = async (subscriptionData: NotificationSubscriptionDTO): 
         }
         throw error;
     }
+};
+
+export const updateLanguage = async (update: NotificationSubscriptionLanguageDTO): Promise<void> => {
+    await apiClient.put(`${BASE_URL}/subscription/language`, update);
 };
