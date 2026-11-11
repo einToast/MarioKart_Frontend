@@ -134,7 +134,7 @@ describe('admin Venue', () => {
         ]);
         const plan = parseFloorPlan(savedSettings().floorPlan);
         expect(plan?.elements.filter(element => element.type === 'switch').map(element => element.switchIndex)).toEqual([0, 1, 2, 3]);
-        expect(plan?.elements.filter(element => element.type === 'text').map(element => element.text)).toEqual(['getränke', 'food', 'toilett', '↓', 'food', 'toilett', '↓', 'Text']);
+        expect(plan?.elements.filter(element => element.type === 'text').map(element => element.text)).toEqual(['getränke', 'essen', 'toilette', '↓', 'essen', 'toilette', '↓', 'Text']);
         expect(screen.getByLabelText('Name der Switch 1')).toHaveValue('Bühne');
     });
 

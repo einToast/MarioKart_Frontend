@@ -142,7 +142,7 @@ describe('Tab3 (details)', () => {
 
     it('links to the admin login', () => {
         renderPage();
-        const link = screen.getByRole('link', { name: 'Admin Login' });
+        const link = screen.getByRole('link', { name: 'Admin-Login' });
 
         expect(link).toHaveAttribute('href', '/admin/login');
         fireEvent.click(link);

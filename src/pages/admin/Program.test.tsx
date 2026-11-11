@@ -158,4 +158,28 @@ describe('admin Program', () => {
 
         expect(currentPath()).toBe('/admin/dashboard');
     });
+
+    it('saves English translations next to the German texts', async () => {
+        backend.put(ADMIN_SETTINGS_URL, {});
+        stubProgram([...TWO_ENTRIES, { icon: 'pizza', time: '12:00', text: 'Pause', translations: { en: { text: 'Break' } } }]);
+        renderPage();
+        await waitFor(() => expect(texts()).toHaveLength(3));
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(texts()).toEqual(['', '', 'Break']);
+        expect(screen.getByLabelText('Text von Programmpunkt 1')).toHaveAttribute('placeholder', 'Begrüßung');
+        set('Text von Programmpunkt 1', ' Welcome ');
+        set('Text von Programmpunkt 3', '');
+        fireEvent.click(screen.getByText('Deutsch (Standard)'));
+        expect(texts()).toEqual(['Begrüßung', 'Runden', 'Pause']);
+        fireEvent.click(screen.getByText(SAVE));
+
+        await expectSuccessToast('Programm gespeichert');
+        expect(savedProgram()).toEqual([
+            { icon: 'megaphone', time: '10:00', text: 'Begrüßung', translations: { en: { text: 'Welcome' } } },
+            { icon: 'play', time: '10:15 - 12:00', text: 'Runden' },
+            { icon: 'pizza', time: '12:00', text: 'Pause' },
+        ]);
+    });
 });

@@ -12,7 +12,10 @@ import {
     updateElement,
 } from '../../util/layout/floorPlan';
 import FloorPlanView, { elementLabel } from './FloorPlanView';
-import { Drag, FloorPlan, FloorPlanElement } from '../../util/api/config/interfaces';
+import { Drag, FloorPlan, FloorPlanElement, TextTranslation } from '../../util/api/config/interfaces';
+import { useTranslation } from 'react-i18next';
+import { DEFAULT_LANGUAGE, Language } from '../../i18n/languages';
+import { translatedChange, translatedValue } from '../../i18n/translatable';
 
 const KEY_STEP = 10;
 const FINE_KEY_STEP = 1;
@@ -24,7 +27,8 @@ const KEY_DIRECTIONS: Record<string, { x: number; y: number }> = {
     ArrowDown: { x: 0, y: 1 },
 };
 
-const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], onChange: (plan: FloorPlan) => void }> = ({ plan, switches, onChange }) => {
+const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], language?: Language, onChange: (plan: FloorPlan) => void }> = ({ plan, switches, language = DEFAULT_LANGUAGE, onChange }) => {
+    const { t } = useTranslation();
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     const drag = useRef<Drag | null>(null);
@@ -120,14 +124,15 @@ const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], onChan
     return (
         <div className="floorPlanEditor">
             <div className="floorPlanToolbar">
-                <button type="button" onClick={() => handleAdd('table')} disabled={full}>+ Tisch</button>
-                <button type="button" onClick={() => handleAdd('row')} disabled={full}>+ Sitzreihe</button>
-                <button type="button" onClick={() => handleAdd('text')} disabled={full}>+ Text</button>
-                <button type="button" onClick={handleReset}>Standard-Anordnung</button>
+                <button type="button" onClick={() => handleAdd('table')} disabled={full}>{t('admin.floorPlan.addTable')}</button>
+                <button type="button" onClick={() => handleAdd('row')} disabled={full}>{t('admin.floorPlan.addRow')}</button>
+                <button type="button" onClick={() => handleAdd('text')} disabled={full}>{t('admin.floorPlan.addText')}</button>
+                <button type="button" onClick={handleReset}>{t('admin.floorPlan.default')}</button>
             </div>
             <FloorPlanView
                 plan={plan}
                 switches={switches}
+                language={language}
                 selectedId={selectedId}
                 svgRef={svgRef}
                 onElementPointerDown={handleElementPointerDown}
@@ -139,28 +144,29 @@ const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], onChan
             <div className="floorPlanProperties">
                 {selected ? (
                     <>
-                        <p><strong>{elementLabel(selected, switches)}</strong></p>
+                        <p><strong>{elementLabel(selected, switches, language)}</strong></p>
                         {selected.type === 'text' && (
                             <label>
-                                {'Text'}
+                                {t('admin.floorPlan.text')}
                                 <input
                                     type="text"
                                     maxLength={MAX_FLOOR_PLAN_TEXT_LENGTH}
-                                    value={selected.text ?? ''}
-                                    onChange={(event) => onChange(updateElement(plan, selected.id, { text: event.target.value }))}
+                                    placeholder={language === DEFAULT_LANGUAGE ? undefined : selected.text}
+                                    value={translatedValue<TextTranslation, 'text'>({ text: selected.text ?? '', translations: selected.translations }, 'text', language) ?? ''}
+                                    onChange={(event) => onChange(updateElement(plan, selected.id, translatedChange<TextTranslation, 'text'>(selected, 'text', language, event.target.value)))}
                                 />
                             </label>
                         )}
-                        {(selected.type === 'table' || selected.type === 'row') && numberField('Breite', 'width', selected, 4, FLOOR_PLAN_WIDTH)}
-                        {selected.type === 'table' && numberField('Höhe', 'height', selected, 4, FLOOR_PLAN_HEIGHT)}
-                        {selected.type === 'text' && numberField('Größe', 'height', selected, 10, 200)}
-                        {numberField('Drehung', 'rotation', selected, -180, 180)}
+                        {(selected.type === 'table' || selected.type === 'row') && numberField(t('admin.floorPlan.width'), 'width', selected, 4, FLOOR_PLAN_WIDTH)}
+                        {selected.type === 'table' && numberField(t('admin.floorPlan.height'), 'height', selected, 4, FLOOR_PLAN_HEIGHT)}
+                        {selected.type === 'text' && numberField(t('admin.floorPlan.size'), 'height', selected, 10, 200)}
+                        {numberField(t('admin.floorPlan.rotation'), 'rotation', selected, -180, 180)}
                         {selected.type !== 'switch' && (
-                            <button type="button" onClick={() => handleRemove(selected)}>Entfernen</button>
+                            <button type="button" onClick={() => handleRemove(selected)}>{t('common.remove')}</button>
                         )}
                     </>
                 ) : (
-                    <p>Element antippen und ziehen, mit den Pfeiltasten verschieben oder hier anpassen.</p>
+                    <p>{t('admin.floorPlan.hint')}</p>
                 )}
             </div>
         </div>

@@ -208,7 +208,7 @@ describe('SurveyAdminContainer', () => {
     it('lists every survey under its heading', () => {
         renderContainer();
 
-        expect(screen.getByRole('heading', { name: 'Aktuelle Abstimmungen' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Aktuelle Umfragen' })).toBeInTheDocument();
         expect(screen.getByText('Wer gewinnt?')).toBeInTheDocument();
         expect(screen.getByText('Beste Strecke?')).toBeInTheDocument();
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
@@ -234,6 +234,7 @@ describe('SurveyAdminContainer', () => {
                     live: false,
                     finalTeamsOnly: false,
                     oneAnswerPerKey: false,
+                    translations: {},
                 },
             }]);
         });

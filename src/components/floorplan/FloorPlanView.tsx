@@ -4,28 +4,32 @@ import { FLOOR_PLAN_HEIGHT, FLOOR_PLAN_WIDTH } from '../../util/layout/floorPlan
 import { resolveSwitch } from '../../util/layout/switches';
 import './FloorPlan.css';
 import { FloorPlanElement, FloorPlanViewProps } from '../../util/api/config/interfaces';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../i18n';
+import { localize } from '../../i18n/translatable';
 
 const SWITCH_RADIUS = 30;
 const SELECTION_PADDING = 10;
 // Rows are thin lines, the invisible area around them makes them easier to grab
 const MIN_HIT_SIZE = 28;
 
-export const elementLabel = (element: FloorPlanElement, switches: SwitchDTO[]): string => {
+export const elementLabel = (element: FloorPlanElement, switches: SwitchDTO[], language: string = i18n.language): string => {
     switch (element.type) {
         case 'switch':
-            return `Switch ${resolveSwitch(switches, element.switchIndex ?? 0).name}`;
+            return i18n.t('floorPlan.switch', { name: resolveSwitch(switches.map(entry => localize(entry, language)), element.switchIndex ?? 0).name });
         case 'table':
-            return 'Tisch';
+            return i18n.t('floorPlan.table');
         case 'row':
-            return 'Sitzreihe';
+            return i18n.t('floorPlan.row');
         default:
-            return `Text ${element.text ?? ''}`.trim();
+            return i18n.t('floorPlan.text', { text: localize(element, language).text ?? '' }).trim();
     }
 };
 
 const FloorPlanView: React.FC<FloorPlanViewProps> = ({
     plan,
     switches,
+    language,
     selectedId,
     svgRef,
     onElementPointerDown,
@@ -34,6 +38,9 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
     onPointerMove,
     onPointerUp,
 }) => {
+    const { t, i18n: translation } = useTranslation();
+    const displayLanguage = language ?? translation.language;
+    const localizedSwitches = switches.map(entry => localize(entry, displayLanguage));
     const gradientId = useId();
     const editable = onElementPointerDown !== undefined;
     const outline = `url(#${gradientId}-element)`;
@@ -44,12 +51,12 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
     const renderShape = (element: FloorPlanElement) => {
         switch (element.type) {
             case 'switch': {
-                const { name, color } = resolveSwitch(switches, element.switchIndex ?? 0);
+                const { name, color } = resolveSwitch(localizedSwitches, element.switchIndex ?? 0);
                 return (
                     <>
                         <circle r={SWITCH_RADIUS} fill={color} />
                         <text className="floorPlanSwitchName" y={SWITCH_RADIUS + 36} fill={color} textAnchor="middle">
-                            switch {name.toLowerCase()}
+                            {t('floorPlan.switchMarker', { name: name.toLowerCase() })}
                         </text>
                     </>
                 );
@@ -85,7 +92,7 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
                         textAnchor="middle"
                         dominantBaseline="central"
                     >
-                        {element.text}
+                        {localize(element, displayLanguage).text}
                     </text>
                 );
         }
@@ -103,7 +110,7 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
             className={editable ? 'floorPlan floorPlanEditable' : 'floorPlan'}
             viewBox={`0 0 ${FLOOR_PLAN_WIDTH} ${FLOOR_PLAN_HEIGHT}`}
             role="img"
-            aria-label="Raumplan"
+            aria-label={t('details.floorPlan')}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
@@ -154,7 +161,7 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
                         {...(editable ? {
                             role: 'button',
                             tabIndex: 0,
-                            'aria-label': elementLabel(element, switches),
+                            'aria-label': elementLabel(element, switches, displayLanguage),
                             'aria-pressed': selected,
                             onPointerDown: (event: React.PointerEvent<SVGGElement>) => onElementPointerDown(event, element),
                             onKeyDown: (event: React.KeyboardEvent<SVGGElement>) => onElementKeyDown?.(event, element),

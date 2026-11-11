@@ -6,14 +6,19 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { User } from "../../util/api/config/interfaces";
 import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
+import { useLocalize } from '../../hooks/useLocalize';
 
 const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ multipleChoiceQuestion, toggleAccordion }) => {
+    const { t } = useTranslation();
+    const localize = useLocalize();
+    const display = localize(multipleChoiceQuestion);
     const [vote, setVote] = useState<number>(-1);
     const [votedId, setVotedId] = useState<number>(-1);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
@@ -36,7 +41,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                     getVote();
                     toggleAccordion();
                 } else {
-                    setError('Vote konnte nicht gespeichert werden');
+                    setError(t('survey.voteNotSaved'));
                     setShowToast(true);
                 }
             })
@@ -86,13 +91,13 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                 }}
             >
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{multipleChoiceQuestion.questionText}</h3>
+                <h3 className="weiss">{display.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        multipleChoiceQuestion.options.map((option, index: number) => {
+                        display.options.map((option, index: number) => {
                             return (
                                 <IonButton slot="start" shape="round"
                                     className={!multipleChoiceQuestion.active ? 'bsurvey' : ''}
@@ -136,7 +141,7 @@ const MultipleChoiceSurveyComponent: React.FC<{ multipleChoiceQuestion: Question
                             }
                         }}
                     >
-                        Antwort speichern
+                        {t('survey.saveAnswer')}
                     </IonButton>
                 )}
             </div>

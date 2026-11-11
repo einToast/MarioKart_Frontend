@@ -6,14 +6,19 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { User } from "../../util/api/config/interfaces";
 import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
+import { useLocalize } from '../../hooks/useLocalize';
 
 const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ checkBoxQuestion, toggleAccordion }) => {
+    const { t } = useTranslation();
+    const localize = useLocalize();
+    const display = localize(checkBoxQuestion);
     const [votes, setVotes] = useState<number[]>([]);
     const [votedId, setVotedId] = useState<number[]>([-1]);
     const [results, setResults] = useState<number[]>([0, 0, 0, 0]);
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
@@ -48,7 +53,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
                     getVote();
                     toggleAccordion();
                 } else {
-                    setError('Vote konnte nicht gespeichert werden');
+                    setError(t('survey.voteNotSaved'));
                     setShowToast(true);
                 }
             })
@@ -97,13 +102,13 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
                 }}
             >
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{checkBoxQuestion.questionText}</h3>
+                <h3 className="weiss">{display.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div className={"inputContainer"}>
                     {
-                        checkBoxQuestion.options.map((option, index) => {
+                        display.options.map((option, index) => {
                             return (
                                 <IonButton slot="start" shape="round"
                                     className={!checkBoxQuestion.active ? 'bsurvey' : ''}
@@ -147,7 +152,7 @@ const CheckBoxSurveyComponent: React.FC<{ checkBoxQuestion: QuestionReturnDTO, t
                             }
                         }}
                     >
-                        Antworten speichern
+                        {t('survey.saveAnswers')}
                     </IonButton>
                 )}
             </div>

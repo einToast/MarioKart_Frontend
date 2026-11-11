@@ -30,6 +30,7 @@ describe('AdminSurveyService', () => {
                     live: false,
                     finalTeamsOnly: true,
                     oneAnswerPerKey: true,
+                    translations: {},
                 },
             }]);
         });
@@ -78,6 +79,7 @@ describe('AdminSurveyService', () => {
                     live: true,
                     finalTeamsOnly: true,
                     oneAnswerPerKey: true,
+                    translations: {},
                 },
             }]);
         });

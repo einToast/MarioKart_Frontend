@@ -24,19 +24,19 @@ describe('SurveyAddModal', () => {
         return { ...view, closeModal };
     };
 
-    const chooseType = (type: QuestionType) => fill(selectBelow('Abstimmungsoptionen'), type);
+    const chooseType = (type: QuestionType) => fill(selectBelow('Umfrageoptionen'), type);
 
     it('stays hidden while closed', () => {
         renderModal(false);
 
-        expect(screen.queryByText('Neue Abstimmung')).not.toBeInTheDocument();
+        expect(screen.queryByText('Neue Umfrage')).not.toBeInTheDocument();
     });
 
     it('starts as an empty multiple choice question with four options', () => {
         renderModal();
 
         expect(questionInput()).toHaveValue('');
-        expect(selectBelow('Abstimmungsoptionen')).toHaveValue('MULTIPLE_CHOICE');
+        expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
         expect(optionInputs().map(input => input.value)).toEqual(['', '', '', '']);
         expect(selectBelow('Antworten pro Gerät')).toHaveValue('false');
     });
@@ -44,7 +44,7 @@ describe('SurveyAddModal', () => {
     it('offers every question type', () => {
         renderModal();
 
-        expect(Array.from(selectBelow('Abstimmungsoptionen').options).map(option => option.value)).toEqual([
+        expect(Array.from(selectBelow('Umfrageoptionen').options).map(option => option.value)).toEqual([
             'MULTIPLE_CHOICE', 'FREE_TEXT', 'CHECKBOX', 'TEAM', 'TEAM_ONE_FREE_TEXT',
         ]);
     });
@@ -130,8 +130,35 @@ describe('SurveyAddModal', () => {
                 live: false,
                 finalTeamsOnly: false,
                 oneAnswerPerKey: false,
+                translations: {},
             },
         }]);
+    });
+
+    it('creates the question with English translations, using the German texts as placeholders', async () => {
+        backend.post('/admin/survey', makeQuestion());
+        const { closeModal } = renderModal();
+        fill(questionInput(), 'Wer gewinnt?');
+        fireEvent.click(screen.getByText('Option entfernen'));
+        fireEvent.click(screen.getByText('Option entfernen'));
+        fill(optionInputs()[0], 'Rot');
+        fill(optionInputs()[1], 'Blau');
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(buttonOf('Option hinzufügen').disabled).toBe(true);
+        expect(selectBelow('Umfrageoptionen')).toBeDisabled();
+        fill(screen.getByPlaceholderText('Wer gewinnt?'), 'Who wins?');
+        fill(screen.getByPlaceholderText('Blau'), 'Blue');
+        expect(screen.getByPlaceholderText('Rot')).toHaveValue('');
+        fireEvent.click(screen.getByText(SAVE));
+
+        await waitFor(() => expect(closeModal).toHaveBeenLastCalledWith({ surveyCreated: true }));
+        expect(backend.requests[0].body).toMatchObject({
+            questionText: 'Wer gewinnt?',
+            options: ['Rot', 'Blau'],
+            translations: { en: { questionText: 'Who wins?', options: ['', 'Blue'] } },
+        });
     });
 
     it('creates a team question restricted to final teams with one answer per key', async () => {
@@ -175,7 +202,7 @@ describe('SurveyAddModal', () => {
 
         await waitFor(() => expect(closeModal).toHaveBeenLastCalledWith({ surveyCreated: true }));
         expect(questionInput()).toHaveValue('');
-        expect(selectBelow('Abstimmungsoptionen')).toHaveValue('MULTIPLE_CHOICE');
+        expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
         expect(optionInputs()).toHaveLength(4);
         expect(selectBelow('Antworten pro Gerät')).toHaveValue('false');
     });
@@ -260,14 +287,14 @@ describe('SurveyChangeModal', () => {
 
         expect(questionInput()).toHaveValue('Wer gewinnt?');
         expect(optionInputs().map(input => input.value)).toEqual(['Mario', 'Luigi', 'Peach']);
-        expect(selectBelow('Abstimmungsoptionen')).toHaveValue('MULTIPLE_CHOICE');
+        expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
         expect(selectBelow('Antworten pro Gerät')).toHaveValue('true');
     });
 
     it('does not allow changing the question type', () => {
         renderModal();
 
-        expect(selectBelow('Abstimmungsoptionen')).toBeDisabled();
+        expect(selectBelow('Umfrageoptionen')).toBeDisabled();
     });
 
     it('shows the team selection of a team question read-only', () => {
@@ -309,6 +336,7 @@ describe('SurveyChangeModal', () => {
                 live: false,
                 finalTeamsOnly: false,
                 oneAnswerPerKey: true,
+                translations: {},
             },
         }]);
     });

@@ -22,8 +22,12 @@ import { parseFloorPlan } from '../util/layout/floorPlan';
 import { defaultProgram, PROGRAM_ICONS, resolveProgram, toProgramRow } from '../util/layout/program';
 import { NotificationService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../util/service";
 import './Tab3.css';
+import { useTranslation } from 'react-i18next';
+import { useLocalize } from '../hooks/useLocalize';
 
 const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
+    const { t } = useTranslation();
+    const localize = useLocalize();
 
     const [notificationEnabled, setNotificationEnabled] = useState<boolean>(PublicCookiesService.getNotificationsEnabled());
     const [showNotificationHelp, setShowNotificationHelp] = useState<boolean>(false);
@@ -32,7 +36,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
     const [switches, setSwitches] = useState<SwitchDTO[]>([]);
     const [program, setProgram] = useState<ProgramRow[]>(() => defaultProgram().map(toProgramRow));
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
@@ -97,28 +101,28 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     if (subscription) {
                         // alert('Benachrichtigungen wurden erfolgreich aktiviert!');
                         setIsError(false);
-                        setError('Benachrichtigungen erfolgreich aktiviert!');
+                        setError(t('details.notificationsActivated'));
                         setShowToast(true);
                         PublicCookiesService.setNotificationsEnabled(true);
                         setNotificationEnabled(true);
                     } else {
                         // alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
                         setIsError(true);
-                        setError('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
+                        setError(t('details.notificationsFailed'));
                         setShowToast(true);
                     }
                 }
             } else {
                 // alert('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
                 setIsError(true);
-                setError('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
+                setError(t('details.allowNotifications'));
                 setShowToast(true);
             }
         } catch (error) {
             console.error("Error enabling notifications:", error);
-            alert('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            alert(t('details.unexpectedError'));
             setIsError(true);
-            setError('Es ist ein Fehler aufgetreten. Bitte lade die Seite komplett neu.');
+            setError(t('details.unexpectedError'));
             setShowToast(true);
         }
     };
@@ -134,12 +138,12 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Details
+                        {t('details.title')}
                     </LinearGradient>
                 </h1>
                 {floorPlan && floorPlan.elements.length > 0 && (
                     <>
-                        <h3>Raumplan</h3>
+                        <h3>{t('details.floorPlan')}</h3>
                         <div>
                             <FloorPlanView plan={floorPlan} switches={switches} />
                         </div>
@@ -147,19 +151,19 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 )}
                 {program.length > 0 && (
                     <>
-                        <h3>Programm</h3>
+                        <h3>{t('details.program')}</h3>
                         <div className={"progressContainer"}>
                             {program.map(({ key, entry }) => (
                                 <div key={key}>
                                     <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
-                                    <p><span>{entry.time}</span> {entry.text}</p>
+                                    <p><span>{entry.time}</span> {localize(entry).text}</p>
                                 </div>
                             ))}
                         </div>
                         <br />
                     </>
                 )}
-                <h3>QR-Code für die Webseite</h3>
+                <h3>{t('details.qrCode')}</h3>
                 <div className={"progressContainer"}>
                     {/* <div>
                         <p>Gebt diesen QR-Code gerne an Leute weiter, die noch nicht den Link zu dieser Seite haben.</p>
@@ -198,7 +202,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 {/*</div>*/}
                 {/*<div style={{textAlign: "center"}}>*/}
 
-                <h3>Einstellungen</h3>
+                <h3>{t('details.settings')}</h3>
 
                 <div className="settings-container" style={{ padding: '0 16px' }}>
                     <IonButton
@@ -208,7 +212,7 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         disabled={notificationEnabled}
                     >
                         <IonIcon slot="start" icon={notificationEnabled ? notificationsSharp : notificationsOutline} />
-                        {notificationEnabled ? 'Benachrichtigungen aktiviert' : 'Benachrichtigungen aktivieren'}
+                        {notificationEnabled ? t('details.notificationsEnabled') : t('details.enableNotifications')}
                     </IonButton>
                     <IonButton
                         expand="block"
@@ -217,21 +221,20 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                         style={{ marginBottom: '16px' }}
                     >
                         <IonIcon slot="start" icon={helpCircleOutline} />
-                        Hilfe zu Benachrichtigungen
+                        {t('details.notificationHelp')}
                     </IonButton>
                 </div>
 
-                <br /> Made with <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> by Fanny, Camillo
-                & Laurin <br />
+                <br /> {t('details.madeWith')} <IonIcon icon={heart} aria-hidden="true" style={{ color: "#e25555" }} /> {t('details.madeBy')} <br />
 
                 {/*</div>*/}
                 <br />
 
                 <Link to="/admin/login">
-                    <u>Admin Login</u>
+                    <u>{t('details.adminLogin')}</u>
                 </Link>
                 <br />
-                <a href="https://github.com/einToast/MarioKart_Tournament">Source Code</a>
+                <a href="https://github.com/einToast/MarioKart_Tournament">{t('details.sourceCode')}</a>
             </IonContent>
             <NotificationHelpModal
                 showModal={showNotificationHelp}

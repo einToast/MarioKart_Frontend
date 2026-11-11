@@ -11,6 +11,7 @@ import {
 import { Message, StompSubscription } from "@stomp/stompjs";
 import { FloorPlanElementType } from "../../layout/floorPlan";
 import { ProgramIcon } from "../../layout/program";
+import { Translations } from "../../../i18n/translatable";
 
 export type RoundOrBreak = RoundReturnDTO | BreakReturnDTO | null;
 
@@ -192,6 +193,7 @@ export interface Drag {
 export interface FloorPlanViewProps {
   plan: FloorPlan;
   switches: SwitchDTO[];
+  language?: string;
   // The following props turn the plan into the canvas of the editor
   selectedId?: string | null;
   svgRef?: React.Ref<SVGSVGElement>;
@@ -218,6 +220,7 @@ export interface FloorPlanElement {
   rotation: number;
   switchIndex?: number;
   text?: string;
+  translations?: Translations<TextTranslation>;
 }
 
 export interface FloorPlanPoint {
@@ -240,10 +243,13 @@ export interface Station {
   furniture: { type: FloorPlanElementType; overrides: ElementOverrides }[];
 }
 
+export type TextTranslation = { text: string };
+
 export interface ProgramEntry {
   icon: ProgramIcon;
   time: string;
   text: string;
+  translations?: Translations<TextTranslation>;
 }
 
 export interface GamePhoto {

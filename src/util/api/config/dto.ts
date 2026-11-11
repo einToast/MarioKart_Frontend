@@ -1,4 +1,5 @@
 import { QuestionType, SurveyKeyMode } from "../../service/util";
+import { Translations } from "../../../i18n/translatable";
 
 
 export interface RoundInputFullDTO {
@@ -94,9 +95,12 @@ export interface BreakInputDTO {
     breakEnded: boolean;
 }
 
+export type SwitchTranslation = { name: string };
+
 export interface SwitchDTO {
     name: string;
     color: string;
+    translations?: Translations<SwitchTranslation>;
 }
 
 export interface TournamentDTO {
@@ -148,6 +152,8 @@ export interface ScheduleInputDTO {
     teamsPerField?: number[];
 }
 
+export type QuestionTranslation = { questionText: string; options: string[] };
+
 export interface QuestionInputDTO {
     questionText: string;
     questionType: QuestionType;
@@ -157,6 +163,7 @@ export interface QuestionInputDTO {
     live: boolean;
     finalTeamsOnly?: boolean;
     oneAnswerPerKey?: boolean;
+    translations?: Translations<QuestionTranslation>;
 }
 export interface AnswerInputDTO {
     questionId: number;
@@ -177,6 +184,7 @@ export interface QuestionReturnDTO {
     live: boolean;
     finalTeamsOnly: boolean;
     oneAnswerPerKey: boolean;
+    translations?: Translations<QuestionTranslation>;
 }
 
 export interface AnswerReturnDTO {

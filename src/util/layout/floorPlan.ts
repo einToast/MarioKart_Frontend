@@ -1,4 +1,5 @@
-import { ElementOverrides, FloorPlan, FloorPlanElement, FloorPlanPoint, Station } from '../api/config/interfaces';
+import { ElementOverrides, FloorPlan, FloorPlanElement, FloorPlanPoint, Station, TextTranslation } from '../api/config/interfaces';
+import { pruneTranslations, sanitizeTranslations } from '../../i18n/translatable';
 export const FLOOR_PLAN_VERSION = 1;
 export const FLOOR_PLAN_WIDTH = 1000;
 export const FLOOR_PLAN_HEIGHT = 640;
@@ -68,6 +69,10 @@ const sanitizeElement = (raw: unknown, index: number): FloorPlanElement | null =
     }
     if (type === 'text') {
         element.text = typeof candidate.text === 'string' ? candidate.text.slice(0, MAX_FLOOR_PLAN_TEXT_LENGTH) : '';
+        const translations = sanitizeTranslations<TextTranslation>(candidate.translations, { text: { maxLength: MAX_FLOOR_PLAN_TEXT_LENGTH } });
+        if (translations) {
+            element.translations = translations;
+        }
     }
     return element;
 };
@@ -116,7 +121,10 @@ export const parseFloorPlan = (json: string | null | undefined): FloorPlan | nul
 };
 
 export const serializeFloorPlan = (plan: FloorPlan): string =>
-    JSON.stringify(withOutline(plan.elements, plan.outline));
+    JSON.stringify(withOutline(plan.elements.map(({ translations, ...element }) => {
+        const pruned = pruneTranslations(translations);
+        return pruned ? { ...element, translations: pruned } : element;
+    }), plan.outline));
 
 export const createElement = (
     plan: FloorPlan,
@@ -176,8 +184,8 @@ const VENUE_BACK_RIGHT: Station = {
 
 // One of the two ways out to the food and the toilets, labelled along the walking direction
 const venueExit = (x: number): Station['furniture'] => [
-    { type: 'text', overrides: { x: x - 27, y: 440, width: 100, height: 48, rotation: -90, text: 'food' } },
-    { type: 'text', overrides: { x: x + 12, y: 425, width: 140, height: 48, rotation: -90, text: 'toilett' } },
+    { type: 'text', overrides: { x: x - 27, y: 440, width: 100, height: 48, rotation: -90, text: 'essen', translations: { en: { text: 'food' } } } },
+    { type: 'text', overrides: { x: x + 12, y: 425, width: 140, height: 48, rotation: -90, text: 'toilette', translations: { en: { text: 'toilet' } } } },
     { type: 'text', overrides: { x, y: 540, width: 40, height: 70, text: '↓' } },
 ];
 
@@ -185,7 +193,7 @@ const venueExit = (x: number): Station['furniture'] => [
 // and the two ways out
 const VENUE_FIXTURES: Station['furniture'] = [
     { type: 'table', overrides: { x: 57, y: 406, width: 51, height: 212 } },
-    { type: 'text', overrides: { x: 57, y: 406, width: 190, height: 48, rotation: -90, text: 'getränke' } },
+    { type: 'text', overrides: { x: 57, y: 406, width: 190, height: 48, rotation: -90, text: 'getränke', translations: { en: { text: 'drinks' } } } },
     ...venueExit(195),
     ...venueExit(857),
 ];
