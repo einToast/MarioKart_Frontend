@@ -99,21 +99,18 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                     const subscription = await NotificationService.subscribeToPushNotifications(registration);
 
                     if (subscription) {
-                        // alert('Benachrichtigungen wurden erfolgreich aktiviert!');
                         setIsError(false);
                         setError(t('details.notificationsActivated'));
                         setShowToast(true);
                         PublicCookiesService.setNotificationsEnabled(true);
                         setNotificationEnabled(true);
                     } else {
-                        // alert('Fehler beim Aktivieren der Benachrichtigungen. Bitte lade die Seite komplett neu.');
                         setIsError(true);
                         setError(t('details.notificationsFailed'));
                         setShowToast(true);
                     }
                 }
             } else {
-                // alert('Bitte erlaube Benachrichtigungen in deinen Browsereinstellungen.');
                 setIsError(true);
                 setError(t('details.allowNotifications'));
                 setShowToast(true);
@@ -165,42 +162,10 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 )}
                 <h3>{t('details.qrCode')}</h3>
                 <div className={"progressContainer"}>
-                    {/* <div>
-                        <p>Gebt diesen QR-Code gerne an Leute weiter, die noch nicht den Link zu dieser Seite haben.</p>
-                    </div> */}
                     <div>
                         <QRCodeComponent />
                     </div>
                 </div>
-                {/*<h3>Organisatoren</h3>*/}
-                {/*<div className={"organisatorenSingle"}>*/}
-                {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"/media/camillo.jpeg"} alt="camillo"/>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <p>Camillo Dobrovsky</p>*/}
-                {/*        <p>Main Character</p>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                {/*<div className={"organisatorenSingle"}>*/}
-                {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"/media/fanny.jpeg"} alt="fanny"/>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <p>Fanny Wolff</p>*/}
-                {/*        <p>Medienbeauftragte</p>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                {/*<div className={"organisatorenSingle"}>*/}
-                {/*    <div className={"img-wrapper"}>*/}
-                {/*        <img src={"/media/arne.jpeg"} alt="arne"/>*/}
-                {/*    </div>*/}
-                {/*    <div>*/}
-                {/*        <p>Arne Allwardt</p>*/}
-                {/*        <p>Moderator</p>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-                {/*<div style={{textAlign: "center"}}>*/}
 
                 <h3>{t('details.settings')}</h3>
 

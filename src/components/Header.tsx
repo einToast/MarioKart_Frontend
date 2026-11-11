@@ -1,5 +1,5 @@
-import { IonAvatar, IonHeader, IonIcon } from '@ionic/react';
-import { pieChartOutline } from 'ionicons/icons';
+import { IonAvatar, IonHeader } from '@ionic/react';
+import { pieChart, pieChartOutline } from 'ionicons/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from "react-router-dom";
 import { User } from '../util/api/config/interfaces';
@@ -7,6 +7,7 @@ import { PublicCookiesService } from '../util/service';
 import './Header.css';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitch from './LanguageSwitch';
+import { RouteIcon } from './RouteIcon';
 
 const Header: React.FC = () => {
     const { t } = useTranslation();
@@ -76,7 +77,7 @@ const Header: React.FC = () => {
             <div className="headerActions">
                 <LanguageSwitch />
                 <Link to="/survey" title={t('header.surveys')} className="headerIconButton">
-                    <IonIcon aria-hidden="true" icon={pieChartOutline} />
+                    <RouteIcon path="/survey" icon={pieChartOutline} selectedIcon={pieChart} />
                 </Link>
             </div>
         </IonHeader>

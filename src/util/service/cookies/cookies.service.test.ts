@@ -89,6 +89,12 @@ describe('PublicCookiesService', () => {
             await expect(PublicCookiesService.checkToken()).resolves.toBe(true);
         });
 
+        it('resolves to false when there is no admin session', async () => {
+            backend.get('/public/user/login/check', { user: null });
+
+            await expect(PublicCookiesService.checkToken()).resolves.toBe(false);
+        });
+
         it('resolves to false when the session has expired', async () => {
             backend.fail('GET', '/public/user/login/check', 401);
 
