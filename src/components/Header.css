@@ -25,9 +25,6 @@ ion-header {
 .loggedInUserHead {
   position: relative;
   cursor: pointer;
-}
-
-.loggedInUserHead {
   min-width: 0;
 }
 

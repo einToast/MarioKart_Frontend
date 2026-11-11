@@ -8,7 +8,7 @@ const TranslationLanguageTabs: React.FC<{ value: Language, onChange: (language: 
 
     return (
         <div className="translationLanguages">
-            <div role="group" aria-label={t('admin.translations.label')}>
+            <fieldset aria-label={t('admin.translations.label')}>
                 <span>{t('admin.translations.label')}</span>
                 {SUPPORTED_LANGUAGES.map(language => (
                     <button
@@ -23,7 +23,7 @@ const TranslationLanguageTabs: React.FC<{ value: Language, onChange: (language: 
                             : LANGUAGES[language].name}
                     </button>
                 ))}
-            </div>
+            </fieldset>
             <p className={value === DEFAULT_LANGUAGE ? 'translationHintHidden' : undefined} aria-hidden={value === DEFAULT_LANGUAGE}>
                 {t('admin.translations.hint')}
             </p>

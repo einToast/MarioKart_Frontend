@@ -25,8 +25,40 @@ const LanguageSwitch: React.FC = () => {
                 setOpen(false);
             }
         };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            const focused = optionRefs.current.indexOf(document.activeElement as HTMLButtonElement);
+            switch (event.key) {
+                case 'Escape':
+                    event.preventDefault();
+                    close();
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    focusOption(focused + 1);
+                    break;
+                case 'ArrowUp':
+                    event.preventDefault();
+                    focusOption(focused - 1);
+                    break;
+                case 'Home':
+                    event.preventDefault();
+                    focusOption(0);
+                    break;
+                case 'End':
+                    event.preventDefault();
+                    focusOption(SUPPORTED_LANGUAGES.length - 1);
+                    break;
+                case 'Tab':
+                    setOpen(false);
+                    break;
+            }
+        };
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, [open]);
 
     const close = () => {
@@ -48,40 +80,8 @@ const LanguageSwitch: React.FC = () => {
         optionRefs.current[(index + count) % count]?.focus();
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (!open) {
-            return;
-        }
-        const focused = optionRefs.current.findIndex(option => option === document.activeElement);
-        switch (event.key) {
-            case 'Escape':
-                event.preventDefault();
-                close();
-                break;
-            case 'ArrowDown':
-                event.preventDefault();
-                focusOption(focused + 1);
-                break;
-            case 'ArrowUp':
-                event.preventDefault();
-                focusOption(focused - 1);
-                break;
-            case 'Home':
-                event.preventDefault();
-                focusOption(0);
-                break;
-            case 'End':
-                event.preventDefault();
-                focusOption(SUPPORTED_LANGUAGES.length - 1);
-                break;
-            case 'Tab':
-                setOpen(false);
-                break;
-        }
-    };
-
     return (
-        <div className="languageSwitch" ref={rootRef} onKeyDown={handleKeyDown}>
+        <div className="languageSwitch" ref={rootRef}>
             <button
                 type="button"
                 ref={toggleRef}
