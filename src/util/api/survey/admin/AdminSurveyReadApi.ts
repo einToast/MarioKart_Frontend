@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { AnswerReturnDTO, QuestionReturnDTO } from "../../config/dto";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SURVEY');
 
@@ -11,9 +12,9 @@ export const getQuestions = async (): Promise<QuestionReturnDTO[]> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Fragen konnten nicht geladen werden');
+                throw new Error(i18n.t('errors.questionsNotLoaded'));
             }
         }
         throw error;
@@ -27,13 +28,13 @@ export const getAnswersOfQuestion = async (questionId: number): Promise<AnswerRe
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Frage konnte nicht gefunden werden');
+                throw new Error(i18n.t('errors.questionNotFoundAlt'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 400) {
-                throw new Error('Frage ist nicht auswertbar');
+                throw new Error(i18n.t('errors.questionNotEvaluable'));
             } else {
-                throw new Error('Frage konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.questionNotLoaded'));
             }
         }
         throw error;
@@ -47,13 +48,13 @@ export const getStatisticsOfQuestion = async (questionId: number): Promise<numbe
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Frage konnte nicht gefunden werden');
+                throw new Error(i18n.t('errors.questionNotFoundAlt'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 400) {
-                throw new Error('Frage ist nicht auswertbar');
+                throw new Error(i18n.t('errors.questionNotEvaluable'));
             } else {
-                throw new Error('Frage konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.questionNotLoaded'));
             }
         }
         throw error;
@@ -67,9 +68,9 @@ export const getNumberOfAnswers = async (questionId: number): Promise<number> =>
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Frage konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.questionNotLoaded'));
             }
         }
         throw error;

@@ -6,8 +6,10 @@ import Header from "../components/Header";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicScheduleService } from "../util/service";
 import './Tab3.css';
+import { useTranslation } from 'react-i18next';
 
 const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
+    const { t } = useTranslation();
 
     const location = useLocation();
     const [user] = useState<User | null>(PublicCookiesService.getUser());
@@ -52,38 +54,33 @@ const Tab4: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        So wird gespielt
+                        {t('howToPlay.title')}
                     </LinearGradient>
                 </h1>
                 <br />
                 <div className="video-wrapper">
                     <iframe
                         src="https://www.youtube.com/embed/3p25Jjj6UGA?si=c4boLd7F1PqX2A7c"
-                        title="YouTube Video"
+                        title={t('howToPlay.videoTitle')}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                         allowFullScreen
                     />
 
                 </div>
-                <h2>Spielregeln</h2>
+                <h2>{t('howToPlay.rulesTitle')}</h2>
                 <ul>
-                    <li>Es treten 4 oder 8 Teams gegeneinander an</li>
-                    <li>Es wird im Versus-Rennen gespielt</li>
-                    <li>Jedes Team wählt den Charakter aus mit dem es sich angemeldet hat</li>
-                    <li>Alle Teams fahren im Standard-Kart</li>
-                    <li>Die Geschwindigkeit beträgt 100ccm</li>
-                    <li>Es wird mit Standardeinstellungen gespielt</li>
-                    <li>Die Streckenauswahl ist zufällig</li>
-                    <li>Die Teams fahren 4 Rennen gegeneinander</li>
+                    {t('howToPlay.rules', { returnObjects: true }).map(rule => (
+                        <li key={rule}>{rule}</li>
+                    ))}
                 </ul>
-                <h2>Steuerung</h2>
+                <h2>{t('howToPlay.controls')}</h2>
                 <h3>Pro Controller</h3>
                 <div>
-                    <img src={"/media/procon_how_to_play.webp"} alt="pro controller" />
+                    <img src={"/media/procon_how_to_play.webp"} alt={t('howToPlay.proControllerImage')} />
                 </div>
                 <h3>JoyCon</h3>
                 <div>
-                    <img src={"/media/joycon_how_to_play.webp"} alt="joycon" />
+                    <img src={"/media/joycon_how_to_play.webp"} alt={t('howToPlay.joyConImage')} />
                 </div>
                 <div style={{ marginBottom: "10px" }}></div>
             </IonContent>

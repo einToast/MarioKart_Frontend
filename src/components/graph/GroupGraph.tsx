@@ -6,8 +6,10 @@ import { loadImage } from "../../util/service/util";
 import { drawScore } from "./drawScore";
 import './RankingGraph.css';
 import './registerBarChart';
+import { useTranslation } from 'react-i18next';
 
 const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
+    const { t } = useTranslation();
     const chartRef = useRef<ChartJS<"bar">>(null);
     const [loadedImages, setLoadedImages] = useState<HTMLImageElement[]>([]);
     const [revealedIcons, setRevealedIcons] = useState<string[]>([]);
@@ -54,7 +56,7 @@ const GroupGraph: React.FC<TeamGraphProps> = ({ teams }) => {
 
     useEffect(() => {
         setRevealedIcons(new Array(sortedTeamsData.teams.length).fill('/media/missingno.webp'));
-        setRevealedLabels(new Array(sortedTeamsData.teams.length).fill('').map((_, i) => `${i + 1}. Platz`));
+        setRevealedLabels(new Array(sortedTeamsData.teams.length).fill('').map((_, i) => t('ranking.place', { count: i + 1, ordinal: true })));
         setStep(0);
     }, [sortedTeamsData]);
 

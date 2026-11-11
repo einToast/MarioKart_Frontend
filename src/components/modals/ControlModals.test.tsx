@@ -204,7 +204,7 @@ describe('NotificationModal', () => {
 
         fill(screen.getByRole('combobox'), '3');
 
-        expect(screen.getByAltText('Peach character')).toHaveAttribute('src', '/characters/Peach.webp');
+        expect(screen.getByAltText('Charakter Peach')).toHaveAttribute('src', '/characters/Peach.webp');
     });
 
     it('sends the notification to everyone and reports it', async () => {
@@ -219,8 +219,29 @@ describe('NotificationModal', () => {
         expect(backend.requestsTo('POST', '/admin/notification/send')).toEqual([{
             method: 'POST',
             url: '/admin/notification/send',
-            body: { title: 'Pause', message: 'Pizza ist da' },
+            body: { title: 'Pause', message: 'Pizza ist da', translations: {} },
         }]);
+    });
+
+    it('sends English translations next to the German texts', async () => {
+        backend.post('/admin/notification/send');
+        const { closeModal } = renderModal();
+        fill(titleInput(), 'Pause');
+        fill(messageInput(), 'Pizza ist da');
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(screen.getByPlaceholderText('Pause')).toHaveValue('');
+        fill(screen.getByPlaceholderText('Pause'), 'Break');
+        fill(screen.getByPlaceholderText('Pizza ist da'), ' ');
+        fireEvent.click(sendButton());
+
+        await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ notificationSent: true }));
+        expect(backend.requestsTo('POST', '/admin/notification/send')[0].body).toEqual({
+            title: 'Pause',
+            message: 'Pizza ist da',
+            translations: { en: { title: 'Break' } },
+        });
     });
 
     it('sends the notification to the selected team only', async () => {
@@ -236,7 +257,7 @@ describe('NotificationModal', () => {
         expect(backend.requestsTo('POST', '/admin/notification/send/3')).toEqual([{
             method: 'POST',
             url: '/admin/notification/send/3',
-            body: { title: 'Runde 3', message: 'Ihr seid dran' },
+            body: { title: 'Runde 3', message: 'Ihr seid dran', translations: {} },
         }]);
     });
 

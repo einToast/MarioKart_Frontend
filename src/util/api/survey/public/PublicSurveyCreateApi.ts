@@ -1,23 +1,24 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { AnswerInputDTO, AnswerReturnDTO } from "../../config/dto";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'SURVEY');
 
 const answerErrorMessage = (status: number | undefined, details: string): string => {
     switch (status) {
         case 429:
-            return details.includes("survey key") ? "Du hast diese Frage bereits beantwortet" : "Dein Team hat zu oft geantwortet";
+            return details.includes("survey key") ? i18n.t('errors.alreadyAnswered') : i18n.t('errors.tooManyAnswers');
         case 403:
-            return "Die Teilnahme ist nur noch für Geräte möglich, die bereits an einer Umfrage teilgenommen haben";
+            return i18n.t('errors.surveyKeyRequired');
         case 409:
-            return "Frage kann nicht beantwortet werden";
+            return i18n.t('errors.questionNotAnswerable');
         case 404:
-            return "Frage nicht gefunden";
+            return i18n.t('errors.questionNotFound');
         case 400:
-            return details.includes("Invalid answer") ? "Die Antwort ist ungültig" : "Du bist nicht authentifiziert, bitte melde dich erneut an";
+            return details.includes("Invalid answer") ? i18n.t('errors.invalidAnswer') : i18n.t('errors.notAuthenticated');
         default:
-            return "Antwort konnte nicht übermittelt werden";
+            return i18n.t('errors.answerNotSubmitted');
     }
 }
 

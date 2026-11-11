@@ -16,13 +16,16 @@ import characters from "../util/api/config/characters";
 import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitch from '../components/LanguageSwitch';
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
+    const { t } = useTranslation();
     const [teamName, setTeamName] = useState('');
     const [selectedCharacter, setSelectedCharacter] = useState('');
     const navigate = useNavigate();
     const [updatedCharacterNames, setUpdatedCharacterNames] = useState<string[] | null>(null);
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState(false);
 
     const location = useLocation();
@@ -46,7 +49,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     props.setUser(user);
                     navigate('/tab1');
                 } else {
-                    setError('Team konnte nicht registriert werden');
+                    setError(t('register.failed'));
                     setShowToast(true);
                 }
             })
@@ -101,23 +104,26 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
     return (
         <IonPage>
             <IonContent fullscreen className="no-scroll">
+                <div slot="fixed" className="languageSwitchCorner">
+                    <LanguageSwitch />
+                </div>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
                     <IonRefresherContent refreshingSpinner="circles" />
                 </IonRefresher>
                 <div className={"contentLogin"}>
                     <h2>
                         <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                            Team
+                            {t('login.team')}
                         </LinearGradient>
                     </h2>
-                    <h1>Register</h1>
-                    <p>Registriere Dich und dein Team um gemeinsam am Turnier teilzunehmen.</p>
+                    <h1>{t('register.title')}</h1>
+                    <p>{t('register.description')}</p>
 
                     <div className={"loginContainer"}>
                         <div className={"borderContainer selectCharacter"}>
                             <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{ cursor: "pointer" }}>
                                 <option value="" disabled hidden={true}>
-                                    Wähle deinen Charakter
+                                    {t('register.chooseCharacter')}
                                 </option>
                                 {updatedCharacterNames?.map((character) => (
                                     <option
@@ -134,7 +140,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                                     {characters.includes(selectedCharacter) && (
                                         <img
                                             src={`/characters/${selectedCharacter}.webp`}
-                                            alt={`${selectedCharacter} character`}
+                                            alt={t('characterImage', { name: selectedCharacter })}
                                         />
                                     )}
                                 </div>
@@ -143,7 +149,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                         <div className={"borderContainer"}>
                             <input
                                 type="text"
-                                placeholder="Teamname"
+                                placeholder={t('register.teamName')}
                                 value={teamName}
                                 onChange={(e) => setTeamName(e.target.value)}
                                 onKeyPress={handleEnterPress}
@@ -158,13 +164,13 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                             }}
                         >
                             <div>
-                                <p>Team registrieren</p>
+                                <p>{t('register.submit')}</p>
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
                     </div>
                     <Link to="/login" style={{ textDecoration: "underline" }}>
-                        registriertem Team beitreten
+                        {t('register.joinTeam')}
                     </Link>
                 </div>
             </IonContent>

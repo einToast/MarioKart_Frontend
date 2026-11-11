@@ -7,14 +7,16 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService, PublicRegistrationService } from '../../util/service';
 import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
+    const { t } = useTranslation();
     const [answers, setAnswers] = useState<AnswerReturnDTO[]>([]);
     const [answersCount, setAnswersCount] = useState<number[]>([]);
     const [totalAnswers, setTotalAnswers] = useState<number>(0);
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const getAnswersToQuestion = () => {
@@ -86,7 +88,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ surveyResults: false })}>
             <IonContent>
                 <h4>{question.questionText}</h4>
-                <h4>Ergebnisse: {totalAnswers} Antworten</h4>
+                <h4>{t('admin.surveys.resultCount', { count: totalAnswers })}</h4>
                 <div className={"allTeamResult"} style={{ marginBottom: '50px' }}>
                     <ul>
                         {renderResults()}
@@ -102,7 +104,7 @@ const SurveyAnswerModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                         }}
                     >
                         <div>
-                            <p>Ergebnisse schließen</p>
+                            <p>{t('admin.surveys.closeResults')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

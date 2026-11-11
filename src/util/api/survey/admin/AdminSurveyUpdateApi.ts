@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { QuestionInputDTO, QuestionReturnDTO } from "../../config/dto";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SURVEY');
 
@@ -12,15 +13,15 @@ export const updateQuestion = async (questionId: number, question: QuestionInput
         if (axios.isAxiosError(error)) {
 
             if (error.response?.status === 404) {
-                throw new Error('Frage nicht gefunden');
+                throw new Error(i18n.t('errors.questionNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 400) {
-                throw new Error('Fragentyp wird nicht unterstützt');
+                throw new Error(i18n.t('errors.questionTypeUnsupported'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Frage konnte nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.questionNotUpdated'));
             }
         }
         throw error;

@@ -13,6 +13,7 @@ import {
 import React from 'react';
 import { SurveyAdminListItemProps } from "../../util/api/config/interfaces";
 import { QuestionType } from "../../util/service";
+import { useTranslation } from 'react-i18next';
 
 const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
     survey,
@@ -23,6 +24,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
     onOpenChangeModal,
     onOpenDeleteModal
 }) => {
+    const { t } = useTranslation();
     return (
         <div className={`currentSurvey ${survey.visible ? 'active' : ''}`}>
             <p>
@@ -30,7 +32,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 {survey.oneAnswerPerKey && (
                     <IonIcon
                         icon={keyOutline}
-                        title="Eine Antwort pro Umfrage-Schlüssel"
+                        title={t('admin.surveys.oneAnswerPerKey')}
                         className="oneAnswerPerKeyIcon"
                     />
                 )}
@@ -39,7 +41,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 <IonIcon
                     slot="end"
                     icon={statsChartOutline}
-                    title="Ergebnisse anzeigen"
+                    title={t('admin.surveys.showResults')}
                     onClick={() => onOpenAnswerModal(survey)}
                     style={{ cursor: 'pointer', marginRight: '10px' }}
                     tabIndex={0}
@@ -54,7 +56,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                         <IonIcon
                             slot="end"
                             icon={barChartOutline}
-                            title="Graph anzeigen"
+                            title={t('admin.surveys.showGraph')}
                             onClick={() => onOpenStatisticsModal(survey)}
                             style={{ cursor: 'pointer', marginRight: '10px' }}
                             tabIndex={0}
@@ -80,7 +82,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 <IonIcon
                     slot="end"
                     icon={survey.visible ? eyeOutline : eyeOffOutline}
-                    title={survey.visible ? "Umfrage unsichtbar machen" : "Umfrage sichtbar machen"}
+                    title={survey.visible ? t('admin.surveys.hide') : t('admin.surveys.show')}
                     onClick={() => onToggleVisibility(survey.id)}
                     style={{ cursor: 'pointer' }}
                     tabIndex={0}
@@ -93,7 +95,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 <IonIcon
                     slot="end"
                     icon={survey.active ? chatboxEllipsesOutline : chatboxOutline}
-                    title={survey.active ? "Teilnahme deaktivieren" : "Teilnahme aktivieren"}
+                    title={survey.active ? t('admin.surveys.deactivate') : t('admin.surveys.activate')}
                     onClick={() => onToggleActive(survey.id)}
                     style={{ cursor: 'pointer' }}
                     tabIndex={0}
@@ -106,7 +108,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 <IonIcon
                     slot="end"
                     icon={trashOutline}
-                    title="Umfrage löschen"
+                    title={t('admin.surveys.delete')}
                     onClick={() => onOpenDeleteModal(survey)}
                     style={{ cursor: 'pointer' }}
                     tabIndex={0}

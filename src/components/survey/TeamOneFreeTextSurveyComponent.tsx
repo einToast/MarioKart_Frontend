@@ -7,14 +7,19 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { User } from "../../util/api/config/interfaces";
 import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
+import { useLocalize } from '../../hooks/useLocalize';
 
 const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ teamOneFreeTextQuestion, toggleAccordion }) => {
+    const { t } = useTranslation();
+    const localize = useLocalize();
+    const display = localize(teamOneFreeTextQuestion);
     const [votedId, setVotedId] = useState<number>(-1);
 
     const [text, setText] = useState<string>('');
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
@@ -37,7 +42,7 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
                     getVote();
                     toggleAccordion();
                 } else {
-                    setError('Vote konnte nicht gespeichert werden');
+                    setError(t('survey.voteNotSaved'));
                     setShowToast(true);
                 }
             })
@@ -68,14 +73,14 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
 
             <IonItem slot="header" color="light" disabled={!teamOneFreeTextQuestion.active || votedId !== -1} className={"accordion-button"}>
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{teamOneFreeTextQuestion.questionText}</h3>
+                <h3 className="weiss">{display.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div>
                     <textarea
                         className={"input"}
-                        placeholder={!teamOneFreeTextQuestion.active ? "Umfrage geschlossen" : "Deine Team-Antwort (nur ein Eintrag pro Team möglich)"}
+                        placeholder={!teamOneFreeTextQuestion.active ? t('survey.closed') : t('survey.teamAnswerPlaceholder')}
                         style={{ height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px" }}
                         value={text}
                         maxLength={PublicSurveyService.MAX_FREE_TEXT_ANSWER_LENGTH}
@@ -94,7 +99,7 @@ const TeamOneFreeTextSurveyComponent: React.FC<{ teamOneFreeTextQuestion: Questi
                             }
                         }}
                     >
-                        Speichern
+                        {t('common.save')}
                     </IonButton>
                 )}
             </div>

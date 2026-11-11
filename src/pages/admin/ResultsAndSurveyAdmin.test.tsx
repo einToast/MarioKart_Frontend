@@ -168,7 +168,7 @@ describe('admin SurveyAdmin', () => {
             renderPage();
             await screen.findByText('Wer gewinnt?');
 
-            fireEvent.click(screen.getByRole('button', { name: 'Neue Abstimmung' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Neue Umfrage' }));
 
             expect(dialog().getByPlaceholderText('Frage eingeben')).toHaveValue('');
         });

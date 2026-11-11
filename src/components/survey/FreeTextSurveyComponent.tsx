@@ -7,12 +7,17 @@ import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { User } from "../../util/api/config/interfaces";
 import { PublicCookiesService, PublicSurveyService } from "../../util/service";
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
+import { useLocalize } from '../../hooks/useLocalize';
 
 const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, toggleAccordion: () => void }> = ({ freeTextQuestion, toggleAccordion }) => {
+    const { t } = useTranslation();
+    const localize = useLocalize();
+    const display = localize(freeTextQuestion);
     const [text, setText] = useState<string>('');
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [indicator, setIndicator] = useState<string>('');
 
@@ -23,7 +28,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
                     setText('');
                     toggleAccordion();
                 } else {
-                    setError('Vote konnte nicht gespeichert werden');
+                    setError(t('survey.voteNotSaved'));
                     setShowToast(true);
                 }
             })
@@ -52,14 +57,14 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
 
             <IonItem slot="header" color="light" disabled={!freeTextQuestion.active} className={"accordion-button"}>
                 <IonIcon icon={indicator} slot="end" />
-                <h3 className="weiss">{freeTextQuestion.questionText}</h3>
+                <h3 className="weiss">{display.questionText}</h3>
             </IonItem>
 
             <div className="ion-padding" slot="content">
                 <div>
                     <textarea
                         className={"input"}
-                        placeholder={!freeTextQuestion.active ? "Umfrage geschlossen" : "Dein Feedback"}
+                        placeholder={!freeTextQuestion.active ? t('survey.closed') : t('survey.feedbackPlaceholder')}
                         style={{ height: "200px", width: "100%", padding: "10px", marginBottom: "10px", fontSize: "16px" }}
                         value={text}
                         maxLength={PublicSurveyService.MAX_FREE_TEXT_ANSWER_LENGTH}
@@ -78,7 +83,7 @@ const FreeTextSurveyComponent: React.FC<{ freeTextQuestion: QuestionReturnDTO, t
                             }
                         }}
                     >
-                        Speichern
+                        {t('common.save')}
                     </IonButton>
                 )}
             </div>

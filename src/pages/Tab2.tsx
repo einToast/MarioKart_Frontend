@@ -9,15 +9,17 @@ import Toast from '../components/Toast';
 import { TeamReturnDTO } from "../util/api/config/dto";
 import { ShowTab2Props, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicScheduleService, PublicSettingsService } from "../util/service";
+import { useTranslation } from 'react-i18next';
 
 const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
+    const { t } = useTranslation();
 
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [maxNumberOfGames, setMaxNumberOfGames] = useState<number>(0);
     const [finalScheduleCreated, setFinalScheduleCreated] = useState<boolean>(false);
 
     const [user, setUser] = useState<User | null>(PublicCookiesService.getUser());
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(true);
@@ -84,7 +86,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const changeLocation = () => {
         if (!props.showTab2) {
-            setError("Die Statistiken können momentan nicht angezeigt werden.");
+            setError(t('ranking.unavailable'));
             setShowToast(true);
             navigate('/tab1');
         }
@@ -107,7 +109,7 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 </IonRefresher>
                 <h1>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Rangliste
+                        {t('ranking.title')}
                     </LinearGradient>
                 </h1>
                 {finalScheduleCreated ? (
@@ -133,11 +135,11 @@ const Tab2: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                                         </div>
                                         <div>
                                             <p>{team.teamName}</p>
-                                            <p className={"punkte"}>{index + 1}. Platz</p>
+                                            <p className={"punkte"}>{t('ranking.place', { count: index + 1, ordinal: true })}</p>
                                             {finalScheduleCreated ? (
-                                                <p className={"punkte"}>{team.groupPoints} Punkte</p>
+                                                <p className={"punkte"}>{t('ranking.points', { count: team.groupPoints })}</p>
                                             ) : (
-                                                <p className={"punkte"}>{team.numberOfGamesPlayed}/{maxNumberOfGames} Spiele</p>
+                                                <p className={"punkte"}>{t('ranking.games', { played: team.numberOfGamesPlayed, max: maxNumberOfGames })}</p>
                                             )}
 
                                         </div>

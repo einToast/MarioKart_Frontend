@@ -1,0 +1,122 @@
+.languageSwitch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding: 3px;
+    border-radius: 999px;
+    background-color: rgba(var(--ion-color-bg02-rgb), 0.55);
+    border: 1px solid rgba(var(--ion-color-text01-rgb), 0.3);
+
+    button {
+        font-family: "Poppins", sans-serif;
+        border: none;
+        cursor: pointer;
+    }
+
+    button:focus-visible {
+        outline: 2px solid var(--ion-color-text01);
+        outline-offset: 1px;
+    }
+
+    .languageSwitchToggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 8px;
+        border-radius: 999px;
+        background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+        color: #ffffff;
+        font-weight: 800;
+        font-size: 12px;
+        line-height: 1;
+        letter-spacing: 0.05em;
+
+        span {
+            font: inherit;
+            color: inherit;
+        }
+
+        ion-icon {
+            width: 12px;
+            height: 12px;
+            color: #ffffff;
+            transition: transform 0.15s ease;
+        }
+    }
+
+    .languageSwitchToggle .languageSwitchSymbol {
+        width: 14px;
+        height: 14px;
+        transition: none;
+    }
+
+    .languageSwitchToggle[aria-expanded="true"] ion-icon:not(.languageSwitchSymbol) {
+        transform: rotate(180deg);
+    }
+
+    .languageSwitchMenu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 1000;
+        min-width: 160px;
+        margin: 0;
+        padding: 4px;
+        list-style: none;
+        border-radius: 16px;
+        background-color: var(--ion-color-bg02);
+        border: 1px solid rgba(var(--ion-color-text01-rgb), 0.3);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+
+        button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: transparent;
+            text-align: left;
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        button:hover {
+            background-color: rgba(var(--ion-color-text01-rgb), 0.12);
+        }
+
+        button[aria-pressed="true"] {
+            background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+        }
+
+        span {
+            font-family: "Poppins", sans-serif;
+            color: inherit;
+        }
+
+        .languageCode {
+            min-width: 22px;
+            font-weight: 800;
+            font-size: 12px;
+            letter-spacing: 0.05em;
+            color: var(--ion-color-text01);
+        }
+
+        button[aria-pressed="true"] .languageCode {
+            color: #ffffff;
+        }
+    }
+}
+
+.languageSwitchCorner {
+    position: absolute;
+    top: calc(env(safe-area-inset-top, 0px) + 16px);
+    right: 20px;
+    z-index: 10;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .languageSwitch .languageSwitchToggle ion-icon {
+        transition: none;
+    }
+}

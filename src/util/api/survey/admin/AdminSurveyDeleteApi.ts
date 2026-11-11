@@ -1,5 +1,6 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SURVEY');
 
@@ -9,9 +10,9 @@ export const deleteQuestion = async (questionId: number): Promise<void> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Frage konnte nicht gelöscht werden');
+                throw new Error(i18n.t('errors.questionNotDeleted'));
             }
         }
         throw error;
@@ -24,9 +25,9 @@ export const deleteAllQuestions = async (): Promise<void> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Fragen konnten nicht gelöscht werden');
+                throw new Error(i18n.t('errors.questionsNotDeleted'));
             }
         }
         throw error;

@@ -12,21 +12,23 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSettingsService, AdminSurveyService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import { SurveyKeyMode } from "../../util/service/util";
 import "./SurveyAdmin.css";
+import { useTranslation } from 'react-i18next';
 
-const SURVEY_KEY_MODE_MESSAGES: Record<SurveyKeyMode, string> = {
-    [SurveyKeyMode.DISABLED]: 'Umfrage-Schlüssel deaktiviert, alle können abstimmen',
-    [SurveyKeyMode.DISTRIBUTING]: 'Geräte erhalten bei ihrer ersten Antwort einen Umfrage-Schlüssel',
-    [SurveyKeyMode.REQUIRED]: 'Nur Geräte mit Umfrage-Schlüssel können abstimmen',
-};
+const SURVEY_KEY_MODES = {
+    [SurveyKeyMode.DISABLED]: 'disabled',
+    [SurveyKeyMode.DISTRIBUTING]: 'distributing',
+    [SurveyKeyMode.REQUIRED]: 'required',
+} as const;
 
 const SurveyAdmin: React.FC = () => {
+    const { t } = useTranslation();
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
     const [surveyKeyMode, setSurveyKeyMode] = useState<SurveyKeyMode>(SurveyKeyMode.DISABLED);
 
 
-    const [error, setError] = useState<string>("Error");
+    const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
@@ -60,7 +62,7 @@ const SurveyAdmin: React.FC = () => {
         AdminSettingsService.updateSurveyKeyMode(mode)
             .then(settings => {
                 setSurveyKeyMode(settings.surveyKeyMode ?? mode);
-                setError(SURVEY_KEY_MODE_MESSAGES[mode]);
+                setError(t(`admin.surveys.keyModes.${SURVEY_KEY_MODES[mode]}.message`));
                 setIsError(false);
                 setShowToast(true);
             })
@@ -74,15 +76,15 @@ const SurveyAdmin: React.FC = () => {
     const handleModalClose = (result: SurveyModalResult) => {
         setModalClosed(prev => !prev);
         if (result.surveyCreated) {
-            setError('Umfrage erfolgreich erstellt');
+            setError(t('admin.surveys.created'));
             setIsError(false);
             setShowToast(true);
         } else if (result.surveyChanged) {
-            setError('Umfrage erfolgreich geändert');
+            setError(t('admin.surveys.changed'));
             setIsError(false);
             setShowToast(true);
         } else if (result.surveyDeleted) {
-            setError('Umfrage erfolgreich gelöscht');
+            setError(t('admin.surveys.deleted'));
             setIsError(false);
             setShowToast(true);
         }
@@ -113,7 +115,7 @@ const SurveyAdmin: React.FC = () => {
                 <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Umfragen
+                        {t('admin.dashboard.surveys')}
                     </LinearGradient>
                 </h2>
                 <button type="button" className="newSurvey"
@@ -121,19 +123,19 @@ const SurveyAdmin: React.FC = () => {
                     style={{ cursor: 'pointer' }}
                 >
                     <IonIcon slot="end" icon={addCircleOutline} aria-hidden="true" />
-                    <p>Neue Abstimmung</p>
+                    <p>{t('admin.surveys.new')}</p>
                 </button>
 
                 <div className="surveyKeyMode">
-                    <p>Umfrage-Schlüssel</p>
+                    <p>{t('admin.surveys.key')}</p>
                     <select
                         value={surveyKeyMode}
                         onChange={(e) => handleSurveyKeyModeChange(e.target.value as SurveyKeyMode)}
-                        aria-label="Umfrage-Schlüssel"
+                        aria-label={t('admin.surveys.key')}
                     >
-                        <option value={SurveyKeyMode.DISABLED}>Aus</option>
-                        <option value={SurveyKeyMode.DISTRIBUTING}>Schlüssel verteilen</option>
-                        <option value={SurveyKeyMode.REQUIRED}>Nur mit Schlüssel</option>
+                        <option value={SurveyKeyMode.DISABLED}>{t('admin.surveys.keyModes.disabled.label')}</option>
+                        <option value={SurveyKeyMode.DISTRIBUTING}>{t('admin.surveys.keyModes.distributing.label')}</option>
+                        <option value={SurveyKeyMode.REQUIRED}>{t('admin.surveys.keyModes.required.label')}</option>
                     </select>
                 </div>
 

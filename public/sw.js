@@ -6,28 +6,44 @@ cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
 
 
-self.addEventListener('push', (event) => {
-  
-    let title = 'Mario Kart Turnier';
-    let body = 'Mario Kart Turnier';
-  
+const FALLBACK_TEXTS = {
+  de: { title: 'Mario Kart Turnier', body: 'Neue Benachrichtigung erhalten', open: 'Öffnen', close: 'Schließen' },
+  en: { title: 'Mario Kart Tournament', body: 'New notification received', open: 'Open', close: 'Close' },
+};
+
+const fallbackTexts = async () => {
+  try {
+    const cookie = await self.cookieStore?.get('language');
+    return FALLBACK_TEXTS[cookie?.value] ?? FALLBACK_TEXTS.de;
+  } catch {
+    return FALLBACK_TEXTS.de;
+  }
+};
+
+const showPushNotification = async (event) => {
+    const fallback = await fallbackTexts();
+    let title = fallback.title;
+    let body = fallback.title;
+    let actions = { open: fallback.open, close: fallback.close };
+
     try {
       const text = event.data?.text?.();
-  
+
       try {
         const data = JSON.parse(text);
         title = data.title || title;
         body = data.body || body;
+        actions = { open: data.actions?.open || actions.open, close: data.actions?.close || actions.close };
       } catch {
         // Payload is not JSON: show it as plain text
         body = text || body;
       }
     } catch {
       // Payload could not be read: fall back to a generic message
-      body = 'Neue Benachrichtigung erhalten';
+      body = fallback.body;
     }
-  
-  
+
+
     const options = {
       body,
       icon: '/assets/icons/pwa-64x64.png',
@@ -38,12 +54,16 @@ self.addEventListener('push', (event) => {
         primaryKey: '1',
       },
       actions: [
-        { action: 'explore', title: 'Öffnen' },
-        { action: 'close', title: 'Schließen' },
+        { action: 'explore', title: actions.open },
+        { action: 'close', title: actions.close },
       ],
     };
-  
-    event.waitUntil(self.registration.showNotification(title, options));
+
+    await self.registration.showNotification(title, options);
+};
+
+self.addEventListener('push', (event) => {
+    event.waitUntil(showPushNotification(event));
   });
   
   self.addEventListener('notificationclick', (event) => {

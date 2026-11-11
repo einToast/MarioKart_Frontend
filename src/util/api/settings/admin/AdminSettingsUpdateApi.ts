@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { TournamentDTO } from "../../config/dto";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'SETTINGS');
 
@@ -11,15 +12,15 @@ export const updateSettings = async (updateSettings: TournamentDTO): Promise<Tou
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Spielplan wurde bereits erstellt');
+                throw new Error(i18n.t('errors.scheduleAlreadyCreated'));
             } else if (error.response?.status === 400) {
-                throw new Error('Ungültige Einstellungen');
+                throw new Error(i18n.t('errors.invalidSettings'));
             } else if (error.response?.status === 404) {
-                throw new Error('Einstellungen nicht gefunden');
+                throw new Error(i18n.t('errors.settingsNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Einstellungen konnten nicht aktualisiert werden');
+                throw new Error(i18n.t('errors.settingsNotUpdated'));
             }
         }
         throw error;

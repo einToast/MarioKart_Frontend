@@ -9,17 +9,19 @@ import Toast from '../../components/Toast';
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { AdminRegistrationService, AdminScheduleService, AdminSettingsService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import "./Final.css";
+import { useTranslation } from 'react-i18next';
 
 const MIN_FINAL_TEAMS = 2;
 const MAX_FINAL_TEAMS = 8;
 
 const Final: React.FC = () => {
+    const { t } = useTranslation();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [finalTeamsCount, setFinalTeamsCount] = useState<number | ''>('');
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [isError, setIsError] = useState<boolean>(true);
 
@@ -30,12 +32,12 @@ const Final: React.FC = () => {
         AdminRegistrationService.resetEveryTeamFinalParticipation()
             .then(teams => {
                 if (teams) {
-                    setError('Teams zurückgesetzt');
+                    setError(t('admin.final.teamsReset'));
                     setIsError(false);
                     setShowToast(true);
                     return getFinalTeams();
                 } else {
-                    setError('Teams konnten nicht zurückgesetzt werden');
+                    setError(t('errors.teamsNotReset'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -80,12 +82,12 @@ const Final: React.FC = () => {
         AdminScheduleService.createFinalSchedule()
             .then(final => {
                 if (final) {
-                    setError('Finale erfolgreich erstellt');
+                    setError(t('admin.final.created'));
                     setIsError(false);
                     setShowToast(true);
                     navigate('/admin/dashboard');
                 } else {
-                    setError('Finale konnte nicht erstellt werden');
+                    setError(t('admin.final.notCreated'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -123,12 +125,11 @@ const Final: React.FC = () => {
             <IonContent fullscreen>
                 <BackLink />
                 <h2>
-                    <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>ACHTUNG!</LinearGradient>
+                    <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>{t('admin.final.warning')}</LinearGradient>
                 </h2>
-                <p>Bist du dir sicher, dass du das Finalspiel erzeugen willst? Du hast danach nicht mehr die Möglichkeit
-                    Rundenpunkte einzutragen.</p>
+                <p>{t('admin.final.confirm')}</p>
                 <div className="finalTeamsCount">
-                    <label htmlFor="finalTeamsCount">Teams im Finale:</label>
+                    <label htmlFor="finalTeamsCount">{t('admin.final.teamsCount')}</label>
                     <input id="finalTeamsCount"
                         type="number"
                         min={MIN_FINAL_TEAMS}
@@ -137,7 +138,7 @@ const Final: React.FC = () => {
                         onChange={(e) => handleFinalTeamsCountChange(e.target.value)}
                     />
                 </div>
-                <p className={"bold"}>Folgende Teams sind im Finale:</p>
+                <p className={"bold"}>{t('admin.final.teamsInFinal')}</p>
 
                 <div className={"teamFinalContainer"}>
                     {teams ? (
@@ -150,7 +151,7 @@ const Final: React.FC = () => {
                             getTeams={getFinalTeams}
                         />
                     ) : (
-                        <p>loading...</p>
+                        <p>{t('common.loading')}</p>
                     )
                     }
                 </div>
@@ -166,7 +167,7 @@ const Final: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Teams zurücksetzen</p>
+                            <p>{t('admin.final.resetTeams')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -179,7 +180,7 @@ const Final: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Finale erzeugen</p>
+                            <p>{t('admin.final.create')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

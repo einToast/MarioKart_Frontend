@@ -127,7 +127,7 @@ describe('admin Final', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(screen.getByText('Finale erzeugen'));
+        fireEvent.click(screen.getByText('Finalspiele erstellen'));
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
@@ -138,7 +138,7 @@ describe('admin Final', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(buttonOf('Finale erzeugen').querySelector('ion-icon') as HTMLElement);
+        fireEvent.click(buttonOf('Finalspiele erstellen').querySelector('ion-icon') as HTMLElement);
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
@@ -160,11 +160,11 @@ describe('admin Final', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(screen.getByText('Finale erzeugen'));
+        fireEvent.click(screen.getByText('Finalspiele erstellen'));
 
         await expectErrorToast('Noch nicht alle Runden gespielt');
         expect(currentPath()).toBe('/admin/final');
-        await waitFor(() => expect(buttonOf('Finale erzeugen').disabled).toBe(false));
+        await waitFor(() => expect(buttonOf('Finalspiele erstellen').disabled).toBe(false));
     });
 
     it('reports an error when the backend answers without the final rounds', async () => {
@@ -172,9 +172,9 @@ describe('admin Final', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(screen.getByText('Finale erzeugen'));
+        fireEvent.click(screen.getByText('Finalspiele erstellen'));
 
-        await expectErrorToast('Finale konnte nicht erstellt werden');
+        await expectErrorToast('Finalspiele konnten nicht erstellt werden');
     });
 
     it('shows an error when the final teams cannot be loaded', async () => {
@@ -198,11 +198,12 @@ describe('admin Final', () => {
 describe('admin Schedule', () => {
     const TEAMS_URL = '/admin/teams/sortedByFinalPoints';
     const CREATE_URL = '/admin/schedule/create/schedule';
-    const CREATE = 'Spielplan erzeugen';
+    const CREATE = 'Spielplan erstellen';
+    const createButton = () => screen.getByText(CREATE, { selector: 'ion-button p' });
 
     const renderPage = () => renderWithRouter(<Schedule />, { route: '/admin/schedule' });
 
-    const version = () => screen.getByLabelText('Schedule Version:') as HTMLSelectElement;
+    const version = () => screen.getByLabelText('Spielplan-Version:') as HTMLSelectElement;
     const fields = () => screen.getByLabelText('Anzahl Spielfelder:') as HTMLInputElement;
     const rounds = () => screen.getByLabelText('Anzahl Runden:') as HTMLInputElement;
     const teamsPerGame = () => screen.getByLabelText('Teams pro Spiel:') as HTMLInputElement;
@@ -261,7 +262,7 @@ describe('admin Schedule', () => {
         set(fields(), '3');
         set(rounds(), '10');
         set(teamsPerGame(), '2');
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 3, numRounds: 10, teamsPerGame: 2 });
@@ -272,7 +273,7 @@ describe('admin Schedule', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.keyDown(screen.getByText(CREATE).parentElement as HTMLElement, { key });
+        fireEvent.keyDown(createButton().parentElement as HTMLElement, { key });
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
     });
@@ -285,7 +286,7 @@ describe('admin Schedule', () => {
         set(fields(), '1');
         set(teamsPerGame(), '8');
         expect(screen.getByText('Mindestens 8 Teams nötig')).toBeInTheDocument();
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 1, numRounds: 8, teamsPerGame: 8 });
@@ -301,7 +302,7 @@ describe('admin Schedule', () => {
         await screen.findByText('Team Mario');
 
         change();
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await expectErrorToast(message);
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(0);
@@ -331,7 +332,7 @@ describe('admin Schedule', () => {
         set(teamsOfField(1), '8');
         expect(teamsPerField()).toEqual(['8', '4', '4']);
         expect(screen.getByText('Mindestens 16 Teams nötig')).toBeInTheDocument();
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({
@@ -354,7 +355,7 @@ describe('admin Schedule', () => {
         set(fields(), '2');
         expect(teamsPerField()).toEqual(['4', '6']);
 
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
         await waitFor(() => expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toMatchObject({ numFields: 2, teamsPerField: [4, 6] });
     });
@@ -365,7 +366,7 @@ describe('admin Schedule', () => {
         set(version(), '5');
 
         set(teamsOfField(3), value);
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await expectErrorToast('Pro Spiel können 2 bis 8 Teams antreten');
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(0);
@@ -379,7 +380,7 @@ describe('admin Schedule', () => {
         set(teamsOfField(1), '8');
 
         set(version(), '2');
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await waitFor(() => expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 4, numRounds: 8, teamsPerGame: 4 });
@@ -399,11 +400,11 @@ describe('admin Schedule', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await expectErrorToast('Nicht genügend Teams vorhanden (mindestens Spielfelder x Teams pro Spiel)');
         expect(currentPath()).toBe('/admin/schedule');
-        await waitFor(() => expect(buttonOf(CREATE).disabled).toBe(false));
+        await waitFor(() => expect((createButton().closest('ion-button') as HTMLIonButtonElement).disabled).toBe(false));
     });
 
     it('reports an error when the backend answers without the rounds', async () => {
@@ -411,7 +412,7 @@ describe('admin Schedule', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(screen.getByText(CREATE));
+        fireEvent.click(createButton());
 
         await expectErrorToast('Spielplan konnte nicht erstellt werden');
     });
@@ -451,7 +452,7 @@ describe('admin Schedule', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(buttonOf(CREATE).querySelector('ion-icon') as HTMLElement);
+        fireEvent.click((createButton().closest('ion-button') as HTMLIonButtonElement).querySelector('ion-icon') as HTMLElement);
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);
@@ -462,7 +463,7 @@ describe('admin Schedule', () => {
         renderPage();
         await screen.findByText('Team Mario');
 
-        fireEvent.click(buttonOf(CREATE));
+        fireEvent.click((createButton().closest('ion-button') as HTMLIonButtonElement));
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1);

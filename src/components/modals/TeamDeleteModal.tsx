@@ -7,10 +7,12 @@ import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService } from '../../util/service';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
+    const { t } = useTranslation();
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const handleDelete = () => {
@@ -27,9 +29,9 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamDeleted: false })}>
             <IonContent>
-                <h4>Team löschen</h4>
-                <p> Willst du das Team <span>{team.teamName} </span> wirklich löschen?</p>
-                <p> Diese Aktion kann nicht rückgängig gemacht werden.</p>
+                <h4>{t('admin.teams.delete')}</h4>
+                <p> {t('admin.teams.deleteConfirmBefore')} <span>{team.teamName} </span> {t('admin.teams.deleteConfirmAfter')}</p>
+                <p> {t('common.irreversible')}</p>
 
                 <div className={"playedContainer"}>
                     <IonButton className={"secondary round"} onClick={() => closeModal({ teamDeleted: false })}
@@ -41,7 +43,7 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -55,7 +57,7 @@ const TeamDeleteModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                     >
 
                         <div>
-                            <p>Team löschen</p>
+                            <p>{t('admin.teams.delete')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

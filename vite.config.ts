@@ -110,7 +110,7 @@ export default defineConfig(({ mode }) => {
               },
               {
                 name: 'vendor-utils',
-                test: /node_modules[\\/](axios|sockjs-client|date-fns|js-cookie|jwt-decode)[\\/]|node_modules[\\/]@stomp[\\/]stompjs[\\/]/,
+                test: /node_modules[\\/](axios|sockjs-client|date-fns|js-cookie|jwt-decode|i18next|react-i18next)[\\/]|node_modules[\\/]@stomp[\\/]stompjs[\\/]/,
                 priority: 20,
               },
               {

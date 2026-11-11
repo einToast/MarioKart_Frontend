@@ -26,8 +26,8 @@ describe('FloorPlanView', () => {
         render(<FloorPlanView plan={createDefaultFloorPlan(1)} switches={twoSwitches()} />);
 
         expect(screen.getByText('getränke')).toBeInTheDocument();
-        expect(screen.getAllByText('food')).toHaveLength(2);
-        expect(screen.getAllByText('toilett')).toHaveLength(2);
+        expect(screen.getAllByText('essen')).toHaveLength(2);
+        expect(screen.getAllByText('toilette')).toHaveLength(2);
     });
 
     it('draws the outline of the room', () => {

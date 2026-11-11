@@ -8,6 +8,7 @@ const subscription: NotificationSubscriptionDTO = {
     p256dh: 'cDI1NmRo',
     auth: 'YXV0aA==',
     teamId: 4,
+    language: 'de',
 };
 
 const SEND_FAILED = 'Benachrichtigung konnte nicht gesendet werden';

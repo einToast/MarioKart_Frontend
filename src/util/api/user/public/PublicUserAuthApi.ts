@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { AuthenticationRequestDTO, AuthenticationResponseDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'USER');
 
@@ -11,9 +12,9 @@ export const login = async (request: AuthenticationRequestDTO): Promise<Authenti
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nutzername oder Passwort ist falsch');
+                throw new Error(i18n.t('errors.wrongCredentials'));
             } else {
-                throw new Error('Login fehlgeschlagen');
+                throw new Error(i18n.t('errors.loginFailed'));
             }
         }
         throw error;
@@ -25,7 +26,7 @@ export const logout = async (): Promise<void> => {
         await apiClient.post<void>(`${BASE_URL}/logout`);
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Logout fehlgeschlagen');
+            throw new Error(i18n.t('errors.logoutFailed'));
         }
         throw error;
     }
@@ -37,7 +38,7 @@ export const check = async (): Promise<AuthenticationResponseDTO> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {
-            throw new Error('Login abgelaufen');
+            throw new Error(i18n.t('errors.loginExpired'));
         }
         throw error;
     }

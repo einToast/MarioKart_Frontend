@@ -8,6 +8,7 @@ import { expectErrorToast } from '../../test/overlays';
 import { QuestionReturnDTO } from '../../util/api/config/dto';
 import { QuestionType } from '../../util/service/util';
 import CheckBoxSurveyComponent from './CheckBoxSurveyComponent';
+import { changeLanguage } from '../../i18n';
 
 const ANSWER_URL = '/public/survey/answer';
 const SAVE = 'Antworten speichern';
@@ -222,6 +223,30 @@ describe('CheckBoxSurveyComponent', () => {
             fireEvent.keyDown(header(container), { key: 'Enter' });
 
             await waitFor(() => expect(buttonOf('Bowsers Festung')).toHaveTextContent('50%'));
+        });
+    });
+
+    describe('in English', () => {
+        const translations = { en: { questionText: 'Which tracks?', options: ['Rainbow Road', '', "Bowser's Castle"] } };
+
+        beforeEach(async () => {
+            await changeLanguage('en');
+        });
+
+        it('shows the translated question and falls back to the German text of untranslated options', () => {
+            renderQuestion({ translations });
+
+            expect(screen.getByRole('heading', { name: 'Which tracks?' })).toBeInTheDocument();
+            ['Rainbow Road', 'Kuhmuh', "Bowser's Castle"].forEach(option => expect(screen.getByText(option)).toBeInTheDocument());
+            expect(screen.getByText('Save answers')).toBeInTheDocument();
+        });
+
+        it('still recognises an answer given in German', async () => {
+            markAsAnswered('0');
+
+            const { container } = renderQuestion({ translations });
+
+            await waitFor(() => expect(statusIcon(container).icon).toBe(checkmarkCircleOutline));
         });
     });
 });

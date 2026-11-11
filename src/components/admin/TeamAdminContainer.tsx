@@ -6,6 +6,7 @@ import Toast from '../Toast';
 import TeamChangeModal from '../modals/TeamChangeModal';
 import TeamDeleteModal from '../modals/TeamDeleteModal';
 import TeamAdminListItem from './TeamAdminListItem';
+import { useTranslation } from 'react-i18next';
 
 const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     teams,
@@ -15,6 +16,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     getTeams,
     modalClosed
 }) => {
+    const { t } = useTranslation();
     const [selectedTeam, setSelectedTeam] = useState<TeamReturnDTO>({
         id: -1,
         teamName: '',
@@ -40,7 +42,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
                 if (updatedTeam) {
                     return getTeams();
                 } else {
-                    setError('Finalteilnahme konnte nicht geändert werden');
+                    setError(t('admin.teams.finalNotChanged'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -63,7 +65,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
                 if (updatedTeam) {
                     return getTeams();
                 } else {
-                    setError('Aktivität konnte nicht geändert werden');
+                    setError(t('admin.activityNotChanged'));
                     setIsError(true);
                     setShowToast(true);
                 }
@@ -88,11 +90,11 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
     const handleModalClose = (result: TeamModalResult) => {
         setModalClosed(!modalClosed);
         if (result.teamChanged) {
-            setError('Team wurde geändert');
+            setError(t('admin.teams.changed'));
             setIsError(false);
             setShowToast(true);
         } else if (result.teamDeleted) {
-            setError('Team wurde entfernt');
+            setError(t('admin.teams.removed'));
             setIsError(false);
             setShowToast(true);
         }
@@ -115,7 +117,7 @@ const TeamAdminContainer: React.FC<TeamAdminContainerProps> = ({
                         />
                     ))
                 ) : (
-                    <p>loading...</p>
+                    <p>{t('common.loading')}</p>
                 )}
 
                 <TeamChangeModal

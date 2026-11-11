@@ -53,8 +53,8 @@ describe('admin area', () => {
 
       cy.location('pathname').should('eq', '/admin/dashboard');
       cy.contains('ion-button', 'Punkte eintragen');
-      cy.contains('ion-button', 'Spielplan erzeugen').should('not.exist');
-      cy.contains('ion-button', 'Finalspiele erzeugen').should('not.exist');
+      cy.contains('ion-button', 'Spielplan erstellen').should('not.exist');
+      cy.contains('ion-button', 'Finalspiele erstellen').should('not.exist');
     });
 
     it('navigates to the team administration and back', () => {
@@ -110,7 +110,7 @@ describe('admin area', () => {
 
       // After the logout the backend no longer accepts the session
       cy.stubApi('GET', '/public/user/login/check', { user: null });
-      cy.contains('ion-button', 'Logout').click();
+      cy.contains('ion-button', 'Abmelden').click();
 
       cy.wait('@logout');
       cy.location('pathname').should('eq', '/admin/login');

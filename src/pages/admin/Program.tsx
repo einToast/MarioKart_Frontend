@@ -5,7 +5,7 @@ import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
 import Toast from "../../components/Toast";
-import { ProgramEntry, ProgramRow } from "../../util/api/config/interfaces";
+import { ProgramEntry, ProgramRow, TextTranslation } from "../../util/api/config/interfaces";
 import {
     DEFAULT_PROGRAM_ICON,
     defaultProgram,
@@ -22,12 +22,18 @@ import { AdminSettingsService, PublicCookiesService, PublicSettingsService } fro
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Program.css";
+import { useTranslation } from 'react-i18next';
+import TranslationLanguageTabs from "../../components/admin/TranslationLanguageTabs";
+import { DEFAULT_LANGUAGE, Language } from "../../i18n/languages";
+import { translatedChange, translatedValue } from "../../i18n/translatable";
 
 const Program: React.FC = () => {
+    const { t } = useTranslation();
     const [rows, setRows] = useState<ProgramRow[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
+    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
     const [showToast, setShowToast] = useState(false);
 
@@ -69,7 +75,7 @@ const Program: React.FC = () => {
     const handleSave = () => {
         const trimmed = rows.map(({ entry }) => ({ ...entry, time: entry.time.trim(), text: entry.text.trim() }));
         if (trimmed.some(entry => entry.text === '')) {
-            showError('Jeder Programmpunkt braucht einen Text');
+            showError(t('admin.program.textRequired'));
             return;
         }
 
@@ -77,7 +83,7 @@ const Program: React.FC = () => {
         AdminSettingsService.updateProgram(serializeProgram(trimmed))
             .then(() => {
                 setRows(rows.map((row, position) => ({ ...row, entry: trimmed[position] })));
-                setError('Programm gespeichert');
+                setError(t('admin.program.saved'));
                 setIsError(false);
                 setShowToast(true);
             })
@@ -91,28 +97,29 @@ const Program: React.FC = () => {
                 <BackLink />
                 <h2>
                     <LinearGradient gradient={['to right', '#BFB5F2 ,#8752F9']}>
-                        Programm
+                        {t('admin.program.title')}
                     </LinearGradient>
                 </h2>
-                <p>Das Programm steht bei den Teams unter Details. Ohne Programmpunkte wird es dort ausgeblendet.</p>
+                <p>{t('admin.program.description')}</p>
+                <TranslationLanguageTabs value={editLanguage} onChange={setEditLanguage} />
 
                 <div className="programList">
                     {rows.map(({ key: rowKey, entry }, index) => (
                         <div className="programRow" key={rowKey}>
                             <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
                             <select
-                                aria-label={`Symbol von Programmpunkt ${index + 1}`}
+                                aria-label={t('admin.program.iconOf', { number: index + 1 })}
                                 value={entry.icon}
                                 onChange={(e) => handleChange(index, { icon: e.target.value as ProgramIcon })}
                             >
-                                {Object.entries(PROGRAM_ICONS).map(([key, { label }]) => (
-                                    <option value={key} key={key}>{label}</option>
+                                {(Object.keys(PROGRAM_ICONS) as ProgramIcon[]).map(key => (
+                                    <option value={key} key={key}>{t(`admin.program.icons.${key}`)}</option>
                                 ))}
                             </select>
                             <input
                                 type="text"
                                 className="programTime"
-                                aria-label={`Zeit von Programmpunkt ${index + 1}`}
+                                aria-label={t('admin.program.timeOf', { number: index + 1 })}
                                 placeholder="16:00 - 16:45"
                                 maxLength={MAX_PROGRAM_TIME_LENGTH}
                                 value={entry.time}
@@ -121,26 +128,27 @@ const Program: React.FC = () => {
                             <input
                                 type="text"
                                 className="programText"
-                                aria-label={`Text von Programmpunkt ${index + 1}`}
+                                aria-label={t('admin.program.textOf', { number: index + 1 })}
                                 maxLength={MAX_PROGRAM_TEXT_LENGTH}
-                                value={entry.text}
-                                onChange={(e) => handleChange(index, { text: e.target.value })}
+                                placeholder={editLanguage === DEFAULT_LANGUAGE ? undefined : entry.text}
+                                value={translatedValue<TextTranslation, 'text'>(entry, 'text', editLanguage) ?? ''}
+                                onChange={(e) => handleChange(index, translatedChange<TextTranslation, 'text'>(entry, 'text', editLanguage, e.target.value))}
                             />
-                            <button type="button" aria-label={`Programmpunkt ${index + 1} nach oben`} disabled={index === 0} onClick={() => handleMove(index, -1)}>↑</button>
-                            <button type="button" aria-label={`Programmpunkt ${index + 1} nach unten`} disabled={index === rows.length - 1} onClick={() => handleMove(index, 1)}>↓</button>
-                            <button type="button" aria-label={`Programmpunkt ${index + 1} entfernen`} onClick={() => setRows(rows.filter((_, position) => position !== index))}>✕</button>
+                            <button type="button" aria-label={t('admin.program.moveUp', { number: index + 1 })} disabled={index === 0} onClick={() => handleMove(index, -1)}>↑</button>
+                            <button type="button" aria-label={t('admin.program.moveDown', { number: index + 1 })} disabled={index === rows.length - 1} onClick={() => handleMove(index, 1)}>↓</button>
+                            <button type="button" aria-label={t('admin.program.remove', { number: index + 1 })} onClick={() => setRows(rows.filter((_, position) => position !== index))}>✕</button>
                         </div>
                     ))}
-                    {rows.length === 0 && <p>Keine Programmpunkte.</p>}
+                    {rows.length === 0 && <p>{t('admin.program.empty')}</p>}
                     <div className="programActions">
                         <button
                             type="button"
                             disabled={rows.length >= MAX_PROGRAM_ENTRIES}
                             onClick={() => setRows([...rows, toProgramRow({ icon: DEFAULT_PROGRAM_ICON, time: '', text: '' })])}
                         >
-                            + Programmpunkt hinzufügen
+                            {t('admin.program.add')}
                         </button>
-                        <button type="button" onClick={() => setRows(defaultProgram().map(toProgramRow))}>Standard-Programm</button>
+                        <button type="button" onClick={() => setRows(defaultProgram().map(toProgramRow))}>{t('admin.program.default')}</button>
                     </div>
                 </div>
                 <div style={{ marginBottom: '115px' }}></div>
@@ -155,7 +163,7 @@ const Program: React.FC = () => {
                         }}
                     >
                         <div>
-                            <p>Speichern</p>
+                            <p>{t('common.save')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

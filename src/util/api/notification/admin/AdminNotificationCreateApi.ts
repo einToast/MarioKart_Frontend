@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { NotificationRequestDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'NOTIFICATION');
 
@@ -10,11 +11,11 @@ export const sendNotificationToAll = async (notification: NotificationRequestDTO
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             }
         }
         throw error;
@@ -29,11 +30,11 @@ export const sendNotificationToTeam = async (teamId: number, notification: Notif
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else if (error.response?.status === 500) {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             } else {
-                throw new Error('Benachrichtigung konnte nicht gesendet werden');
+                throw new Error(i18n.t('errors.notificationNotSent'));
             }
         }
         throw error;

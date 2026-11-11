@@ -72,7 +72,7 @@ describe('floor plan', () => {
             expect(plan.outline).toHaveLength(6);
             // One screen per switch plus the drinks counter, which is there together with both exits in every variant
             expect(plan.elements.filter(element => element.type === 'table')).toHaveLength(count + 1);
-            expect(plan.elements.filter(element => element.type === 'text').map(element => element.text)).toEqual(['getränke', 'food', 'toilett', '↓', 'food', 'toilett', '↓']);
+            expect(plan.elements.filter(element => element.type === 'text').map(element => element.text)).toEqual(['getränke', 'essen', 'toilette', '↓', 'essen', 'toilette', '↓']);
             // Four rows in front of the main switch, two in front of every other one
             expect(plan.elements.filter(element => element.type === 'row')).toHaveLength(4 + (count - 1) * 2);
         });

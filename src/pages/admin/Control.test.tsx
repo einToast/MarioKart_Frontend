@@ -288,7 +288,7 @@ describe('admin Control', () => {
             confirm('Benachrichtigung senden');
 
             await expectSuccessToast('Benachrichtigung wurde gesendet');
-            expect(backend.requestsTo('POST', '/admin/notification/send')[0].body).toEqual({ title: 'Pause', message: 'Pizza ist da' });
+            expect(backend.requestsTo('POST', '/admin/notification/send')[0].body).toEqual({ title: 'Pause', message: 'Pizza ist da', translations: {} });
         });
 
         it('shows an error instead of the dialog when the teams cannot be loaded', async () => {

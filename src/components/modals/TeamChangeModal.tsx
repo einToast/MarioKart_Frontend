@@ -7,14 +7,16 @@ import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, PublicRegistrationService } from '../../util/service';
 import Toast from '../Toast';
+import { useTranslation } from 'react-i18next';
 
 const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
+    const { t } = useTranslation();
 
     const [teamName, setTeamName] = useState<string>('');
     const [character, setCharacter] = useState<string>('');
     const [availableCharacters, setAvailableCharacters] = useState<string[]>([]);
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
     const resetTeam = () => {
@@ -28,7 +30,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                     resetTeam();
                     return closeModal({ teamChanged: true });
                 } else {
-                    setError('Team konnte nicht aktualisiert werden');
+                    setError(t('errors.teamNotUpdated'));
                     setShowToast(true);
                 }
             })
@@ -58,21 +60,21 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ teamChanged: false })}>
             <IonContent>
-                <h4>Team</h4>
+                <h4>{t('admin.teams.team')}</h4>
                 <form onSubmit={handleChange}>
 
                     <div className="borderContainer">
-                        <p>Teamname</p>
+                        <p>{t('register.teamName')}</p>
                         <input
                             type="text"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
-                            placeholder="Name eingeben"
+                            placeholder={t('admin.teams.namePlaceholder')}
                             required
                         />
                     </div>
                     <div className={"borderContainer"}>
-                        <p>Charakter</p>
+                        <p>{t('admin.teams.character')}</p>
                         <select value={character} onChange={(e) => setCharacter(e.target.value)}
                             style={{ cursor: "pointer" }}>
                             <option
@@ -102,7 +104,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -116,7 +118,7 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                     >
 
                         <div>
-                            <p>Team ändern</p>
+                            <p>{t('admin.teams.change')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

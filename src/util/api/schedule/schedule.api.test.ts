@@ -41,7 +41,7 @@ describe('PublicScheduleApi', () => {
         method: 'GET',
         url: '/public/schedule/create/final_schedule',
         response: true,
-        fallback: 'Finalrunden-Status konnte nicht geladen werden',
+        fallback: 'Status der Finalspiele konnte nicht geladen werden',
     });
 });
 
@@ -68,13 +68,13 @@ describe('AdminScheduleApi', () => {
         url: '/admin/schedule/create/final_schedule',
         response: [makeRound({ finalGame: true })],
         errors: {
-            409: 'Finalrunden existieren bereits',
+            409: 'Finalspiele existieren bereits',
             404: 'Nicht genügend Teams vorhanden',
             401: 'Nicht autorisierter Zugriff',
             400: 'Noch nicht alle Runden gespielt',
             500: 'Benachrichtigung konnte nicht gesendet werden',
         },
-        fallback: 'Finalrunden konnten nicht erstellt werden',
+        fallback: 'Finalspiele konnten nicht erstellt werden',
     });
 
     describeEndpoint('deleteSchedule', {
@@ -92,7 +92,7 @@ describe('AdminScheduleApi', () => {
         url: '/admin/schedule/create/final_schedule',
         returnsVoid: true,
         errors: { 401: 'Nicht autorisierter Zugriff' },
-        fallback: 'Finalrunden konnten nicht gelöscht werden',
+        fallback: 'Finalspiele konnten nicht gelöscht werden',
     });
 
     describeEndpoint('getRounds', {

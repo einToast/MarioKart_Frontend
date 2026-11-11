@@ -1,5 +1,7 @@
 import { backend } from '../../../test/backend';
 import { loginAsTeam } from '../../../test/render';
+import { changeLanguage } from '../../../i18n';
+import { PublicCookiesService } from '../cookies';
 import { AdminNotificationService, NotificationService, PublicNotificationService } from './index';
 
 const PUBLIC_KEY_URL = '/public/notification/public-key';
@@ -105,7 +107,7 @@ describe('NotificationService', () => {
             expect(backend.requestsTo('POST', SUBSCRIBE_URL)).toEqual([{
                 method: 'POST',
                 url: SUBSCRIBE_URL,
-                body: { endpoint: 'https://push.example/abc', p256dh: 'AQID', auth: 'BAUG', teamId: 4 },
+                body: { endpoint: 'https://push.example/abc', p256dh: 'AQID', auth: 'BAUG', teamId: 4, language: 'de' },
             }]);
         });
 
@@ -136,7 +138,7 @@ describe('NotificationService', () => {
             await NotificationService.subscribeToPushNotifications(makeRegistration(subscribe));
 
             expect(backend.requestsTo('POST', SUBSCRIBE_URL)[0].body).toEqual({
-                endpoint: 'https://push.example/abc', p256dh: '', auth: '', teamId: 0,
+                endpoint: 'https://push.example/abc', p256dh: '', auth: '', teamId: 0, language: 'de',
             });
         });
 
@@ -162,6 +164,16 @@ describe('NotificationService', () => {
             expect(backend.requestsTo('POST', SUBSCRIBE_URL)).toEqual([]);
         });
 
+        it('registers the subscription with the current language', async () => {
+            await changeLanguage('en');
+            backend.get(PUBLIC_KEY_URL, 'AQIDBA').post(SUBSCRIBE_URL);
+            const subscribe = vi.fn().mockResolvedValue(makeSubscription());
+
+            await NotificationService.subscribeToPushNotifications(makeRegistration(subscribe));
+
+            expect(backend.requestsTo('POST', SUBSCRIBE_URL)[0].body).toMatchObject({ language: 'en' });
+        });
+
         it('resolves to null when the backend rejects the subscription', async () => {
             backend.get(PUBLIC_KEY_URL, 'AQIDBA').fail('POST', SUBSCRIBE_URL, 500);
             const subscribe = vi.fn().mockResolvedValue(makeSubscription());
@@ -171,10 +183,57 @@ describe('NotificationService', () => {
     });
 });
 
+describe('NotificationService.updateLanguage', () => {
+    const LANGUAGE_URL = '/public/notification/subscription/language';
+
+    const stubSubscription = (subscription: PushSubscription | null) => {
+        const registration = { pushManager: { getSubscription: vi.fn().mockResolvedValue(subscription) } };
+        Object.defineProperty(navigator, 'serviceWorker', {
+            configurable: true,
+            value: { getRegistration: vi.fn().mockResolvedValue(registration) },
+        });
+    };
+
+    afterEach(() => {
+        delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
+    });
+
+    it('sends the new language for the push subscription of this device', async () => {
+        PublicCookiesService.setNotificationsEnabled(true);
+        stubSubscription(makeSubscription());
+        backend.put(LANGUAGE_URL);
+
+        await NotificationService.updateLanguage('en');
+
+        expect(backend.requests).toEqual([{
+            method: 'PUT',
+            url: LANGUAGE_URL,
+            body: { endpoint: 'https://push.example/abc', language: 'en' },
+        }]);
+    });
+
+    it('does nothing while notifications are not enabled', async () => {
+        stubSubscription(makeSubscription());
+
+        await NotificationService.updateLanguage('en');
+
+        expect(backend.requests).toEqual([]);
+    });
+
+    it('does nothing when the device has no push subscription', async () => {
+        PublicCookiesService.setNotificationsEnabled(true);
+        stubSubscription(null);
+
+        await NotificationService.updateLanguage('en');
+
+        expect(backend.requests).toEqual([]);
+    });
+});
+
 describe('PublicNotificationService', () => {
     it('subscribe forwards the subscription data', async () => {
         backend.post(SUBSCRIBE_URL);
-        const data = { endpoint: 'https://push.example/abc', p256dh: 'AQID', auth: 'BAUG', teamId: 2 };
+        const data = { endpoint: 'https://push.example/abc', p256dh: 'AQID', auth: 'BAUG', teamId: 2, language: 'de' };
 
         await PublicNotificationService.subscribe(data);
 
@@ -197,7 +256,7 @@ describe('AdminNotificationService', () => {
         expect(backend.requests).toEqual([{
             method: 'POST',
             url: '/admin/notification/send',
-            body: { title: 'Pause', message: 'Pizza ist da' },
+            body: { title: 'Pause', message: 'Pizza ist da', translations: {} },
         }]);
     });
 
@@ -209,7 +268,7 @@ describe('AdminNotificationService', () => {
         expect(backend.requests).toEqual([{
             method: 'POST',
             url: '/admin/notification/send/4',
-            body: { title: 'Runde 3', message: 'Ihr seid dran' },
+            body: { title: 'Runde 3', message: 'Ihr seid dran', translations: {} },
         }]);
     });
 

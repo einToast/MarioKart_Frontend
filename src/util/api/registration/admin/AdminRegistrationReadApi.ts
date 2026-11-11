@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { TeamReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'REGISTRATION');
 
@@ -11,9 +12,9 @@ export const getTeamsSortedByFinalPoints = async (): Promise<TeamReturnDTO[]> =>
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Teams konnten nicht abgerufen werden');
+                throw new Error(i18n.t('errors.teamsNotFetched'));
             }
         }
         throw error;
@@ -27,9 +28,9 @@ export const getFinalTeams = async (): Promise<TeamReturnDTO[]> => {
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Team konnte nicht abgerufen werden');
+                throw new Error(i18n.t('errors.teamNotFetched'));
             }
         }
         throw error;

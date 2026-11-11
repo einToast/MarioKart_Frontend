@@ -20,15 +20,15 @@ describe('Tab4 (how to play)', () => {
         expect(screen.getByRole('heading', { name: 'So wird gespielt' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Spielregeln' })).toBeInTheDocument();
         expect(screen.getAllByRole('listitem')).toHaveLength(8);
-        expect(screen.getByText('Die Geschwindigkeit beträgt 100ccm')).toBeInTheDocument();
-        expect(screen.getByAltText('pro controller')).toHaveAttribute('src', '/media/procon_how_to_play.webp');
-        expect(screen.getByAltText('joycon')).toHaveAttribute('src', '/media/joycon_how_to_play.webp');
+        expect(screen.getByText('Die Geschwindigkeit beträgt 100 ccm')).toBeInTheDocument();
+        expect(screen.getByAltText('Tastenbelegung am Pro Controller')).toHaveAttribute('src', '/media/procon_how_to_play.webp');
+        expect(screen.getByAltText('Tastenbelegung an den Joy-Con')).toHaveAttribute('src', '/media/joycon_how_to_play.webp');
     });
 
     it('embeds the explanation video', () => {
         renderPage();
 
-        expect(screen.getByTitle('YouTube Video')).toHaveAttribute('src', expect.stringContaining('https://www.youtube.com/embed/'));
+        expect(screen.getByTitle('Video: So wird gespielt')).toHaveAttribute('src', expect.stringContaining('https://www.youtube.com/embed/'));
     });
 
     it('shows the team header for a logged in team', () => {

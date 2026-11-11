@@ -1,11 +1,12 @@
 import { AdminOcrApi } from "../../../api";
 import { OcrCharacterDTO } from "../../../api/config/dto";
+import i18n from "../../../../i18n";
 
 const readAsBase64 = (image: Blob): Promise<string> => new Promise((resolve, reject) => {
     const reader = new FileReader();
     // The result is a data URL, the backend expects only the part after the comma
     reader.onload = () => resolve((reader.result as string).split(',')[1] ?? '');
-    reader.onerror = () => reject(new Error('Foto konnte nicht gelesen werden'));
+    reader.onerror = () => reject(new Error(i18n.t('errors.photoNotRead')));
     reader.readAsDataURL(image);
 });
 

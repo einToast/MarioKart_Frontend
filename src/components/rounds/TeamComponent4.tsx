@@ -1,6 +1,7 @@
 import React from 'react';
 import { GameReturnDTO, SwitchDTO, TeamReturnDTO } from "../../util/api/config/dto";
 import { switchColorStyle } from '../../util/layout/switches';
+import { useTranslation } from 'react-i18next';
 
 // 1-4 characters keep full size, more of them have to shrink to fit
 const FULL_SIZE_TEAMS = 4;
@@ -20,6 +21,7 @@ const iconStyle = (index: number, count: number): React.CSSProperties => {
 };
 
 const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, gameSwitch: SwitchDTO }> = ({ team, game, gameSwitch }) => {
+    const { t } = useTranslation();
     const crowded = game.teams.length > FULL_SIZE_TEAMS;
 
     return (
@@ -30,7 +32,7 @@ const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, gameS
                         return (
                             <img
                                 src={`/characters/${team.character.characterName}.webp`}
-                                alt="teamcharacter"
+                                alt={team.character.characterName}
                                 className="iconTeam"
                                 key={team.character.characterName}
                                 style={iconStyle(index, game.teams.length)}
@@ -41,7 +43,7 @@ const TeamComponent4: React.FC<{ team: TeamReturnDTO, game: GameReturnDTO, gameS
             </div>
             <div>
                 <p>{team.teamName}</p>
-                <p>Switch {gameSwitch.name}</p>
+                <p>{t('schedule.switchName', { name: gameSwitch.name })}</p>
             </div>
         </div>
     );

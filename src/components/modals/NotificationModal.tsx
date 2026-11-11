@@ -1,17 +1,25 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useEffect, useState } from 'react';
-import { TeamReturnDTO } from '../../util/api/config/dto';
+import { NotificationTranslation, TeamReturnDTO } from '../../util/api/config/dto';
 import { NotificationModalResult } from '../../util/api/config/interfaces';
 import Toast from '../Toast';
 import { AdminNotificationService } from '../../util/service';
+import { useTranslation } from 'react-i18next';
+import TranslationLanguageTabs from '../admin/TranslationLanguageTabs';
+import { DEFAULT_LANGUAGE, Language } from '../../i18n/languages';
+import { setTranslation, Translations } from '../../i18n/translatable';
 
 const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: NotificationModalResult) => void, teams: TeamReturnDTO[] }> = ({ showModal, closeModal, teams }) => {
+    const { t } = useTranslation();
     const [teamId, setTeamId] = useState<string>("-1");
     const [title, setTitle] = React.useState<string>('');
     const [message, setMessage] = React.useState<string>('');
+    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const [translations, setTranslations] = useState<Translations<NotificationTranslation> | undefined>(undefined);
+    const translating = editLanguage !== DEFAULT_LANGUAGE;
 
-    const [error, setError] = useState<string>('Error');
+    const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
     const [subscriptionCount, setSubscriptionCount] = useState<number | null>(null);
 
@@ -29,13 +37,15 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
 
     const handleNotification = () => {
         const sendNotification = teamId === "-1" 
-            ? AdminNotificationService.sendNotificationToAll(title, message)
-            : AdminNotificationService.sendNotificationToTeam(Number(teamId), title, message);
+            ? AdminNotificationService.sendNotificationToAll(title, message, translations)
+            : AdminNotificationService.sendNotificationToTeam(Number(teamId), title, message, translations);
         
         sendNotification
             .then(() => {
                 setTitle('');
                 setMessage('');
+                setTranslations(undefined);
+                setEditLanguage(DEFAULT_LANGUAGE);
                 closeModal({ notificationSent: true });
             })
             .catch((error) => {
@@ -48,15 +58,16 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ notificationSent: false })}>
             <IonContent>
-                <h4>Benachrichtigung senden</h4>
+                <h4>{t('admin.notification.send')}</h4>
                 {subscriptionCount !== null && (
-                    <p>Aktive Abonnements: {subscriptionCount}</p>
+                    <p>{t('admin.notification.activeSubscriptions', { count: subscriptionCount })}</p>
                 )}
                 <form onSubmit={handleNotification}>
+                    <TranslationLanguageTabs value={editLanguage} onChange={setEditLanguage} />
                     <div className="loginContainer">
                         <div className="borderContainer selectCharacter">
                             <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value={-1}>Alle</option>
+                                <option value={-1}>{t('admin.notification.all')}</option>
                                 {teams?.map((team) => (
                                     <option key={team.id}
                                         value={team.id}
@@ -71,7 +82,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                     {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
                                         <img
                                             src={`/characters/${character}.webp`}
-                                            alt={`${character} character`}
+                                            alt={t('characterImage', { name: character })}
                                             key={character}
                                         />
                                     ))}
@@ -80,23 +91,27 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                         </div>
                     </div>
                     <div className="borderContainer">
-                        <p>Titel</p>
+                        <p>{t('admin.notification.title')}</p>
                         <input
                             type="text"
-                            value={title}
-                            onChange={(e) => setTitle(e.target.value)}
-                            placeholder={"Titel eingeben"}
-                            required
+                            value={translating ? translations?.[editLanguage]?.title ?? '' : title}
+                            onChange={(e) => translating
+                                ? setTranslations(current => setTranslation(current, editLanguage, 'title', e.target.value))
+                                : setTitle(e.target.value)}
+                            placeholder={translating ? title : t('admin.notification.titlePlaceholder')}
+                            required={!translating}
                         />
                     </div>
                     <div className={"borderContainer"}>
-                        <p>Nachricht</p>
+                        <p>{t('admin.notification.message')}</p>
                         <input
                             type="text"
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder={"Nachricht eingeben"}
-                            required
+                            value={translating ? translations?.[editLanguage]?.message ?? '' : message}
+                            onChange={(e) => translating
+                                ? setTranslations(current => setTranslation(current, editLanguage, 'message', e.target.value))
+                                : setMessage(e.target.value)}
+                            placeholder={translating ? message : t('admin.notification.messagePlaceholder')}
+                            required={!translating}
                         />
                     </div>
                 </form>
@@ -111,7 +126,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                         }}
                     >
                         <div>
-                            <p>Abbrechen</p>
+                            <p>{t('common.cancel')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
@@ -125,7 +140,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                     >
 
                         <div>
-                            <p>Benachrichtigung senden</p>
+                            <p>{t('admin.notification.send')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

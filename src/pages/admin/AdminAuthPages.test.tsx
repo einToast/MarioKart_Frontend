@@ -148,7 +148,7 @@ describe('admin Dashboard', () => {
     const waitForDashboard = () => waitFor(() => expect(backend.requestsTo('GET', '/public/schedule/rounds/unplayed')).toHaveLength(1))
         .then(() => screen.findByText('Teams'));
 
-    const ALWAYS = ['Teams', 'Umfragen', 'Switches & Raumplan', 'Programm', 'Kontrollzentrum', 'Logout'];
+    const ALWAYS = ['Teams', 'Umfragen', 'Switches & Raumplan', 'Programm', 'Kontrollzentrum', 'Abmelden'];
 
     beforeEach(() => {
         stubDefaultBackend();
@@ -157,11 +157,11 @@ describe('admin Dashboard', () => {
     itRequiresAnAdminSession(renderPage);
 
     it.each([
-        ['before the schedule exists', { schedule: false, finalSchedule: false, unplayed: 0 }, ['Spielplan erzeugen'], ['Punkte eintragen', 'Finalspiele erzeugen', 'Zwischenergebnis', 'Endergebnis']],
-        ['during the group phase', { schedule: true, finalSchedule: false, unplayed: 3 }, ['Punkte eintragen'], ['Spielplan erzeugen', 'Finalspiele erzeugen', 'Zwischenergebnis', 'Endergebnis']],
-        ['after the group phase', { schedule: true, finalSchedule: false, unplayed: 0 }, ['Punkte eintragen', 'Finalspiele erzeugen', 'Zwischenergebnis'], ['Spielplan erzeugen', 'Endergebnis']],
-        ['while the finals are played', { schedule: true, finalSchedule: true, unplayed: 2 }, ['Punkte eintragen'], ['Spielplan erzeugen', 'Finalspiele erzeugen', 'Zwischenergebnis', 'Endergebnis']],
-        ['after the finals', { schedule: true, finalSchedule: true, unplayed: 0 }, ['Punkte eintragen', 'Endergebnis'], ['Spielplan erzeugen', 'Finalspiele erzeugen', 'Zwischenergebnis']],
+        ['before the schedule exists', { schedule: false, finalSchedule: false, unplayed: 0 }, ['Spielplan erstellen'], ['Punkte eintragen', 'Finalspiele erstellen', 'Zwischenergebnis', 'Endergebnis']],
+        ['during the group phase', { schedule: true, finalSchedule: false, unplayed: 3 }, ['Punkte eintragen'], ['Spielplan erstellen', 'Finalspiele erstellen', 'Zwischenergebnis', 'Endergebnis']],
+        ['after the group phase', { schedule: true, finalSchedule: false, unplayed: 0 }, ['Punkte eintragen', 'Finalspiele erstellen', 'Zwischenergebnis'], ['Spielplan erstellen', 'Endergebnis']],
+        ['while the finals are played', { schedule: true, finalSchedule: true, unplayed: 2 }, ['Punkte eintragen'], ['Spielplan erstellen', 'Finalspiele erstellen', 'Zwischenergebnis', 'Endergebnis']],
+        ['after the finals', { schedule: true, finalSchedule: true, unplayed: 0 }, ['Punkte eintragen', 'Endergebnis'], ['Spielplan erstellen', 'Finalspiele erstellen', 'Zwischenergebnis']],
     ])('offers the matching actions %s', async (_phase, state, offered, hidden) => {
         stubScheduleState(state);
 
@@ -176,7 +176,7 @@ describe('admin Dashboard', () => {
 
     it.each([
         ['Punkte eintragen', '/admin/points'],
-        ['Finalspiele erzeugen', '/admin/final'],
+        ['Finalspiele erstellen', '/admin/final'],
         ['Zwischenergebnis', '/admin/results'],
         ['Teams', '/admin/teams'],
         ['Umfragen', '/admin/survey'],
@@ -196,7 +196,7 @@ describe('admin Dashboard', () => {
         stubScheduleState({ schedule: false, finalSchedule: false, unplayed: 0 });
         renderPage();
 
-        fireEvent.click(await screen.findByText('Spielplan erzeugen'));
+        fireEvent.click(await screen.findByText('Spielplan erstellen'));
 
         expect(currentPath()).toBe('/admin/schedule');
     });
@@ -215,7 +215,7 @@ describe('admin Dashboard', () => {
         renderPage();
         await waitForDashboard();
 
-        fireEvent.click(screen.getByText('Logout'));
+        fireEvent.click(screen.getByText('Abmelden'));
 
         await waitFor(() => expect(currentPath()).toBe('/admin/login'));
         expect(backend.requestsTo('POST', '/public/user/logout')).toHaveLength(1);
@@ -226,7 +226,7 @@ describe('admin Dashboard', () => {
         renderPage();
         await waitForDashboard();
 
-        fireEvent.click(screen.getByText('Logout'));
+        fireEvent.click(screen.getByText('Abmelden'));
 
         await expectErrorToast('Logout fehlgeschlagen');
         expect(currentPath()).toBe('/admin/dashboard');

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { OcrInputDTO, OcrReturnDTO } from '../../config/dto';
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('ADMIN', 'OCR');
 
@@ -11,11 +12,11 @@ export const detectCharacters = async (roundId: number, gameId: number, input: O
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 404) {
-                throw new Error('Spiel nicht gefunden');
+                throw new Error(i18n.t('errors.gameNotFound'));
             } else if (error.response?.status === 401) {
-                throw new Error('Nicht autorisierter Zugriff');
+                throw new Error(i18n.t('errors.unauthorized'));
             } else {
-                throw new Error('Foto konnte nicht ausgewertet werden');
+                throw new Error(i18n.t('errors.photoNotEvaluated'));
             }
         }
         throw error;

@@ -1,6 +1,7 @@
 import axios from "axios";
 import apiClient, { ApiPath } from "../../config/apiClient";
 import { QuestionReturnDTO } from "../../config/dto";
+import i18n from "../../../../i18n";
 
 const BASE_URL = ApiPath.createPath('PUBLIC', 'SURVEY');
 
@@ -10,7 +11,7 @@ export const getVisibleQuestions = async (): Promise<QuestionReturnDTO[]> => {
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error('Fragen konnten nicht geladen werden');
+            throw new Error(i18n.t('errors.questionsNotLoaded'));
         }
         throw error;
     }
@@ -23,13 +24,13 @@ export const getStatisticsOfQuestion = async (questionId: number): Promise<numbe
     } catch (error) {
         if (axios.isAxiosError(error)) {
             if (error.response?.status === 409) {
-                throw new Error('Frage nicht ausgewertet');
+                throw new Error(i18n.t('errors.questionNotEvaluated'));
             } else if (error.response?.status === 404) {
-                throw new Error('Frage konnte nicht gefunden werden');
+                throw new Error(i18n.t('errors.questionNotFoundAlt'));
             } else if (error.response?.status === 400) {
-                throw new Error('Frage ist nicht auswertbar');
+                throw new Error(i18n.t('errors.questionNotEvaluable'));
             } else {
-                throw new Error('Frage konnte nicht geladen werden');
+                throw new Error(i18n.t('errors.questionNotLoaded'));
             }
         }
         throw error;

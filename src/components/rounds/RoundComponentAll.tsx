@@ -2,12 +2,14 @@ import React from 'react';
 import { GameReturnDTO, SwitchDTO } from "../../util/api/config/dto";
 import { User } from '../../util/api/config/interfaces';
 import TeamComponent from './TeamComponent';
+import { useTranslation } from 'react-i18next';
 
 const RoundComponentAll: React.FC<{ game: GameReturnDTO, user: User | null, gameSwitch: SwitchDTO }> = ({ game, user, gameSwitch }) => {
+    const { t } = useTranslation();
 
     if (!game?.teams) {
         return (
-            <p>Du hast aktuell keine Spiele.</p>
+            <p>{t('schedule.noGamesCurrently')}</p>
         );
     }
 

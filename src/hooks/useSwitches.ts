@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { SwitchDTO } from '../util/api/config/dto';
 import { PublicSettingsService } from '../util/service';
 import { useWebSocketConnection } from './useWebSocketConnection';
+import { useLocalize } from './useLocalize';
 
 export const SETTINGS_TOPIC = '/topic/settings';
 
@@ -29,5 +30,8 @@ export const useSwitches = (refreshKey?: unknown): { switches: SwitchDTO[]; relo
         };
     }, [refreshKey, reloadCount]);
 
-    return { switches, reloadSwitches };
+    const localize = useLocalize();
+    const localizedSwitches = useMemo(() => switches.map(localize), [switches, localize]);
+
+    return { switches: localizedSwitches, reloadSwitches };
 };

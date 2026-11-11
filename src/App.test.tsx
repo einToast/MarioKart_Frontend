@@ -42,7 +42,7 @@ describe('App', () => {
         it('offers the registration', async () => {
             renderAppAt('/register');
 
-            expect(await screen.findByRole('heading', { name: 'Register' })).toBeInTheDocument();
+            expect(await screen.findByRole('heading', { name: 'Registrieren' })).toBeInTheDocument();
             expect(path()).toBe('/register');
         });
 
@@ -149,7 +149,7 @@ describe('App', () => {
             ['/tab2', 'Rangliste'],
             ['/tab3', 'Details'],
             ['/tab4', 'So wird gespielt'],
-            ['/survey', 'Abstimmungen'],
+            ['/survey', 'Umfragen'],
         ])('opens %s', async (start, heading) => {
             backend.get('/public/survey/visible', []);
 
