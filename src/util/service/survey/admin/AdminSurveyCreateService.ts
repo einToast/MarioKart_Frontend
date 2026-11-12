@@ -2,23 +2,7 @@ import { AdminSurveyApi } from "../../../api";
 import { QuestionInputDTO, QuestionReturnDTO, QuestionTranslation } from "../../../api/config/dto";
 import { QuestionType } from "../../util";
 import i18n from "../../../../i18n";
-import { pruneTranslations, Translations } from "../../../../i18n/translatable";
-
-export const fitQuestionTranslations = (
-    translations: Translations<QuestionTranslation> | undefined,
-    optionCount: number
-): Translations<QuestionTranslation> => {
-    const fitted: Translations<QuestionTranslation> = {};
-    for (const [language, fields] of Object.entries(translations ?? {})) {
-        if (!fields) {
-            continue;
-        }
-        fitted[language] = fields.options
-            ? { ...fields, options: Array.from({ length: optionCount }, (_, index) => fields.options?.[index] ?? '') }
-            : fields;
-    }
-    return pruneTranslations(fitted) ?? {};
-};
+import { fitTranslatedList, Translations } from "../../../../i18n/translatable";
 
 export const createQuestion = async (
     question: string,
@@ -47,7 +31,7 @@ export const createQuestion = async (
         live: false,
         finalTeamsOnly: finalTeamsOnly,
         oneAnswerPerKey: oneAnswerPerKey,
-        translations: fitQuestionTranslations(translations, options.length)
+        translations: fitTranslatedList(translations, 'options', options.length)
     }
     return AdminSurveyApi.createQuestion(questionInput);
 }
