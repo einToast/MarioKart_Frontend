@@ -11,10 +11,6 @@ export const updateSettings = async (tournament: TournamentDTO): Promise<Tournam
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
-export const reset = async (): Promise<void> => {
-    return await AdminSettingsApi.reset();
-}
-
 export const updateRegistrationOpen = async (registrationOpen: boolean): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {
         registrationOpen: registrationOpen
@@ -94,7 +90,7 @@ export const changeService = async (deleteType: ChangeType): Promise<void> => {
             await AdminScheduleService.deleteFinalSchedule();
             break;
         case ChangeType.ALL:
-            await reset();
+            await AdminSettingsService.reset();
             break;
         default:
             throw new Error(i18n.t('errors.unknown'));
