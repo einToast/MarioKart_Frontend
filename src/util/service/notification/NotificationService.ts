@@ -1,6 +1,6 @@
-import { PublicNotificationApi } from "../../api";
 import { NotificationSubscriptionDTO } from "../../api/config/dto";
 import { PublicCookiesService } from "../cookies";
+import * as PublicNotificationService from "./public";
 import i18n, { currentLanguage } from "../../../i18n";
 
 export class NotificationService {
@@ -48,7 +48,7 @@ export class NotificationService {
 
     private static async getPublicKey(): Promise<Uint8Array<ArrayBuffer>> {
         if (!this.convertedVapidKey) {
-            const response = await PublicNotificationApi.getPublicKey();
+            const response = await PublicNotificationService.getPublicKey();
 
 
             const vapidPublicKey = response
@@ -71,7 +71,7 @@ export class NotificationService {
             language: currentLanguage()
         };
 
-        await PublicNotificationApi.subscribe(subscriptionData);
+        await PublicNotificationService.subscribe(subscriptionData);
     }
 
     static async updateLanguage(language: string): Promise<void> {
@@ -81,7 +81,7 @@ export class NotificationService {
         const registration = await navigator.serviceWorker.getRegistration();
         const subscription = await registration?.pushManager.getSubscription();
         if (subscription) {
-            await PublicNotificationApi.updateLanguage({ endpoint: subscription.endpoint, language });
+            await PublicNotificationService.updateLanguage({ endpoint: subscription.endpoint, language });
         }
     }
 
