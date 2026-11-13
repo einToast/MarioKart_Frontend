@@ -135,14 +135,14 @@ describe('TeamAdminContainer', () => {
 
             fireEvent.click(row('Team Luigi').getByTitle('Team bearbeiten'));
 
-            expect(await dialog().findByPlaceholderText('Name eingeben')).toHaveValue('Team Luigi');
+            expect(await dialog().findByRole('textbox', { name: 'Teamname' })).toHaveValue('Team Luigi');
         });
 
         it('confirms a saved change, closes the editor and notifies the page', async () => {
             backend.put('/admin/teams/2', luigi());
             const { setModalClosed } = renderContainer();
             fireEvent.click(row('Team Luigi').getByTitle('Team bearbeiten'));
-            fireEvent.change(await dialog().findByPlaceholderText('Name eingeben'), { target: { value: 'Die Grünen' } });
+            fireEvent.change(await dialog().findByRole('textbox', { name: 'Teamname' }), { target: { value: 'Die Grünen' } });
 
             fireEvent.click(dialog().getByText('Team ändern'));
 
@@ -155,7 +155,7 @@ describe('TeamAdminContainer', () => {
         it('closes the editor without a confirmation on cancel', async () => {
             const { setModalClosed } = renderContainer();
             fireEvent.click(row('Team Luigi').getByTitle('Team bearbeiten'));
-            await dialog().findByPlaceholderText('Name eingeben');
+            await dialog().findByRole('textbox', { name: 'Teamname' });
 
             fireEvent.click(dialog().getByText('Abbrechen'));
 
@@ -342,7 +342,7 @@ describe('SurveyAdminContainer', () => {
             const { handleModalClose } = renderContainer();
 
             fireEvent.click(editIcon('Beste Strecke?'));
-            expect(dialog().getByPlaceholderText('Frage eingeben')).toHaveValue('Beste Strecke?');
+            expect(dialog().getByRole('textbox', { name: 'Frage der Umfrage' })).toHaveValue('Beste Strecke?');
 
             fireEvent.click(dialog().getByText('Umfrage ändern'));
 

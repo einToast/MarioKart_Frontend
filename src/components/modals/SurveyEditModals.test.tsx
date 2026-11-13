@@ -9,8 +9,8 @@ import SurveyAddModal from './SurveyAddModal';
 import SurveyChangeModal from './SurveyChangeModal';
 import SurveyDeleteModal from './SurveyDeleteModal';
 
-const questionInput = () => screen.getByPlaceholderText('Frage eingeben');
-const optionInputs = () => screen.queryAllByPlaceholderText(/^Option \d+ eingeben$/) as HTMLInputElement[];
+const questionInput = () => screen.getByRole('textbox', { name: 'Frage der Umfrage' });
+const optionInputs = () => screen.queryAllByRole('textbox', { name: /^Option \d+$/ }) as HTMLInputElement[];
 const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
 // The modals contain several selects; they are addressed through the label next to them
 const selectBelow = (label: string) => (screen.getByText(label).parentElement as HTMLElement).querySelector('select') as HTMLSelectElement;
@@ -279,7 +279,7 @@ describe('SurveyChangeModal', () => {
     it('stays hidden while closed', () => {
         renderModal({}, false);
 
-        expect(screen.queryByPlaceholderText('Frage eingeben')).not.toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'Frage der Umfrage' })).not.toBeInTheDocument();
     });
 
     it('is prefilled with the question', () => {

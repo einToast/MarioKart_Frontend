@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { NotificationTranslation, TeamReturnDTO } from '../../util/api/config/dto';
 import { NotificationModalResult } from '../../util/api/config/interfaces';
 import Toast from '../Toast';
@@ -12,6 +12,8 @@ import { setTranslation, Translations } from '../../i18n/translatable';
 
 const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: NotificationModalResult) => void, teams: TeamReturnDTO[] }> = ({ showModal, closeModal, teams }) => {
     const { t } = useTranslation();
+    const titleLabelId = useId();
+    const messageLabelId = useId();
     const [teamId, setTeamId] = useState<string>("-1");
     const [title, setTitle] = React.useState<string>('');
     const [message, setMessage] = React.useState<string>('');
@@ -91,26 +93,28 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                         </div>
                     </div>
                     <div className="borderContainer">
-                        <p>{t('admin.notification.title')}</p>
+                        <p id={titleLabelId}>{t('admin.notification.title')}</p>
                         <input
                             type="text"
                             value={translating ? translations?.[editLanguage]?.title ?? '' : title}
                             onChange={(e) => translating
                                 ? setTranslations(current => setTranslation(current, editLanguage, 'title', e.target.value))
                                 : setTitle(e.target.value)}
-                            placeholder={translating ? title : t('admin.notification.titlePlaceholder')}
+                            aria-labelledby={titleLabelId}
+                            placeholder={translating ? title : undefined}
                             required={!translating}
                         />
                     </div>
                     <div className={"borderContainer"}>
-                        <p>{t('admin.notification.message')}</p>
+                        <p id={messageLabelId}>{t('admin.notification.message')}</p>
                         <input
                             type="text"
                             value={translating ? translations?.[editLanguage]?.message ?? '' : message}
                             onChange={(e) => translating
                                 ? setTranslations(current => setTranslation(current, editLanguage, 'message', e.target.value))
                                 : setMessage(e.target.value)}
-                            placeholder={translating ? message : t('admin.notification.messagePlaceholder')}
+                            aria-labelledby={messageLabelId}
+                            placeholder={translating ? message : undefined}
                             required={!translating}
                         />
                     </div>

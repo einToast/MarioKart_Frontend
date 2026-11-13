@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonItem, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { QuestionReturnDTO } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
@@ -13,6 +13,7 @@ import TranslationLanguageTabs from '../admin/TranslationLanguageTabs';
 
 const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: SurveyModalResult) => void, question: QuestionReturnDTO }> = ({ showModal, closeModal, question }) => {
     const { t } = useTranslation();
+    const fieldId = useId();
     const translation = useQuestionTranslations();
 
     const [questionText, setQuestionText] = useState('');
@@ -105,12 +106,13 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     <TranslationLanguageTabs value={translation.language} onChange={translation.setLanguage} />
 
                     <div className="borderContainer">
-                        <p>{t('admin.surveys.question')}</p>
+                        <p id={`${fieldId}-question`}>{t('admin.surveys.question')}</p>
                         <input
                             type="text"
                             value={translation.translating ? translation.questionText : questionText}
                             onChange={(e) => translation.translating ? translation.changeQuestionText(e.target.value) : setQuestionText(e.target.value)}
-                            placeholder={translation.translating ? questionText : t('admin.surveys.questionPlaceholder')}
+                            aria-labelledby={`${fieldId}-question`}
+                            placeholder={translation.translating ? questionText : undefined}
                             required={!translation.translating}
                         />
                     </div>
@@ -173,12 +175,13 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                         <div style={{ marginBottom: '115px' }}>
                             {Array.from({ length: numberOfOptions }, (_, index) => (
                                 <div key={index} className="form-group">
-                                    <label>{t('admin.surveys.option', { number: index + 1 })}</label>
+                                    <label htmlFor={`${fieldId}-option-${index}`}>{t('admin.surveys.option', { number: index + 1 })}</label>
                                     <input
+                                        id={`${fieldId}-option-${index}`}
                                         type="text"
                                         value={translation.translating ? translation.option(index) : options[index]}
                                         onChange={(e) => translation.translating ? translation.changeOption(index, e.target.value) : handleOptionChange(index, e.target.value)}
-                                        placeholder={translation.translating ? options[index] : t('admin.surveys.optionPlaceholder', { number: index + 1 })}
+                                        placeholder={translation.translating ? options[index] : undefined}
                                         required={!translation.translating}
                                     />
                                 </div>

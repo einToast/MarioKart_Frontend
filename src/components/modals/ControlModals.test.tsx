@@ -31,7 +31,7 @@ describe('BreakChangeModal', () => {
         return { ...view, closeModal };
     };
 
-    const durationInput = () => screen.getByPlaceholderText('Dauer der Pause');
+    const durationInput = () => screen.getByRole('spinbutton', { name: 'Dauer der Pause' });
     const roundOptions = () => Array.from(selectBelow('Vor Runde').options).map(option => option.textContent);
 
     beforeEach(() => {
@@ -45,7 +45,7 @@ describe('BreakChangeModal', () => {
     it('stays hidden and loads nothing while closed', () => {
         renderModal({}, false);
 
-        expect(screen.queryByPlaceholderText('Dauer der Pause')).not.toBeInTheDocument();
+        expect(screen.queryByRole('spinbutton', { name: 'Dauer der Pause' })).not.toBeInTheDocument();
         expect(backend.requests).toEqual([]);
     });
 
@@ -160,13 +160,13 @@ describe('NotificationModal', () => {
 
     // "Benachrichtigung senden" is both the title and the button label; this is the button
     const sendButton = () => screen.getByText(SEND, { selector: 'p' });
-    const titleInput = () => screen.getByPlaceholderText('Titel eingeben');
-    const messageInput = () => screen.getByPlaceholderText('Nachricht eingeben');
+    const titleInput = () => screen.getByRole('textbox', { name: 'Titel' });
+    const messageInput = () => screen.getByRole('textbox', { name: 'Nachricht' });
 
     it('stays hidden while closed', () => {
         renderModal(false);
 
-        expect(screen.queryByPlaceholderText('Titel eingeben')).not.toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'Titel' })).not.toBeInTheDocument();
     });
 
     it('shows how many push subscriptions exist', async () => {

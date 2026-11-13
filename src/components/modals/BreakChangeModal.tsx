@@ -1,7 +1,7 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { differenceInMinutes } from "date-fns";
 import { arrowForwardOutline } from "ionicons/icons";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { BreakReturnDTO, RoundReturnDTO } from "../../util/api/config/dto";
@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakModalResult) => void, aBreak: BreakReturnDTO }> = ({ showModal, closeModal, aBreak }) => {
     const { t } = useTranslation();
+    const durationLabelId = useId();
 
     const [breakDuration, setBreakDuration] = useState<number>(0);
     const [breakEnded, setBreakEnded] = useState<boolean>(false);
@@ -72,12 +73,12 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                 <form onSubmit={handleChange}>
 
                     <div className="borderContainer">
-                        <p>{t('admin.break.duration')}</p>
+                        <p id={durationLabelId}>{t('admin.break.duration')}</p>
                         <input
                             type="number"
                             value={breakDuration}
                             onChange={(e) => setBreakDuration(Number.parseInt(e.target.value))}
-                            placeholder={t('admin.break.duration')}
+                            aria-labelledby={durationLabelId}
                             required
                         />
                     </div>

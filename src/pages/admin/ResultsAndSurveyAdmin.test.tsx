@@ -170,7 +170,7 @@ describe('admin SurveyAdmin', () => {
 
             fireEvent.click(screen.getByRole('button', { name: 'Neue Umfrage' }));
 
-            expect(dialog().getByPlaceholderText('Frage eingeben')).toHaveValue('');
+            expect(dialog().getByRole('textbox', { name: 'Frage der Umfrage' })).toHaveValue('');
         });
 
         it('confirms a created survey, closes the form and reloads the list', async () => {
@@ -178,7 +178,7 @@ describe('admin SurveyAdmin', () => {
             const { container } = renderPage();
             await screen.findByText('Wer gewinnt?');
             fireEvent.click(container.querySelector('.newSurvey') as HTMLElement);
-            fireEvent.change(dialog().getByPlaceholderText('Frage eingeben'), { target: { value: 'Feedback?' } });
+            fireEvent.change(dialog().getByRole('textbox', { name: 'Frage der Umfrage' }), { target: { value: 'Feedback?' } });
             fireEvent.change(dialog().getAllByRole('combobox')[0], { target: { value: 'FREE_TEXT' } });
             backend.get(SURVEYS_URL, [...surveys(), makeQuestion({ id: 3, questionText: 'Feedback?', questionType: 'FREE_TEXT' as never, options: [] })]);
 
@@ -219,7 +219,7 @@ describe('admin SurveyAdmin', () => {
             await screen.findByText('Beste Strecke?');
             const editIcon = (screen.getByText('Beste Strecke?').closest('.currentSurvey') as HTMLElement).querySelectorAll('ion-icon')[2];
             fireEvent.click(editIcon);
-            fireEvent.change(dialog().getByPlaceholderText('Frage eingeben'), { target: { value: 'Schönste Strecke?' } });
+            fireEvent.change(dialog().getByRole('textbox', { name: 'Frage der Umfrage' }), { target: { value: 'Schönste Strecke?' } });
             backend.get(SURVEYS_URL, [surveys()[0], { ...surveys()[1], questionText: 'Schönste Strecke?' }]);
 
             fireEvent.click(dialog().getByText('Umfrage ändern'));

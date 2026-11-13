@@ -1,6 +1,6 @@
 import { IonButton, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { TeamReturnDTO } from "../../util/api/config/dto";
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamModalResult) => void, team: TeamReturnDTO }> = ({ showModal, closeModal, team }) => {
     const { t } = useTranslation();
+    const nameLabelId = useId();
 
     const [teamName, setTeamName] = useState<string>('');
     const [character, setCharacter] = useState<string>('');
@@ -64,12 +65,12 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                 <form onSubmit={handleChange}>
 
                     <div className="borderContainer">
-                        <p>{t('register.teamName')}</p>
+                        <p id={nameLabelId}>{t('register.teamName')}</p>
                         <input
                             type="text"
                             value={teamName}
                             onChange={(e) => setTeamName(e.target.value)}
-                            placeholder={t('admin.teams.namePlaceholder')}
+                            aria-labelledby={nameLabelId}
                             required
                         />
                     </div>

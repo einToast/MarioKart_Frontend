@@ -75,7 +75,7 @@ describe('admin area', () => {
       cy.visit('/admin/teams');
 
       cy.contains('.teamContainer', 'Team Luigi').find('ion-icon[title="Team bearbeiten"]').click();
-      cy.get('ion-modal input[placeholder="Name eingeben"]').should('have.value', 'Team Luigi').clear().type('Die Grünen');
+      cy.contains('ion-modal .borderContainer p', /^Teamname$/).siblings('input').should('have.value', 'Team Luigi').clear().type('Die Grünen');
       cy.get('ion-modal').contains('ion-button', 'Team ändern').click();
 
       cy.wait('@update').its('request.body').should('deep.equal', {

@@ -135,7 +135,7 @@ describe('OcrConfigModal', () => {
         renderModal();
 
         await expectErrorToast('Modelle konnten nicht geladen werden');
-        await waitFor(() => expect(screen.getByPlaceholderText('Modell eingeben')).toHaveValue('gemini-3.8-flash'));
+        await waitFor(() => expect(screen.getByRole('textbox', { name: 'Modell' })).toHaveValue('gemini-3.8-flash'));
     });
 
     it('shows the error and stays open when saving fails', async () => {
