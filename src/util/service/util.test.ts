@@ -1,4 +1,4 @@
-import { ChangeType, convertUmlauts, QuestionType, SurveyKeyMode } from './util';
+import { convertUmlauts, QuestionType, SurveyKeyMode } from './util';
 
 describe('convertUmlauts', () => {
     it.each([
@@ -33,18 +33,5 @@ describe('enums shared with the backend', () => {
 
     it('uses the backend names as SurveyKeyMode values', () => {
         expect(Object.values(SurveyKeyMode)).toEqual(['DISABLED', 'DISTRIBUTING', 'REQUIRED']);
-    });
-
-    it('uses the German display names as ChangeType values', () => {
-        expect(ChangeType).toMatchObject({
-            REGISTRATION: 'Registrierung',
-            TOURNAMENT: 'Turnier',
-            SURVEYS: 'Umfragen',
-            TEAMS: 'Teams',
-            SCHEDULE: 'Spielplan',
-            FINAL_SCHEDULE: 'Finalspiele',
-            NOTIFICATIONS: 'Benachrichtigungen',
-            ALL: 'Anwendung',
-        });
     });
 });

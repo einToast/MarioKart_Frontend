@@ -36,13 +36,13 @@ export enum SurveyKeyMode {
 }
 
 export enum ChangeType {
-    REGISTRATION = "Registrierung",
-    TOURNAMENT = "Turnier",
-    SURVEYS = "Umfragen",
-    TEAMS = "Teams",
-    SCHEDULE = "Spielplan",
-    FINAL_SCHEDULE = "Finalspiele",
-    NOTIFICATIONS = "Benachrichtigungen",
-    ALL = "Anwendung"
+    REGISTRATION = "registration",
+    TOURNAMENT = "tournament",
+    SURVEYS = "surveys",
+    TEAMS = "teams",
+    SCHEDULE = "schedule",
+    FINAL_SCHEDULE = "finalSchedule",
+    NOTIFICATIONS = "notifications",
+    ALL = "all"
 }
 
