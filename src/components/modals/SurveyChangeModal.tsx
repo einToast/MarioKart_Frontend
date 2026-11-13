@@ -2,10 +2,9 @@ import { IonButton, IonContent, IonIcon, IonItem, IonModal } from '@ionic/react'
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useId, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { QuestionReturnDTO, QuestionType } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
-import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 import { useQuestionTranslations } from '../../hooks/useQuestionTranslations';

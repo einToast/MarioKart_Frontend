@@ -4,11 +4,9 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { AdminSettingsService, PublicSettingsService } from '../../util/service';
-import { ChangeType } from "../../util/service/util";
+import { ChangeType, ChangeAction } from "../../util/api/config/interfaces";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
-
-type ChangeAction = 'open' | 'close' | 'delete' | 'reset';
 
 const changeAction = (changeType: ChangeType, isTournamentOpen: boolean, isRegistrationOpen: boolean): ChangeAction => {
     switch (changeType) {

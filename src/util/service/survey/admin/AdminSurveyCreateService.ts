@@ -1,6 +1,5 @@
 import { AdminSurveyApi } from "../../../api";
-import { QuestionInputDTO, QuestionReturnDTO, QuestionTranslation } from "../../../api/config/dto";
-import { QuestionType } from "../../util";
+import { QuestionInputDTO, QuestionReturnDTO, QuestionTranslation, QuestionType } from "../../../api/config/dto";
 import i18n from "../../../../i18n";
 import { fitTranslatedList, Translations } from "../../../../i18n/translatable";
 

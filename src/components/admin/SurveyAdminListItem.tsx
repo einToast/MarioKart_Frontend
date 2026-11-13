@@ -12,7 +12,7 @@ import {
 } from "ionicons/icons";
 import React from 'react';
 import { SurveyAdminListItemProps } from "../../util/api/config/interfaces";
-import { QuestionType } from "../../util/service";
+import { QuestionType } from "../../util/api/config/dto";
 import { useTranslation } from 'react-i18next';
 
 const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({

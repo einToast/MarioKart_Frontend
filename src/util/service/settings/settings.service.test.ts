@@ -1,5 +1,6 @@
 import { backend } from '../../../test/backend';
-import { ChangeType, SurveyKeyMode } from '../util';
+import { ChangeType } from '../../api/config/interfaces';
+import { SurveyKeyMode } from '../../api/config/dto';
 import { AdminSettingsService, PublicSettingsService } from './index';
 
 const SETTINGS_URL = '/public/settings';

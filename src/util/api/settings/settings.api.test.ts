@@ -1,6 +1,5 @@
 import { describeEndpoint } from '../../../test/endpoint';
-import { SurveyKeyMode } from '../../service/util';
-import { TournamentDTO } from '../config/dto';
+import { SurveyKeyMode, TournamentDTO } from '../config/dto';
 import { AdminSettingsApi, PublicSettingsApi } from './index';
 
 const settings: TournamentDTO = {

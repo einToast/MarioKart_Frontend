@@ -10,10 +10,9 @@ import TeamOneFreeTextCard from '../components/survey/TeamOneFreeTextSurveyCompo
 import TeamCard from '../components/survey/TeamSurveyComponent';
 import Toast from '../components/Toast';
 import { useWebSocketConnection } from '../hooks/useWebSocketConnection';
-import { QuestionReturnDTO } from "../util/api/config/dto";
+import { QuestionReturnDTO, QuestionType } from "../util/api/config/dto";
 import { ShowTab2Props } from '../util/api/config/interfaces';
 import { PublicScheduleService, PublicSurveyService } from '../util/service';
-import { QuestionType } from "../util/service/util";
 import './Survey.css';
 import { useTranslation } from 'react-i18next';
 

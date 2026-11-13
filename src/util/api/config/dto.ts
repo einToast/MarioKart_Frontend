@@ -1,4 +1,3 @@
-import { QuestionType, SurveyKeyMode } from "../../service/util";
 import { Translations } from "../../../i18n/translatable";
 
 
@@ -239,4 +238,18 @@ export interface NotificationRequestDTO {
     title: string;
     message: string;
     translations?: Translations<NotificationTranslation>;
+}
+
+export enum QuestionType {
+    MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
+    FREE_TEXT = "FREE_TEXT",
+    CHECKBOX = "CHECKBOX",
+    TEAM = "TEAM",
+    TEAM_ONE_FREE_TEXT = "TEAM_ONE_FREE_TEXT"
+}
+
+export enum SurveyKeyMode {
+    DISABLED = "DISABLED",
+    DISTRIBUTING = "DISTRIBUTING",
+    REQUIRED = "REQUIRED"
 }

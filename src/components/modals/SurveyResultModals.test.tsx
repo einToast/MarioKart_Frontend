@@ -4,8 +4,7 @@ import { lastBarProps } from '../../test/charts';
 import { makeAnswer, makeQuestion, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
-import { QuestionReturnDTO } from '../../util/api/config/dto';
-import { QuestionType } from '../../util/service/util';
+import { QuestionReturnDTO, QuestionType } from '../../util/api/config/dto';
 import SurveyAnswerModal from './SurveyAnswerModal';
 import SurveyStatisticsModal from './SurveyStatisticsModal';
 

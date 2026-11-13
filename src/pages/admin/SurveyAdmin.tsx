@@ -7,10 +7,9 @@ import BackLink from "../../components/admin/BackLink";
 import SurveyAdminContainer from "../../components/admin/SurveyAdminContainer";
 import SurveyAddModal from "../../components/modals/SurveyAddModal";
 import Toast from "../../components/Toast";
-import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { QuestionReturnDTO, SurveyKeyMode } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSettingsService, AdminSurveyService, PublicCookiesService, PublicSettingsService } from "../../util/service";
-import { SurveyKeyMode } from "../../util/service/util";
 import "./SurveyAdmin.css";
 import { useTranslation } from 'react-i18next';
 

@@ -1,8 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createOutline, eyeOffOutline, eyeOutline } from 'ionicons/icons';
 import { makeQuestion, makeTeam } from '../../test/fixtures';
-import { QuestionReturnDTO, TeamReturnDTO } from '../../util/api/config/dto';
-import { QuestionType } from '../../util/service/util';
+import { QuestionReturnDTO, TeamReturnDTO, QuestionType } from '../../util/api/config/dto';
 import SurveyAdminListItem from './SurveyAdminListItem';
 import TeamAdminListItem from './TeamAdminListItem';
 

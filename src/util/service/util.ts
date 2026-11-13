@@ -20,29 +20,3 @@ export const loadImage = (src: string): Promise<HTMLImageElement> => {
         img.onload = () => resolve(img);
     });
 }
-
-export enum QuestionType {
-    MULTIPLE_CHOICE = "MULTIPLE_CHOICE",
-    FREE_TEXT = "FREE_TEXT",
-    CHECKBOX = "CHECKBOX",
-    TEAM = "TEAM",
-    TEAM_ONE_FREE_TEXT = "TEAM_ONE_FREE_TEXT"
-}
-
-export enum SurveyKeyMode {
-    DISABLED = "DISABLED",
-    DISTRIBUTING = "DISTRIBUTING",
-    REQUIRED = "REQUIRED"
-}
-
-export enum ChangeType {
-    REGISTRATION = "registration",
-    TOURNAMENT = "tournament",
-    SURVEYS = "surveys",
-    TEAMS = "teams",
-    SCHEDULE = "schedule",
-    FINAL_SCHEDULE = "finalSchedule",
-    NOTIFICATIONS = "notifications",
-    ALL = "all"
-}
-

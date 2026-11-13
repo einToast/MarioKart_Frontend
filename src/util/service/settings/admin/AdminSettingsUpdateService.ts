@@ -1,11 +1,11 @@
 import { AdminSettingsService, PublicSettingsService } from "..";
 import { AdminSettingsApi } from "../../../api";
-import { SwitchDTO, TournamentDTO } from "../../../api/config/dto";
+import { SwitchDTO, TournamentDTO, SurveyKeyMode } from "../../../api/config/dto";
 import { AdminNotificationService } from "../../notification";
 import { AdminRegistrationService } from "../../registration";
 import { AdminScheduleService } from "../../schedule";
 import { AdminSurveyService } from "../../survey";
-import { ChangeType, SurveyKeyMode } from "../../util";
+import { ChangeType } from "../../../api/config/interfaces";
 import i18n from "../../../../i18n";
 
 export const updateSettings = async (tournament: TournamentDTO): Promise<TournamentDTO> => {

@@ -4,7 +4,7 @@ import { makeBreak, makeRound, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
 import { BreakReturnDTO } from '../../util/api/config/dto';
-import { ChangeType } from '../../util/service/util';
+import { ChangeType } from '../../util/api/config/interfaces';
 import BreakChangeModal from './BreakChangeModal';
 import NotificationModal from './NotificationModal';
 import TournamentModal from './TournamentModal';

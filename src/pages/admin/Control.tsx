@@ -12,9 +12,8 @@ import OcrConfigModal from "../../components/modals/OcrConfigModal";
 import TournamentModal from "../../components/modals/TournamentModal";
 import Toast from "../../components/Toast";
 import { BreakReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
-import { BreakModalResult, NotificationModalResult, OcrConfigModalResult } from "../../util/api/config/interfaces";
+import { BreakModalResult, NotificationModalResult, OcrConfigModalResult, ChangeType } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../../util/service";
-import { ChangeType } from "../../util/service/util";
 import { useTranslation } from 'react-i18next';
 
 const Control: React.FC = () => {

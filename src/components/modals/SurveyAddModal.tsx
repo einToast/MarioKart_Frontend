@@ -4,7 +4,7 @@ import React, { useId, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
-import { QuestionType } from "../../util/service/util";
+import { QuestionType } from "../../util/api/config/dto";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 import { useQuestionTranslations } from '../../hooks/useQuestionTranslations';

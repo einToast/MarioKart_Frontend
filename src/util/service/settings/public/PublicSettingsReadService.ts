@@ -1,6 +1,5 @@
 import { PublicSettingsApi } from "../../../api";
-import { SwitchDTO, TournamentDTO } from "../../../api/config/dto";
-import { SurveyKeyMode } from "../../util";
+import { SwitchDTO, TournamentDTO, SurveyKeyMode } from "../../../api/config/dto";
 
 export const DEFAULT_FINAL_TEAMS_COUNT = 4;
 

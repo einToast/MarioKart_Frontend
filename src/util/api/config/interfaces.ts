@@ -263,3 +263,37 @@ export interface TopicListener {
   callback: (message: Message) => void;
   subscription?: StompSubscription;
 }
+
+export enum ChangeType {
+    REGISTRATION = "registration",
+    TOURNAMENT = "tournament",
+    SURVEYS = "surveys",
+    TEAMS = "teams",
+    SCHEDULE = "schedule",
+    FINAL_SCHEDULE = "finalSchedule",
+    NOTIFICATIONS = "notifications",
+    ALL = "all"
+}
+
+export type ChangeAction = 'open' | 'close' | 'delete' | 'reset';
+
+export interface HelpStep {
+    text: string;
+    image?: string;
+    imageDescription?: string;
+}
+
+export interface HelpSection {
+    title: string;
+    note?: string;
+    steps: HelpStep[];
+}
+
+export type Platform = 'android' | 'ios';
+
+export interface RouteIconProps {
+    path: string;
+    icon: string;
+    selectedIcon: string;
+    title?: string;
+}
