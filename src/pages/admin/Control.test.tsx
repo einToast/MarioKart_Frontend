@@ -12,7 +12,7 @@ const dialog = () => within(screen.getByRole('dialog'));
 // The confirm button of a dialog repeats the dialog title; this is the button
 const confirm = (label: string) => fireEvent.click(dialog().getByText(label, { selector: 'p' }));
 
-// The labels of the actions the control centre offers, in order
+// The labels of the actions the control center offers, in order
 const actions = (container: HTMLElement) =>
     Array.from(container.querySelectorAll('.adminDashboard ion-button')).map(button => button.textContent);
 

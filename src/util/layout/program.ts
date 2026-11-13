@@ -35,7 +35,7 @@ export type ProgramIcon = keyof typeof PROGRAM_ICONS;
 
 export const DEFAULT_PROGRAM_ICON: ProgramIcon = 'time';
 
-// Shown until an admin saves a programme of their own
+// Shown until an admin saves a program of their own
 export const DEFAULT_PROGRAM: ProgramEntry[] = [
     { icon: 'megaphone', time: '16:00 - 16:45', text: 'Arne labert', translations: { en: { text: 'Arne talks' } } },
     { icon: 'play', time: '16:45 - 18:30', text: 'Runde 1 - 5', translations: { en: { text: 'Rounds 1 - 5' } } },
@@ -67,7 +67,7 @@ const sanitizeEntry = (raw: unknown): ProgramEntry | null => {
     return translations ? { ...entry, translations } : entry;
 };
 
-// Returns null for a missing or unreadable programme; single broken entries are dropped
+// Returns null for a missing or unreadable program; single broken entries are dropped
 export const parseProgram = (json: string | null | undefined): ProgramEntry[] | null => {
     if (!json) {
         return null;
@@ -94,5 +94,5 @@ export const serializeProgram = (entries: ProgramEntry[]): string => JSON.string
     }),
 });
 
-// The programme to show: the stored one, or the default while none is stored
+// The program to show: the stored one, or the default while none is stored
 export const resolveProgram = (json: string | null | undefined): ProgramEntry[] => parseProgram(json) ?? defaultProgram();

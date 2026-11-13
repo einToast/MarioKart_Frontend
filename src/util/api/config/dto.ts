@@ -111,7 +111,7 @@ export interface TournamentDTO {
     switches?: SwitchDTO[];
     // JSON of the floor plan
     floorPlan?: string | null;
-    // JSON of the programme
+    // JSON of the program
     program?: string | null;
     ocrProvider?: string | null;
     relativePoints?: boolean;

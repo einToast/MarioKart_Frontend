@@ -185,7 +185,7 @@ export interface Position {
 
 export interface Drag {
   id: string;
-  // Distance between the pointer and the centre of the element when the drag started
+  // Distance between the pointer and the center of the element when the drag started
   offsetX: number;
   offsetY: number;
 }
@@ -211,7 +211,7 @@ export interface WebSocketProviderProps {
 export interface FloorPlanElement {
   id: string;
   type: FloorPlanElementType;
-  // Centre of the element in plan units
+  // Center of the element in plan units
   x: number;
   y: number;
   width: number;

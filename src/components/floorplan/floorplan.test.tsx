@@ -139,7 +139,7 @@ describe('FloorPlanEditor', () => {
         const svg = giveCanvasSize(container);
         const before = byType('switch')[1];
 
-        // Grabbed 4 plan units right of its centre, released at plan position (400, 200)
+        // Grabbed 4 plan units right of its center, released at plan position (400, 200)
         fireEvent.pointerDown(marker('Rot'), { clientX: 10 + (before.x + 4) / 2, clientY: 20 + before.y / 2 });
         fireEvent.pointerMove(svg, { clientX: 10 + 202, clientY: 20 + 100 });
         fireEvent.pointerUp(svg);

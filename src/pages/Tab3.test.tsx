@@ -60,7 +60,7 @@ describe('Tab3 (details)', () => {
         delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
     });
 
-    it('shows the programme and a QR code of the site', () => {
+    it('shows the program and a QR code of the site', () => {
         renderPage();
 
         expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('Tab3 (details)', () => {
         expect(screen.getByTestId('qr-code')).toHaveAttribute('data-value', window.location.origin);
     });
 
-    it('shows the default programme while none is stored', () => {
+    it('shows the default program while none is stored', () => {
         const { container } = renderPage();
 
         expect(Array.from(container.querySelectorAll('.progressContainer p span')).map(time => time.textContent)).toEqual([
@@ -76,7 +76,7 @@ describe('Tab3 (details)', () => {
         ]);
     });
 
-    it('shows the stored programme', async () => {
+    it('shows the stored program', async () => {
         backend.get('/public/settings', {
             tournamentOpen: true,
             program: serializeProgram([{ icon: 'trophy', time: '12:00', text: 'Los gehts' }]),
@@ -89,7 +89,7 @@ describe('Tab3 (details)', () => {
         expect(screen.getByRole('heading', { name: 'Programm' })).toBeInTheDocument();
     });
 
-    it('hides the programme when it was saved without entries', async () => {
+    it('hides the program when it was saved without entries', async () => {
         backend.get('/public/settings', { tournamentOpen: true, program: serializeProgram([]) });
 
         renderPage();

@@ -87,7 +87,7 @@ describe('admin area', () => {
       cy.toast('Team wurde geändert');
     });
 
-    it('asks for confirmation before deleting the schedule in the control centre', () => {
+    it('asks for confirmation before deleting the schedule in the control center', () => {
       cy.stubApi('DELETE', '/admin/schedule/create/schedule').as('deleteSchedule');
       cy.visit('/admin/control');
 

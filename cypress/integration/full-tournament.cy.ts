@@ -67,7 +67,7 @@ const asAdmin = (path: string) => {
   cy.visit(path);
 };
 
-const confirmInControlCentre = (action: string) => {
+const confirmInControlCenter = (action: string) => {
   asAdmin('/admin/control');
   cy.contains('ion-button', action).click();
   cy.get('ion-modal').contains('ion-button', action).click();
@@ -295,8 +295,8 @@ describe('a whole tournament', () => {
     asAdmin('/admin/final');
     cy.get('#finalTeamsCount').should('have.value', '4');
 
-    confirmInControlCentre('Turnier öffnen');
-    confirmInControlCentre('Registrierung öffnen');
+    confirmInControlCenter('Turnier öffnen');
+    confirmInControlCenter('Registrierung öffnen');
 
     for (const team of TEAMS) {
       const registered = team.characterName === MISSPELLED.characterName ? MISSPELLED : team;
@@ -324,7 +324,7 @@ describe('a whole tournament', () => {
     cy.visit('/register');
     cy.get(`select option[value="${NO_SHOW.characterName}"]`).should('exist');
 
-    confirmInControlCentre('Registrierung schließen');
+    confirmInControlCenter('Registrierung schließen');
     cy.clearCookie('user');
     cy.visit('/register');
     cy.location('pathname').should('eq', '/login');
