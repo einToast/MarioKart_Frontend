@@ -6,6 +6,5 @@ export const deleteQuestion = async (question: QuestionReturnDTO): Promise<void>
 }
 
 export const deleteAllQuestions = async (): Promise<void> => {
-    const questions = await AdminSurveyApi.getQuestions();
-    await Promise.all(questions.map(question => AdminSurveyApi.deleteQuestion(question.id)));
+    return await AdminSurveyApi.deleteAllQuestions();
 }

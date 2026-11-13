@@ -108,7 +108,7 @@ describe('admin Control', () => {
         });
 
         it('deletes all surveys and confirms', async () => {
-            backend.get('/admin/survey', []);
+            backend.delete('/admin/survey');
             renderPage();
 
             fireEvent.click(await screen.findByText('Alle Umfragen löschen'));

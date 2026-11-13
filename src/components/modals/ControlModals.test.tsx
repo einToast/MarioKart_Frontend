@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { backend } from '../../test/backend';
-import { makeBreak, makeQuestion, makeRound, makeTeams } from '../../test/fixtures';
+import { makeBreak, makeRound, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
 import { BreakReturnDTO } from '../../util/api/config/dto';
@@ -388,14 +388,14 @@ describe('TournamentModal', () => {
     });
 
     it('deletes every survey on confirmation', async () => {
-        backend.get('/admin/survey', [makeQuestion({ id: 1 }), makeQuestion({ id: 2 })]).delete(/^\/admin\/survey\/\d+$/);
+        backend.delete('/admin/survey');
         const { closeModal } = await openModal(ChangeType.SURVEYS);
 
         fireEvent.click(confirmButton('Umfragen löschen'));
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith(ChangeType.SURVEYS));
         expect(backend.requests.filter(request => request.method === 'DELETE').map(request => request.url))
-            .toEqual(['/admin/survey/1', '/admin/survey/2']);
+            .toEqual(['/admin/survey']);
     });
 
     it.each(['Enter', ' '])('confirms with the "%s" key', async (key) => {
