@@ -224,6 +224,10 @@ export interface NotificationSubscriptionDTO {
     language: string;
 }
 
+export interface NotificationSubscriptionEndpointDTO {
+    endpoint: string;
+}
+
 export interface NotificationSubscriptionLanguageDTO {
     endpoint: string;
     language: string;

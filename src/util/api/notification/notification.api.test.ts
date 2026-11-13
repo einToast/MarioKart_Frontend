@@ -36,6 +36,16 @@ describe('PublicNotificationApi', () => {
         errors: { 401: 'Nicht autorisierter Zugriff' },
         fallback: 'Öffentlicher Schlüssel konnte nicht geladen werden',
     });
+
+    describeEndpoint('unsubscribe', {
+        call: () => PublicNotificationApi.unsubscribe({ endpoint: subscription.endpoint }),
+        method: 'DELETE',
+        url: '/public/notification/subscription',
+        body: { endpoint: subscription.endpoint },
+        returnsVoid: true,
+        errors: { 500: 'Benachrichtigungen konnten nicht deaktiviert werden' },
+        fallback: 'Benachrichtigungen konnten nicht deaktiviert werden',
+    });
 });
 
 describe('AdminNotificationApi', () => {

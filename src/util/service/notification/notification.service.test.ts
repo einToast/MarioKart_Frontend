@@ -230,6 +230,51 @@ describe('NotificationService.updateLanguage', () => {
     });
 });
 
+describe('NotificationService.unsubscribeFromPushNotifications', () => {
+    const SUBSCRIPTION_URL = '/public/notification/subscription';
+
+    const stubSubscription = (subscription: PushSubscription | null) => {
+        const registration = { pushManager: { getSubscription: vi.fn().mockResolvedValue(subscription) } };
+        Object.defineProperty(navigator, 'serviceWorker', {
+            configurable: true,
+            value: { getRegistration: vi.fn().mockResolvedValue(registration) },
+        });
+    };
+
+    afterEach(() => {
+        delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
+    });
+
+    it('removes the subscription from the backend before cancelling it in the browser', async () => {
+        const calls: string[] = [];
+        const subscription = {
+            endpoint: 'https://push.example/abc',
+            unsubscribe: vi.fn(async () => { calls.push('browser'); return true; }),
+        } as unknown as PushSubscription;
+        stubSubscription(subscription);
+        backend.on('DELETE', SUBSCRIPTION_URL, () => { calls.push('backend'); return {}; });
+
+        await NotificationService.unsubscribeFromPushNotifications();
+
+        expect(calls).toEqual(['backend', 'browser']);
+        expect(backend.requestsTo('DELETE', SUBSCRIPTION_URL)[0].body).toEqual({ endpoint: 'https://push.example/abc' });
+    });
+
+    it('does nothing when the device has no push subscription', async () => {
+        stubSubscription(null);
+
+        await NotificationService.unsubscribeFromPushNotifications();
+
+        expect(backend.requests).toEqual([]);
+    });
+
+    it('does nothing when the browser does not support service workers', async () => {
+        await NotificationService.unsubscribeFromPushNotifications();
+
+        expect(backend.requests).toEqual([]);
+    });
+});
+
 describe('PublicNotificationService', () => {
     it('subscribe forwards the subscription data', async () => {
         backend.post(SUBSCRIBE_URL);

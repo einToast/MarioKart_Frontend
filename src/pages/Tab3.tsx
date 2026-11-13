@@ -2,8 +2,8 @@ import { IonButton, IonContent, IonIcon, IonPage, IonRefresher, IonRefresherCont
 import {
     heart,
     helpCircleOutline,
-    notificationsOutline,
-    notificationsSharp
+    notificationsOffOutline,
+    notificationsOutline
 } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
@@ -124,6 +124,20 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
         }
     };
 
+    const disableNotifications = async () => {
+        try {
+            await NotificationService.unsubscribeFromPushNotifications();
+            PublicCookiesService.setNotificationsEnabled(false);
+            setNotificationEnabled(false);
+            setIsError(false);
+            setError(t('details.notificationsDeactivated'));
+        } catch (error) {
+            setIsError(true);
+            setError(error instanceof Error ? error.message : t('details.unexpectedError'));
+        }
+        setShowToast(true);
+    };
+
     return (
         <IonPage>
             <Header />
@@ -172,12 +186,11 @@ const Tab3: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
                 <div className="settings-container" style={{ padding: '0 16px' }}>
                     <IonButton
                         expand="block"
-                        onClick={enableNotifications}
+                        onClick={notificationEnabled ? disableNotifications : enableNotifications}
                         style={{ marginBottom: '16px' }}
-                        disabled={notificationEnabled}
                     >
-                        <IonIcon slot="start" icon={notificationEnabled ? notificationsSharp : notificationsOutline} />
-                        {notificationEnabled ? t('details.notificationsEnabled') : t('details.enableNotifications')}
+                        <IonIcon slot="start" icon={notificationEnabled ? notificationsOffOutline : notificationsOutline} />
+                        {notificationEnabled ? t('details.disableNotifications') : t('details.enableNotifications')}
                     </IonButton>
                     <IonButton
                         expand="block"
