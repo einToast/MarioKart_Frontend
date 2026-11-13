@@ -78,6 +78,7 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                             type="number"
                             value={breakDuration}
                             onChange={(e) => setBreakDuration(Number.parseInt(e.target.value))}
+                            placeholder={t('admin.break.duration')}
                             aria-labelledby={durationLabelId}
                             required
                         />

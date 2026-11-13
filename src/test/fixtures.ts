@@ -1,15 +1,5 @@
-import {
-    AnswerReturnDTO,
-    BreakReturnDTO,
-    GameReturnDTO,
-    PointsReturnDTO,
-    QuestionReturnDTO,
-    RoundReturnDTO,
-    SwitchDTO,
-    TeamReturnDTO,
-} from '../util/api/config/dto';
+import { AnswerReturnDTO, BreakReturnDTO, GameReturnDTO, PointsReturnDTO, QuestionReturnDTO, RoundReturnDTO, SwitchDTO, TeamReturnDTO, QuestionType } from '../util/api/config/dto';
 import { User } from '../util/api/config/interfaces';
-import { QuestionType } from '../util/service/util';
 
 export const makeTeam = (overrides: Partial<TeamReturnDTO> = {}): TeamReturnDTO => ({
     id: 1,

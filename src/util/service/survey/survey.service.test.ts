@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import { backend } from '../../../test/backend';
 import { makeAnswer, makeQuestion } from '../../../test/fixtures';
-import { QuestionType } from '../util';
+import { QuestionType } from '../../api/config/dto';
 import { AdminSurveyService, PublicSurveyService } from './index';
 
 const ANSWER_URL = '/public/survey/answer';

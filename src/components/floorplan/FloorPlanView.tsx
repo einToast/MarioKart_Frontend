@@ -120,7 +120,7 @@ const FloorPlanView: React.FC<FloorPlanViewProps> = ({
                     <stop offset="0" stopColor="#C9B6F7" />
                     <stop offset="1" stopColor="#93CFFB" />
                 </linearGradient>
-                {/* In the coordinates of an element, whose centre is its origin */}
+                {/* In the coordinates of an element, whose center is its origin */}
                 <linearGradient id={`${gradientId}-element`} gradientUnits="userSpaceOnUse" x1={-160} x2={160}>
                     <stop offset="0" stopColor="#C9B6F7" />
                     <stop offset="1" stopColor="#93CFFB" />

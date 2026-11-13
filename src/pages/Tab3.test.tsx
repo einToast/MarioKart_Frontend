@@ -16,7 +16,8 @@ vi.mock('qrcode.react', () => ({
 }));
 
 const ENABLE = 'Benachrichtigungen aktivieren';
-const ENABLED = 'Benachrichtigungen aktiviert';
+const DISABLE = 'Benachrichtigungen deaktivieren';
+const SUBSCRIPTION_URL = '/public/notification/subscription';
 
 const renderPage = () => {
     const setShowTab2 = vi.fn();
@@ -36,6 +37,17 @@ const stubPushSupport = ({ permission = 'granted', subscribe }: { permission?: s
     return pushSubscribe;
 };
 
+// Provides the push subscription this device already holds
+const stubExistingSubscription = () => {
+    const unsubscribe = vi.fn().mockResolvedValue(true);
+    const subscription = { endpoint: 'https://push.example/abc', unsubscribe };
+    Object.defineProperty(navigator, 'serviceWorker', {
+        configurable: true,
+        value: { getRegistration: vi.fn().mockResolvedValue({ pushManager: { getSubscription: vi.fn().mockResolvedValue(subscription) } }) },
+    });
+    return unsubscribe;
+};
+
 describe('Tab3 (details)', () => {
     beforeEach(() => {
         stubDefaultBackend();
@@ -48,7 +60,7 @@ describe('Tab3 (details)', () => {
         delete (navigator as unknown as { serviceWorker?: unknown }).serviceWorker;
     });
 
-    it('shows the programme and a QR code of the site', () => {
+    it('shows the program and a QR code of the site', () => {
         renderPage();
 
         expect(screen.getByRole('heading', { name: 'Details' })).toBeInTheDocument();
@@ -56,7 +68,7 @@ describe('Tab3 (details)', () => {
         expect(screen.getByTestId('qr-code')).toHaveAttribute('data-value', window.location.origin);
     });
 
-    it('shows the default programme while none is stored', () => {
+    it('shows the default program while none is stored', () => {
         const { container } = renderPage();
 
         expect(Array.from(container.querySelectorAll('.progressContainer p span')).map(time => time.textContent)).toEqual([
@@ -64,7 +76,7 @@ describe('Tab3 (details)', () => {
         ]);
     });
 
-    it('shows the stored programme', async () => {
+    it('shows the stored program', async () => {
         backend.get('/public/settings', {
             tournamentOpen: true,
             program: serializeProgram([{ icon: 'trophy', time: '12:00', text: 'Los gehts' }]),
@@ -77,7 +89,7 @@ describe('Tab3 (details)', () => {
         expect(screen.getByRole('heading', { name: 'Programm' })).toBeInTheDocument();
     });
 
-    it('hides the programme when it was saved without entries', async () => {
+    it('hides the program when it was saved without entries', async () => {
         backend.get('/public/settings', { tournamentOpen: true, program: serializeProgram([]) });
 
         renderPage();
@@ -185,12 +197,46 @@ describe('Tab3 (details)', () => {
             expect(buttonOf(ENABLE).disabled).toBe(false);
         });
 
-        it('shows notifications as enabled when they were enabled before', () => {
+        it('offers to disable notifications when they were enabled before', () => {
             Cookies.set('notificationsEnabled', 'true');
 
             renderPage();
 
-            expect(buttonOf(ENABLED).disabled).toBe(true);
+            expect(buttonOf(DISABLE).disabled).toBe(false);
+            expect(screen.queryByText(ENABLE)).not.toBeInTheDocument();
+        });
+
+        it('unsubscribes this device and offers to enable notifications again', async () => {
+            Cookies.set('notificationsEnabled', 'true');
+            const unsubscribe = stubExistingSubscription();
+            backend.delete(SUBSCRIPTION_URL);
+            renderPage();
+
+            fireEvent.click(screen.getByText(DISABLE));
+
+            await expectSuccessToast('Benachrichtigungen deaktiviert');
+            expect(backend.requestsTo('DELETE', SUBSCRIPTION_URL)).toEqual([{
+                method: 'DELETE',
+                url: SUBSCRIPTION_URL,
+                body: { endpoint: 'https://push.example/abc' },
+            }]);
+            expect(unsubscribe).toHaveBeenCalledTimes(1);
+            expect(Cookies.get('notificationsEnabled')).toBe('false');
+            expect(buttonOf(ENABLE).disabled).toBe(false);
+        });
+
+        it('keeps notifications enabled when the backend cannot remove the subscription', async () => {
+            Cookies.set('notificationsEnabled', 'true');
+            const unsubscribe = stubExistingSubscription();
+            backend.fail('DELETE', SUBSCRIPTION_URL, 500);
+            renderPage();
+
+            fireEvent.click(screen.getByText(DISABLE));
+
+            await expectErrorToast('Benachrichtigungen konnten nicht deaktiviert werden');
+            expect(unsubscribe).not.toHaveBeenCalled();
+            expect(Cookies.get('notificationsEnabled')).toBe('true');
+            expect(buttonOf(DISABLE).disabled).toBe(false);
         });
 
         it('subscribes the team and remembers that notifications are enabled', async () => {
@@ -207,7 +253,7 @@ describe('Tab3 (details)', () => {
                 teamId: 4,
             });
             expect(Cookies.get('notificationsEnabled')).toBe('true');
-            expect(buttonOf(ENABLED).disabled).toBe(true);
+            expect(buttonOf(DISABLE).disabled).toBe(false);
         });
 
         it('asks the user to allow notifications when the permission is refused', async () => {

@@ -31,7 +31,7 @@ const syncDocumentLanguage = (language: string) => {
 i18n.on('languageChanged', syncDocumentLanguage);
 syncDocumentLanguage(i18n.language);
 
-const loadLanguage = async (language: Language): Promise<void> => {
+export const loadLanguage = async (language: Language): Promise<void> => {
     if (i18n.hasResourceBundle(language, NAMESPACE)) {
         return;
     }

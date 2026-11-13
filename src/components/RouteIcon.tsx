@@ -1,13 +1,7 @@
 import { IonIcon } from '@ionic/react';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-
-interface RouteIconProps {
-    path: string;
-    icon: string;
-    selectedIcon: string;
-    title?: string;
-}
+import { RouteIconProps } from "../util/api/config/interfaces";
 
 export const RouteIcon: React.FC<RouteIconProps> = ({ path, icon, selectedIcon, title }) => {
     const { pathname } = useLocation();

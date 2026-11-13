@@ -34,7 +34,7 @@ describe('admin Program', () => {
 
     itRequiresAnAdminSession(renderPage);
 
-    it('starts from the default programme while none is stored', async () => {
+    it('starts from the default program while none is stored', async () => {
         renderPage();
 
         await waitFor(() => expect(texts()).toEqual(DEFAULT_PROGRAM.map(entry => entry.text)));
@@ -42,7 +42,7 @@ describe('admin Program', () => {
         expect(screen.getByLabelText('Symbol von Programmpunkt 3')).toHaveValue('pizza');
     });
 
-    it('loads the stored programme', async () => {
+    it('loads the stored program', async () => {
         stubProgram(TWO_ENTRIES);
 
         renderPage();
@@ -86,7 +86,7 @@ describe('admin Program', () => {
         expect(texts()).toEqual(['Runden', 'Begrüßung']);
     });
 
-    it('saves an empty programme, which hides it for the teams', async () => {
+    it('saves an empty program, which hides it for the teams', async () => {
         backend.put(ADMIN_SETTINGS_URL, {});
         stubProgram(TWO_ENTRIES);
         renderPage();
@@ -101,7 +101,7 @@ describe('admin Program', () => {
         expect(savedProgram()).toEqual([]);
     });
 
-    it('restores the default programme', async () => {
+    it('restores the default program', async () => {
         stubProgram(TWO_ENTRIES);
         renderPage();
         await waitFor(() => expect(texts()).toHaveLength(2));
@@ -167,12 +167,12 @@ describe('admin Program', () => {
 
         fireEvent.click(screen.getByText('English'));
 
-        expect(texts()).toEqual(['', '', 'Break']);
+        await waitFor(() => expect(texts()).toEqual(['', '', 'Break']));
         expect(screen.getByLabelText('Text von Programmpunkt 1')).toHaveAttribute('placeholder', 'Begrüßung');
         set('Text von Programmpunkt 1', ' Welcome ');
         set('Text von Programmpunkt 3', '');
         fireEvent.click(screen.getByText('Deutsch (Standard)'));
-        expect(texts()).toEqual(['Begrüßung', 'Runden', 'Pause']);
+        await waitFor(() => expect(texts()).toEqual(['Begrüßung', 'Runden', 'Pause']));
         fireEvent.click(screen.getByText(SAVE));
 
         await expectSuccessToast('Programm gespeichert');

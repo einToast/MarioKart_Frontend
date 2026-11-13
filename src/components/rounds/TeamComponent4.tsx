@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 // 1-4 characters keep full size, more of them have to shrink to fit
 const FULL_SIZE_TEAMS = 4;
-const CIRCLE_CENTRE = { x: 80, y: 55 };
+const CIRCLE_CENTER = { x: 80, y: 55 };
 const CIRCLE_RADIUS = 30;
 const ICON_SIZE = 35;
 const CROWDED_ICON_SIZE = 28;
@@ -15,8 +15,8 @@ const iconStyle = (index: number, count: number): React.CSSProperties => {
     const size = count > FULL_SIZE_TEAMS ? CROWDED_ICON_SIZE : ICON_SIZE;
     const angle = (2 * Math.PI * index) / count - Math.PI / 2;
     return {
-        left: Math.round(CIRCLE_CENTRE.x + CIRCLE_RADIUS * Math.cos(angle) - size / 2),
-        top: Math.round(CIRCLE_CENTRE.y + CIRCLE_RADIUS * Math.sin(angle) - size / 2),
+        left: Math.round(CIRCLE_CENTER.x + CIRCLE_RADIUS * Math.cos(angle) - size / 2),
+        top: Math.round(CIRCLE_CENTER.y + CIRCLE_RADIUS * Math.sin(angle) - size / 2),
     };
 };
 

@@ -4,22 +4,9 @@ import React, { useEffect, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { AdminSettingsService, PublicSettingsService } from '../../util/service';
-import { ChangeType } from "../../util/service/util";
+import { ChangeType, ChangeAction } from "../../util/api/config/interfaces";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
-
-type ChangeSubject = 'tournament' | 'registration' | 'surveys' | 'teams' | 'schedule' | 'finalSchedule' | 'all';
-type ChangeAction = 'open' | 'close' | 'delete' | 'reset';
-
-const CHANGE_SUBJECTS: Record<ChangeType, ChangeSubject> = {
-    [ChangeType.TOURNAMENT]: 'tournament',
-    [ChangeType.REGISTRATION]: 'registration',
-    [ChangeType.SURVEYS]: 'surveys',
-    [ChangeType.TEAMS]: 'teams',
-    [ChangeType.SCHEDULE]: 'schedule',
-    [ChangeType.FINAL_SCHEDULE]: 'finalSchedule',
-    [ChangeType.ALL]: 'all',
-};
 
 const changeAction = (changeType: ChangeType, isTournamentOpen: boolean, isRegistrationOpen: boolean): ChangeAction => {
     switch (changeType) {
@@ -70,10 +57,9 @@ const TournamentModal: React.FC<{ showModal: boolean, closeModal: (changeT?: Cha
             });
     }, [showModal]);
 
-    const subject = CHANGE_SUBJECTS[changeType];
     const action = changeAction(changeType, isTournamentOpen, isRegistrationOpen);
-    const title = t(`admin.change.titles.${action}`, { subject: t(`admin.change.subjects.${subject}`) });
-    const confirmation = t('admin.change.confirm', { target: t(`admin.change.targets.${subject}`), action: t(`admin.change.actions.${action}`) });
+    const title = t(`admin.change.titles.${action}`, { subject: t(`admin.change.subjects.${changeType}`) });
+    const confirmation = t('admin.change.confirm', { target: t(`admin.change.targets.${changeType}`), action: t(`admin.change.actions.${action}`) });
 
     return (
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal()}>

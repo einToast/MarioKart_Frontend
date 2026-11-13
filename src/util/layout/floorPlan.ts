@@ -215,8 +215,8 @@ const seatOffsets = (count: number): number[] => {
     return [Math.min(95, lineHeight * 0.5), Math.min(135, lineHeight * 0.72)];
 };
 
-// Centre of the station of a switch: stations are spread over up to four columns per line
-const stationCentre = (position: number, count: number): { x: number; y: number } => {
+// Center of the station of a switch: stations are spread over up to four columns per line
+const stationCenter = (position: number, count: number): { x: number; y: number } => {
     const columns = Math.min(Math.max(count, 1), 4);
     const lines = stationLines(count);
     const line = Math.floor(position / columns);
@@ -232,7 +232,7 @@ const stationWidth = (count: number): number => Math.min(260, FLOOR_PLAN_WIDTH /
 
 // A screen with the switch on it and two rows of seats in front of it
 const createStation = (plan: FloorPlan, switchIndex: number, count: number): FloorPlanElement[] => {
-    const { x, y } = stationCentre(switchIndex, count);
+    const { x, y } = stationCenter(switchIndex, count);
     const width = stationWidth(count);
     const elements: FloorPlanElement[] = [];
     const add = (type: FloorPlanElementType, overrides: ElementOverrides) => {
@@ -274,7 +274,7 @@ const defaultMarker = (switchIndex: number, switchCount: number): ElementOverrid
     if (station) {
         return station.marker;
     }
-    const { x, y } = stationCentre(switchIndex, switchCount);
+    const { x, y } = stationCenter(switchIndex, switchCount);
     return { x, y: y + 12 };
 };
 

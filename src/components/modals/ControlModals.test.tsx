@@ -4,7 +4,7 @@ import { makeBreak, makeRound, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
 import { BreakReturnDTO } from '../../util/api/config/dto';
-import { ChangeType } from '../../util/service/util';
+import { ChangeType } from '../../util/api/config/interfaces';
 import BreakChangeModal from './BreakChangeModal';
 import NotificationModal from './NotificationModal';
 import TournamentModal from './TournamentModal';
@@ -223,6 +223,15 @@ describe('NotificationModal', () => {
         }]);
     });
 
+    it('hints at the English texts while the German texts are still empty', async () => {
+        renderModal();
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(await screen.findByPlaceholderText('Enter title')).toHaveValue('');
+        expect(screen.getByPlaceholderText('Enter message')).toHaveValue('');
+    });
+
     it('sends English translations next to the German texts', async () => {
         backend.post('/admin/notification/send');
         const { closeModal } = renderModal();
@@ -231,7 +240,7 @@ describe('NotificationModal', () => {
 
         fireEvent.click(screen.getByText('English'));
 
-        expect(screen.getByPlaceholderText('Pause')).toHaveValue('');
+        expect(await screen.findByPlaceholderText('Pause')).toHaveValue('');
         fill(screen.getByPlaceholderText('Pause'), 'Break');
         fill(screen.getByPlaceholderText('Pizza ist da'), ' ');
         fireEvent.click(sendButton());
@@ -336,6 +345,7 @@ describe('TournamentModal', () => {
         [ChangeType.TEAMS, 'Teams löschen', 'Willst du wirklich alle Teams löschen?'],
         [ChangeType.SCHEDULE, 'Spielplan löschen', 'Willst du wirklich den Spielplan löschen?'],
         [ChangeType.FINAL_SCHEDULE, 'Finalspiele löschen', 'Willst du wirklich die Finalspiele löschen?'],
+        [ChangeType.NOTIFICATIONS, 'Abonnements löschen', 'Willst du wirklich alle Benachrichtigungs-Abonnements löschen?'],
         [ChangeType.ALL, 'Anwendung zurücksetzen', 'Willst du wirklich ALLES zurücksetzen?'],
     ])('asks for confirmation before the irreversible change "%s"', async (changeType, expectedTitle, expectedQuestion) => {
         await openModal(changeType);

@@ -3,20 +3,7 @@ import { arrowForwardOutline } from 'ionicons/icons';
 import React, { useState } from 'react';
 import './NotificationHelpModal.css';
 import { useTranslation } from 'react-i18next';
-
-interface HelpStep {
-    text: string;
-    image?: string;
-    imageDescription?: string;
-}
-
-interface HelpSection {
-    title: string;
-    note?: string;
-    steps: HelpStep[];
-}
-
-type Platform = 'android' | 'ios';
+import { HelpSection, Platform } from "../../util/api/config/interfaces";
 
 // TODO: Add images for the steps
 const PLATFORMS: Platform[] = ['android', 'ios'];

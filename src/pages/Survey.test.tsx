@@ -5,7 +5,7 @@ import { makeQuestion } from '../test/fixtures';
 import { expectErrorToast } from '../test/overlays';
 import { currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
 import { stompClient } from '../test/stomp';
-import { QuestionType } from '../util/service/util';
+import { QuestionType } from '../util/api/config/dto';
 import Survey from './Survey';
 
 const VISIBLE_URL = '/public/survey/visible';

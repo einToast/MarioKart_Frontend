@@ -1,8 +1,7 @@
 import { backend } from '../../../test/backend';
 import { describeEndpoint } from '../../../test/endpoint';
 import { makeAnswer, makeQuestion } from '../../../test/fixtures';
-import { QuestionType } from '../../service/util';
-import { AnswerInputDTO, QuestionInputDTO } from '../config/dto';
+import { QuestionType, AnswerInputDTO, QuestionInputDTO } from '../config/dto';
 import { AdminSurveyApi, PublicSurveyApi } from './index';
 
 const questionInput: QuestionInputDTO = {

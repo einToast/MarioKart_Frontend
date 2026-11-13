@@ -2,10 +2,9 @@ import { IonButton, IonContent, IonIcon, IonItem, IonModal } from '@ionic/react'
 import { arrowForwardOutline } from "ionicons/icons";
 import React, { useEffect, useId, useState } from 'react';
 import "../../pages/admin/SurveyAdmin.css";
-import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { QuestionReturnDTO, QuestionType } from "../../util/api/config/dto";
 import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
-import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 import { useQuestionTranslations } from '../../hooks/useQuestionTranslations';
@@ -112,7 +111,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                             value={translation.translating ? translation.questionText : questionText}
                             onChange={(e) => translation.translating ? translation.changeQuestionText(e.target.value) : setQuestionText(e.target.value)}
                             aria-labelledby={`${fieldId}-question`}
-                            placeholder={translation.translating ? questionText : undefined}
+                            placeholder={translation.translating ? questionText || t('admin.surveys.questionPlaceholder', { lng: translation.language }) : t('admin.surveys.questionPlaceholder')}
                             required={!translation.translating}
                         />
                     </div>
@@ -181,7 +180,7 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                                         type="text"
                                         value={translation.translating ? translation.option(index) : options[index]}
                                         onChange={(e) => translation.translating ? translation.changeOption(index, e.target.value) : handleOptionChange(index, e.target.value)}
-                                        placeholder={translation.translating ? options[index] : undefined}
+                                        placeholder={translation.translating ? options[index] || t('admin.surveys.optionPlaceholder', { number: index + 1, lng: translation.language }) : t('admin.surveys.optionPlaceholder', { number: index + 1 })}
                                         required={!translation.translating}
                                     />
                                 </div>

@@ -1,6 +1,6 @@
 import { DEFAULT_PROGRAM, defaultProgram, parseProgram, PROGRAM_ICONS, resolveProgram, serializeProgram } from './program';
 
-describe('programme', () => {
+describe('program', () => {
     it('has the classic schedule of the day as default', () => {
         expect(DEFAULT_PROGRAM.map(entry => `${entry.time} ${entry.text}`)).toEqual([
             '16:00 - 16:45 Arne labert',
@@ -52,7 +52,7 @@ describe('programme', () => {
         expect(parseProgram(JSON.stringify({ entries }))).toHaveLength(30);
     });
 
-    it('resolves to the default only while no readable programme is stored', () => {
+    it('resolves to the default only while no readable program is stored', () => {
         expect(resolveProgram(null)).toEqual(DEFAULT_PROGRAM);
         expect(resolveProgram('broken')).toEqual(DEFAULT_PROGRAM);
         expect(resolveProgram(serializeProgram([]))).toEqual([]);

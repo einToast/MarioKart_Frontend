@@ -5,8 +5,7 @@ import { backend } from '../../test/backend';
 import { makeAnswer, makeQuestion } from '../../test/fixtures';
 import { buttonOf, loginAsTeam } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
-import { QuestionReturnDTO } from '../../util/api/config/dto';
-import { QuestionType } from '../../util/service/util';
+import { QuestionReturnDTO, QuestionType } from '../../util/api/config/dto';
 import FreeTextSurveyComponent from './FreeTextSurveyComponent';
 import TeamOneFreeTextSurveyComponent from './TeamOneFreeTextSurveyComponent';
 

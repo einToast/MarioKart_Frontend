@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { QuestionReturnDTO } from "../../util/api/config/dto";
+import { QuestionReturnDTO, QuestionType } from "../../util/api/config/dto";
 import { SurveyAdminContainerProps } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
-import { QuestionType } from "../../util/service/util";
 import Toast from '../Toast';
 import SurveyAnswerModal from '../modals/SurveyAnswerModal';
 import SurveyChangeModal from '../modals/SurveyChangeModal';

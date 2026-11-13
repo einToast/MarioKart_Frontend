@@ -1,7 +1,6 @@
 import Cookies from "js-cookie";
 import { PublicSurveyApi } from "../../../api";
-import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionReturnDTO } from "../../../api/config/dto";
-import { QuestionType } from "../../util";
+import { AnswerCookieDTO, AnswerInputDTO, AnswerReturnDTO, QuestionReturnDTO, QuestionType } from "../../../api/config/dto";
 import i18n from "../../../../i18n";
 
 export const MAX_FREE_TEXT_ANSWER_LENGTH = 1000;

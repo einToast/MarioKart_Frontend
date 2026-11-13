@@ -74,6 +74,18 @@ export class NotificationService {
         await PublicNotificationService.subscribe(subscriptionData);
     }
 
+    static async unsubscribeFromPushNotifications(): Promise<void> {
+        if (!('serviceWorker' in navigator)) {
+            return;
+        }
+        const registration = await navigator.serviceWorker.getRegistration();
+        const subscription = await registration?.pushManager.getSubscription();
+        if (subscription) {
+            await PublicNotificationService.unsubscribe({ endpoint: subscription.endpoint });
+            await subscription.unsubscribe();
+        }
+    }
+
     static async updateLanguage(language: string): Promise<void> {
         if (!PublicCookiesService.getNotificationsEnabled() || !('serviceWorker' in navigator)) {
             return;

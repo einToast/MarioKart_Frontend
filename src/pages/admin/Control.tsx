@@ -12,9 +12,8 @@ import OcrConfigModal from "../../components/modals/OcrConfigModal";
 import TournamentModal from "../../components/modals/TournamentModal";
 import Toast from "../../components/Toast";
 import { BreakReturnDTO, TeamReturnDTO } from "../../util/api/config/dto";
-import { BreakModalResult, NotificationModalResult, OcrConfigModalResult } from "../../util/api/config/interfaces";
+import { BreakModalResult, NotificationModalResult, OcrConfigModalResult, ChangeType } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicScheduleService, PublicSettingsService } from "../../util/service";
-import { ChangeType } from "../../util/service/util";
 import { useTranslation } from 'react-i18next';
 
 const Control: React.FC = () => {
@@ -97,6 +96,9 @@ const Control: React.FC = () => {
                 break;
             case ChangeType.FINAL_SCHEDULE:
                 setError(t('admin.control.finalDeleted'));
+                break;
+            case ChangeType.NOTIFICATIONS:
+                setError(t('admin.control.subscriptionsDeleted'));
                 break;
             case ChangeType.ALL:
                 setError(t('admin.control.reset'));
@@ -306,6 +308,19 @@ const Control: React.FC = () => {
                     >
                         <div>
                             <p>{t('admin.control.deleteSurveys')}</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.NOTIFICATIONS)}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenModal(ChangeType.NOTIFICATIONS);
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>{t('admin.control.deleteSubscriptions')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
