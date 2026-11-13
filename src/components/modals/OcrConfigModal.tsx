@@ -135,6 +135,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                                     type="text"
                                     value={model}
                                     onChange={(e) => setModel(e.target.value)}
+                                    placeholder={t('admin.ocr.modelPlaceholder')}
                                     aria-labelledby={modelLabelId}
                                 />
                             )}

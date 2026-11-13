@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import i18n from '../../i18n';
 import TranslationLanguageTabs from './TranslationLanguageTabs';
 
 const HINT = 'Leere Felder zeigen den Text der Standardsprache.';
@@ -11,13 +12,13 @@ describe('TranslationLanguageTabs', () => {
         expect(screen.getByRole('button', { name: 'English' })).toHaveAttribute('aria-pressed', 'false');
     });
 
-    it('reports the chosen language', () => {
-        const onChange = vi.fn();
+    it('loads the chosen language before reporting it', async () => {
+        const onChange = vi.fn(() => expect(i18n.hasResourceBundle('en', 'translation')).toBe(true));
         render(<TranslationLanguageTabs value="de" onChange={onChange} />);
 
         fireEvent.click(screen.getByRole('button', { name: 'English' }));
 
-        expect(onChange).toHaveBeenCalledWith('en');
+        await waitFor(() => expect(onChange).toHaveBeenCalledWith('en'));
     });
 
     it('keeps the space of the fallback hint while the default language is edited, so nothing moves', () => {

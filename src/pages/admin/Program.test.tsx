@@ -167,12 +167,12 @@ describe('admin Program', () => {
 
         fireEvent.click(screen.getByText('English'));
 
-        expect(texts()).toEqual(['', '', 'Break']);
+        await waitFor(() => expect(texts()).toEqual(['', '', 'Break']));
         expect(screen.getByLabelText('Text von Programmpunkt 1')).toHaveAttribute('placeholder', 'Begrüßung');
         set('Text von Programmpunkt 1', ' Welcome ');
         set('Text von Programmpunkt 3', '');
         fireEvent.click(screen.getByText('Deutsch (Standard)'));
-        expect(texts()).toEqual(['Begrüßung', 'Runden', 'Pause']);
+        await waitFor(() => expect(texts()).toEqual(['Begrüßung', 'Runden', 'Pause']));
         fireEvent.click(screen.getByText(SAVE));
 
         await expectSuccessToast('Programm gespeichert');

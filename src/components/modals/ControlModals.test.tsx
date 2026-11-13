@@ -223,6 +223,15 @@ describe('NotificationModal', () => {
         }]);
     });
 
+    it('hints at the English texts while the German texts are still empty', async () => {
+        renderModal();
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(await screen.findByPlaceholderText('Enter title')).toHaveValue('');
+        expect(screen.getByPlaceholderText('Enter message')).toHaveValue('');
+    });
+
     it('sends English translations next to the German texts', async () => {
         backend.post('/admin/notification/send');
         const { closeModal } = renderModal();
@@ -231,7 +240,7 @@ describe('NotificationModal', () => {
 
         fireEvent.click(screen.getByText('English'));
 
-        expect(screen.getByPlaceholderText('Pause')).toHaveValue('');
+        expect(await screen.findByPlaceholderText('Pause')).toHaveValue('');
         fill(screen.getByPlaceholderText('Pause'), 'Break');
         fill(screen.getByPlaceholderText('Pizza ist da'), ' ');
         fireEvent.click(sendButton());

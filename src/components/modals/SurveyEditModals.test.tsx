@@ -146,6 +146,7 @@ describe('SurveyAddModal', () => {
 
         fireEvent.click(screen.getByText('English'));
 
+        await screen.findByPlaceholderText('Wer gewinnt?');
         expect(buttonOf('Option hinzufügen').disabled).toBe(true);
         expect(selectBelow('Umfrageoptionen')).toBeDisabled();
         fill(screen.getByPlaceholderText('Wer gewinnt?'), 'Who wins?');
@@ -159,6 +160,16 @@ describe('SurveyAddModal', () => {
             options: ['Rot', 'Blau'],
             translations: { en: { questionText: 'Who wins?', options: ['', 'Blue'] } },
         });
+    });
+
+    it('hints at the English texts where the German texts are still empty', async () => {
+        renderModal();
+        fill(optionInputs()[0], 'Rot');
+
+        fireEvent.click(screen.getByText('English'));
+
+        expect(await screen.findByPlaceholderText('Enter question')).toHaveValue('');
+        expect(optionInputs().map(input => input.placeholder)).toEqual(['Rot', 'Enter option 2', 'Enter option 3', 'Enter option 4']);
     });
 
     it('creates a team question restricted to final teams with one answer per key', async () => {

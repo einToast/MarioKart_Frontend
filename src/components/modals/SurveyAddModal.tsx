@@ -90,7 +90,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                             value={translation.translating ? translation.questionText : questionText}
                             onChange={(e) => translation.translating ? translation.changeQuestionText(e.target.value) : setQuestionText(e.target.value)}
                             aria-labelledby={`${fieldId}-question`}
-                            placeholder={translation.translating ? questionText : undefined}
+                            placeholder={translation.translating ? questionText || t('admin.surveys.questionPlaceholder', { lng: translation.language }) : t('admin.surveys.questionPlaceholder')}
                             required={!translation.translating}
                         />
                     </div>
@@ -178,7 +178,7 @@ const SurveyAddModal: React.FC<{ showModal: boolean, closeModal: (survey: Survey
                                         type="text"
                                         value={translation.translating ? translation.option(index) : options[index]}
                                         onChange={(e) => translation.translating ? translation.changeOption(index, e.target.value) : handleOptionChange(index, e.target.value)}
-                                        placeholder={translation.translating ? options[index] : undefined}
+                                        placeholder={translation.translating ? options[index] || t('admin.surveys.optionPlaceholder', { number: index + 1, lng: translation.language }) : t('admin.surveys.optionPlaceholder', { number: index + 1 })}
                                         required={!translation.translating}
                                     />
                                 </div>

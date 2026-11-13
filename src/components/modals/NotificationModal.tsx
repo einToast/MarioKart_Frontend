@@ -101,7 +101,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 ? setTranslations(current => setTranslation(current, editLanguage, 'title', e.target.value))
                                 : setTitle(e.target.value)}
                             aria-labelledby={titleLabelId}
-                            placeholder={translating ? title : undefined}
+                            placeholder={translating ? title || t('admin.notification.titlePlaceholder', { lng: editLanguage }) : t('admin.notification.titlePlaceholder')}
                             required={!translating}
                         />
                     </div>
@@ -114,7 +114,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                                 ? setTranslations(current => setTranslation(current, editLanguage, 'message', e.target.value))
                                 : setMessage(e.target.value)}
                             aria-labelledby={messageLabelId}
-                            placeholder={translating ? message : undefined}
+                            placeholder={translating ? message || t('admin.notification.messagePlaceholder', { lng: editLanguage }) : t('admin.notification.messagePlaceholder')}
                             required={!translating}
                         />
                     </div>
