@@ -42,6 +42,7 @@ export enum ChangeType {
     TEAMS = "Teams",
     SCHEDULE = "Spielplan",
     FINAL_SCHEDULE = "Finalspiele",
+    NOTIFICATIONS = "Benachrichtigungen",
     ALL = "Anwendung"
 }
 

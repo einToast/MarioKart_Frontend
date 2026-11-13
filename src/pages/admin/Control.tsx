@@ -98,6 +98,9 @@ const Control: React.FC = () => {
             case ChangeType.FINAL_SCHEDULE:
                 setError(t('admin.control.finalDeleted'));
                 break;
+            case ChangeType.NOTIFICATIONS:
+                setError(t('admin.control.subscriptionsDeleted'));
+                break;
             case ChangeType.ALL:
                 setError(t('admin.control.reset'));
                 break;
@@ -306,6 +309,19 @@ const Control: React.FC = () => {
                     >
                         <div>
                             <p>{t('admin.control.deleteSurveys')}</p>
+                            <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                        </div>
+                    </IonButton>
+                    <IonButton slot="start" className={"secondary"} onClick={() => handleOpenModal(ChangeType.NOTIFICATIONS)}
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                handleOpenModal(ChangeType.NOTIFICATIONS);
+                            }
+                        }}
+                    >
+                        <div>
+                            <p>{t('admin.control.deleteSubscriptions')}</p>
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>

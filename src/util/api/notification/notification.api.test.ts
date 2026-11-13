@@ -71,6 +71,15 @@ describe('AdminNotificationApi', () => {
         fallback: 'Anzahl der Abonnements konnte nicht geladen werden',
     });
 
+    describeEndpoint('deleteAllSubscriptions', {
+        call: () => AdminNotificationApi.deleteAllSubscriptions(),
+        method: 'DELETE',
+        url: '/admin/notification/subscriptions',
+        returnsVoid: true,
+        errors: { 401: 'Nicht autorisierter Zugriff' },
+        fallback: 'Abonnements konnten nicht gelöscht werden',
+    });
+
     describeEndpoint('sendNotificationToTeam', {
         call: () => AdminNotificationApi.sendNotificationToTeam(4, notification),
         method: 'POST',

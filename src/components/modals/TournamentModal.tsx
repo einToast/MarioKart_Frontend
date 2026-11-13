@@ -8,7 +8,7 @@ import { ChangeType } from "../../util/service/util";
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 
-type ChangeSubject = 'tournament' | 'registration' | 'surveys' | 'teams' | 'schedule' | 'finalSchedule' | 'all';
+type ChangeSubject = 'tournament' | 'registration' | 'surveys' | 'teams' | 'schedule' | 'finalSchedule' | 'notifications' | 'all';
 type ChangeAction = 'open' | 'close' | 'delete' | 'reset';
 
 const CHANGE_SUBJECTS: Record<ChangeType, ChangeSubject> = {
@@ -18,6 +18,7 @@ const CHANGE_SUBJECTS: Record<ChangeType, ChangeSubject> = {
     [ChangeType.TEAMS]: 'teams',
     [ChangeType.SCHEDULE]: 'schedule',
     [ChangeType.FINAL_SCHEDULE]: 'finalSchedule',
+    [ChangeType.NOTIFICATIONS]: 'notifications',
     [ChangeType.ALL]: 'all',
 };
 

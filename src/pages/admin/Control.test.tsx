@@ -39,6 +39,7 @@ describe('admin Control', () => {
                 'Punkteerkennung konfigurieren',
                 'Alle Teams löschen',
                 'Alle Umfragen löschen',
+                'Alle Benachrichtigungs-Abonnements löschen',
                 'Anwendung zurücksetzen',
             ]));
         });
@@ -55,6 +56,7 @@ describe('admin Control', () => {
                 'Punkteerkennung konfigurieren',
                 'Gesamten Spielplan löschen',
                 'Alle Umfragen löschen',
+                'Alle Benachrichtigungs-Abonnements löschen',
                 'Anwendung zurücksetzen',
             ]));
         });
@@ -71,6 +73,7 @@ describe('admin Control', () => {
                 'Punkteerkennung konfigurieren',
                 'Alle Finalspiele löschen',
                 'Alle Umfragen löschen',
+                'Alle Benachrichtigungs-Abonnements löschen',
                 'Anwendung zurücksetzen',
             ]));
         });
@@ -91,6 +94,7 @@ describe('admin Control', () => {
             ['Alle Teams löschen', { schedule: false, finalSchedule: false, unplayed: 0 }, 'Teams löschen', '/admin/teams', 'Alle Teams wurden gelöscht'],
             ['Gesamten Spielplan löschen', { schedule: true, finalSchedule: false, unplayed: 3 }, 'Spielplan löschen', '/admin/schedule/create/schedule', 'Der Spielplan wurde gelöscht'],
             ['Alle Finalspiele löschen', { schedule: true, finalSchedule: true, unplayed: 1 }, 'Finalspiele löschen', '/admin/schedule/create/final_schedule', 'Alle Finalspiele wurden gelöscht'],
+            ['Alle Benachrichtigungs-Abonnements löschen', { schedule: true, finalSchedule: false, unplayed: 3 }, 'Abonnements löschen', '/admin/notification/subscriptions', 'Alle Benachrichtigungs-Abonnements wurden gelöscht'],
             ['Anwendung zurücksetzen', { schedule: true, finalSchedule: false, unplayed: 3 }, 'Anwendung zurücksetzen', '/admin/settings/reset', 'Die Anwendung wurde zurückgesetzt'],
         ])('"%s" asks for confirmation, deletes and confirms', async (action, state, title, url, message) => {
             stubScheduleState(state);

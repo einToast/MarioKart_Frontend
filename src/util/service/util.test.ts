@@ -43,6 +43,7 @@ describe('enums shared with the backend', () => {
             TEAMS: 'Teams',
             SCHEDULE: 'Spielplan',
             FINAL_SCHEDULE: 'Finalspiele',
+            NOTIFICATIONS: 'Benachrichtigungen',
             ALL: 'Anwendung',
         });
     });

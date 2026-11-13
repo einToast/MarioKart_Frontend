@@ -345,6 +345,7 @@ describe('TournamentModal', () => {
         [ChangeType.TEAMS, 'Teams löschen', 'Willst du wirklich alle Teams löschen?'],
         [ChangeType.SCHEDULE, 'Spielplan löschen', 'Willst du wirklich den Spielplan löschen?'],
         [ChangeType.FINAL_SCHEDULE, 'Finalspiele löschen', 'Willst du wirklich die Finalspiele löschen?'],
+        [ChangeType.NOTIFICATIONS, 'Abonnements löschen', 'Willst du wirklich alle Benachrichtigungs-Abonnements löschen?'],
         [ChangeType.ALL, 'Anwendung zurücksetzen', 'Willst du wirklich ALLES zurücksetzen?'],
     ])('asks for confirmation before the irreversible change "%s"', async (changeType, expectedTitle, expectedQuestion) => {
         await openModal(changeType);
