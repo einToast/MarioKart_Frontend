@@ -8,8 +8,12 @@ reloadOnServiceWorkerUpdate();
 
 const container = document.getElementById('root');
 const root = createRoot(container!);
-initLanguage().finally(() => root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-));
+try {
+  await initLanguage();
+} finally {
+  root.render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

@@ -59,23 +59,28 @@ export const translatedChange = <T extends TranslatableFields, K extends keyof T
         ? { [field]: value } as Partial<Pick<T, K>>
         : { translations: setTranslation(item.translations, language, field, value) } as Partial<Pick<T, K>> & Translatable<T>;
 
+const pruneFields = (fields: Partial<TranslatableFields>): TranslatableFields => {
+    const kept: TranslatableFields = {};
+    for (const [field, value] of Object.entries(fields)) {
+        if (Array.isArray(value)) {
+            const trimmed = value.map(entry => typeof entry === 'string' ? entry.trim() : '');
+            if (trimmed.some(entry => entry !== '')) {
+                kept[field] = trimmed;
+            }
+        } else if (hasText(value)) {
+            kept[field] = value.trim();
+        }
+    }
+    return kept;
+};
+
 export const pruneTranslations = <T extends TranslatableFields>(translations: Translations<T> | undefined): Translations<T> | undefined => {
     const pruned: Record<string, TranslatableFields> = {};
     for (const [language, fields] of Object.entries(translations ?? {})) {
         if (language === DEFAULT_LANGUAGE || !fields) {
             continue;
         }
-        const kept: TranslatableFields = {};
-        for (const [field, value] of Object.entries(fields)) {
-            if (Array.isArray(value)) {
-                const trimmed = value.map(entry => typeof entry === 'string' ? entry.trim() : '');
-                if (trimmed.some(entry => entry !== '')) {
-                    kept[field] = trimmed;
-                }
-            } else if (hasText(value)) {
-                kept[field] = value.trim();
-            }
-        }
+        const kept = pruneFields(fields);
         if (Object.keys(kept).length > 0) {
             pruned[language] = kept;
         }
