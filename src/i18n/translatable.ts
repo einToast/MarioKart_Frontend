@@ -88,7 +88,25 @@ export const pruneTranslations = <T extends TranslatableFields>(translations: Tr
     return Object.keys(pruned).length > 0 ? pruned as Translations<T> : undefined;
 };
 
-export const sanitizeTranslations = <T extends TranslatableFields>(
+export const fitTranslatedList = <T extends TranslatableFields>(
+    translations: Translations<T> | undefined,
+    field: keyof T & string,
+    length: number,
+): Translations<T> => {
+    const fitted: Record<string, Partial<T>> = {};
+    for (const [language, fields] of Object.entries(translations ?? {})) {
+        if (!fields) {
+            continue;
+        }
+        const list = fields[field];
+        fitted[language] = Array.isArray(list)
+            ? { ...fields, [field]: Array.from({ length }, (_, index) => list[index] ?? '') }
+            : fields;
+    }
+    return pruneTranslations(fitted as Translations<T>) ?? {};
+};
+
+export const sanitizeTranslations =<T extends TranslatableFields>(
     raw: unknown,
     fields: Record<keyof T & string, { maxLength: number; list?: boolean }>,
 ): Translations<T> | undefined => {

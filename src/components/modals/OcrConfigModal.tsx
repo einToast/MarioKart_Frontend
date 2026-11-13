@@ -1,6 +1,6 @@
 import { IonButton, IonCheckbox, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { OcrConfigModalResult } from "../../util/api/config/interfaces";
@@ -12,6 +12,7 @@ const THINKING_LEVELS = ['minimal', 'low', 'medium', 'high'];
 
 const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrConfigModalResult) => void }> = ({ showModal, closeModal }) => {
     const { t } = useTranslation();
+    const modelLabelId = useId();
 
     const [providers, setProviders] = useState<string[]>([]);
     const [provider, setProvider] = useState<string>('');
@@ -119,9 +120,10 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                             {provider === standardProvider ? t('admin.ocr.defaultProvider') : t('admin.ocr.makeDefault')}
                         </IonButton>
                         <div className={"borderContainer"}>
-                            <p>{t('admin.ocr.model')}</p>
+                            <p id={modelLabelId}>{t('admin.ocr.model')}</p>
                             {models.length > 0 ? (
                                 <select value={model} onChange={(e) => setModel(e.target.value)}
+                                    aria-labelledby={modelLabelId}
                                     style={{ cursor: "pointer" }}
                                 >
                                     {modelOptions.map((modelName) => (
@@ -133,7 +135,7 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                                     type="text"
                                     value={model}
                                     onChange={(e) => setModel(e.target.value)}
-                                    placeholder={t('admin.ocr.modelPlaceholder')}
+                                    aria-labelledby={modelLabelId}
                                 />
                             )}
                         </div>

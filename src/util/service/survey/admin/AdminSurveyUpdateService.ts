@@ -2,7 +2,7 @@ import { AdminSurveyApi } from "../../../api";
 import { QuestionInputDTO, QuestionReturnDTO } from "../../../api/config/dto";
 import { QuestionType } from "../../util";
 import i18n from "../../../../i18n";
-import { fitQuestionTranslations } from "./AdminSurveyCreateService";
+import { fitTranslatedList } from "../../../../i18n/translatable";
 
 export const updateQuestion = async (question: QuestionReturnDTO): Promise<QuestionReturnDTO> => {
     if (question.questionText === '') {
@@ -23,7 +23,7 @@ export const updateQuestion = async (question: QuestionReturnDTO): Promise<Quest
         live: question.live,
         finalTeamsOnly: question.finalTeamsOnly,
         oneAnswerPerKey: question.oneAnswerPerKey,
-        translations: fitQuestionTranslations(question.translations, question.questionType === QuestionType.TEAM ? 0 : options.length)
+        translations: fitTranslatedList(question.translations, 'options', question.questionType === QuestionType.TEAM ? 0 : options.length)
     }
     return AdminSurveyApi.updateQuestion(question.id, questionInput);
 }

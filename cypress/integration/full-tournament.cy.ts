@@ -96,8 +96,8 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
   if (teamName) {
     cy.get('ion-modal select').select(teamName);
   }
-  cy.get('ion-modal input[placeholder="Titel eingeben"]').type(title);
-  cy.get('ion-modal input[placeholder="Nachricht eingeben"]').type(message);
+  cy.contains('ion-modal .borderContainer p', /^Titel$/).siblings('input').type(title);
+  cy.contains('ion-modal .borderContainer p', /^Nachricht$/).siblings('input').type(message);
   cy.get('ion-modal').contains('ion-button', 'Benachrichtigung senden').click();
   cy.wait(teamName ? '@teamNotified' : '@allNotified').its('response.statusCode').should('eq', 200);
 };
@@ -181,10 +181,10 @@ const createQuestion = (questionText: string, questionType: string,
   } = {}) => {
   asAdmin('/admin/survey');
   cy.contains('button.newSurvey', 'Neue Umfrage').click();
-  cy.get('ion-modal input[placeholder="Frage eingeben"]').type(questionText);
+  cy.contains('ion-modal .borderContainer p', /^Frage der Umfrage$/).siblings('input').type(questionText);
   cy.get('ion-modal').contains('.borderContainer', 'Umfrageoptionen').find('select').select(questionType);
   options.forEach((option, index) => {
-    cy.get(`ion-modal input[placeholder="Option ${index + 1} eingeben"]`).type(option);
+    cy.contains('ion-modal .form-group label', new RegExp(`^Option ${index + 1}$`)).siblings('input').type(option);
   });
   if (oneAnswerPerKey) {
     cy.get('ion-modal').contains('.borderContainer', 'Antworten pro Gerät').find('select').select('true');
@@ -311,7 +311,7 @@ describe('a whole tournament', () => {
 
     asAdmin('/admin/teams');
     cy.contains('.teamContainer', MISSPELLED.teamName).find('[title="Team bearbeiten"]').click();
-    cy.get('ion-modal input[placeholder="Name eingeben"]').clear().type('Team Waluigi');
+    cy.contains('ion-modal .borderContainer p', /^Teamname$/).siblings('input').clear().type('Team Waluigi');
     cy.get('ion-modal').contains('ion-button', 'Team ändern').click();
     cy.contains('.teamContainer', MISSPELLED.teamName).should('not.exist');
     cy.contains('.teamContainer', 'Team Waluigi');

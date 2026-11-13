@@ -26,14 +26,14 @@ describe('TeamChangeModal', () => {
     it('stays hidden and loads nothing while closed', () => {
         renderModal(false);
 
-        expect(screen.queryByPlaceholderText('Name eingeben')).not.toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'Teamname' })).not.toBeInTheDocument();
         expect(backend.requests).toEqual([]);
     });
 
     it('is prefilled with the name and the character of the team', async () => {
         renderModal();
 
-        expect(await screen.findByPlaceholderText('Name eingeben')).toHaveValue('Team Toad');
+        expect(await screen.findByRole('textbox', { name: 'Teamname' })).toHaveValue('Team Toad');
         expect(screen.getByRole('combobox')).toHaveValue('Toad');
     });
 
@@ -48,7 +48,7 @@ describe('TeamChangeModal', () => {
         const { closeModal } = renderModal();
         await waitFor(() => expect(characterOptions()).toContain('Yoshi'));
 
-        fireEvent.change(screen.getByPlaceholderText('Name eingeben'), { target: { value: 'Die Pilze' } });
+        fireEvent.change(screen.getByRole('textbox', { name: 'Teamname' }), { target: { value: 'Die Pilze' } });
         fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Yoshi' } });
         fireEvent.click(screen.getByText('Team ändern'));
 
@@ -63,7 +63,7 @@ describe('TeamChangeModal', () => {
     it.each(['Enter', ' '])('saves with the "%s" key', async (key) => {
         backend.put('/admin/teams/5', team());
         const { closeModal } = renderModal();
-        await screen.findByPlaceholderText('Name eingeben');
+        await screen.findByRole('textbox', { name: 'Teamname' });
 
         fireEvent.keyDown(buttonOf('Team ändern'), { key });
 
@@ -73,7 +73,7 @@ describe('TeamChangeModal', () => {
     it('shows the error and stays open when the character is already taken', async () => {
         backend.fail('PUT', '/admin/teams/5', 400);
         const { closeModal } = renderModal();
-        await screen.findByPlaceholderText('Name eingeben');
+        await screen.findByRole('textbox', { name: 'Teamname' });
 
         fireEvent.click(screen.getByText('Team ändern'));
 
@@ -84,7 +84,7 @@ describe('TeamChangeModal', () => {
     it('reports an error when the backend answers without the updated team', async () => {
         backend.put('/admin/teams/5', undefined);
         const { closeModal } = renderModal();
-        await screen.findByPlaceholderText('Name eingeben');
+        await screen.findByRole('textbox', { name: 'Teamname' });
 
         fireEvent.click(screen.getByText('Team ändern'));
 
@@ -102,7 +102,7 @@ describe('TeamChangeModal', () => {
 
     it('closes without saving on cancel', async () => {
         const { closeModal } = renderModal();
-        await screen.findByPlaceholderText('Name eingeben');
+        await screen.findByRole('textbox', { name: 'Teamname' });
 
         fireEvent.click(screen.getByText('Abbrechen'));
 
@@ -112,7 +112,7 @@ describe('TeamChangeModal', () => {
 
     it.each(['Enter', ' '])('cancels with the "%s" key', async (key) => {
         const { closeModal } = renderModal();
-        await screen.findByPlaceholderText('Name eingeben');
+        await screen.findByRole('textbox', { name: 'Teamname' });
 
         fireEvent.keyDown(buttonOf('Abbrechen'), { key });
 

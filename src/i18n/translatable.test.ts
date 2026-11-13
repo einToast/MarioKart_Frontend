@@ -1,4 +1,4 @@
-import { localize, pruneTranslations, sanitizeTranslations, setTranslation, translatedChange, translatedValue, Translations } from './translatable';
+import { fitTranslatedList, localize, pruneTranslations,sanitizeTranslations, setTranslation, translatedChange, translatedValue, Translations } from './translatable';
 
 type Question = { questionText: string; options: string[] };
 
@@ -76,6 +76,23 @@ describe('pruneTranslations', () => {
     it('returns undefined when nothing is translated', () => {
         expect(pruneTranslations({})).toBeUndefined();
         expect(pruneTranslations(undefined)).toBeUndefined();
+    });
+});
+
+describe('fitTranslatedList', () => {
+    it('pads and cuts the translated list to the current number of entries', () => {
+        expect(fitTranslatedList<Question>({ en: { options: ['Red'] }, fr: { options: ['Rouge', 'Bleu', 'Vert', 'Jaune'] } }, 'options', 3))
+            .toEqual({ en: { options: ['Red', '', ''] }, fr: { options: ['Rouge', 'Bleu', 'Vert'] } });
+    });
+
+    it('keeps languages that only translate other fields', () => {
+        expect(fitTranslatedList<Question>({ en: { questionText: 'Who wins?' } }, 'options', 2))
+            .toEqual({ en: { questionText: 'Who wins?' } });
+    });
+
+    it('drops translations that become empty', () => {
+        expect(fitTranslatedList<Question>({ en: { options: ['', '', 'Green'] } }, 'options', 2)).toEqual({});
+        expect(fitTranslatedList<Question>(undefined, 'options', 2)).toEqual({});
     });
 });
 

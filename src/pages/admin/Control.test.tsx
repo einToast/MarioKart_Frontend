@@ -108,7 +108,7 @@ describe('admin Control', () => {
         });
 
         it('deletes all surveys and confirms', async () => {
-            backend.get('/admin/survey', []);
+            backend.delete('/admin/survey');
             renderPage();
 
             fireEvent.click(await screen.findByText('Alle Umfragen löschen'));
@@ -228,7 +228,7 @@ describe('admin Control', () => {
 
             fireEvent.click(await screen.findByText('Pause ändern'));
 
-            await waitFor(() => expect(screen.getByPlaceholderText('Dauer der Pause')).toHaveValue(30));
+            await waitFor(() => expect(screen.getByRole('spinbutton', { name: 'Dauer der Pause' })).toHaveValue(30));
         });
 
         it('saves the edited break and confirms', async () => {
@@ -236,8 +236,8 @@ describe('admin Control', () => {
             backend.put('/admin/schedule/break', makeBreak());
             renderPage();
             fireEvent.click(await screen.findByText('Pause ändern'));
-            await waitFor(() => expect(screen.getByPlaceholderText('Dauer der Pause')).toHaveValue(30));
-            fireEvent.change(screen.getByPlaceholderText('Dauer der Pause'), { target: { value: '15' } });
+            await waitFor(() => expect(screen.getByRole('spinbutton', { name: 'Dauer der Pause' })).toHaveValue(30));
+            fireEvent.change(screen.getByRole('spinbutton', { name: 'Dauer der Pause' }), { target: { value: '15' } });
 
             confirm('Pause ändern');
 
@@ -282,8 +282,8 @@ describe('admin Control', () => {
             backend.post('/admin/notification/send');
             renderPage();
             fireEvent.click(await screen.findByText('Benachrichtigung senden'));
-            fireEvent.change(await screen.findByPlaceholderText('Titel eingeben'), { target: { value: 'Pause' } });
-            fireEvent.change(screen.getByPlaceholderText('Nachricht eingeben'), { target: { value: 'Pizza ist da' } });
+            fireEvent.change(await screen.findByRole('textbox', { name: 'Titel' }), { target: { value: 'Pause' } });
+            fireEvent.change(screen.getByRole('textbox', { name: 'Nachricht' }), { target: { value: 'Pizza ist da' } });
 
             confirm('Benachrichtigung senden');
 

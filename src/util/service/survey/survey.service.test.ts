@@ -121,26 +121,16 @@ describe('AdminSurveyService', () => {
             expect(backend.requests).toEqual([{ method: 'DELETE', url: '/admin/survey/5', body: undefined }]);
         });
 
-        it('deleteAllQuestions deletes the questions one by one', async () => {
-            backend
-                .get('/admin/survey', [makeQuestion({ id: 1 }), makeQuestion({ id: 2 }), makeQuestion({ id: 3 })])
-                .delete(/^\/admin\/survey\/\d+$/);
+        it('deleteAllQuestions deletes all questions with one request', async () => {
+            backend.delete('/admin/survey');
 
             await AdminSurveyService.deleteAllQuestions();
 
-            expect(backend.requests.map(request => `${request.method} ${request.url}`)).toEqual([
-                'GET /admin/survey',
-                'DELETE /admin/survey/1',
-                'DELETE /admin/survey/2',
-                'DELETE /admin/survey/3',
-            ]);
+            expect(backend.requests).toEqual([{ method: 'DELETE', url: '/admin/survey', body: undefined }]);
         });
 
-        it('deleteAllQuestions fails when a question cannot be deleted', async () => {
-            backend
-                .get('/admin/survey', [makeQuestion({ id: 1 }), makeQuestion({ id: 2 })])
-                .fail('DELETE', '/admin/survey/1', 401)
-                .delete('/admin/survey/2');
+        it('deleteAllQuestions fails when the questions cannot be deleted', async () => {
+            backend.fail('DELETE', '/admin/survey', 401);
 
             await expect(AdminSurveyService.deleteAllQuestions()).rejects.toThrow('Nicht autorisierter Zugriff');
         });

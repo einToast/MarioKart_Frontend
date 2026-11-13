@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { backend } from '../../test/backend';
-import { makeBreak, makeQuestion, makeRound, makeTeams } from '../../test/fixtures';
+import { makeBreak, makeRound, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
 import { expectErrorToast } from '../../test/overlays';
 import { BreakReturnDTO } from '../../util/api/config/dto';
@@ -31,7 +31,7 @@ describe('BreakChangeModal', () => {
         return { ...view, closeModal };
     };
 
-    const durationInput = () => screen.getByPlaceholderText('Dauer der Pause');
+    const durationInput = () => screen.getByRole('spinbutton', { name: 'Dauer der Pause' });
     const roundOptions = () => Array.from(selectBelow('Vor Runde').options).map(option => option.textContent);
 
     beforeEach(() => {
@@ -45,7 +45,7 @@ describe('BreakChangeModal', () => {
     it('stays hidden and loads nothing while closed', () => {
         renderModal({}, false);
 
-        expect(screen.queryByPlaceholderText('Dauer der Pause')).not.toBeInTheDocument();
+        expect(screen.queryByRole('spinbutton', { name: 'Dauer der Pause' })).not.toBeInTheDocument();
         expect(backend.requests).toEqual([]);
     });
 
@@ -160,13 +160,13 @@ describe('NotificationModal', () => {
 
     // "Benachrichtigung senden" is both the title and the button label; this is the button
     const sendButton = () => screen.getByText(SEND, { selector: 'p' });
-    const titleInput = () => screen.getByPlaceholderText('Titel eingeben');
-    const messageInput = () => screen.getByPlaceholderText('Nachricht eingeben');
+    const titleInput = () => screen.getByRole('textbox', { name: 'Titel' });
+    const messageInput = () => screen.getByRole('textbox', { name: 'Nachricht' });
 
     it('stays hidden while closed', () => {
         renderModal(false);
 
-        expect(screen.queryByPlaceholderText('Titel eingeben')).not.toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: 'Titel' })).not.toBeInTheDocument();
     });
 
     it('shows how many push subscriptions exist', async () => {
@@ -388,14 +388,14 @@ describe('TournamentModal', () => {
     });
 
     it('deletes every survey on confirmation', async () => {
-        backend.get('/admin/survey', [makeQuestion({ id: 1 }), makeQuestion({ id: 2 })]).delete(/^\/admin\/survey\/\d+$/);
+        backend.delete('/admin/survey');
         const { closeModal } = await openModal(ChangeType.SURVEYS);
 
         fireEvent.click(confirmButton('Umfragen löschen'));
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith(ChangeType.SURVEYS));
         expect(backend.requests.filter(request => request.method === 'DELETE').map(request => request.url))
-            .toEqual(['/admin/survey/1', '/admin/survey/2']);
+            .toEqual(['/admin/survey']);
     });
 
     it.each(['Enter', ' '])('confirms with the "%s" key', async (key) => {

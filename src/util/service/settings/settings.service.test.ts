@@ -1,5 +1,4 @@
 import { backend } from '../../../test/backend';
-import { makeQuestion } from '../../../test/fixtures';
 import { ChangeType, SurveyKeyMode } from '../util';
 import { AdminSettingsService, PublicSettingsService } from './index';
 
@@ -106,18 +105,8 @@ describe('AdminSettingsService', () => {
             expect(backend.requestsTo('PUT', ADMIN_SETTINGS_URL)[0].body).toEqual({ registrationOpen: expected });
         });
 
-        it('SURVEYS deletes every question', async () => {
-            backend
-                .get('/admin/survey', [makeQuestion({ id: 3 }), makeQuestion({ id: 8 })])
-                .delete(/^\/admin\/survey\/\d+$/);
-
-            await AdminSettingsService.changeService(ChangeType.SURVEYS);
-
-            expect(backend.requests.filter(request => request.method === 'DELETE').map(request => request.url))
-                .toEqual(['/admin/survey/3', '/admin/survey/8']);
-        });
-
         it.each([
+            [ChangeType.SURVEYS, '/admin/survey'],
             [ChangeType.TEAMS, '/admin/teams'],
             [ChangeType.SCHEDULE, '/admin/schedule/create/schedule'],
             [ChangeType.FINAL_SCHEDULE, '/admin/schedule/create/final_schedule'],
