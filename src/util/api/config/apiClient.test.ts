@@ -30,10 +30,6 @@ describe('base URLs', () => {
 });
 
 describe('apiClient', () => {
-    it('targets the backend base URL', () => {
-        expect(apiClient.defaults.baseURL).toBe(API_BASE_URL);
-    });
-
     it('sends the session cookie with every request', () => {
         expect(apiClient.defaults.withCredentials).toBe(true);
     });

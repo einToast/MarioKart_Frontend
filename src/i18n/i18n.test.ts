@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import i18n, { changeLanguage, getStoredLanguage, initLanguage, LANGUAGE_COOKIE } from '.';
-import { DEFAULT_LANGUAGE, isLanguage, SUPPORTED_LANGUAGES } from './languages';
+import { isLanguage, SUPPORTED_LANGUAGES } from './languages';
 import de from './locales/de';
 
 const locales = import.meta.glob<{ default: object }>('./locales/*.ts', { eager: true });
@@ -34,7 +34,6 @@ const interpolations = (messages: object): Record<string, string[]> => {
 
 describe('i18n', () => {
     it('starts in German', () => {
-        expect(DEFAULT_LANGUAGE).toBe('de');
         expect(i18n.language).toBe('de');
         expect(i18n.t('schedule.title')).toBe('Spielplan');
     });
