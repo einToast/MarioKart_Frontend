@@ -10,8 +10,8 @@ describe('team access', () => {
       cy.visit('/');
       cy.location('pathname').should('eq', '/login');
 
-      cy.get('select').select('Team Peach');
-      cy.get('.selected-character img').should('have.attr', 'src', '/characters/Peach.webp');
+      cy.chooseImageSelectOption('Team Peach');
+      cy.get('.imageSelectToggle img').should('have.attr', 'src', '/characters/Peach.webp');
       cy.contains('ion-button', 'Zum Team Team Peach anmelden').click();
 
       cy.location('pathname').should('eq', '/tab1');
@@ -66,7 +66,7 @@ describe('team access', () => {
       cy.stubApi('POST', '/public/teams', team(9, 'Yoshi', { teamName: 'Die Dinos' })).as('register');
       cy.visit('/register');
 
-      cy.get('select').select('Yoshi');
+      cy.chooseImageSelectOption('Yoshi');
       cy.get('input[placeholder="Teamname"]').type('Die Dinos');
       cy.contains('ion-button', 'Team registrieren').click();
 
@@ -84,7 +84,7 @@ describe('team access', () => {
       cy.stubApi('POST', '/public/teams', '', 400);
       cy.visit('/register');
 
-      cy.get('select').select('Yoshi');
+      cy.chooseImageSelectOption('Yoshi');
       cy.get('input[placeholder="Teamname"]').type('Die Dinos{enter}');
 
       cy.toast('Charakter schon registriert');

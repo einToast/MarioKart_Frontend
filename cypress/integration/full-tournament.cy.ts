@@ -94,7 +94,7 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
   asAdmin('/admin/control');
   cy.contains('ion-button', 'Benachrichtigung senden').click();
   if (teamName) {
-    cy.get('ion-modal select').select(teamName);
+    cy.get('ion-modal').within(() => cy.chooseImageSelectOption(teamName));
   }
   cy.contains('ion-modal .borderContainer p', /^Titel$/).siblings('input').type(title);
   cy.contains('ion-modal .borderContainer p', /^Nachricht$/).siblings('input').type(message);
@@ -105,7 +105,7 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
 const registerInApp = (teamName: string, characterName: string) => {
   cy.clearCookie('user');
   cy.visit('/register');
-  cy.get('select').select(characterName);
+  cy.chooseImageSelectOption(characterName);
   cy.get('input[placeholder="Teamname"]').type(teamName);
   cy.contains('ion-button', 'Team registrieren').click();
   cy.location('pathname').should('eq', '/tab1');
@@ -114,7 +114,7 @@ const registerInApp = (teamName: string, characterName: string) => {
 const loginAsTeam = (teamName: string) => {
   cy.clearCookie('user');
   cy.visit('/login');
-  cy.get('select').select(teamName);
+  cy.chooseImageSelectOption(teamName);
   cy.contains('ion-button', `Zum Team ${teamName} anmelden`).click();
   cy.location('pathname').should('eq', '/tab1');
 };
@@ -306,8 +306,12 @@ describe('a whole tournament', () => {
 
     cy.clearCookie('user');
     cy.visit('/register');
-    cy.get(`select option[value="${TEAMS[0].characterName}"]`).should('not.exist');
-    cy.get(`select option[value="${NO_SHOW.characterName}"]`).should('not.exist');
+    cy.openImageSelect().should(options => {
+      const offered = [...options].map(option => option.textContent);
+      expect(offered).to.have.length.greaterThan(0);
+      expect(offered).not.to.include(TEAMS[0].characterName);
+      expect(offered).not.to.include(NO_SHOW.characterName);
+    });
 
     asAdmin('/admin/teams');
     cy.contains('.teamContainer', MISSPELLED.teamName).find('[title="Team bearbeiten"]').click();
@@ -322,13 +326,15 @@ describe('a whole tournament', () => {
 
     cy.clearCookie('user');
     cy.visit('/register');
-    cy.get(`select option[value="${NO_SHOW.characterName}"]`).should('exist');
+    cy.openImageSelect().should(options => {
+      expect([...options].map(option => option.textContent)).to.include(NO_SHOW.characterName);
+    });
 
     confirmInControlCenter('Registrierung schließen');
     cy.clearCookie('user');
     cy.visit('/register');
     cy.location('pathname').should('eq', '/login');
-    cy.get('select option').should('have.length.at.least', TEAMS.length);
+    cy.openImageSelect().should('have.length.at.least', TEAMS.length);
 
     asAdmin('/admin/schedule');
     cy.get('#scheduleVersion').select(`v${SCHEDULE.version}`);

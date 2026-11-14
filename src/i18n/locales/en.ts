@@ -15,7 +15,6 @@ const en: TranslationMessages = {
     language: {
         label: 'Language',
     },
-    characterImage: '{{name}} character',
     app: {
         title: 'Mario Kart Tournament',
         loadingRanking: 'Loading ranking...',
@@ -299,6 +298,7 @@ const en: TranslationMessages = {
         notification: {
             send: 'Send notification',
             all: 'All',
+            recipient: 'Recipient',
             title: 'Title',
             titlePlaceholder: 'Enter title',
             message: 'Message',

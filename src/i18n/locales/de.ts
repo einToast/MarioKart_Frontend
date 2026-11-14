@@ -13,7 +13,6 @@ const de = {
     language: {
         label: 'Sprache',
     },
-    characterImage: 'Charakter {{name}}',
     app: {
         title: 'Mario Kart Turnier',
         loadingRanking: 'Rangliste wird geladen...',
@@ -297,6 +296,7 @@ const de = {
         notification: {
             send: 'Benachrichtigung senden',
             all: 'Alle',
+            recipient: 'Empfänger',
             title: 'Titel',
             titlePlaceholder: 'Titel eingeben',
             message: 'Nachricht',

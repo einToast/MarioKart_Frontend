@@ -6,7 +6,7 @@ const loginAsTeam = (teamName: string) => {
       cy.spy(win.console, 'log').as('consoleLog');
     },
   });
-  cy.get('select').select(teamName);
+  cy.chooseImageSelectOption(teamName);
   cy.contains('ion-button', `Zum Team ${teamName} anmelden`).click();
   cy.location('pathname').should('eq', '/tab1');
 };
@@ -46,7 +46,7 @@ describe('frontend with the real backend', () => {
   it('registers a team that the login then offers', () => {
     cy.visit('/register');
 
-    cy.get('select').select('Yoshi');
+    cy.chooseImageSelectOption('Yoshi');
     cy.get('input[placeholder="Teamname"]').type('Die Dinos');
     cy.contains('ion-button', 'Team registrieren').click();
 

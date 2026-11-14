@@ -10,6 +10,20 @@ import RegisterTeam from './RegisterTeam';
 const TEAMS_URL = '/public/teams/sortedByTeamName';
 const CHARACTERS_URL = '/public/teams/characters/available';
 
+const dropdown = (placeholder: string) => screen.getByRole('button', { name: new RegExp(`^${placeholder}`) });
+const optionsOf = (placeholder: string) => {
+    if (dropdown(placeholder).getAttribute('aria-expanded') !== 'true') {
+        fireEvent.click(dropdown(placeholder));
+    }
+    return screen.getAllByRole('option').map(option => option.textContent);
+};
+const choose = (placeholder: string, label: string) => {
+    if (dropdown(placeholder).getAttribute('aria-expanded') !== 'true') {
+        fireEvent.click(dropdown(placeholder));
+    }
+    fireEvent.click(screen.getByRole('option', { name: label }));
+};
+
 describe('LoginTeam', () => {
     const renderPage = (keepMounted = false) => {
         const setUser = vi.fn();
@@ -17,8 +31,9 @@ describe('LoginTeam', () => {
         return { ...view, setUser };
     };
 
-    const teamSelect = () => screen.getByRole('combobox') as HTMLSelectElement;
-    const teamOptions = () => Array.from(teamSelect().options).map(option => option.textContent);
+    const SELECT_TEAM = 'Team auswählen';
+    const teamOptions = () => optionsOf(SELECT_TEAM);
+    const chooseTeam = (teamName: string) => choose(SELECT_TEAM, teamName);
     const waitForTeams = () => waitFor(() => expect(teamOptions()).toContain('Team Mario'));
 
     beforeEach(() => {
@@ -29,7 +44,7 @@ describe('LoginTeam', () => {
     it('offers every registered team', async () => {
         renderPage();
 
-        await waitFor(() => expect(teamOptions()).toEqual(['Team auswählen', 'Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']));
+        await waitFor(() => expect(teamOptions()).toEqual(['Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad']));
         expect(screen.getByRole('heading', { name: 'Login' })).toBeInTheDocument();
     });
 
@@ -37,9 +52,9 @@ describe('LoginTeam', () => {
         renderPage();
         await waitForTeams();
 
-        fireEvent.change(teamSelect(), { target: { value: '3' } });
+        chooseTeam('Team Peach');
 
-        expect(screen.getByAltText('Charakter Peach')).toHaveAttribute('src', '/characters/Peach.webp');
+        expect(dropdown(SELECT_TEAM).querySelector('img')).toHaveAttribute('src', '/characters/Peach.webp');
         expect(screen.getByText('Zum Team Team Peach anmelden')).toBeInTheDocument();
     });
 
@@ -47,7 +62,7 @@ describe('LoginTeam', () => {
         const { setUser } = renderPage();
         await waitForTeams();
 
-        fireEvent.change(teamSelect(), { target: { value: '3' } });
+        chooseTeam('Team Peach');
         fireEvent.click(screen.getByText('Zum Team Team Peach anmelden'));
 
         const user = { character: 'Peach', teamId: 3, name: 'Team Peach' };
@@ -60,7 +75,7 @@ describe('LoginTeam', () => {
         const { setUser } = renderPage();
         await waitForTeams();
 
-        fireEvent.change(teamSelect(), { target: { value: '2' } });
+        chooseTeam('Team Luigi');
         fireEvent.keyDown(buttonOf('Zum Team Team Luigi anmelden'), { key });
 
         expect(setUser).toHaveBeenCalledWith({ character: 'Luigi', teamId: 2, name: 'Team Luigi' });
@@ -149,13 +164,14 @@ describe('RegisterTeam', () => {
         return { ...view, setUser };
     };
 
-    const characterSelect = () => screen.getByRole('combobox') as HTMLSelectElement;
-    const characterOptions = () => Array.from(characterSelect().options).map(option => option.textContent?.trim());
+    const CHOOSE_CHARACTER = 'Wähle deinen Charakter';
+    const characterOptions = () => optionsOf(CHOOSE_CHARACTER);
+    const chooseCharacter = (character: string) => choose(CHOOSE_CHARACTER, character);
     const nameInput = () => screen.getByPlaceholderText('Teamname');
     const waitForCharacters = () => waitFor(() => expect(characterOptions()).toContain('Yoshi'));
     const fillForm = async (name: string, character: string) => {
         await waitForCharacters();
-        fireEvent.change(characterSelect(), { target: { value: character } });
+        chooseCharacter(character);
         fireEvent.change(nameInput(), { target: { value: name } });
     };
 
@@ -169,18 +185,18 @@ describe('RegisterTeam', () => {
     it('offers the characters that are still free', async () => {
         renderPage();
 
-        await waitFor(() => expect(characterOptions()).toEqual(['Wähle deinen Charakter', 'Yoshi', 'Wario']));
+        expect(dropdown(CHOOSE_CHARACTER).querySelector('img')).not.toBeInTheDocument();
+        await waitFor(() => expect(characterOptions()).toEqual(['Yoshi', 'Wario']));
         expect(screen.getByRole('heading', { name: 'Registrieren' })).toBeInTheDocument();
-        expect(screen.queryByAltText(/character$/)).not.toBeInTheDocument();
     });
 
     it('shows the selected character', async () => {
         renderPage();
         await waitForCharacters();
 
-        fireEvent.change(characterSelect(), { target: { value: 'Wario' } });
+        chooseCharacter('Wario');
 
-        expect(screen.getByAltText('Charakter Wario')).toHaveAttribute('src', '/characters/Wario.webp');
+        expect(dropdown(CHOOSE_CHARACTER).querySelector('img')).toHaveAttribute('src', '/characters/Wario.webp');
     });
 
     it('registers the team, logs it in and opens the schedule', async () => {
@@ -222,7 +238,7 @@ describe('RegisterTeam', () => {
     it('asks for a team name', async () => {
         const { setUser } = renderPage();
         await waitForCharacters();
-        fireEvent.change(characterSelect(), { target: { value: 'Yoshi' } });
+        chooseCharacter('Yoshi');
 
         fireEvent.click(screen.getByText(REGISTER));
 
@@ -250,7 +266,7 @@ describe('RegisterTeam', () => {
         fireEvent.click(screen.getByText(REGISTER));
 
         await expectErrorToast('Charakter schon registriert');
-        await waitFor(() => expect(characterOptions()).toEqual(['Wähle deinen Charakter', 'Wario']));
+        await waitFor(() => expect(characterOptions()).toEqual(['Wario']));
         expect(setUser).not.toHaveBeenCalled();
         expect(currentPath()).toBe('/register');
     });
@@ -326,7 +342,7 @@ describe('RegisterTeam', () => {
 
         const complete = pullToRefresh(container);
 
-        await waitFor(() => expect(characterOptions()).toEqual(['Wähle deinen Charakter', 'Toadette']));
+        await waitFor(() => expect(characterOptions()).toEqual(['Toadette']));
         expect(complete).toHaveBeenCalledTimes(1);
     });
 });

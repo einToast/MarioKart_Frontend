@@ -6,6 +6,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { TeamReturnDTO } from "../../util/api/config/dto";
 import { TeamModalResult } from "../../util/api/config/interfaces";
 import { AdminRegistrationService, PublicRegistrationService } from '../../util/service';
+import ImageSelect from '../ImageSelect';
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 
@@ -77,22 +78,16 @@ const TeamChangeModal: React.FC<{ showModal: boolean, closeModal: (team: TeamMod
                     </div>
                     <div className={"borderContainer"}>
                         <p>{t('admin.teams.character')}</p>
-                        <select value={character} onChange={(e) => setCharacter(e.target.value)}
-                            style={{ cursor: "pointer" }}>
-                            <option
-                                value={character}
-                            >
-                                {character}
-                            </option>
-                            {availableCharacters?.map((character) => (
-                                <option
-                                    key={character}
-                                    value={character}
-                                >
-                                    {character}
-                                </option>
-                            ))}
-                        </select>
+                        <ImageSelect
+                            options={[team.character.characterName, ...availableCharacters].map(name => ({
+                                value: name,
+                                label: name,
+                                character: name,
+                            }))}
+                            value={character}
+                            placeholder={t('admin.teams.character')}
+                            onChange={setCharacter}
+                        />
                     </div>
                 </form>
                 <div className={"playedContainer"}>

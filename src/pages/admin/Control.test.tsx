@@ -276,6 +276,7 @@ describe('admin Control', () => {
             fireEvent.click(await screen.findByText('Benachrichtigung senden'));
 
             await waitFor(() => expect(screen.getByRole('dialog')).toBeInTheDocument());
+            fireEvent.click(dialog().getByRole('button', { name: /^Empfänger/ }));
             expect(dialog().getAllByRole('option').map(option => option.textContent)).toEqual([
                 'Alle', 'Team Luigi', 'Team Mario', 'Team Peach',
             ]);

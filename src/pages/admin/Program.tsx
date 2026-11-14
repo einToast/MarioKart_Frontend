@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
+import ImageSelect from "../../components/ImageSelect";
 import Toast from "../../components/Toast";
 import { ProgramEntry, ProgramRow, TextTranslation } from "../../util/api/config/interfaces";
 import {
@@ -106,16 +107,18 @@ const Program: React.FC = () => {
                 <div className="programList">
                     {rows.map(({ key: rowKey, entry }, index) => (
                         <div className="programRow" key={rowKey}>
-                            <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
-                            <select
-                                aria-label={t('admin.program.iconOf', { number: index + 1 })}
+                            <ImageSelect
+                                className="programIcon"
+                                hideLabels
+                                options={(Object.keys(PROGRAM_ICONS) as ProgramIcon[]).map(key => ({
+                                    value: key,
+                                    label: t(`admin.program.icons.${key}`),
+                                    icon: PROGRAM_ICONS[key].icon,
+                                }))}
                                 value={entry.icon}
-                                onChange={(e) => handleChange(index, { icon: e.target.value as ProgramIcon })}
-                            >
-                                {(Object.keys(PROGRAM_ICONS) as ProgramIcon[]).map(key => (
-                                    <option value={key} key={key}>{t(`admin.program.icons.${key}`)}</option>
-                                ))}
-                            </select>
+                                placeholder={t('admin.program.iconOf', { number: index + 1 })}
+                                onChange={icon => handleChange(index, { icon: icon as ProgramIcon })}
+                            />
                             <input
                                 type="text"
                                 className="programTime"

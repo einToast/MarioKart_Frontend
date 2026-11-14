@@ -17,7 +17,13 @@ describe('TeamChangeModal', () => {
         return { ...view, closeModal };
     };
 
-    const characterOptions = () => screen.getAllByRole('option').map(option => option.textContent);
+    const characterSelect = () => screen.getByRole('button', { name: /^Charakter/ });
+    const characterOptions = () => {
+        if (characterSelect().getAttribute('aria-expanded') !== 'true') {
+            fireEvent.click(characterSelect());
+        }
+        return screen.getAllByRole('option').map(option => option.textContent);
+    };
 
     beforeEach(() => {
         backend.get(CHARACTERS_URL, [{ id: 1, characterName: 'Mario' }, { id: 2, characterName: 'Yoshi' }]);
@@ -34,7 +40,7 @@ describe('TeamChangeModal', () => {
         renderModal();
 
         expect(await screen.findByRole('textbox', { name: 'Teamname' })).toHaveValue('Team Toad');
-        expect(screen.getByRole('combobox')).toHaveValue('Toad');
+        expect(characterSelect().querySelector('img')).toHaveAttribute('src', '/characters/Toad.webp');
     });
 
     it('offers the current character and every free character', async () => {
@@ -49,7 +55,7 @@ describe('TeamChangeModal', () => {
         await waitFor(() => expect(characterOptions()).toContain('Yoshi'));
 
         fireEvent.change(screen.getByRole('textbox', { name: 'Teamname' }), { target: { value: 'Die Pilze' } });
-        fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Yoshi' } });
+        fireEvent.click(screen.getByRole('option', { name: 'Yoshi' }));
         fireEvent.click(screen.getByText('Team ändern'));
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ teamChanged: true }));

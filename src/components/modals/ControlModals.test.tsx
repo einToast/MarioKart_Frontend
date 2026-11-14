@@ -162,6 +162,11 @@ describe('NotificationModal', () => {
     const sendButton = () => screen.getByText(SEND, { selector: 'p' });
     const titleInput = () => screen.getByRole('textbox', { name: 'Titel' });
     const messageInput = () => screen.getByRole('textbox', { name: 'Nachricht' });
+    const recipient = () => screen.getByRole('button', { name: /^Empfänger/ });
+    const chooseRecipient = (teamName: string) => {
+        fireEvent.click(recipient());
+        fireEvent.click(screen.getByRole('option', { name: teamName }));
+    };
 
     it('stays hidden while closed', () => {
         renderModal(false);
@@ -189,22 +194,26 @@ describe('NotificationModal', () => {
         expect(screen.queryByText(/Aktive Abonnements/)).not.toBeInTheDocument();
     });
 
-    it('offers all teams as recipients, preselecting everyone', () => {
+    it('offers all teams as recipients, preselecting everyone with all their characters', () => {
         renderModal();
+        expect(Array.from(recipient().querySelectorAll('img'), img => img.getAttribute('src'))).toEqual([
+            '/characters/Mario.webp', '/characters/Luigi.webp', '/characters/Peach.webp', '/characters/Toad.webp',
+        ]);
+
+        fireEvent.click(recipient());
 
         expect(screen.getAllByRole('option').map(option => option.textContent)).toEqual([
             'Alle', 'Team Mario', 'Team Luigi', 'Team Peach', 'Team Toad',
         ]);
-        expect(screen.getByRole('combobox')).toHaveValue('-1');
-        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'Alle' })).toHaveAttribute('aria-selected', 'true');
     });
 
     it('shows the character of the selected team', () => {
         renderModal();
 
-        fill(screen.getByRole('combobox'), '3');
+        chooseRecipient('Team Peach');
 
-        expect(screen.getByAltText('Charakter Peach')).toHaveAttribute('src', '/characters/Peach.webp');
+        expect(recipient().querySelector('img')).toHaveAttribute('src', '/characters/Peach.webp');
     });
 
     it('sends the notification to everyone and reports it', async () => {
@@ -257,7 +266,7 @@ describe('NotificationModal', () => {
         backend.post('/admin/notification/send/3');
         const { closeModal } = renderModal();
 
-        fill(screen.getByRole('combobox'), '3');
+        chooseRecipient('Team Peach');
         fill(titleInput(), 'Runde 3');
         fill(messageInput(), 'Ihr seid dran');
         fireEvent.click(sendButton());

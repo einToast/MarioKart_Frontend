@@ -12,11 +12,11 @@ import { useNavigate, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { LinearGradient } from "react-text-gradients";
 import Toast from "../components/Toast";
-import characters from "../util/api/config/characters";
 import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
 import { useTranslation } from 'react-i18next';
+import ImageSelect from '../components/ImageSelect';
 import LanguageSwitch from '../components/LanguageSwitch';
 
 const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
@@ -108,7 +108,7 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <LanguageSwitch />
                 </div>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-                    <IonRefresherContent refreshingSpinner="circles" />
+                    <IonRefresherContent refreshingSpinner="crescent" />
                 </IonRefresher>
                 <div className={"contentLogin"}>
                     <h2>
@@ -120,31 +120,17 @@ const RegisterTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <p>{t('register.description')}</p>
 
                     <div className={"loginContainer"}>
-                        <div className={"borderContainer selectCharacter"}>
-                            <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value="" disabled hidden={true}>
-                                    {t('register.chooseCharacter')}
-                                </option>
-                                {updatedCharacterNames?.map((character) => (
-                                    <option
-                                        key={character}
-                                        value={character}
-                                        style={{ backgroundImage: `url(/characters/${character}.webp)` }} // Verwende url() anstelle von backgroundImage
-                                    >
-                                        {character}
-                                    </option>
-                                ))}
-                            </select>
-                            {selectedCharacter && (
-                                <div className="selected-character">
-                                    {characters.includes(selectedCharacter) && (
-                                        <img
-                                            src={`/characters/${selectedCharacter}.webp`}
-                                            alt={t('characterImage', { name: selectedCharacter })}
-                                        />
-                                    )}
-                                </div>
-                            )}
+                        <div className="borderContainer imageSelectField">
+                            <ImageSelect
+                                options={(updatedCharacterNames ?? []).map(character => ({
+                                    value: character,
+                                    label: character,
+                                    character,
+                                }))}
+                                value={selectedCharacter}
+                                placeholder={t('register.chooseCharacter')}
+                                onChange={setSelectedCharacter}
+                            />
                         </div>
                         <div className={"borderContainer"}>
                             <input

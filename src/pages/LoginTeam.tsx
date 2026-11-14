@@ -9,6 +9,7 @@ import { LoginProps, User } from '../util/api/config/interfaces';
 import { PublicCookiesService, PublicRegistrationService, PublicSettingsService } from "../util/service";
 import './RegisterTeam.css';
 import { useTranslation } from 'react-i18next';
+import ImageSelect from '../components/ImageSelect';
 import LanguageSwitch from '../components/LanguageSwitch';
 
 const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
@@ -85,7 +86,7 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <LanguageSwitch />
                 </div>
                 <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
-                    <IonRefresherContent refreshingSpinner="circles" />
+                    <IonRefresherContent refreshingSpinner="crescent" />
                 </IonRefresher>
                 <div className="contentLogin">
                     <h2>
@@ -96,29 +97,17 @@ const LoginTeam: React.FC<LoginProps> = (props: LoginProps) => {
                     <h1>{t('login.title')}</h1>
                     <p>{t('login.description')}</p>
                     <div className="loginContainer">
-                        <div className="borderContainer selectCharacter">
-                            <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value={-1} hidden>{t('login.selectTeam')}</option>
-                                {teams?.map((team) => (
-                                    <option key={team.id}
-                                        value={team.id}
-                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.webp)` }}
-                                    >
-                                        {team.teamName}
-                                    </option>
-                                ))}
-                            </select>
-                            {teamId && teamId !== "-1" && (
-                                <div className="selected-character">
-                                    {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
-                                        <img
-                                            src={`/characters/${character}.webp`}
-                                            alt={t('characterImage', { name: character })}
-                                            key={character}
-                                        />
-                                    ))}
-                                </div>
-                            )}
+                        <div className="borderContainer imageSelectField">
+                            <ImageSelect
+                                options={teams.map(team => ({
+                                    value: String(team.id),
+                                    label: team.teamName,
+                                    character: team.character.characterName,
+                                }))}
+                                value={teamId}
+                                placeholder={t('login.selectTeam')}
+                                onChange={setTeamId}
+                            />
                         </div>
                         <IonButton onClick={handleLogin} slot="start"
                             tabIndex={0}
