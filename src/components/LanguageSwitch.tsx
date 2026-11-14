@@ -1,7 +1,8 @@
 import { IonIcon } from '@ionic/react';
 import { chevronDownOutline, languageOutline } from 'ionicons/icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDropdown } from '../hooks/useDropdown';
 import { changeLanguage, currentLanguage } from '../i18n';
 import { Language, LANGUAGES, SUPPORTED_LANGUAGES } from '../i18n/languages';
 import './LanguageSwitch.css';
@@ -10,61 +11,10 @@ import { NotificationService } from '../util/service';
 const LanguageSwitch: React.FC = () => {
     const { t, i18n } = useTranslation();
     const current = currentLanguage();
-    const [open, setOpen] = useState(false);
-    const rootRef = useRef<HTMLDivElement>(null);
-    const toggleRef = useRef<HTMLButtonElement>(null);
-    const optionRefs = useRef<(HTMLButtonElement | null)[]>([]);
-
-    useEffect(() => {
-        if (!open) {
-            return;
-        }
-        optionRefs.current[SUPPORTED_LANGUAGES.indexOf(current)]?.focus();
-        const handleClickOutside = (event: MouseEvent) => {
-            if (rootRef.current && !rootRef.current.contains(event.target as Node)) {
-                setOpen(false);
-            }
-        };
-        const handleKeyDown = (event: KeyboardEvent) => {
-            const focused = optionRefs.current.indexOf(document.activeElement as HTMLButtonElement);
-            switch (event.key) {
-                case 'Escape':
-                    event.preventDefault();
-                    close();
-                    break;
-                case 'ArrowDown':
-                    event.preventDefault();
-                    focusOption(focused + 1);
-                    break;
-                case 'ArrowUp':
-                    event.preventDefault();
-                    focusOption(focused - 1);
-                    break;
-                case 'Home':
-                    event.preventDefault();
-                    focusOption(0);
-                    break;
-                case 'End':
-                    event.preventDefault();
-                    focusOption(SUPPORTED_LANGUAGES.length - 1);
-                    break;
-                case 'Tab':
-                    setOpen(false);
-                    break;
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        document.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [open]);
-
-    const close = () => {
-        setOpen(false);
-        toggleRef.current?.focus();
-    };
+    const { open, toggle, close, rootRef, toggleRef, optionRef, onToggleKeyDown } = useDropdown(
+        SUPPORTED_LANGUAGES.map(language => LANGUAGES[language].name),
+        SUPPORTED_LANGUAGES.indexOf(current),
+    );
 
     const choose = (language: Language) => {
         if (language !== i18n.language) {
@@ -73,11 +23,6 @@ const LanguageSwitch: React.FC = () => {
                 .catch(error => console.error('Error changing language:', error));
         }
         close();
-    };
-
-    const focusOption = (index: number) => {
-        const count = SUPPORTED_LANGUAGES.length;
-        optionRefs.current[(index + count) % count]?.focus();
     };
 
     return (
@@ -89,7 +34,8 @@ const LanguageSwitch: React.FC = () => {
                 aria-haspopup="true"
                 aria-expanded={open}
                 aria-label={`${t('language.label')}: ${LANGUAGES[current].name}`}
-                onClick={() => setOpen(isOpen => !isOpen)}
+                onClick={toggle}
+                onKeyDown={onToggleKeyDown}
             >
                 <IonIcon aria-hidden="true" icon={languageOutline} className="languageSwitchSymbol" />
                 <span lang={current}>{current.toUpperCase()}</span>
@@ -101,7 +47,7 @@ const LanguageSwitch: React.FC = () => {
                         <li key={language}>
                             <button
                                 type="button"
-                                ref={element => { optionRefs.current[index] = element; }}
+                                ref={optionRef(index)}
                                 lang={language}
                                 aria-pressed={language === current}
                                 onClick={() => choose(language)}
