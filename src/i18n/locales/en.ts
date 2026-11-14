@@ -343,6 +343,7 @@ const en: TranslationMessages = {
             noPointsDetected: 'Switch {{name}}: no points were detected on the photo',
             notAllDetected: 'Switch {{name}}: not all characters were detected',
             switchError: 'Switch {{name}}: {{message}}',
+            inactiveTeam: '{{team}} is inactive',
         },
         schedule: {
             title: 'Create schedule',

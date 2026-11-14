@@ -341,6 +341,7 @@ const de = {
             noPointsDetected: 'Switch {{name}}: Auf dem Foto wurden keine Punkte erkannt',
             notAllDetected: 'Switch {{name}}: Nicht alle Charaktere wurden erkannt',
             switchError: 'Switch {{name}}: {{message}}',
+            inactiveTeam: '{{team}} ist inaktiv',
         },
         schedule: {
             title: 'Spielplan erstellen',

@@ -74,6 +74,26 @@ describe('PointsComponent', () => {
         expect(inputs().map(input => input.value)).toEqual(['0', '0', '0', '0']);
     });
 
+    it('dims an inactive team and still lets its points be entered', async () => {
+        const teams = makeTeams();
+        teams[1].active = false;
+        const game = gameWithPoints({ teams });
+        backend.put('/admin/schedule/games/3', game);
+        renderPoints(game);
+
+        const fields = inputs().map(input => input.closest('.characterInput'));
+        expect(fields.map(field => field?.classList.contains('inactiveTeam'))).toEqual([false, true, false, false]);
+        expect(fields[1]).toHaveAttribute('title', 'Team Luigi ist inaktiv');
+        expect(fields[0]).not.toHaveAttribute('title');
+
+        setPoints(1, '3');
+        fireEvent.click(screen.getByText(SAVE));
+
+        await expectSuccessToast('Spiel erfolgreich gespeichert');
+        const body = backend.requests[0].body as { points: { points: number }[] };
+        expect(body.points.map(entry => entry.points)).toEqual([15, 3, 9, 6]);
+    });
+
     it('updates the displayed points while typing', () => {
         renderPoints(gameWithPoints());
 
