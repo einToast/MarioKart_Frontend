@@ -92,13 +92,15 @@ Cypress.Commands.add('toast', (message: string) => {
     return cy.get('ion-toast').shadow().contains(message);
 });
 
+const visibleImageSelectToggle = () => cy.get('.imageSelectToggle').filter((_, toggle) => Cypress.dom.isVisible(toggle));
+
 Cypress.Commands.add('openImageSelect', () => {
-    cy.get('.imageSelectToggle').then(toggle => {
+    visibleImageSelectToggle().should('have.length', 1).then(toggle => {
         if (toggle.attr('aria-expanded') !== 'true') {
             cy.wrap(toggle).click();
         }
     });
-    return cy.get('.imageSelectMenu [role="option"]');
+    return visibleImageSelectToggle().parent().find('.imageSelectMenu [role="option"]');
 });
 
 Cypress.Commands.add('chooseImageSelectOption', (label: string) => {

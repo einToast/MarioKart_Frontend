@@ -94,7 +94,7 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
   asAdmin('/admin/control');
   cy.contains('ion-button', 'Benachrichtigung senden').click();
   if (teamName) {
-    cy.get('ion-modal').within(() => cy.chooseImageSelectOption(teamName));
+    cy.chooseImageSelectOption(teamName);
   }
   cy.contains('ion-modal .borderContainer p', /^Titel$/).siblings('input').type(title);
   cy.contains('ion-modal .borderContainer p', /^Nachricht$/).siblings('input').type(message);
@@ -436,7 +436,7 @@ describe('a whole tournament', () => {
     answer(FEEDBACK_QUESTION, write('Super Stimmung, gerne wieder!')).should('eq', 200);
     setSurveyKeyMode('Aus', 'Umfrage-Schlüssel deaktiviert, alle können abstimmen');
     surveyItem(FEEDBACK_QUESTION).find('[title="Ergebnisse anzeigen"]').click();
-    cy.get('ion-modal').should('contain', 'Ergebnisse: 1 Antworten').and('contain', 'Super Stimmung, gerne wieder!');
+    cy.get('ion-modal').should('contain', 'Ergebnisse: 1 Antwort').and('contain', 'Super Stimmung, gerne wieder!');
     cy.get('ion-modal').should('not.contain', 'Ohne Schlüssel');
     closeQuestion(FEEDBACK_QUESTION);
 
