@@ -42,9 +42,9 @@ const Tab1: React.FC<ShowTab2Props> = (props: ShowTab2Props) => {
 
     const { switches, reloadSwitches } = useSwitches(location);
 
-    const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setSelectedOption(event.target.value);
-        PublicCookiesService.setSelectedGamesOption(event.target.value);
+    const handleOptionChange = (option: string) => {
+        setSelectedOption(option);
+        PublicCookiesService.setSelectedGamesOption(option);
     };
 
     const updateShowTab2 = () => {

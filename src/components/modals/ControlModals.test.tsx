@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { backend } from '../../test/backend';
 import { makeBreak, makeRound, makeTeams } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
@@ -11,6 +11,9 @@ import TournamentModal from './TournamentModal';
 
 const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
 const selectBelow = (label: string) => (screen.getByText(label).parentElement as HTMLElement).querySelector('select') as HTMLSelectElement;
+const toggle = (label: string) => within(screen.getByRole('group', { name: label }));
+const chosenIn = (label: string) => toggle(label).getByRole('button', { pressed: true });
+const choose = (label: string, option: string) => fireEvent.click(toggle(label).getByRole('button', { name: option }));
 
 describe('BreakChangeModal', () => {
     const CHANGE = 'Pause ändern';
@@ -55,14 +58,14 @@ describe('BreakChangeModal', () => {
         await waitFor(() => expect(roundOptions()).toEqual(['5', '6', '7']));
         expect(durationInput()).toHaveValue(45);
         expect(selectBelow('Vor Runde')).toHaveValue('60');
-        expect(selectBelow('Pause beendet')).toHaveValue('0');
+        expect(chosenIn('Pause beendet')).toHaveTextContent('Nein');
     });
 
     it('shows a break that has ended', async () => {
         renderModal({ breakEnded: true });
 
         await waitFor(() => expect(roundOptions()).toHaveLength(3));
-        expect(selectBelow('Pause beendet')).toHaveValue('1');
+        expect(chosenIn('Pause beendet')).toHaveTextContent('Ja');
     });
 
     it('saves the edited break and reports the change', async () => {
@@ -72,7 +75,7 @@ describe('BreakChangeModal', () => {
 
         fill(durationInput(), '20');
         fill(selectBelow('Vor Runde'), '70');
-        fill(selectBelow('Pause beendet'), '1');
+        choose('Pause beendet', 'Ja');
         fireEvent.click(screen.getByText(CHANGE));
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ breakChanged: true }));

@@ -62,7 +62,7 @@ export interface OcrConfigModalResult {
 
 export interface RoundHeaderProps {
   title: string;
-  onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onOptionChange: (option: string) => void;
   selectedOption: string;
   loading: boolean;
 }

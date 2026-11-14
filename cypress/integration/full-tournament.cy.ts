@@ -82,7 +82,7 @@ const changeBreak = (change: { beforeRound?: BackendRound; ended?: boolean }) =>
     cy.get('ion-modal').contains('.borderContainer', 'Vor Runde').find('select').select(String(change.beforeRound.id));
   }
   if (change.ended) {
-    cy.get('ion-modal').contains('.borderContainer', 'Pause beendet').find('select').select('Ja');
+    cy.get('ion-modal').contains('.borderContainer', 'Pause beendet').contains('button', 'Ja').click();
   }
   cy.get('ion-modal').contains('ion-button', 'Pause ändern').click();
   cy.wait('@breakChanged').its('response.statusCode').should('eq', 200);
@@ -187,10 +187,10 @@ const createQuestion = (questionText: string, questionType: string,
     cy.contains('ion-modal .form-group label', new RegExp(`^Option ${index + 1}$`)).siblings('input').type(option);
   });
   if (oneAnswerPerKey) {
-    cy.get('ion-modal').contains('.borderContainer', 'Antworten pro Gerät').find('select').select('true');
+    cy.get('ion-modal').contains('.borderContainer', 'Antworten pro Gerät').contains('button', 'Eine Antwort pro Umfrage-Schlüssel').click();
   }
   if (finalTeamsOnly) {
-    cy.get('ion-modal').contains('.borderContainer', 'Teamauswahl').find('select').select('true');
+    cy.get('ion-modal').contains('.borderContainer', 'Teamauswahl').contains('button', 'Nur Finalteams').click();
   }
   cy.get('ion-modal').contains('ion-button', 'Umfrage speichern').click();
   toggleQuestion(questionText, 'Umfrage sichtbar machen');
@@ -250,7 +250,7 @@ const countVotes = (options: string[], votes: string[]) =>
   options.map(option => votes.filter(vote => vote === option).length);
 
 const showView = (view: string) => {
-  cy.contains('.ion-page:not(.ion-page-hidden) .flexStart', 'Spielplan').find('select').select(view, { force: true });
+  cy.contains('.ion-page:not(.ion-page-hidden) .flexStart', 'Spielplan').contains('button', view).click({ force: true });
 };
 
 const currentGame = () => cy.contains('h3', 'Aktuelles Spiel').parents('.flexSpiel');

@@ -7,6 +7,7 @@ import "../../pages/admin/SurveyAdmin.css";
 import { BreakReturnDTO, RoundReturnDTO } from "../../util/api/config/dto";
 import { BreakModalResult } from "../../util/api/config/interfaces";
 import { AdminScheduleService } from '../../util/service';
+import SegmentedToggle from '../SegmentedToggle';
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
 
@@ -99,12 +100,15 @@ const BreakChangeModal: React.FC<{ showModal: boolean, closeModal: (team: BreakM
                     </div>
                     <div className={"borderContainer"}>
                         <p>{t('admin.break.ended')}</p>
-                        <select value={breakEnded ? 1 : 0} onChange={(e) => setBreakEnded(e.target.value === '1')}
-                            style={{ cursor: "pointer" }}
-                        >
-                            <option value={0}>{t('common.no')}</option>
-                            <option value={1}>{t('common.yes')}</option>
-                        </select>
+                        <SegmentedToggle
+                            label={t('admin.break.ended')}
+                            options={[
+                                { value: false, label: t('common.no') },
+                                { value: true, label: t('common.yes') },
+                            ]}
+                            value={breakEnded}
+                            onChange={setBreakEnded}
+                        />
                     </div>
                 </form>
                 <div className={"playedContainer"}>

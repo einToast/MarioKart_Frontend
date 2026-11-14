@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { backend } from '../../test/backend';
 import { makeQuestion } from '../../test/fixtures';
 import { buttonOf } from '../../test/render';
@@ -13,6 +13,9 @@ const optionInputs = () => screen.queryAllByRole('textbox', { name: /^Option \d+
 const fill = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
 // The modals contain several selects; they are addressed through the label next to them
 const selectBelow = (label: string) => (screen.getByText(label).parentElement as HTMLElement).querySelector('select') as HTMLSelectElement;
+const toggle = (label: string) => within(screen.getByRole('group', { name: label }));
+const chosenIn = (label: string) => toggle(label).getByRole('button', { pressed: true });
+const choose = (label: string, option: string) => fireEvent.click(toggle(label).getByRole('button', { name: option }));
 
 describe('SurveyAddModal', () => {
     const SAVE = 'Umfrage speichern';
@@ -37,7 +40,7 @@ describe('SurveyAddModal', () => {
         expect(questionInput()).toHaveValue('');
         expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
         expect(optionInputs().map(input => input.value)).toEqual(['', '', '', '']);
-        expect(selectBelow('Antworten pro Gerät')).toHaveValue('false');
+        expect(chosenIn('Antworten pro Gerät')).toHaveTextContent('Unbegrenzt');
     });
 
     it('offers every question type', () => {
@@ -102,7 +105,7 @@ describe('SurveyAddModal', () => {
 
         chooseType(QuestionType.TEAM);
 
-        expect(selectBelow('Teamauswahl')).toHaveValue('false');
+        expect(chosenIn('Teamauswahl')).toHaveTextContent('Alle Teams');
     });
 
     it('creates the question with the entered options', async () => {
@@ -177,8 +180,8 @@ describe('SurveyAddModal', () => {
 
         fill(questionInput(), 'Wer gewinnt das Finale?');
         chooseType(QuestionType.TEAM);
-        fill(selectBelow('Teamauswahl'), 'true');
-        fill(selectBelow('Antworten pro Gerät'), 'true');
+        choose('Teamauswahl', 'Nur Finalteams');
+        choose('Antworten pro Gerät', 'Eine Antwort pro Umfrage-Schlüssel');
         fireEvent.click(screen.getByText(SAVE));
 
         await waitFor(() => expect(closeModal).toHaveBeenLastCalledWith({ surveyCreated: true }));
@@ -207,14 +210,14 @@ describe('SurveyAddModal', () => {
 
         fill(questionInput(), 'Feedback?');
         chooseType(QuestionType.FREE_TEXT);
-        fill(selectBelow('Antworten pro Gerät'), 'true');
+        choose('Antworten pro Gerät', 'Eine Antwort pro Umfrage-Schlüssel');
         fireEvent.click(screen.getByText(SAVE));
 
         await waitFor(() => expect(closeModal).toHaveBeenLastCalledWith({ surveyCreated: true }));
         expect(questionInput()).toHaveValue('');
         expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
         expect(optionInputs()).toHaveLength(4);
-        expect(selectBelow('Antworten pro Gerät')).toHaveValue('false');
+        expect(chosenIn('Antworten pro Gerät')).toHaveTextContent('Unbegrenzt');
     });
 
     it('shows the validation error and stays open when the question text is missing', async () => {
@@ -298,7 +301,7 @@ describe('SurveyChangeModal', () => {
         expect(questionInput()).toHaveValue('Wer gewinnt?');
         expect(optionInputs().map(input => input.value)).toEqual(['Mario', 'Luigi', 'Peach']);
         expect(selectBelow('Umfrageoptionen')).toHaveValue('MULTIPLE_CHOICE');
-        expect(selectBelow('Antworten pro Gerät')).toHaveValue('true');
+        expect(chosenIn('Antworten pro Gerät')).toHaveTextContent('Eine Antwort pro Umfrage-Schlüssel');
     });
 
     it('does not allow changing the question type', () => {
@@ -310,8 +313,8 @@ describe('SurveyChangeModal', () => {
     it('shows the team selection of a team question read-only', () => {
         renderModal({ questionType: QuestionType.TEAM, finalTeamsOnly: true });
 
-        expect(selectBelow('Teamauswahl')).toHaveValue('true');
-        expect(selectBelow('Teamauswahl')).toBeDisabled();
+        expect(chosenIn('Teamauswahl')).toHaveTextContent('Nur Finalteams');
+        toggle('Teamauswahl').getAllByRole('button').forEach(button => expect(button).toBeDisabled());
         expect(optionInputs()).toHaveLength(0);
     });
 
@@ -330,7 +333,7 @@ describe('SurveyChangeModal', () => {
         fill(optionInputs()[2], 'Toad');
         fireEvent.click(screen.getByText('Option hinzufügen'));
         fill(optionInputs()[3], 'Yoshi');
-        fill(selectBelow('Antworten pro Gerät'), 'true');
+        choose('Antworten pro Gerät', 'Eine Antwort pro Umfrage-Schlüssel');
         fireEvent.click(screen.getByText(CHANGE));
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ surveyChanged: true }));
