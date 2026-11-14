@@ -241,6 +241,22 @@ describe('SurveyAddModal', () => {
         expect(backend.requests).toEqual([]);
     });
 
+    it.each([QuestionType.MULTIPLE_CHOICE, QuestionType.CHECKBOX])('refuses a %s question with fewer than two options', async (type) => {
+        const { closeModal } = renderModal();
+
+        fill(questionInput(), 'Wer gewinnt?');
+        chooseType(type);
+        for (let i = 0; i < 3; i++) {
+            fireEvent.click(screen.getByText('Option entfernen'));
+        }
+        fill(optionInputs()[0], 'Mario');
+        fireEvent.click(screen.getByText(SAVE));
+
+        await expectErrorToast('Es müssen mindestens 2 Optionen angegeben werden');
+        expect(closeModal).not.toHaveBeenCalled();
+        expect(backend.requests).toEqual([]);
+    });
+
     it('shows the error and keeps the input when the backend rejects the question', async () => {
         backend.fail('POST', '/admin/survey', 401);
         const { closeModal } = renderModal();
@@ -381,6 +397,30 @@ describe('SurveyChangeModal', () => {
         fireEvent.click(screen.getByText(CHANGE));
 
         await expectErrorToast('Alle Optionen müssen ausgefüllt sein');
+        expect(closeModal).not.toHaveBeenCalled();
+        expect(backend.requests).toEqual([]);
+    });
+
+    it('shows the validation error and stays open when the question text is emptied', async () => {
+        const { closeModal } = renderModal();
+
+        fill(questionInput(), '');
+        fireEvent.click(screen.getByText(CHANGE));
+
+        await expectErrorToast('Die Frage darf nicht leer sein');
+        expect(closeModal).not.toHaveBeenCalled();
+        expect(backend.requests).toEqual([]);
+    });
+
+    it('refuses to keep fewer than two options', async () => {
+        const { closeModal } = renderModal();
+
+        fireEvent.click(screen.getByText('Option entfernen'));
+        fireEvent.click(screen.getByText('Option entfernen'));
+        expect(optionInputs()).toHaveLength(1);
+        fireEvent.click(screen.getByText(CHANGE));
+
+        await expectErrorToast('Es müssen mindestens 2 Optionen angegeben werden');
         expect(closeModal).not.toHaveBeenCalled();
         expect(backend.requests).toEqual([]);
     });
