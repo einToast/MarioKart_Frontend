@@ -73,6 +73,6 @@
   "description": "An Ionic project",
   "allowScripts": {
     "esbuild@0.28.2": true,
-    "cypress@16.1.0": true
+    "cypress@16.2.1": true
   }
 }
