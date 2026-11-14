@@ -313,6 +313,18 @@ describe('PointsComponent', () => {
             expect(body.points.map(entry => entry.points)).toEqual([9, 5, 3, 1]);
         });
 
+        it('does not expect an inactive team on the photo', async () => {
+            const teams = makeTeams();
+            teams[3].active = false;
+            backend.post(OCR_URL, { characters: [{ name: 'Mario', points: 9 }, { name: 'Luigi', points: 5 }, { name: 'Peach', points: 3 }] });
+            renderPoints(gameWithPoints({ teams }), makeSwitches(), 'openai');
+
+            evaluatePhoto();
+
+            await expectSuccessToast('Switch Rot: Punkte erkannt, bitte prüfen und speichern');
+            expect(inputs().map(input => input.value)).toEqual(['9', '5', '3', '6']);
+        });
+
         it('keeps the points of characters the photo does not show and says so', async () => {
             backend.post(OCR_URL, { characters: [{ name: 'Mario', points: 9 }, { name: 'Yoshi', points: 7 }] });
             renderPoints(gameWithPoints(), makeSwitches(), 'openai');

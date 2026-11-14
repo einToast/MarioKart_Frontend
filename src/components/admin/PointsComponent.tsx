@@ -109,7 +109,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                 });
 
                 // Several photos can be evaluated at once, so the message names its game
-                if (detected === game.teams.length) {
+                if (detected === game.teams.filter(team => team.active).length) {
                     setError(t('admin.points.pointsDetected', { name: gameSwitch.name }));
                     setIsError(false);
                 } else {
