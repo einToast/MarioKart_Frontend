@@ -24,7 +24,7 @@ const SurveyAdmin: React.FC = () => {
     const [surveys, setSurveys] = useState<QuestionReturnDTO[]>([]);
     const [modalClosed, setModalClosed] = useState<boolean>(false);
     const [showAddModal, setShowAddModal] = useState<boolean>(false);
-    const [surveyKeyMode, setSurveyKeyMode] = useState<SurveyKeyMode>(SurveyKeyMode.DISABLED);
+    const [surveyKeyMode, setSurveyKeyMode] = useState<SurveyKeyMode | null>(null);
 
 
     const [error, setError] = useState<string>('');
@@ -128,10 +128,12 @@ const SurveyAdmin: React.FC = () => {
                 <div className="surveyKeyMode">
                     <p>{t('admin.surveys.key')}</p>
                     <select
-                        value={surveyKeyMode}
+                        value={surveyKeyMode ?? ''}
+                        disabled={surveyKeyMode === null}
                         onChange={(e) => handleSurveyKeyModeChange(e.target.value as SurveyKeyMode)}
                         aria-label={t('admin.surveys.key')}
                     >
+                        {surveyKeyMode === null && <option value="" />}
                         <option value={SurveyKeyMode.DISABLED}>{t('admin.surveys.keyModes.disabled.label')}</option>
                         <option value={SurveyKeyMode.DISTRIBUTING}>{t('admin.surveys.keyModes.distributing.label')}</option>
                         <option value={SurveyKeyMode.REQUIRED}>{t('admin.surveys.keyModes.required.label')}</option>

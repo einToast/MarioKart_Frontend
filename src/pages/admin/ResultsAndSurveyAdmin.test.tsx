@@ -117,6 +117,17 @@ describe('admin SurveyAdmin', () => {
             expect(Array.from(keyMode().options).map(option => option.textContent)).toEqual(['Aus', 'Schlüssel verteilen', 'Nur mit Schlüssel']);
         });
 
+        it('shows no mode and allows no change until the stored mode is loaded', async () => {
+            backend.get('/public/settings', { tournamentOpen: true, surveyKeyMode: 'REQUIRED' });
+
+            renderPage();
+
+            expect(keyMode()).toBeDisabled();
+            expect(keyMode()).toHaveValue('');
+            await waitFor(() => expect(keyMode()).toHaveValue('REQUIRED'));
+            expect(keyMode()).toBeEnabled();
+        });
+
         it.each([
             ['DISTRIBUTING', 'Geräte erhalten bei ihrer ersten Antwort einen Umfrage-Schlüssel'],
             ['REQUIRED', 'Nur Geräte mit Umfrage-Schlüssel können abstimmen'],
