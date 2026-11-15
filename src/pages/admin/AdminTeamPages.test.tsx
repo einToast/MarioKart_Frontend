@@ -1,7 +1,7 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend, stubScheduleState } from '../../test/backend';
-import { makeRound, makeTeam, makeTeams } from '../../test/fixtures';
+import { makeRound, makeSwitches, makeTeam, makeTeams } from '../../test/fixtures';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import Final from './Final';
@@ -49,6 +49,39 @@ describe('admin Final', () => {
 
         await waitFor(() => expect(teamNames(container)).toEqual(['Team Mario', 'Team Luigi']));
         expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ finalTeamsCount: 2 });
+    });
+
+    it('shows the configured number of final games', async () => {
+        backend.get('/public/settings', { finalGamesCount: 7 });
+        renderPage();
+
+        await waitFor(() => expect(screen.getByLabelText('Finalspiele:')).toHaveValue(7));
+    });
+
+    it('proposes six final games while the settings leave them out', async () => {
+        renderPage();
+
+        await waitFor(() => expect(screen.getByLabelText('Finalspiele:')).toHaveValue(6));
+    });
+
+    it('stores a changed number of final games', async () => {
+        backend.put('/admin/settings', {});
+        renderPage();
+        await waitFor(() => expect(screen.getByLabelText('Finalspiele:')).toHaveValue(6));
+
+        fireEvent.change(screen.getByLabelText('Finalspiele:'), { target: { value: '8' } });
+
+        await waitFor(() => expect(backend.requestsTo('PUT', '/admin/settings')).toHaveLength(1));
+        expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toEqual({ finalGamesCount: 8 });
+    });
+
+    it.each(['', '0'])('does not store "%s" final games', async (value) => {
+        renderPage();
+        await waitFor(() => expect(screen.getByLabelText('Finalspiele:')).toHaveValue(6));
+
+        fireEvent.change(screen.getByLabelText('Finalspiele:'), { target: { value } });
+
+        expect(backend.requestsTo('PUT', '/admin/settings')).toHaveLength(0);
     });
 
     it.each(['', '1', '9'])('does not store "%s" as the number of final teams', async (value) => {
@@ -207,6 +240,8 @@ describe('admin Schedule', () => {
     const fields = () => screen.getByLabelText('Anzahl Spielfelder:') as HTMLInputElement;
     const rounds = () => screen.getByLabelText('Anzahl Runden:') as HTMLInputElement;
     const teamsPerGame = () => screen.getByLabelText('Teams pro Spiel:') as HTMLInputElement;
+    const breakRound = () => screen.getByLabelText('Pause vor Runde:') as HTMLInputElement;
+    const breakMinutes = () => screen.getByLabelText('Pausenlänge (Minuten):') as HTMLInputElement;
     const teamsOfField = (field: number) => screen.getByLabelText(`Teams Spielfeld ${field}:`) as HTMLInputElement;
     const teamsPerField = () => screen.queryAllByLabelText(/^Teams Spielfeld \d+:$/).map(input => (input as HTMLInputElement).value);
     const set = (element: HTMLElement, value: string) => fireEvent.change(element, { target: { value } });
@@ -254,6 +289,38 @@ describe('admin Schedule', () => {
         expect(fields()).toBeEnabled();
     });
 
+    it('proposes one field for every configured switch', async () => {
+        backend.get('/public/settings', { switches: makeSwitches().slice(0, 3) });
+        renderPage();
+
+        await waitFor(() => expect(fields()).toHaveValue(3));
+    });
+
+    it('keeps a field count the admin typed before the switches are loaded', async () => {
+        backend.get('/public/settings', { switches: makeSwitches().slice(0, 3) });
+        renderPage();
+
+        set(fields(), '2');
+
+        await waitFor(() => expect(backend.requestsTo('GET', '/public/settings')).toHaveLength(1));
+        await screen.findByText('Team Mario');
+        expect(fields()).toHaveValue(2);
+    });
+
+    it('sends the break the admin entered', async () => {
+        backend.post(CREATE_URL, [makeRound()]);
+        renderPage();
+        await screen.findByText('Team Mario');
+        expect([breakRound().value, breakMinutes().value]).toEqual(['6', '30']);
+
+        set(breakRound(), '3');
+        set(breakMinutes(), '15');
+        fireEvent.click(createButton());
+
+        await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toMatchObject({ breakRound: 3, breakMinutes: 15 });
+    });
+
     it('creates the schedule with the entered parameters and returns to the dashboard', async () => {
         backend.post(CREATE_URL, [makeRound()]);
         renderPage();
@@ -265,7 +332,7 @@ describe('admin Schedule', () => {
         fireEvent.click(createButton());
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 3, numRounds: 10, teamsPerGame: 2 });
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 3, numRounds: 10, teamsPerGame: 2, breakRound: 6, breakMinutes: 30 });
     });
 
     it.each(['Enter', ' '])('creates the schedule with the "%s" key', async (key) => {
@@ -289,7 +356,7 @@ describe('admin Schedule', () => {
         fireEvent.click(createButton());
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 1, numRounds: 8, teamsPerGame: 8 });
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 1, numRounds: 8, teamsPerGame: 8, breakRound: 6, breakMinutes: 30 });
     });
 
     it.each([
@@ -297,6 +364,8 @@ describe('admin Schedule', () => {
         ['a single team per game', () => set(teamsPerGame(), '1'), 'Pro Spiel können 2 bis 8 Teams antreten'],
         ['no switch', () => set(fields(), '0'), 'Die Anzahl der Spielfelder muss zwischen 1 und 16 liegen'],
         ['an empty round count', () => set(rounds(), ''), 'Es muss mindestens eine Runde geben'],
+        ['a break before round 0', () => set(breakRound(), '0'), 'Die Pause braucht eine Runde ab 1 und mindestens eine Minute'],
+        ['a break without minutes', () => set(breakMinutes(), '0'), 'Die Pause braucht eine Runde ab 1 und mindestens eine Minute'],
     ])('rejects %s without asking the backend', async (_name, change, message) => {
         renderPage();
         await screen.findByText('Team Mario');
@@ -336,7 +405,7 @@ describe('admin Schedule', () => {
 
         await waitFor(() => expect(currentPath()).toBe('/admin/dashboard'));
         expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({
-            version: 5, numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4],
+            version: 5, numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4], breakRound: 6, breakMinutes: 30,
         });
     });
 
@@ -383,7 +452,7 @@ describe('admin Schedule', () => {
         fireEvent.click(createButton());
 
         await waitFor(() => expect(backend.requestsTo('POST', CREATE_URL)).toHaveLength(1));
-        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 4, numRounds: 8, teamsPerGame: 4 });
+        expect(backend.requestsTo('POST', CREATE_URL)[0].body).toEqual({ version: 2, numFields: 4, numRounds: 8, teamsPerGame: 4, breakRound: 6, breakMinutes: 30 });
     });
 
     it('allows clearing a number field while typing', async () => {

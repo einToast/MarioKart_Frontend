@@ -63,6 +63,30 @@ export const updateOcrProvider = async (ocrProvider: string): Promise<Tournament
     return await AdminSettingsApi.updateSettings(tournament);
 }
 
+export const updateFinalGamesCount = async (finalGamesCount: number): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        finalGamesCount: finalGamesCount
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateHowToPlay = async (howToPlay: string): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        howToPlay: howToPlay
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateTournamentSettings = async (roundMinutes: number, rankingHiddenRounds: number, maxAnswersPerTeam: number, surveyKeyDays: number): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        roundMinutes: roundMinutes,
+        rankingHiddenRounds: rankingHiddenRounds,
+        maxAnswersPerTeam: maxAnswersPerTeam,
+        surveyKeyDays: surveyKeyDays
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
 export const updateRelativePoints = async (relativePoints: boolean): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {
         relativePoints: relativePoints

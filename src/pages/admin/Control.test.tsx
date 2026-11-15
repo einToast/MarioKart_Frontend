@@ -37,6 +37,7 @@ describe('admin Control', () => {
                 'Registrierung schließen',
                 'Benachrichtigung senden',
                 'Punkteerkennung konfigurieren',
+                'Turniereinstellungen',
                 'Alle Teams löschen',
                 'Alle Umfragen löschen',
                 'Alle Benachrichtigungs-Abonnements löschen',
@@ -54,6 +55,7 @@ describe('admin Control', () => {
                 'Turnier schließen',
                 'Benachrichtigung senden',
                 'Punkteerkennung konfigurieren',
+                'Turniereinstellungen',
                 'Gesamten Spielplan löschen',
                 'Alle Umfragen löschen',
                 'Alle Benachrichtigungs-Abonnements löschen',
@@ -71,6 +73,7 @@ describe('admin Control', () => {
                 'Turnier schließen',
                 'Benachrichtigung senden',
                 'Punkteerkennung konfigurieren',
+                'Turniereinstellungen',
                 'Alle Finalspiele löschen',
                 'Alle Umfragen löschen',
                 'Alle Benachrichtigungs-Abonnements löschen',
@@ -213,6 +216,33 @@ describe('admin Control', () => {
             stubOcr();
             renderPage();
             fireEvent.click(await screen.findByText('Punkteerkennung konfigurieren'));
+
+            fireEvent.click(dialog().getByText('Abbrechen'));
+
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+            expect(queryToast()).not.toBeInTheDocument();
+        });
+    });
+
+    describe('tournament settings', () => {
+        it('saves the settings and confirms', async () => {
+            backend.get('/public/settings', { tournamentOpen: true, roundMinutes: 20, rankingHiddenRounds: 1, maxAnswersPerTeam: 4, surveyKeyDays: 2 })
+                .put('/admin/settings', {});
+            renderPage();
+
+            fireEvent.click(await screen.findByText('Turniereinstellungen'));
+            await waitFor(() => expect(dialog().getByLabelText('Spielzeit pro Runde (Minuten):')).toHaveValue(20));
+            fireEvent.change(dialog().getByLabelText('Spielzeit pro Runde (Minuten):'), { target: { value: '25' } });
+            fireEvent.click(dialog().getByText('Speichern'));
+
+            await expectSuccessToast('Einstellungen gespeichert');
+            expect(backend.requestsTo('PUT', '/admin/settings')[0].body).toMatchObject({ roundMinutes: 25 });
+            await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+        });
+
+        it('closes the settings without a confirmation message on cancel', async () => {
+            renderPage();
+            fireEvent.click(await screen.findByText('Turniereinstellungen'));
 
             fireEvent.click(dialog().getByText('Abbrechen'));
 

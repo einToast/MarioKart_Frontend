@@ -6,6 +6,7 @@ import { Navigate, Route } from 'react-router-dom';
 import Control from './Control';
 import AdminDashboard from './Dashboard';
 import Final from './Final';
+import HowToPlay from './HowToPlay';
 import Schedule from './Schedule';
 import AdminPoints from './Points';
 import Program from './Program';
@@ -27,6 +28,7 @@ const AdminRouter: React.FC = () => {
       <Route path="/admin/teams" element={<Teams />} />
       <Route path="/admin/venue" element={<Venue />} />
       <Route path="/admin/program" element={<Program />} />
+      <Route path="/admin/how-to-play" element={<HowToPlay />} />
       <Route path="/admin" element={<Navigate to="/admin/dashboard" />} />
       <Route path="/admin/*" element={<Navigate to="/admin/dashboard" />} />
     </IonRouterOutlet>

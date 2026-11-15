@@ -35,14 +35,32 @@ describe('PublicScheduleService', () => {
     });
 
     it.each([
-        [0, true],
-        [1, true],
-        [2, false],
-        [8, false],
-    ])('isNumberOfRoundsUnplayedLessThanTwo with %i unplayed rounds is %s', async (unplayed, expected) => {
-        backend.get('/public/schedule/rounds/unplayed', unplayed);
+        ['no schedule exists yet', false, false, 0, 1, true],
+        ['more rounds are open than the ranking is hidden for', true, false, 2, 1, true],
+        ['the last group round is running', true, false, 1, 1, false],
+        ['the group phase is over', true, false, 0, 1, false],
+        ['the finals are scheduled', true, true, 0, 1, true],
+        ['the last three of three hidden rounds are open', true, false, 3, 3, false],
+        ['four rounds are open with three hidden', true, false, 4, 3, true],
+        ['the ranking is never hidden', true, false, 0, 0, true],
+    ])('isRankingShown when %s', async (_description, schedule, finalSchedule, unplayed, rankingHiddenRounds, expected) => {
+        backend
+            .get('/public/schedule/create/schedule', schedule)
+            .get('/public/schedule/create/final_schedule', finalSchedule)
+            .get('/public/schedule/rounds/unplayed', unplayed)
+            .get('/public/settings', { rankingHiddenRounds });
 
-        await expect(PublicScheduleService.isNumberOfRoundsUnplayedLessThanTwo()).resolves.toBe(expected);
+        await expect(PublicScheduleService.isRankingShown()).resolves.toBe(expected);
+    });
+
+    it('isRankingShown hides the ranking during the last round when the settings leave it out', async () => {
+        backend
+            .get('/public/schedule/create/schedule', true)
+            .get('/public/schedule/create/final_schedule', false)
+            .get('/public/schedule/rounds/unplayed', 1)
+            .get('/public/settings', {});
+
+        await expect(PublicScheduleService.isRankingShown()).resolves.toBe(false);
     });
 
     it.each([
@@ -84,6 +102,16 @@ describe('AdminScheduleService', () => {
 
             expect(backend.requests[0].body).toEqual({
                 version: 4, numFields: 3, numRounds: 8, teamsPerGame: 8, teamsPerField: [8, 4, 4],
+            });
+        });
+
+        it('createSchedule passes the break on', async () => {
+            backend.post('/admin/schedule/create/schedule', [makeRound()]);
+
+            await AdminScheduleService.createSchedule(2, 4, 8, 4, undefined, 3, 15);
+
+            expect(backend.requests[0].body).toEqual({
+                version: 2, numFields: 4, numRounds: 8, teamsPerGame: 4, breakRound: 3, breakMinutes: 15,
             });
         });
 

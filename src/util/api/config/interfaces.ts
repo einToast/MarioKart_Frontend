@@ -60,6 +60,10 @@ export interface OcrConfigModalResult {
   ocrConfigChanged?: boolean;
 }
 
+export interface TournamentSettingsModalResult {
+  settingsChanged?: boolean;
+}
+
 export interface RoundHeaderProps {
   title: string;
   onOptionChange: (option: string) => void;
@@ -250,6 +254,28 @@ export interface ProgramEntry {
   time: string;
   text: string;
   translations?: Translations<TextTranslation>;
+}
+
+export interface HowToPlayRule {
+  text: string;
+  translations?: Translations<TextTranslation>;
+}
+
+export interface HowToPlay {
+  videoUrl: string;
+  rules: HowToPlayRule[];
+}
+
+export interface HowToPlayRuleRow {
+  key: number;
+  rule: HowToPlayRule;
+}
+
+export interface TournamentSettingsForm {
+  roundMinutes: number | '';
+  rankingHiddenRounds: number | '';
+  maxAnswersPerTeam: number | '';
+  surveyKeyDays: number | '';
 }
 
 export interface GamePhoto {

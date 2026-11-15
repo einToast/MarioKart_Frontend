@@ -40,6 +40,13 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getSurveyKeyMode()).resolves.toBe(SurveyKeyMode.DISABLED);
         await expect(PublicSettingsService.getSwitches()).resolves.toEqual([]);
         await expect(PublicSettingsService.getFinalTeamsCount()).resolves.toBe(4);
+        await expect(PublicSettingsService.getRankingHiddenRounds()).resolves.toBe(1);
+    });
+
+    it('reads for how many rounds the ranking is hidden', async () => {
+        backend.get(SETTINGS_URL, { rankingHiddenRounds: 0 });
+
+        await expect(PublicSettingsService.getRankingHiddenRounds()).resolves.toBe(0);
     });
 
     it('propagates the API error message', async () => {
@@ -66,6 +73,9 @@ describe('AdminSettingsService', () => {
         ['updateProgram', () => AdminSettingsService.updateProgram('{"entries":[]}'), { program: '{"entries":[]}' }],
         ['updateOcrProvider', () => AdminSettingsService.updateOcrProvider('openai'), { ocrProvider: 'openai' }],
         ['updateRelativePoints', () => AdminSettingsService.updateRelativePoints(true), { relativePoints: true }],
+        ['updateFinalGamesCount', () => AdminSettingsService.updateFinalGamesCount(7), { finalGamesCount: 7 }],
+        ['updateHowToPlay', () => AdminSettingsService.updateHowToPlay('{"rules":[]}'), { howToPlay: '{"rules":[]}' }],
+        ['updateTournamentSettings', () => AdminSettingsService.updateTournamentSettings(25, 0, 6, 3), { roundMinutes: 25, rankingHiddenRounds: 0, maxAnswersPerTeam: 6, surveyKeyDays: 3 }],
         ['updateVenue', () => AdminSettingsService.updateVenue([{ name: 'Blau', color: '#9DAEDA' }], '{"elements":[]}'), { switches: [{ name: 'Blau', color: '#9DAEDA' }], floorPlan: '{"elements":[]}' }],
     ])('%s updates only its own setting', async (_name, call, body) => {
         backend.put(ADMIN_SETTINGS_URL, body);

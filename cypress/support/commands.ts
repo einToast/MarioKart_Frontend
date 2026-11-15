@@ -38,6 +38,7 @@ export const scheduleOverview = (overrides: Record<string, unknown> = {}) => ({
     finalScheduleCreated: false,
     numberOfRoundsUnplayed: 5,
     tournamentOpen: true,
+    rankingHiddenRounds: 1,
     ...overrides,
 });
 

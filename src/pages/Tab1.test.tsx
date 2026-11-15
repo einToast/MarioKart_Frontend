@@ -167,6 +167,24 @@ describe('Tab1 (schedule)', () => {
         await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(false));
     });
 
+    it('keeps the ranking tab during the last round when the admin never hides it', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, rankingHiddenRounds: 0 });
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 1 });
+
+        const { setShowTab2 } = renderPage();
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(true));
+    });
+
+    it('hides the ranking tab for as many last rounds as the admin chose', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, rankingHiddenRounds: 3 });
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 3 });
+
+        const { setShowTab2 } = renderPage();
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(false));
+    });
+
     it('checks again whether the ranking tab is shown after navigating', async () => {
         const NavigateButton: React.FC = () => {
             const navigate = useNavigate();

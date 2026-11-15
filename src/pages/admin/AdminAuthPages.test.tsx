@@ -148,7 +148,7 @@ describe('admin Dashboard', () => {
     const waitForDashboard = () => waitFor(() => expect(backend.requestsTo('GET', '/public/schedule/rounds/unplayed')).toHaveLength(1))
         .then(() => screen.findByText('Teams'));
 
-    const ALWAYS = ['Teams', 'Umfragen', 'Switches & Raumplan', 'Programm', 'Kontrollzentrum', 'Abmelden'];
+    const ALWAYS = ['Teams', 'Umfragen', 'Switches & Raumplan', 'Programm', 'So wird gespielt', 'Kontrollzentrum', 'Abmelden'];
 
     beforeEach(() => {
         stubDefaultBackend();
@@ -182,6 +182,7 @@ describe('admin Dashboard', () => {
         ['Umfragen', '/admin/survey'],
         ['Switches & Raumplan', '/admin/venue'],
         ['Programm', '/admin/program'],
+        ['So wird gespielt', '/admin/how-to-play'],
         ['Kontrollzentrum', '/admin/control'],
     ])('opens %s at %s', async (label, path) => {
         stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 0 });

@@ -183,6 +183,7 @@ const composeScheduleOverview = (): BackendReply => {
             finalScheduleCreated: finalScheduleCreated.data,
             numberOfRoundsUnplayed: numberOfRoundsUnplayed.data,
             tournamentOpen: (settings.data as { tournamentOpen?: boolean } | undefined)?.tournamentOpen ?? false,
+            rankingHiddenRounds: (settings.data as { rankingHiddenRounds?: number } | undefined)?.rankingHiddenRounds ?? 1,
         },
     };
 };

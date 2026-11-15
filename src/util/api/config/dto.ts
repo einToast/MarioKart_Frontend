@@ -34,6 +34,7 @@ export interface ScheduleOverviewDTO {
     finalScheduleCreated: boolean;
     numberOfRoundsUnplayed: number;
     tournamentOpen: boolean;
+    rankingHiddenRounds: number;
 }
 
 export interface GameReturnDTO {
@@ -108,11 +109,17 @@ export interface TournamentDTO {
     maxGamesCount?: number;
     surveyKeyMode?: SurveyKeyMode;
     finalTeamsCount?: number;
+    finalGamesCount?: number;
+    roundMinutes?: number;
+    rankingHiddenRounds?: number;
+    maxAnswersPerTeam?: number;
+    surveyKeyDays?: number;
     switches?: SwitchDTO[];
     // JSON of the floor plan
     floorPlan?: string | null;
     // JSON of the program
     program?: string | null;
+    howToPlay?: string | null;
     ocrProvider?: string | null;
     relativePoints?: boolean;
 }
@@ -149,6 +156,8 @@ export interface ScheduleInputDTO {
     numRounds: number;
     teamsPerGame: number;
     teamsPerField?: number[];
+    breakRound?: number;
+    breakMinutes?: number;
 }
 
 export type QuestionTranslation = { questionText: string; options: string[] };

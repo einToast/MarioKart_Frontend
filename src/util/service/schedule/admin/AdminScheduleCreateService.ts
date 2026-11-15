@@ -1,13 +1,15 @@
 import { AdminScheduleApi } from "../../../api";
 import { RoundReturnDTO, ScheduleInputDTO } from "../../../api/config/dto";
 
-export const createSchedule = async (version: number, numFields: number, numRounds: number, teamsPerGame: number, teamsPerField?: number[]): Promise<RoundReturnDTO[]> => {
+export const createSchedule = async (version: number, numFields: number, numRounds: number, teamsPerGame: number, teamsPerField?: number[], breakRound?: number, breakMinutes?: number): Promise<RoundReturnDTO[]> => {
     const scheduleInput: ScheduleInputDTO = {
         version: version,
         numFields: numFields,
         numRounds: numRounds,
         teamsPerGame: teamsPerGame,
-        ...(teamsPerField && { teamsPerField: teamsPerField })
+        ...(teamsPerField && { teamsPerField: teamsPerField }),
+        ...(breakRound !== undefined && { breakRound: breakRound }),
+        ...(breakMinutes !== undefined && { breakMinutes: breakMinutes })
     };
     return await AdminScheduleApi.createSchedule(scheduleInput);
 }

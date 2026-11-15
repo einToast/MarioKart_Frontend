@@ -14,10 +14,12 @@ import { useTranslation } from 'react-i18next';
 const MIN_FINAL_TEAMS = 2;
 const MAX_FINAL_TEAMS = 8;
 
+
 const Final: React.FC = () => {
     const { t } = useTranslation();
     const [teams, setTeams] = useState<TeamReturnDTO[]>([]);
     const [finalTeamsCount, setFinalTeamsCount] = useState<number | ''>('');
+    const [finalGamesCount, setFinalGamesCount] = useState<number | ''>('');
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [modalClosed, setModalClosed] = useState(false);
 
@@ -77,6 +79,21 @@ const Final: React.FC = () => {
             });
     }
 
+    const handleFinalGamesCountChange = (value: string) => {
+        const count = value === '' ? '' : Number(value);
+        setFinalGamesCount(count);
+        if (count === '' || !Number.isInteger(count) || count < 1) {
+            return;
+        }
+
+        AdminSettingsService.updateFinalGamesCount(count)
+            .catch(error => {
+                setError(error.message);
+                setIsError(true);
+                setShowToast(true);
+            });
+    }
+
     const handleFinalCreation = () => {
         setButtonDisabled(true);
         AdminScheduleService.createFinalSchedule()
@@ -110,7 +127,9 @@ const Final: React.FC = () => {
                 return;
             }
             getFinalTeams();
-            setFinalTeamsCount(await PublicSettingsService.getFinalTeamsCount());
+            const settings = await PublicSettingsService.getSettings();
+            setFinalTeamsCount(settings.finalTeamsCount ?? PublicSettingsService.DEFAULT_FINAL_TEAMS_COUNT);
+            setFinalGamesCount(settings.finalGamesCount ?? PublicSettingsService.DEFAULT_FINAL_GAMES_COUNT);
         };
 
         loadData().catch(error => {
@@ -136,6 +155,15 @@ const Final: React.FC = () => {
                         max={MAX_FINAL_TEAMS}
                         value={finalTeamsCount}
                         onChange={(e) => handleFinalTeamsCountChange(e.target.value)}
+                    />
+                </div>
+                <div className="finalTeamsCount">
+                    <label htmlFor="finalGamesCount">{t('admin.final.gamesCount')}</label>
+                    <input id="finalGamesCount"
+                        type="number"
+                        min={1}
+                        value={finalGamesCount}
+                        onChange={(e) => handleFinalGamesCountChange(e.target.value)}
                     />
                 </div>
                 <p className={"bold"}>{t('admin.final.teamsInFinal')}</p>

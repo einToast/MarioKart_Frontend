@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import { backend, stubDefaultBackend, stubScheduleState } from '../test/backend';
 import { currentPath, loginAsTeam, pullToRefresh, renderWithRouter } from '../test/render';
+import { serializeHowToPlay } from '../util/layout/howToPlay';
 import Tab4 from './Tab4';
 
 const renderPage = () => {
@@ -23,6 +24,27 @@ describe('Tab4 (how to play)', () => {
         expect(screen.getByText('Die Geschwindigkeit beträgt 100 ccm')).toBeInTheDocument();
         expect(screen.getByAltText('Tastenbelegung am Pro Controller')).toHaveAttribute('src', '/media/procon_how_to_play.webp');
         expect(screen.getByAltText('Tastenbelegung an den Joy-Con')).toHaveAttribute('src', '/media/joycon_how_to_play.webp');
+    });
+
+    it('shows the rules and the video the admin configured', async () => {
+        backend.get('/public/settings', {
+            tournamentOpen: true,
+            howToPlay: serializeHowToPlay({ videoUrl: 'https://youtu.be/dQw4w9WgXcQ', rules: [{ text: 'Fair bleiben' }, { text: '150 ccm' }] }),
+        });
+
+        renderPage();
+
+        await waitFor(() => expect(screen.getAllByRole('listitem').map(item => item.textContent)).toEqual(['Fair bleiben', '150 ccm']));
+        expect(screen.getByTitle('Video: So wird gespielt')).toHaveAttribute('src', 'https://www.youtube.com/embed/dQw4w9WgXcQ');
+    });
+
+    it('shows neither video nor rules heading when the admin removed both', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, howToPlay: serializeHowToPlay({ videoUrl: '', rules: [] }) });
+
+        renderPage();
+
+        await waitFor(() => expect(screen.queryByRole('heading', { name: 'Spielregeln' })).not.toBeInTheDocument());
+        expect(screen.queryByTitle('Video: So wird gespielt')).not.toBeInTheDocument();
     });
 
     it('embeds the explanation video', () => {
