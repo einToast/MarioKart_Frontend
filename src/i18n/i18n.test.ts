@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import i18n, { changeLanguage, getStoredLanguage, initLanguage, LANGUAGE_COOKIE } from '.';
-import { isLanguage, SUPPORTED_LANGUAGES } from './languages';
+import { isLanguage, setBaseLanguage, SUPPORTED_LANGUAGES, translationLanguages } from './languages';
 import de from './locales/de';
 
 const locales = import.meta.glob<{ default: object }>('./locales/*.ts', { eager: true });
@@ -99,5 +99,13 @@ describe('i18n', () => {
         expect(isLanguage('fr')).toBe(false);
         expect(isLanguage('toString')).toBe(false);
         expect(isLanguage(undefined)).toBe(false);
+    });
+
+    it('translates into every language except the default language', () => {
+        expect(translationLanguages()).toEqual(['en']);
+
+        setBaseLanguage('en');
+
+        expect(translationLanguages()).toEqual(['de']);
     });
 });

@@ -122,6 +122,7 @@ export interface TournamentDTO {
     howToPlay?: string | null;
     ocrProvider?: string | null;
     relativePoints?: boolean;
+    defaultLanguage?: string;
 }
 
 export interface OcrInputDTO {

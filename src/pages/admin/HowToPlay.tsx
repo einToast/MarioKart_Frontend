@@ -7,7 +7,8 @@ import { useTranslation } from 'react-i18next';
 import BackLink from "../../components/admin/BackLink";
 import TranslationLanguageTabs from "../../components/admin/TranslationLanguageTabs";
 import Toast from "../../components/Toast";
-import { DEFAULT_LANGUAGE, Language } from "../../i18n/languages";
+import { Language } from "../../i18n/languages";
+import { useBaseLanguage } from "../../hooks/useBaseLanguage";
 import { translatedChange, translatedValue } from "../../i18n/translatable";
 import { HowToPlayRule, HowToPlayRuleRow, TextTranslation } from "../../util/api/config/interfaces";
 import {
@@ -31,7 +32,8 @@ const HowToPlay: React.FC = () => {
     const [videoUrl, setVideoUrl] = useState<string>('');
     const [rows, setRows] = useState<HowToPlayRuleRow[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
 
     const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
@@ -140,7 +142,7 @@ const HowToPlay: React.FC = () => {
                                 className="howToPlayRule"
                                 aria-label={t('admin.howToPlay.ruleOf', { number: index + 1 })}
                                 maxLength={MAX_RULE_TEXT_LENGTH}
-                                placeholder={editLanguage === DEFAULT_LANGUAGE ? undefined : rule.text}
+                                placeholder={editLanguage === baseLanguage ? undefined : rule.text}
                                 value={translatedValue<TextTranslation, 'text'>(rule, 'text', editLanguage) ?? ''}
                                 onChange={(e) => handleChange(index, translatedChange<TextTranslation, 'text'>(rule, 'text', editLanguage, e.target.value))}
                             />

@@ -14,6 +14,16 @@ describe('PublicSettingsService', () => {
         await expect(PublicSettingsService.getSettings()).resolves.toEqual(settings);
     });
 
+    it.each([
+        ['en', 'en'],
+        ['fr', 'de'],
+        [undefined, 'de'],
+    ])('getDefaultLanguage turns the stored language %s into %s', async (stored, expected) => {
+        backend.get(SETTINGS_URL, { defaultLanguage: stored });
+
+        await expect(PublicSettingsService.getDefaultLanguage()).resolves.toBe(expected);
+    });
+
     it('reads each setting from the settings object', async () => {
         backend.get(SETTINGS_URL, { tournamentOpen: true, registrationOpen: true, maxGamesCount: 8, surveyKeyMode: SurveyKeyMode.REQUIRED });
 
@@ -75,7 +85,7 @@ describe('AdminSettingsService', () => {
         ['updateRelativePoints', () => AdminSettingsService.updateRelativePoints(true), { relativePoints: true }],
         ['updateFinalGamesCount', () => AdminSettingsService.updateFinalGamesCount(7), { finalGamesCount: 7 }],
         ['updateHowToPlay', () => AdminSettingsService.updateHowToPlay('{"rules":[]}'), { howToPlay: '{"rules":[]}' }],
-        ['updateTournamentSettings', () => AdminSettingsService.updateTournamentSettings(25, 0, 6, 3), { roundMinutes: 25, rankingHiddenRounds: 0, maxAnswersPerTeam: 6, surveyKeyDays: 3 }],
+        ['updateTournamentSettings', () => AdminSettingsService.updateTournamentSettings(25, 0, 6, 3, 'en'), { roundMinutes: 25, rankingHiddenRounds: 0, maxAnswersPerTeam: 6, surveyKeyDays: 3, defaultLanguage: 'en' }],
         ['updateVenue', () => AdminSettingsService.updateVenue([{ name: 'Blau', color: '#9DAEDA' }], '{"elements":[]}'), { switches: [{ name: 'Blau', color: '#9DAEDA' }], floorPlan: '{"elements":[]}' }],
     ])('%s updates only its own setting', async (_name, call, body) => {
         backend.put(ADMIN_SETTINGS_URL, body);

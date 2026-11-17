@@ -14,7 +14,8 @@ import {
 import FloorPlanView, { elementLabel } from './FloorPlanView';
 import { Drag, FloorPlan, FloorPlanElement, TextTranslation } from '../../util/api/config/interfaces';
 import { useTranslation } from 'react-i18next';
-import { DEFAULT_LANGUAGE, Language } from '../../i18n/languages';
+import { Language } from '../../i18n/languages';
+import { useBaseLanguage } from '../../hooks/useBaseLanguage';
 import { translatedChange, translatedValue } from '../../i18n/translatable';
 
 const KEY_STEP = 10;
@@ -27,7 +28,9 @@ const KEY_DIRECTIONS: Record<string, { x: number; y: number }> = {
     ArrowDown: { x: 0, y: 1 },
 };
 
-const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], language?: Language, onChange: (plan: FloorPlan) => void }> = ({ plan, switches, language = DEFAULT_LANGUAGE, onChange }) => {
+const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], language?: Language, onChange: (plan: FloorPlan) => void }> = ({ plan, switches, language: languageProp, onChange }) => {
+    const baseLanguage = useBaseLanguage();
+    const language = languageProp ?? baseLanguage;
     const { t } = useTranslation();
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const svgRef = useRef<SVGSVGElement>(null);
@@ -151,7 +154,7 @@ const FloorPlanEditor: React.FC<{ plan: FloorPlan, switches: SwitchDTO[], langua
                                 <input
                                     type="text"
                                     maxLength={MAX_FLOOR_PLAN_TEXT_LENGTH}
-                                    placeholder={language === DEFAULT_LANGUAGE ? undefined : selected.text}
+                                    placeholder={language === baseLanguage ? undefined : selected.text}
                                     value={translatedValue<TextTranslation, 'text'>({ text: selected.text ?? '', translations: selected.translations }, 'text', language) ?? ''}
                                     onChange={(event) => onChange(updateElement(plan, selected.id, translatedChange<TextTranslation, 'text'>(selected, 'text', language, event.target.value)))}
                                 />

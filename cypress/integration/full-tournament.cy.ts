@@ -36,6 +36,7 @@ const PROGRAM = [
   { time: '16:30 - 20:00', text: 'Gruppenphase mit Pizzapause' },
   { time: '20:00 - 20:45', text: 'Finale und Siegerehrung' },
 ];
+const WELCOME_IN_ENGLISH = 'Welcome and registration';
 
 const TRACK_QUESTION = 'Welche Strecke fahrt ihr am liebsten?';
 const TRACKS = ['Regenbogen-Boulevard', 'Toads Fabrik', 'Wario-Stadion', 'Kokos-Promenade'];
@@ -289,6 +290,8 @@ describe('a whole tournament', () => {
       cy.get(`input[aria-label="Zeit von Programmpunkt ${index + 1}"]`).type(entry.time);
       cy.get(`input[aria-label="Text von Programmpunkt ${index + 1}"]`).type(entry.text);
     });
+    cy.contains('.translationLanguages button', 'English').click();
+    cy.get('input[aria-label="Text von Programmpunkt 1"]').type(WELCOME_IN_ENGLISH);
     cy.contains('ion-button', 'Speichern').click();
     cy.toast('Programm gespeichert');
 
@@ -545,9 +548,29 @@ describe('a whole tournament', () => {
         .and('contain', `${groupPointsOf(TEAM_NAMES[0])} Punkte`);
     });
 
+    cy.setCookie('language', 'de');
+    asAdmin('/admin/control');
+    cy.contains('ion-button', 'Turniereinstellungen').click();
+    cy.get('ion-modal .languageField .languageSwitchToggle').click();
+    cy.get('ion-modal .languageSwitchMenu').contains('button', 'English').click();
+    cy.get('ion-modal').contains('ion-button', 'Speichern').click();
+    cy.toast('Einstellungen gespeichert');
+
+    // A phone that never picked a language now reads the app and the program in English
+    cy.clearAllCookies();
+    cy.visit('/login');
+    cy.chooseImageSelectOption(FIRST.teamName);
+    cy.contains('ion-button', `Log in to team ${FIRST.teamName}`).click();
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('h3', 'Program');
+    cy.contains('p', PROGRAM[0].time).should('contain', WELCOME_IN_ENGLISH);
+    cy.contains('p', PROGRAM[1].time).should('contain', PROGRAM[1].text);
+
+    cy.setCookie('language', 'de');
     asAdmin('/admin/control');
     cy.contains('ion-button', 'Anwendung zurücksetzen').click();
     cy.get('ion-modal ion-button.round:not(.secondary)').click();
     cy.request(`${API_URL}/public/teams`).its('body').should('have.length', 0);
+    cy.request(`${API_URL}/public/settings`).its('body.defaultLanguage').should('eq', 'de');
   });
 });

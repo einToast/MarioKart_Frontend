@@ -1,4 +1,4 @@
-import { DEFAULT_LANGUAGE } from './languages';
+import { getBaseLanguage } from './languages';
 
 export type TranslatableValue = string | string[];
 
@@ -12,8 +12,8 @@ export interface Translatable<T extends TranslatableFields> {
 
 const hasText = (value: unknown): value is string => typeof value === 'string' && value.trim() !== '';
 
-export const localize = <T extends { translations?: object }>(item: T, language: string): T => {
-    if (language === DEFAULT_LANGUAGE || !item.translations) {
+export const localize = <T extends { translations?: object }>(item: T, language: string, baseLanguage: string = getBaseLanguage()): T => {
+    if (language === baseLanguage || !item.translations) {
         return item;
     }
     const overlay = (item.translations as Record<string, Record<string, unknown> | undefined>)[language];
@@ -37,7 +37,7 @@ export const translatedValue = <T extends TranslatableFields, K extends keyof T 
     field: K,
     language: string,
 ): T[K] | undefined =>
-    language === DEFAULT_LANGUAGE ? (item as Pick<T, K>)[field] : item.translations?.[language]?.[field];
+    language === getBaseLanguage() ? (item as Pick<T, K>)[field] : item.translations?.[language]?.[field];
 
 export const setTranslation = <T extends TranslatableFields, K extends keyof T & string>(
     translations: Translations<T> | undefined,
@@ -55,7 +55,7 @@ export const translatedChange = <T extends TranslatableFields, K extends keyof T
     language: string,
     value: T[K],
 ): Partial<Pick<T, K>> & Translatable<T> =>
-    language === DEFAULT_LANGUAGE
+    language === getBaseLanguage()
         ? { [field]: value } as Partial<Pick<T, K>>
         : { translations: setTranslation(item.translations, language, field, value) } as Partial<Pick<T, K>> & Translatable<T>;
 
@@ -77,7 +77,7 @@ const pruneFields = (fields: Partial<TranslatableFields>): TranslatableFields =>
 export const pruneTranslations = <T extends TranslatableFields>(translations: Translations<T> | undefined): Translations<T> | undefined => {
     const pruned: Record<string, TranslatableFields> = {};
     for (const [language, fields] of Object.entries(translations ?? {})) {
-        if (language === DEFAULT_LANGUAGE || !fields) {
+        if (language === getBaseLanguage() || !fields) {
             continue;
         }
         const kept = pruneFields(fields);

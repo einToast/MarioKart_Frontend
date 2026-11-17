@@ -12,6 +12,7 @@ import { Message, StompSubscription } from "@stomp/stompjs";
 import { FloorPlanElementType } from "../../layout/floorPlan";
 import { ProgramIcon } from "../../layout/program";
 import { Translations } from "../../../i18n/translatable";
+import { Language } from "../../../i18n/languages";
 
 export type RoundOrBreak = RoundReturnDTO | BreakReturnDTO | null;
 
@@ -19,6 +20,13 @@ export interface User {
   character: string | null;
   teamId: number;
   name: string | null;
+}
+
+export interface LanguageDropdownProps {
+  value: Language;
+  onChange: (language: Language) => void;
+  label: string;
+  labelId?: string;
 }
 
 export interface LoginProps {

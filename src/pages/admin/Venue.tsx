@@ -22,7 +22,8 @@ import "./Venue.css";
 import { FloorPlan, SwitchRow } from "../../util/api/config/interfaces";
 import { useTranslation } from 'react-i18next';
 import TranslationLanguageTabs from "../../components/admin/TranslationLanguageTabs";
-import { DEFAULT_LANGUAGE, Language } from "../../i18n/languages";
+import { Language } from "../../i18n/languages";
+import { useBaseLanguage } from "../../hooks/useBaseLanguage";
 import { pruneTranslations, translatedChange, translatedValue } from "../../i18n/translatable";
 
 const Venue: React.FC = () => {
@@ -31,7 +32,8 @@ const Venue: React.FC = () => {
     const switches = useMemo(() => rows.map(row => row.gameSwitch), [rows]);
     const [plan, setPlan] = useState<FloorPlan>(createDefaultFloorPlan(0));
     const [buttonDisabled, setButtonDisabled] = useState(false);
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
 
     const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
@@ -116,7 +118,7 @@ const Venue: React.FC = () => {
                                 type="text"
                                 aria-label={t('admin.venue.nameOf', { number: index + 1 })}
                                 maxLength={MAX_SWITCH_NAME_LENGTH}
-                                placeholder={editLanguage === DEFAULT_LANGUAGE ? undefined : existing.name}
+                                placeholder={editLanguage === baseLanguage ? undefined : existing.name}
                                 value={translatedValue<SwitchTranslation, 'name'>(existing, 'name', editLanguage) ?? ''}
                                 onChange={(e) => handleSwitchChange(index, translatedChange<SwitchTranslation, 'name'>(existing, 'name', editLanguage, e.target.value))}
                             />

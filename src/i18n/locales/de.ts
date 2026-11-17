@@ -475,6 +475,8 @@ const de = {
         },
         tournamentSettings: {
             title: 'Turniereinstellungen',
+            defaultLanguage: 'Standardsprache:',
+            defaultLanguageHint: 'Gilt für neue Besucher. Beim Wechsel werden Übersetzungen in die neue Sprache zu den Standardtexten.',
             roundMinutes: 'Spielzeit pro Runde (Minuten):',
             roundMinutesHint: 'Die Zeiten offener Runden werden neu berechnet, sobald die nächste Runde eingetragen wird.',
             rankingHiddenRounds: 'Rangliste in den letzten Runden ausblenden:',

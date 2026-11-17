@@ -26,6 +26,7 @@ import './theme/variables.css';
 
 import { RouteIcon } from "./components/RouteIcon";
 import { WebSocketProvider } from "./components/WebSocketContext";
+import BaseLanguageSync from "./components/BaseLanguageSync";
 import './theme/main.css';
 import { ShowTab2Props, User } from "./util/api/config/interfaces";
 import { PublicCookiesService, PublicScheduleService } from './util/service';
@@ -65,6 +66,7 @@ const App: React.FC = () => {
     return (
         <IonApp>
             <WebSocketProvider>
+                <BaseLanguageSync />
                 <IonReactRouter>
                     {currentUser?.teamId ? (
                         <IonTabs>

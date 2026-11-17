@@ -8,7 +8,8 @@ import { AdminNotificationService } from '../../util/service';
 import { useTranslation } from 'react-i18next';
 import TranslationLanguageTabs from '../admin/TranslationLanguageTabs';
 import ImageSelect from '../ImageSelect';
-import { DEFAULT_LANGUAGE, Language } from '../../i18n/languages';
+import { Language } from '../../i18n/languages';
+import { useBaseLanguage } from '../../hooks/useBaseLanguage';
 import { setTranslation, Translations } from '../../i18n/translatable';
 
 const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: NotificationModalResult) => void, teams: TeamReturnDTO[] }> = ({ showModal, closeModal, teams }) => {
@@ -18,9 +19,10 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
     const [teamId, setTeamId] = useState<string>("-1");
     const [title, setTitle] = React.useState<string>('');
     const [message, setMessage] = React.useState<string>('');
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
     const [translations, setTranslations] = useState<Translations<NotificationTranslation> | undefined>(undefined);
-    const translating = editLanguage !== DEFAULT_LANGUAGE;
+    const translating = editLanguage !== baseLanguage;
 
     const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -48,7 +50,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                 setTitle('');
                 setMessage('');
                 setTranslations(undefined);
-                setEditLanguage(DEFAULT_LANGUAGE);
+                setEditLanguage(baseLanguage);
                 closeModal({ notificationSent: true });
             })
             .catch((error) => {

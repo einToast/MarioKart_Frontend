@@ -1,5 +1,5 @@
 import i18n, { loadLanguage } from "../../i18n";
-import { DEFAULT_LANGUAGE, TRANSLATION_LANGUAGES } from "../../i18n/languages";
+import { getBaseLanguage, translationLanguages } from "../../i18n/languages";
 import { pruneTranslations, sanitizeTranslations } from "../../i18n/translatable";
 import { HowToPlay, HowToPlayRule, HowToPlayRuleRow, TextTranslation } from "../api/config/interfaces";
 
@@ -21,11 +21,11 @@ const rulesIn = (language: string): string[] => {
 };
 
 export const defaultHowToPlay = async (): Promise<HowToPlay> => {
-    await Promise.all(TRANSLATION_LANGUAGES.map(language => loadLanguage(language)));
-    const translatedRules = TRANSLATION_LANGUAGES.map(language => [language, rulesIn(language)] as const);
+    await Promise.all(translationLanguages().map(language => loadLanguage(language)));
+    const translatedRules = translationLanguages().map(language => [language, rulesIn(language)] as const);
     return {
         videoUrl: DEFAULT_VIDEO_URL,
-        rules: rulesIn(DEFAULT_LANGUAGE).map((text, index) => {
+        rules: rulesIn(getBaseLanguage()).map((text, index) => {
             const translations = Object.fromEntries(translatedRules
                 .filter(([, rules]) => rules[index])
                 .map(([language, rules]) => [language, { text: rules[index] }]));

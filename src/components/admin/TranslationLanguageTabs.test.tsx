@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import i18n from '../../i18n';
+import { setBaseLanguage } from '../../i18n/languages';
 import TranslationLanguageTabs from './TranslationLanguageTabs';
 
 const HINT = 'Leere Felder zeigen den Text der Standardsprache.';
@@ -10,6 +11,14 @@ describe('TranslationLanguageTabs', () => {
 
         expect(screen.getByRole('button', { name: 'Deutsch (Standard)' })).toHaveAttribute('aria-pressed', 'true');
         expect(screen.getByRole('button', { name: 'English' })).toHaveAttribute('aria-pressed', 'false');
+    });
+
+    it('lists the default language first and marks it, wherever it is in the list of languages', () => {
+        setBaseLanguage('en');
+        render(<TranslationLanguageTabs value="en" onChange={vi.fn()} />);
+
+        expect(screen.getAllByRole('button').map(button => button.textContent)).toEqual(['English (Standard)', 'Deutsch']);
+        expect(screen.getByText(HINT)).toHaveClass('translationHintHidden');
     });
 
     it('loads the chosen language before reporting it', async () => {

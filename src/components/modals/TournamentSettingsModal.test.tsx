@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { backend } from '../../test/backend';
 import { expectErrorToast } from '../../test/overlays';
+import { getBaseLanguage } from '../../i18n/languages';
 import TournamentSettingsModal from './TournamentSettingsModal';
 
 const SETTINGS_URL = '/public/settings';
@@ -9,6 +10,11 @@ const ROUND_MINUTES = 'Spielzeit pro Runde (Minuten):';
 const HIDDEN_ROUNDS = 'Rangliste in den letzten Runden ausblenden:';
 const ANSWERS = 'Antworten pro Team und Frage:';
 const KEY_DAYS = 'Umfrageschlüssel gültig (Tage):';
+const defaultLanguageToggle = () => screen.getByRole('button', { name: /^Standardsprache: / });
+const chooseDefaultLanguage = (name: string) => {
+    fireEvent.click(defaultLanguageToggle());
+    fireEvent.click(screen.getByRole('button', { name: new RegExp(name) }));
+};
 const INVALID_NUMBERS = 'Spielzeit, Antworten und Gültigkeit brauchen mindestens 1, ausgeblendete Runden mindestens 0';
 
 const set = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
@@ -27,7 +33,7 @@ const renderLoaded = async () => {
 
 describe('TournamentSettingsModal', () => {
     beforeEach(() => {
-        backend.get(SETTINGS_URL, { roundMinutes: 20, rankingHiddenRounds: 1, maxAnswersPerTeam: 4, surveyKeyDays: 2 });
+        backend.get(SETTINGS_URL, { roundMinutes: 20, rankingHiddenRounds: 1, maxAnswersPerTeam: 4, surveyKeyDays: 2, defaultLanguage: 'de' });
     });
 
     it('stays hidden and loads nothing while closed', () => {
@@ -43,6 +49,31 @@ describe('TournamentSettingsModal', () => {
         expect(screen.getByLabelText(HIDDEN_ROUNDS)).toHaveValue(1);
         expect(screen.getByLabelText(ANSWERS)).toHaveValue(4);
         expect(screen.getByLabelText(KEY_DAYS)).toHaveValue(2);
+        expect(defaultLanguageToggle()).toHaveAccessibleName('Standardsprache: Deutsch');
+    });
+
+    it('switches the default language for the whole app once saved', async () => {
+        backend.put(ADMIN_SETTINGS_URL, {});
+        const { closeModal } = await renderLoaded();
+
+        chooseDefaultLanguage('English');
+        expect(getBaseLanguage()).toBe('de');
+        fireEvent.click(screen.getByText('Speichern'));
+
+        await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ settingsChanged: true }));
+        expect(backend.requestsTo('PUT', ADMIN_SETTINGS_URL)[0].body).toMatchObject({ defaultLanguage: 'en' });
+        expect(getBaseLanguage()).toBe('en');
+    });
+
+    it('keeps the default language when saving fails', async () => {
+        backend.fail('PUT', ADMIN_SETTINGS_URL, 400);
+        await renderLoaded();
+
+        chooseDefaultLanguage('English');
+        fireEvent.click(screen.getByText('Speichern'));
+
+        await expectErrorToast('Ungültige Einstellungen');
+        expect(getBaseLanguage()).toBe('de');
     });
 
     it('saves the changed settings and reports the change', async () => {
@@ -57,7 +88,7 @@ describe('TournamentSettingsModal', () => {
 
         await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ settingsChanged: true }));
         expect(backend.requestsTo('PUT', ADMIN_SETTINGS_URL)[0].body)
-            .toEqual({ roundMinutes: 25, rankingHiddenRounds: 0, maxAnswersPerTeam: 6, surveyKeyDays: 400 });
+            .toEqual({ roundMinutes: 25, rankingHiddenRounds: 0, maxAnswersPerTeam: 6, surveyKeyDays: 400, defaultLanguage: 'de' });
     });
 
     it.each([

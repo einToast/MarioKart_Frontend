@@ -25,14 +25,16 @@ import "./Points.css";
 import "./Program.css";
 import { useTranslation } from 'react-i18next';
 import TranslationLanguageTabs from "../../components/admin/TranslationLanguageTabs";
-import { DEFAULT_LANGUAGE, Language } from "../../i18n/languages";
+import { Language } from "../../i18n/languages";
+import { useBaseLanguage } from "../../hooks/useBaseLanguage";
 import { translatedChange, translatedValue } from "../../i18n/translatable";
 
 const Program: React.FC = () => {
     const { t } = useTranslation();
     const [rows, setRows] = useState<ProgramRow[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
 
     const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
@@ -133,7 +135,7 @@ const Program: React.FC = () => {
                                 className="programText"
                                 aria-label={t('admin.program.textOf', { number: index + 1 })}
                                 maxLength={MAX_PROGRAM_TEXT_LENGTH}
-                                placeholder={editLanguage === DEFAULT_LANGUAGE ? undefined : entry.text}
+                                placeholder={editLanguage === baseLanguage ? undefined : entry.text}
                                 value={translatedValue<TextTranslation, 'text'>(entry, 'text', editLanguage) ?? ''}
                                 onChange={(e) => handleChange(index, translatedChange<TextTranslation, 'text'>(entry, 'text', editLanguage, e.target.value))}
                             />

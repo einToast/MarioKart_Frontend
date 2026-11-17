@@ -1,6 +1,6 @@
 import { ADMIN, SWITCHES, TEAMS, gameOf, opponentsIn, playsIn } from '../support/backend';
 import {
-  asAdmin, characterOf, createSurvey, endBreak, loginAsTeam, markPlayed, section, setPoints, waitForLiveUpdates,
+  asAdmin, characterOf, createSurvey, endBreak, loginAsTeam, markPlayed, section, setPoints, SURVEY, waitForLiveUpdates,
 } from '../support/app';
 
 const showsGame = (title: string, game: { switchIndex: number }, teamName: string, opponents: string[]) => {
@@ -301,6 +301,53 @@ describe('frontend with the real backend', () => {
 
     cy.reload();
     cy.contains('ion-accordion', 'Who wins?');
+  });
+
+  it('moves the texts into English when the admin makes it the default language', () => {
+    cy.registerTeams();
+    cy.adminApi('POST', '/admin/survey', {
+      ...SURVEY,
+      translations: { en: { questionText: 'Who wins?', options: ['', '', 'Princess Peach'] } },
+    });
+    cy.adminApi('PUT', '/admin/settings', {
+      program: JSON.stringify({
+        entries: [
+          { icon: 'megaphone', time: '16:00 - 16:30', text: 'Begrüßung', translations: { en: { text: 'Welcome' } } },
+          { icon: 'medal', time: '20:00 - 20:45', text: 'Siegerehrung' },
+        ],
+      }),
+    });
+
+    cy.setCookie('language', 'de');
+    asAdmin('/admin/control');
+    cy.contains('ion-button', 'Turniereinstellungen').click();
+    cy.get('ion-modal .languageField .languageSwitchToggle').click();
+    cy.get('ion-modal .languageSwitchMenu').contains('button', 'English').click();
+    cy.get('ion-modal').contains('ion-button', 'Speichern').click();
+    cy.toast('Einstellungen gespeichert');
+
+    asAdmin('/admin/program');
+    cy.get('.translationLanguages button').first().should('have.text', 'English (Standard)');
+    cy.get('input[aria-label="Text von Programmpunkt 1"]').should('have.value', 'Welcome');
+
+    // A team that never picked a language reads the app in the new default language
+    cy.clearAllCookies();
+    cy.visit('/login');
+    cy.chooseImageSelectOption('Team Mario');
+    cy.contains('ion-button', 'Log in to team Team Mario').click();
+    cy.contains('h3', 'Current game');
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('p', '16:00 - 16:30').should('contain', 'Welcome');
+    cy.contains('p', '20:00 - 20:45').should('contain', 'Siegerehrung');
+    cy.get('a[title="Surveys"]').filter(':visible').click();
+    cy.contains('ion-accordion', 'Who wins?').should('contain', 'Luigi').and('contain', 'Princess Peach');
+
+    // The former German texts stay as translation
+    cy.get('.languageSwitchToggle').filter(':visible').click();
+    cy.contains('.languageSwitchMenu button', 'Deutsch').click();
+    cy.contains('ion-accordion', 'Wer gewinnt?').should('contain', 'Peach').and('not.contain', 'Princess');
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('p', '16:00 - 16:30').should('contain', 'Begrüßung');
   });
 
   it('ranks the teams by the points the admin entered', () => {

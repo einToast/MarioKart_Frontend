@@ -7,6 +7,8 @@ import "../../pages/admin/SurveyAdmin.css";
 import "./TournamentSettingsModal.css";
 import { TournamentSettingsForm, TournamentSettingsModalResult } from "../../util/api/config/interfaces";
 import { AdminSettingsService, PublicSettingsService } from '../../util/service';
+import { DEFAULT_LANGUAGE, isLanguage, Language, setBaseLanguage } from '../../i18n/languages';
+import LanguageDropdown from '../LanguageDropdown';
 import Toast from '../Toast';
 
 const MAX_SURVEY_KEY_DAYS = 400;
@@ -26,6 +28,7 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
     const idPrefix = useId();
 
     const [form, setForm] = useState<TournamentSettingsForm>(EMPTY_FORM);
+    const [defaultLanguage, setDefaultLanguage] = useState<Language>(DEFAULT_LANGUAGE);
     const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
@@ -39,12 +42,15 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
             return;
         }
         PublicSettingsService.getSettings()
-            .then(settings => setForm({
-                roundMinutes: settings.roundMinutes ?? '',
-                rankingHiddenRounds: settings.rankingHiddenRounds ?? '',
-                maxAnswersPerTeam: settings.maxAnswersPerTeam ?? '',
-                surveyKeyDays: settings.surveyKeyDays ?? '',
-            }))
+            .then(settings => {
+                setForm({
+                    roundMinutes: settings.roundMinutes ?? '',
+                    rankingHiddenRounds: settings.rankingHiddenRounds ?? '',
+                    maxAnswersPerTeam: settings.maxAnswersPerTeam ?? '',
+                    surveyKeyDays: settings.surveyKeyDays ?? '',
+                });
+                setDefaultLanguage(isLanguage(settings.defaultLanguage) ? settings.defaultLanguage : DEFAULT_LANGUAGE);
+            })
             .catch(error => showError(error.message));
     }, [showModal]);
 
@@ -64,8 +70,11 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
             return;
         }
 
-        AdminSettingsService.updateTournamentSettings(roundMinutes, rankingHiddenRounds, maxAnswersPerTeam, surveyKeyDays)
-            .then(() => closeModal({ settingsChanged: true }))
+        AdminSettingsService.updateTournamentSettings(roundMinutes, rankingHiddenRounds, maxAnswersPerTeam, surveyKeyDays, defaultLanguage)
+            .then(() => {
+                setBaseLanguage(defaultLanguage);
+                closeModal({ settingsChanged: true });
+            })
             .catch(error => showError(error.message));
     };
 
@@ -87,10 +96,22 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ settingsChanged: false })}>
             <IonContent>
                 <h4>{t('admin.tournamentSettings.title')}</h4>
-                <form onSubmit={(e) => {
+                <form className="tournamentSettingsForm" onSubmit={(e) => {
                     e.preventDefault();
                     handleSave();
                 }}>
+                    <div className="borderContainer">
+                        <div className="languageField">
+                            <p id={`${idPrefix}defaultLanguage`}>{t('admin.tournamentSettings.defaultLanguage')}</p>
+                            <LanguageDropdown
+                                value={defaultLanguage}
+                                onChange={setDefaultLanguage}
+                                label={t('admin.tournamentSettings.defaultLanguage')}
+                                labelId={`${idPrefix}defaultLanguage`}
+                            />
+                        </div>
+                        <p className="fieldHint">{t('admin.tournamentSettings.defaultLanguageHint')}</p>
+                    </div>
                     {numberField('roundMinutes', 1, t('admin.tournamentSettings.roundMinutesHint'))}
                     {numberField('rankingHiddenRounds', 0, t('admin.tournamentSettings.rankingHiddenRoundsHint'))}
                     {numberField('maxAnswersPerTeam', 1)}

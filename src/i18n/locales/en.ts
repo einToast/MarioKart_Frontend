@@ -477,6 +477,8 @@ const en: TranslationMessages = {
         },
         tournamentSettings: {
             title: 'Tournament settings',
+            defaultLanguage: 'Default language:',
+            defaultLanguageHint: 'Applies to new visitors. When it changes, translations into the new language become the default texts.',
             roundMinutes: 'Playing time per round (minutes):',
             roundMinutesHint: 'The times of open rounds are recalculated as soon as the next round is entered.',
             rankingHiddenRounds: 'Hide the ranking for the last rounds:',
