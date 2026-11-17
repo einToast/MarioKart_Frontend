@@ -109,7 +109,7 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                 });
 
                 // Several photos can be evaluated at once, so the message names its game
-                if (detected === game.teams.length) {
+                if (detected === game.teams.filter(team => team.active).length) {
                     setError(t('admin.points.pointsDetected', { name: gameSwitch.name }));
                     setIsError(false);
                 } else {
@@ -162,7 +162,11 @@ const PointsComponent: React.FC<{ game: GameReturnDTO, roundId: number, isOpen: 
                 <div className={photo ? "pointsComparison" : undefined}>
                     <div className={"inputContainer"}>
                         {game.teams.map((team, index) => (
-                            <div className={"characterInput"} key={team.id}>
+                            <div
+                                className={team.active ? "characterInput" : "characterInput inactiveTeam"}
+                                title={team.active ? undefined : t('admin.points.inactiveTeam', { team: team.teamName })}
+                                key={team.id}
+                            >
                                 <input
                                     type={"number"}
                                     value={points[index]}

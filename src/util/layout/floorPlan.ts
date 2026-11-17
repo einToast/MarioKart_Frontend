@@ -1,5 +1,5 @@
 import { ElementOverrides, FloorPlan, FloorPlanElement, FloorPlanPoint, Station, TextTranslation } from '../api/config/interfaces';
-import { pruneTranslations, sanitizeTranslations } from '../../i18n/translatable';
+import { inBaseLanguage, pruneTranslations, sanitizeTranslations } from '../../i18n/translatable';
 export const FLOOR_PLAN_VERSION = 1;
 export const FLOOR_PLAN_WIDTH = 1000;
 export const FLOOR_PLAN_HEIGHT = 640;
@@ -184,16 +184,16 @@ const VENUE_BACK_RIGHT: Station = {
 
 // One of the two ways out to the food and the toilets, labelled along the walking direction
 const venueExit = (x: number): Station['furniture'] => [
-    { type: 'text', overrides: { x: x - 27, y: 440, width: 100, height: 48, rotation: -90, text: 'essen', translations: { en: { text: 'food' } } } },
-    { type: 'text', overrides: { x: x + 12, y: 425, width: 140, height: 48, rotation: -90, text: 'toilette', translations: { en: { text: 'toilet' } } } },
+    { type: 'text', overrides: { x: x - 27, y: 440, width: 100, height: 48, rotation: -90, ...inBaseLanguage('text', { de: 'essen', en: 'food' }) } },
+    { type: 'text', overrides: { x: x + 12, y: 425, width: 140, height: 48, rotation: -90, ...inBaseLanguage('text', { de: 'toilette', en: 'toilet' }) } },
     { type: 'text', overrides: { x, y: 540, width: 40, height: 70, text: '↓' } },
 ];
 
 // Present in the room regardless of the number of switches: the drinks counter on the left
 // and the two ways out
-const VENUE_FIXTURES: Station['furniture'] = [
+const venueFixtures = (): Station['furniture'] => [
     { type: 'table', overrides: { x: 57, y: 406, width: 51, height: 212 } },
-    { type: 'text', overrides: { x: 57, y: 406, width: 190, height: 48, rotation: -90, text: 'getränke', translations: { en: { text: 'drinks' } } } },
+    { type: 'text', overrides: { x: 57, y: 406, width: 190, height: 48, rotation: -90, ...inBaseLanguage('text', { de: 'getränke', en: 'drinks' }) } },
     ...venueExit(195),
     ...venueExit(857),
 ];
@@ -250,7 +250,7 @@ const createVenuePlan = (stations: Station[]): FloorPlan => {
         plan.elements.push(createElement(plan, type, overrides));
     };
     stations.forEach(station => station.furniture.forEach(({ type, overrides }) => add(type, overrides)));
-    VENUE_FIXTURES.forEach(({ type, overrides }) => add(type, overrides));
+    venueFixtures().forEach(({ type, overrides }) => add(type, overrides));
     stations.forEach((station, switchIndex) => add('switch', { ...station.marker, switchIndex }));
     return plan;
 };

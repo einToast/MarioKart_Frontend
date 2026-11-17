@@ -7,6 +7,7 @@ import { SurveyModalResult } from "../../util/api/config/interfaces";
 import { AdminSurveyService } from '../../util/service';
 import Toast from '../Toast';
 import { useTranslation } from 'react-i18next';
+import SegmentedToggle from '../SegmentedToggle';
 import { useQuestionTranslations } from '../../hooks/useQuestionTranslations';
 import TranslationLanguageTabs from '../admin/TranslationLanguageTabs';
 
@@ -154,18 +155,16 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                     <div className="borderContainer multipleSelect">
                         <div>
                             <p>{t('admin.surveys.answersPerDevice')}</p>
-                            <IonItem className={"item-background-color"}>
-                                <select
-                                    value={oneAnswerPerKey ? 'true' : 'false'}
-                                    onChange={(e) => setOneAnswerPerKey(e.target.value === 'true')}
-                                    disabled={translation.translating}
-                                    style={{ cursor: 'pointer' }}
-                                    className="item-background-color"
-                                >
-                                    <option value="false">{t('admin.surveys.unlimited')}</option>
-                                    <option value="true">{t('admin.surveys.oneAnswerPerKey')}</option>
-                                </select>
-                            </IonItem>
+                            <SegmentedToggle
+                                label={t('admin.surveys.answersPerDevice')}
+                                options={[
+                                    { value: false, label: t('admin.surveys.unlimited') },
+                                    { value: true, label: t('admin.surveys.oneAnswerPerKey') },
+                                ]}
+                                value={oneAnswerPerKey}
+                                onChange={setOneAnswerPerKey}
+                                disabled={translation.translating}
+                            />
                         </div>
                     </div>
 
@@ -191,17 +190,16 @@ const SurveyChangeModal: React.FC<{ showModal: boolean, closeModal: (survey: Sur
                         <div className="borderContainer multipleSelect">
                             <div>
                                 <p>{t('admin.surveys.teamSelection')}</p>
-                                <IonItem className={"item-background-color"}>
-                                    <select
-                                        value={finalTeamsOnly ? 'true' : 'false'}
-                                        onChange={(e) => setFinalTeamsOnly(e.target.value === 'true')}
-                                        className="item-background-color"
-                                        disabled
-                                    >
-                                        <option value="false">{t('admin.surveys.allTeams')}</option>
-                                        <option value="true">{t('admin.surveys.finalTeamsOnly')}</option>
-                                    </select>
-                                </IonItem>
+                                <SegmentedToggle
+                                    label={t('admin.surveys.teamSelection')}
+                                    options={[
+                                        { value: false, label: t('admin.surveys.allTeams') },
+                                        { value: true, label: t('admin.surveys.finalTeamsOnly') },
+                                    ]}
+                                    value={finalTeamsOnly}
+                                    onChange={setFinalTeamsOnly}
+                                    disabled
+                                />
                             </div>
                         </div>
                     }

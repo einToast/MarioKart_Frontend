@@ -7,7 +7,9 @@ import Toast from '../Toast';
 import { AdminNotificationService } from '../../util/service';
 import { useTranslation } from 'react-i18next';
 import TranslationLanguageTabs from '../admin/TranslationLanguageTabs';
-import { DEFAULT_LANGUAGE, Language } from '../../i18n/languages';
+import ImageSelect from '../ImageSelect';
+import { Language } from '../../i18n/languages';
+import { useBaseLanguage } from '../../hooks/useBaseLanguage';
 import { setTranslation, Translations } from '../../i18n/translatable';
 
 const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: NotificationModalResult) => void, teams: TeamReturnDTO[] }> = ({ showModal, closeModal, teams }) => {
@@ -17,9 +19,10 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
     const [teamId, setTeamId] = useState<string>("-1");
     const [title, setTitle] = React.useState<string>('');
     const [message, setMessage] = React.useState<string>('');
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
     const [translations, setTranslations] = useState<Translations<NotificationTranslation> | undefined>(undefined);
-    const translating = editLanguage !== DEFAULT_LANGUAGE;
+    const translating = editLanguage !== baseLanguage;
 
     const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
@@ -47,7 +50,7 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                 setTitle('');
                 setMessage('');
                 setTranslations(undefined);
-                setEditLanguage(DEFAULT_LANGUAGE);
+                setEditLanguage(baseLanguage);
                 closeModal({ notificationSent: true });
             })
             .catch((error) => {
@@ -67,29 +70,25 @@ const NotificationModal: React.FC<{ showModal: boolean, closeModal: (notify: Not
                 <form onSubmit={handleNotification}>
                     <TranslationLanguageTabs value={editLanguage} onChange={setEditLanguage} />
                     <div className="loginContainer">
-                        <div className="borderContainer selectCharacter">
-                            <select value={teamId} onChange={(e) => setTeamId(e.target.value)} style={{ cursor: "pointer" }}>
-                                <option value={-1}>{t('admin.notification.all')}</option>
-                                {teams?.map((team) => (
-                                    <option key={team.id}
-                                        value={team.id}
-                                        style={{ backgroundImage: `url(/characters/${team.character.characterName}.webp)` }}
-                                    >
-                                        {team.teamName}
-                                    </option>
-                                ))}
-                            </select>
-                            {teamId && teamId !== "-1" && (
-                                <div className="selected-character">
-                                    {[teams.find(team => team.id === Number(teamId))?.character.characterName].map((character) => (
-                                        <img
-                                            src={`/characters/${character}.webp`}
-                                            alt={t('characterImage', { name: character })}
-                                            key={character}
-                                        />
-                                    ))}
-                                </div>
-                            )}
+                        <div className="borderContainer">
+                            <p>{t('admin.notification.recipient')}</p>
+                            <ImageSelect
+                                options={[
+                                    {
+                                        value: '-1',
+                                        label: t('admin.notification.all'),
+                                        characters: teams.map(team => team.character.characterName),
+                                    },
+                                    ...teams.map(team => ({
+                                        value: String(team.id),
+                                        label: team.teamName,
+                                        character: team.character.characterName,
+                                    })),
+                                ]}
+                                value={teamId}
+                                placeholder={t('admin.notification.recipient')}
+                                onChange={setTeamId}
+                            />
                         </div>
                     </div>
                     <div className="borderContainer">

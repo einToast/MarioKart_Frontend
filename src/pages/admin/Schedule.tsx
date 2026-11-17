@@ -1,13 +1,13 @@
 import { IonButton, IonContent, IonIcon, IonPage } from "@ionic/react";
 import { arrowForwardOutline } from 'ionicons/icons';
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
 import TeamAdminContainer from "../../components/admin/TeamAdminContainer";
 import Toast from "../../components/Toast";
 import { TeamReturnDTO } from "../../util/api/config/dto";
-import { AdminRegistrationService, AdminScheduleService, PublicCookiesService } from "../../util/service";
+import { AdminRegistrationService, AdminScheduleService, PublicCookiesService, PublicSettingsService } from "../../util/service";
 import '../RegisterTeam.css';
 import "./Points.css";
 import "./Schedule.css";
@@ -18,6 +18,9 @@ const PER_FIELD_VERSION = 4;
 const MAX_SWITCH_COUNT = 16;
 const MIN_TEAMS_PER_GAME = 2;
 const MAX_TEAMS_PER_GAME = 8;
+const DEFAULT_SWITCH_COUNT = 4;
+const DEFAULT_BREAK_ROUND = 6;
+const DEFAULT_BREAK_MINUTES = 30;
 
 const isBetween = (value: number | '', min: number, max: number): value is number =>
     value !== '' && Number.isInteger(value) && value >= min && value <= max;
@@ -33,10 +36,13 @@ const Schedule: React.FC = () => {
     const [showToast, setShowToast] = useState(false);
 
     const [version, setVersion] = useState<number>(2);
-    const [switchCount, setSwitchCount] = useState<number | ''>(4);
+    const [switchCount, setSwitchCount] = useState<number | ''>(DEFAULT_SWITCH_COUNT);
     const [teamsPerGame, setTeamsPerGame] = useState<number | ''>(4);
     const [teamsPerField, setTeamsPerField] = useState<(number | '')[]>([]);
     const [roundCount, setRoundCount] = useState<number | ''>(8);
+    const switchCountEdited = useRef(false);
+    const [breakRound, setBreakRound] = useState<number | ''>(DEFAULT_BREAK_ROUND);
+    const [breakMinutes, setBreakMinutes] = useState<number | ''>(DEFAULT_BREAK_MINUTES);
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -62,6 +68,10 @@ const Schedule: React.FC = () => {
             }
 
             getTeams();
+            const switches = await PublicSettingsService.getSwitches();
+            if (switches.length > 0 && !switchCountEdited.current) {
+                setSwitchCount(Math.min(switches.length, MAX_SWITCH_COUNT));
+            }
         };
 
         loadTeams().catch(error => {
@@ -89,6 +99,9 @@ const Schedule: React.FC = () => {
     })();
 
     const validateParameters = (): string | null => {
+        if (!isBetween(breakRound, 1, Number.MAX_SAFE_INTEGER) || !isBetween(breakMinutes, 1, Number.MAX_SAFE_INTEGER)) {
+            return t('admin.schedule.invalidBreak');
+        }
         if (version === LEGACY_VERSION) {
             return null;
         }
@@ -115,9 +128,9 @@ const Schedule: React.FC = () => {
         }
 
         setButtonDisabled(true);
-        const creation = perField
-            ? AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, fieldSizes[0] as number, fieldSizes as number[])
-            : AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number, teamsPerGame as number);
+        const creation = AdminScheduleService.createSchedule(version, switchCount as number, roundCount as number,
+            (perField ? fieldSizes[0] : teamsPerGame) as number, perField ? fieldSizes as number[] : undefined,
+            breakRound as number, breakMinutes as number);
         creation
             .then(newRounds => {
                 if (newRounds) {
@@ -145,7 +158,8 @@ const Schedule: React.FC = () => {
         const selectedVersion = Number.parseInt(event.target.value);
         setVersion(selectedVersion);
         if (selectedVersion === LEGACY_VERSION) {
-            setSwitchCount(4);
+            switchCountEdited.current = true;
+            setSwitchCount(DEFAULT_SWITCH_COUNT);
             setTeamsPerGame(4);
             setTeamsPerField([]);
             setRoundCount(8);
@@ -207,7 +221,10 @@ const Schedule: React.FC = () => {
                                 min={1}
                                 max={MAX_SWITCH_COUNT}
                                 value={switchCount}
-                                onChange={(e) => setSwitchCount(e.target.value === '' ? '' : Number(e.target.value))}
+                                onChange={(e) => {
+                                    switchCountEdited.current = true;
+                                    setSwitchCount(e.target.value === '' ? '' : Number(e.target.value));
+                                }}
                                 disabled={version === LEGACY_VERSION}
                             />
                         </div>
@@ -219,6 +236,24 @@ const Schedule: React.FC = () => {
                                 value={roundCount}
                                 onChange={(e) => setRoundCount(e.target.value === '' ? '' : Number(e.target.value))}
                                 disabled={version === LEGACY_VERSION}
+                            />
+                        </div>
+                        <div className="scheduleField">
+                            <label htmlFor="breakRound">{t('admin.schedule.breakRound')}</label>
+                            <input id="breakRound"
+                                type="number"
+                                min={1}
+                                value={breakRound}
+                                onChange={(e) => setBreakRound(e.target.value === '' ? '' : Number(e.target.value))}
+                            />
+                        </div>
+                        <div className="scheduleField">
+                            <label htmlFor="breakMinutes">{t('admin.schedule.breakMinutes')}</label>
+                            <input id="breakMinutes"
+                                type="number"
+                                min={1}
+                                value={breakMinutes}
+                                onChange={(e) => setBreakMinutes(e.target.value === '' ? '' : Number(e.target.value))}
                             />
                         </div>
                         {!perField && (

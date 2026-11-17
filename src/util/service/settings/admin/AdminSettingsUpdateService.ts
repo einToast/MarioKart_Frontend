@@ -7,6 +7,7 @@ import { AdminScheduleService } from "../../schedule";
 import { AdminSurveyService } from "../../survey";
 import { ChangeType } from "../../../api/config/interfaces";
 import i18n from "../../../../i18n";
+import { Language } from "../../../../i18n/languages";
 
 export const updateSettings = async (tournament: TournamentDTO): Promise<TournamentDTO> => {
     return await AdminSettingsApi.updateSettings(tournament);
@@ -59,6 +60,31 @@ export const updateProgram = async (program: string): Promise<TournamentDTO> => 
 export const updateOcrProvider = async (ocrProvider: string): Promise<TournamentDTO> => {
     const tournament: TournamentDTO = {
         ocrProvider: ocrProvider
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateFinalGamesCount = async (finalGamesCount: number): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        finalGamesCount: finalGamesCount
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateHowToPlay = async (howToPlay: string): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        howToPlay: howToPlay
+    }
+    return await AdminSettingsApi.updateSettings(tournament);
+}
+
+export const updateTournamentSettings = async (roundMinutes: number, rankingHiddenRounds: number, maxAnswersPerTeam: number, surveyKeyDays: number, defaultLanguage: Language): Promise<TournamentDTO> => {
+    const tournament: TournamentDTO = {
+        roundMinutes: roundMinutes,
+        rankingHiddenRounds: rankingHiddenRounds,
+        maxAnswersPerTeam: maxAnswersPerTeam,
+        surveyKeyDays: surveyKeyDays,
+        defaultLanguage: defaultLanguage
     }
     return await AdminSettingsApi.updateSettings(tournament);
 }

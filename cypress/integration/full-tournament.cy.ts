@@ -36,6 +36,7 @@ const PROGRAM = [
   { time: '16:30 - 20:00', text: 'Gruppenphase mit Pizzapause' },
   { time: '20:00 - 20:45', text: 'Finale und Siegerehrung' },
 ];
+const WELCOME_IN_ENGLISH = 'Welcome and registration';
 
 const TRACK_QUESTION = 'Welche Strecke fahrt ihr am liebsten?';
 const TRACKS = ['Regenbogen-Boulevard', 'Toads Fabrik', 'Wario-Stadion', 'Kokos-Promenade'];
@@ -82,7 +83,7 @@ const changeBreak = (change: { beforeRound?: BackendRound; ended?: boolean }) =>
     cy.get('ion-modal').contains('.borderContainer', 'Vor Runde').find('select').select(String(change.beforeRound.id));
   }
   if (change.ended) {
-    cy.get('ion-modal').contains('.borderContainer', 'Pause beendet').find('select').select('Ja');
+    cy.get('ion-modal').contains('.borderContainer', 'Pause beendet').contains('button', 'Ja').click();
   }
   cy.get('ion-modal').contains('ion-button', 'Pause ändern').click();
   cy.wait('@breakChanged').its('response.statusCode').should('eq', 200);
@@ -94,7 +95,7 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
   asAdmin('/admin/control');
   cy.contains('ion-button', 'Benachrichtigung senden').click();
   if (teamName) {
-    cy.get('ion-modal select').select(teamName);
+    cy.chooseImageSelectOption(teamName);
   }
   cy.contains('ion-modal .borderContainer p', /^Titel$/).siblings('input').type(title);
   cy.contains('ion-modal .borderContainer p', /^Nachricht$/).siblings('input').type(message);
@@ -105,7 +106,7 @@ const sendNotification = (title: string, message: string, teamName?: string) => 
 const registerInApp = (teamName: string, characterName: string) => {
   cy.clearCookie('user');
   cy.visit('/register');
-  cy.get('select').select(characterName);
+  cy.chooseImageSelectOption(characterName);
   cy.get('input[placeholder="Teamname"]').type(teamName);
   cy.contains('ion-button', 'Team registrieren').click();
   cy.location('pathname').should('eq', '/tab1');
@@ -114,7 +115,7 @@ const registerInApp = (teamName: string, characterName: string) => {
 const loginAsTeam = (teamName: string) => {
   cy.clearCookie('user');
   cy.visit('/login');
-  cy.get('select').select(teamName);
+  cy.chooseImageSelectOption(teamName);
   cy.contains('ion-button', `Zum Team ${teamName} anmelden`).click();
   cy.location('pathname').should('eq', '/tab1');
 };
@@ -187,10 +188,10 @@ const createQuestion = (questionText: string, questionType: string,
     cy.contains('ion-modal .form-group label', new RegExp(`^Option ${index + 1}$`)).siblings('input').type(option);
   });
   if (oneAnswerPerKey) {
-    cy.get('ion-modal').contains('.borderContainer', 'Antworten pro Gerät').find('select').select('true');
+    cy.get('ion-modal').contains('.borderContainer', 'Antworten pro Gerät').contains('button', 'Eine Antwort pro Umfrage-Schlüssel').click();
   }
   if (finalTeamsOnly) {
-    cy.get('ion-modal').contains('.borderContainer', 'Teamauswahl').find('select').select('true');
+    cy.get('ion-modal').contains('.borderContainer', 'Teamauswahl').contains('button', 'Nur Finalteams').click();
   }
   cy.get('ion-modal').contains('ion-button', 'Umfrage speichern').click();
   toggleQuestion(questionText, 'Umfrage sichtbar machen');
@@ -250,7 +251,7 @@ const countVotes = (options: string[], votes: string[]) =>
   options.map(option => votes.filter(vote => vote === option).length);
 
 const showView = (view: string) => {
-  cy.contains('.ion-page:not(.ion-page-hidden) .flexStart', 'Spielplan').find('select').select(view, { force: true });
+  cy.contains('.ion-page:not(.ion-page-hidden) .flexStart', 'Spielplan').contains('button', view).click({ force: true });
 };
 
 const currentGame = () => cy.contains('h3', 'Aktuelles Spiel').parents('.flexSpiel');
@@ -289,6 +290,8 @@ describe('a whole tournament', () => {
       cy.get(`input[aria-label="Zeit von Programmpunkt ${index + 1}"]`).type(entry.time);
       cy.get(`input[aria-label="Text von Programmpunkt ${index + 1}"]`).type(entry.text);
     });
+    cy.contains('.translationLanguages button', 'English').click();
+    cy.get('input[aria-label="Text von Programmpunkt 1"]').type(WELCOME_IN_ENGLISH);
     cy.contains('ion-button', 'Speichern').click();
     cy.toast('Programm gespeichert');
 
@@ -306,8 +309,12 @@ describe('a whole tournament', () => {
 
     cy.clearCookie('user');
     cy.visit('/register');
-    cy.get(`select option[value="${TEAMS[0].characterName}"]`).should('not.exist');
-    cy.get(`select option[value="${NO_SHOW.characterName}"]`).should('not.exist');
+    cy.openImageSelect().should(options => {
+      const offered = [...options].map(option => option.textContent);
+      expect(offered).to.have.length.greaterThan(0);
+      expect(offered).not.to.include(TEAMS[0].characterName);
+      expect(offered).not.to.include(NO_SHOW.characterName);
+    });
 
     asAdmin('/admin/teams');
     cy.contains('.teamContainer', MISSPELLED.teamName).find('[title="Team bearbeiten"]').click();
@@ -322,13 +329,15 @@ describe('a whole tournament', () => {
 
     cy.clearCookie('user');
     cy.visit('/register');
-    cy.get(`select option[value="${NO_SHOW.characterName}"]`).should('exist');
+    cy.openImageSelect().should(options => {
+      expect([...options].map(option => option.textContent)).to.include(NO_SHOW.characterName);
+    });
 
     confirmInControlCenter('Registrierung schließen');
     cy.clearCookie('user');
     cy.visit('/register');
     cy.location('pathname').should('eq', '/login');
-    cy.get('select option').should('have.length.at.least', TEAMS.length);
+    cy.openImageSelect().should('have.length.at.least', TEAMS.length);
 
     asAdmin('/admin/schedule');
     cy.get('#scheduleVersion').select(`v${SCHEDULE.version}`);
@@ -430,7 +439,7 @@ describe('a whole tournament', () => {
     answer(FEEDBACK_QUESTION, write('Super Stimmung, gerne wieder!')).should('eq', 200);
     setSurveyKeyMode('Aus', 'Umfrage-Schlüssel deaktiviert, alle können abstimmen');
     surveyItem(FEEDBACK_QUESTION).find('[title="Ergebnisse anzeigen"]').click();
-    cy.get('ion-modal').should('contain', 'Ergebnisse: 1 Antworten').and('contain', 'Super Stimmung, gerne wieder!');
+    cy.get('ion-modal').should('contain', 'Ergebnisse: 1 Antwort').and('contain', 'Super Stimmung, gerne wieder!');
     cy.get('ion-modal').should('not.contain', 'Ohne Schlüssel');
     closeQuestion(FEEDBACK_QUESTION);
 
@@ -539,9 +548,29 @@ describe('a whole tournament', () => {
         .and('contain', `${groupPointsOf(TEAM_NAMES[0])} Punkte`);
     });
 
+    cy.setCookie('language', 'de');
+    asAdmin('/admin/control');
+    cy.contains('ion-button', 'Turniereinstellungen').click();
+    cy.get('ion-modal .languageField .languageSwitchToggle').click();
+    cy.get('ion-modal .languageSwitchMenu').contains('button', 'English').click();
+    cy.get('ion-modal').contains('ion-button', 'Speichern').click();
+    cy.toast('Einstellungen gespeichert');
+
+    // A phone that never picked a language now reads the app and the program in English
+    cy.clearAllCookies();
+    cy.visit('/login');
+    cy.chooseImageSelectOption(FIRST.teamName);
+    cy.contains('ion-button', `Log in to team ${FIRST.teamName}`).click();
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('h3', 'Program');
+    cy.contains('p', PROGRAM[0].time).should('contain', WELCOME_IN_ENGLISH);
+    cy.contains('p', PROGRAM[1].time).should('contain', PROGRAM[1].text);
+
+    cy.setCookie('language', 'de');
     asAdmin('/admin/control');
     cy.contains('ion-button', 'Anwendung zurücksetzen').click();
     cy.get('ion-modal ion-button.round:not(.secondary)').click();
     cy.request(`${API_URL}/public/teams`).its('body').should('have.length', 0);
+    cy.request(`${API_URL}/public/settings`).its('body.defaultLanguage').should('eq', 'de');
   });
 });

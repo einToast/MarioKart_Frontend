@@ -143,6 +143,12 @@ const Dashboard: React.FC = () => {
                                 <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                             </div>
                         </IonButton>
+                        <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/how-to-play')}>
+                            <div>
+                                <p>{t('admin.howToPlay.title')}</p>
+                                <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
+                            </div>
+                        </IonButton>
                         <IonButton slot="start" className={"secondary"} onClick={() => navigate('/admin/control')}>
                             <div>
                                 <p>{t('admin.control.title')}</p>

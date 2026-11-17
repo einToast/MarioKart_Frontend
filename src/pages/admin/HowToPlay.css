@@ -1,0 +1,27 @@
+.howToPlayVideo {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    label {
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+    }
+
+    input {
+        box-sizing: border-box;
+        width: min(360px, 100%);
+    }
+
+    p {
+        flex-basis: 100%;
+        margin: 0;
+        font-size: 14px;
+    }
+}
+
+.programList .programRow .howToPlayRule {
+    width: min(420px, 100%);
+}

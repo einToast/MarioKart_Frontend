@@ -43,7 +43,8 @@ const renderPage = () => {
     return { ...view, setShowTab2 };
 };
 
-const viewSelect = () => screen.getByRole('combobox') as HTMLSelectElement;
+const chosenView = () => screen.getByRole('button', { pressed: true });
+const showAllGames = () => fireEvent.click(screen.getByRole('button', { name: 'Alle Spiele' }));
 const timeStamps = (container: HTMLElement) => Array.from(container.querySelectorAll('.timeStamp')).map(node => node.textContent);
 
 describe('Tab1 (schedule)', () => {
@@ -106,7 +107,7 @@ describe('Tab1 (schedule)', () => {
         it('starts with the own games', () => {
             renderPage();
 
-            expect(viewSelect()).toHaveValue('Deine Spiele');
+            expect(chosenView()).toHaveTextContent('Deine Spiele');
             expect(document.body).not.toHaveClass('all-games-selected');
         });
 
@@ -115,7 +116,7 @@ describe('Tab1 (schedule)', () => {
             const { container } = renderPage();
             await waitFor(() => expect(timeStamps(container)).toHaveLength(2));
 
-            fireEvent.change(viewSelect(), { target: { value: 'Alle Spiele' } });
+            showAllGames();
 
             expect(screen.getByRole('heading', { name: 'Aktuelle Spiele' })).toBeInTheDocument();
             expect(screen.getByRole('heading', { name: 'Nächste Spiele' })).toBeInTheDocument();
@@ -127,7 +128,7 @@ describe('Tab1 (schedule)', () => {
         it('remembers the selection', async () => {
             renderPage();
 
-            fireEvent.change(viewSelect(), { target: { value: 'Alle Spiele' } });
+            showAllGames();
 
             expect(Cookies.get('selectedGamesOption')).toBe('Alle Spiele');
         });
@@ -137,7 +138,7 @@ describe('Tab1 (schedule)', () => {
 
             renderPage();
 
-            await waitFor(() => expect(viewSelect()).toHaveValue('Alle Spiele'));
+            await waitFor(() => expect(chosenView()).toHaveTextContent('Alle Spiele'));
             expect(document.body).toHaveClass('all-games-selected');
         });
     });
@@ -160,6 +161,24 @@ describe('Tab1 (schedule)', () => {
 
     it('hides the ranking tab during the last round of the group phase', async () => {
         stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 1 });
+
+        const { setShowTab2 } = renderPage();
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(false));
+    });
+
+    it('keeps the ranking tab during the last round when the admin never hides it', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, rankingHiddenRounds: 0 });
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 1 });
+
+        const { setShowTab2 } = renderPage();
+
+        await waitFor(() => expect(setShowTab2).toHaveBeenCalledWith(true));
+    });
+
+    it('hides the ranking tab for as many last rounds as the admin chose', async () => {
+        backend.get('/public/settings', { tournamentOpen: true, rankingHiddenRounds: 3 });
+        stubScheduleState({ schedule: true, finalSchedule: false, unplayed: 3 });
 
         const { setShowTab2 } = renderPage();
 
@@ -243,7 +262,7 @@ describe('Tab1 (schedule)', () => {
         const complete = pullToRefresh(container);
 
         await waitFor(() => expect(container.querySelectorAll('ion-skeleton-text').length).toBeGreaterThan(0));
-        expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Alle Spiele' })).not.toBeInTheDocument();
         expect(complete).not.toHaveBeenCalled();
 
         await waitFor(() => expect(complete).toHaveBeenCalledTimes(1), { timeout: 2000 });

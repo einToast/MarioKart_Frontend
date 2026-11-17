@@ -1,10 +1,18 @@
 import { PublicSettingsApi } from "../../../api";
 import { SwitchDTO, TournamentDTO, SurveyKeyMode } from "../../../api/config/dto";
+import { DEFAULT_LANGUAGE, isLanguage, Language } from "../../../../i18n/languages";
 
 export const DEFAULT_FINAL_TEAMS_COUNT = 4;
+export const DEFAULT_FINAL_GAMES_COUNT = 6;
+export const DEFAULT_RANKING_HIDDEN_ROUNDS = 1;
 
 export const getSettings = async (): Promise<TournamentDTO> => {
     return await PublicSettingsApi.getSettings();
+}
+
+export const getDefaultLanguage = async (): Promise<Language> => {
+    const tournament = await getSettings();
+    return isLanguage(tournament.defaultLanguage) ? tournament.defaultLanguage : DEFAULT_LANGUAGE;
 }
 
 export const getRegistrationOpen = async (): Promise<boolean> => {
@@ -35,4 +43,9 @@ export const getSwitches = async (): Promise<SwitchDTO[]> => {
 export const getFinalTeamsCount = async (): Promise<number> => {
     const tournament = await getSettings();
     return tournament.finalTeamsCount ?? DEFAULT_FINAL_TEAMS_COUNT;
+}
+
+export const getRankingHiddenRounds = async (): Promise<number> => {
+    const tournament = await getSettings();
+    return tournament.rankingHiddenRounds ?? DEFAULT_RANKING_HIDDEN_ROUNDS;
 }

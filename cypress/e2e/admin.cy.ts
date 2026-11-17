@@ -103,6 +103,32 @@ describe('admin area', () => {
       cy.toast('Der Spielplan wurde gelöscht');
     });
 
+    it('makes English the default language for new visitors and the translation editors', () => {
+      const settings = { tournamentOpen: true, registrationOpen: true, roundMinutes: 20, rankingHiddenRounds: 1, maxAnswersPerTeam: 4, surveyKeyDays: 2 };
+      cy.stubApi('GET', '/public/settings', { ...settings, defaultLanguage: 'de' });
+      cy.stubApi('PUT', '/admin/settings', {}).as('saveSettings');
+      cy.visit('/admin/control');
+
+      cy.contains('ion-button', 'Turniereinstellungen').click();
+      cy.get('ion-modal .languageField').should('contain', 'DE');
+      cy.get('ion-modal .languageField .languageSwitchToggle').click();
+      cy.get('ion-modal .languageSwitchMenu').contains('button', 'English').click();
+      cy.get('ion-modal').contains('ion-button', 'Speichern').click();
+      cy.wait('@saveSettings').its('request.body').should('include', { defaultLanguage: 'en' });
+      cy.toast('Einstellungen gespeichert');
+
+      // From here on the backend answers with the new default language
+      cy.stubApi('GET', '/public/settings', { ...settings, defaultLanguage: 'en' });
+      cy.setCookie('language', 'de');
+      cy.visit('/admin/program');
+      cy.get('.translationLanguages button').then(buttons => [...buttons].map(button => button.textContent))
+        .should('deep.equal', ['English (Standard)', 'Deutsch']);
+
+      cy.clearCookie('language');
+      cy.visit('/login');
+      cy.contains('Select team');
+    });
+
     it('logs the admin out', () => {
       cy.stubApi('POST', '/public/user/logout').as('logout');
       cy.visit('/admin/dashboard');

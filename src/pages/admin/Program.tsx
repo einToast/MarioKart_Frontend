@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { LinearGradient } from "react-text-gradients";
 import BackLink from "../../components/admin/BackLink";
+import ImageSelect from "../../components/ImageSelect";
 import Toast from "../../components/Toast";
 import { ProgramEntry, ProgramRow, TextTranslation } from "../../util/api/config/interfaces";
 import {
@@ -24,14 +25,16 @@ import "./Points.css";
 import "./Program.css";
 import { useTranslation } from 'react-i18next';
 import TranslationLanguageTabs from "../../components/admin/TranslationLanguageTabs";
-import { DEFAULT_LANGUAGE, Language } from "../../i18n/languages";
+import { Language } from "../../i18n/languages";
+import { useBaseLanguage } from "../../hooks/useBaseLanguage";
 import { translatedChange, translatedValue } from "../../i18n/translatable";
 
 const Program: React.FC = () => {
     const { t } = useTranslation();
     const [rows, setRows] = useState<ProgramRow[]>([]);
     const [buttonDisabled, setButtonDisabled] = useState(false);
-    const [editLanguage, setEditLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
 
     const [error, setError] = useState<string>('');
     const [isError, setIsError] = useState<boolean>(true);
@@ -106,16 +109,18 @@ const Program: React.FC = () => {
                 <div className="programList">
                     {rows.map(({ key: rowKey, entry }, index) => (
                         <div className="programRow" key={rowKey}>
-                            <IonIcon aria-hidden="true" icon={PROGRAM_ICONS[entry.icon].icon} />
-                            <select
-                                aria-label={t('admin.program.iconOf', { number: index + 1 })}
+                            <ImageSelect
+                                className="programIcon"
+                                hideLabels
+                                options={(Object.keys(PROGRAM_ICONS) as ProgramIcon[]).map(key => ({
+                                    value: key,
+                                    label: t(`admin.program.icons.${key}`),
+                                    icon: PROGRAM_ICONS[key].icon,
+                                }))}
                                 value={entry.icon}
-                                onChange={(e) => handleChange(index, { icon: e.target.value as ProgramIcon })}
-                            >
-                                {(Object.keys(PROGRAM_ICONS) as ProgramIcon[]).map(key => (
-                                    <option value={key} key={key}>{t(`admin.program.icons.${key}`)}</option>
-                                ))}
-                            </select>
+                                placeholder={t('admin.program.iconOf', { number: index + 1 })}
+                                onChange={icon => handleChange(index, { icon: icon as ProgramIcon })}
+                            />
                             <input
                                 type="text"
                                 className="programTime"
@@ -130,7 +135,7 @@ const Program: React.FC = () => {
                                 className="programText"
                                 aria-label={t('admin.program.textOf', { number: index + 1 })}
                                 maxLength={MAX_PROGRAM_TEXT_LENGTH}
-                                placeholder={editLanguage === DEFAULT_LANGUAGE ? undefined : entry.text}
+                                placeholder={editLanguage === baseLanguage ? undefined : entry.text}
                                 value={translatedValue<TextTranslation, 'text'>(entry, 'text', editLanguage) ?? ''}
                                 onChange={(e) => handleChange(index, translatedChange<TextTranslation, 'text'>(entry, 'text', editLanguage, e.target.value))}
                             />

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { makeBreak, makeRound, makeUser } from '../../test/fixtures';
 import { RoundReturnDTO } from '../../util/api/config/dto';
 import { RoundDisplay } from './RoundDisplay';
@@ -65,23 +65,23 @@ describe('RoundHeader', () => {
         render(<RoundHeader title="Spielplan" onOptionChange={vi.fn()} selectedOption="Alle Spiele" loading={false} />);
 
         expect(screen.getByRole('heading', { name: 'Spielplan' })).toBeInTheDocument();
-        expect(screen.getByRole('combobox')).toHaveValue('Alle Spiele');
-        expect(screen.getAllByRole('option').map(option => option.textContent)).toEqual(['Deine Spiele', 'Alle Spiele']);
+        expect(within(screen.getByRole('group')).getAllByRole('button').map(button => button.textContent)).toEqual(['Deine Spiele', 'Alle Spiele']);
+        expect(screen.getByRole('button', { pressed: true })).toHaveTextContent('Alle Spiele');
     });
 
     it('reports a changed selection', () => {
         const onOptionChange = vi.fn();
         render(<RoundHeader title="Spielplan" onOptionChange={onOptionChange} selectedOption="Deine Spiele" loading={false} />);
 
-        fireEvent.change(screen.getByRole('combobox'), { target: { value: 'Alle Spiele' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Alle Spiele' }));
 
-        expect(onOptionChange).toHaveBeenCalledTimes(1);
+        expect(onOptionChange).toHaveBeenCalledWith('Alle Spiele');
     });
 
     it('hides the selection while loading', () => {
         render(<RoundHeader title="Spielplan" onOptionChange={vi.fn()} selectedOption="Deine Spiele" loading={true} />);
 
         expect(screen.getByRole('heading', { name: 'Spielplan' })).toBeInTheDocument();
-        expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+        expect(screen.queryByRole('group')).not.toBeInTheDocument();
     });
 });

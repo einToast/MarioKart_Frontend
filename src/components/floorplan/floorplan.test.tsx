@@ -1,7 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { makeSwitches } from '../../test/fixtures';
-import { createDefaultFloorPlan, createElement } from '../../util/layout/floorPlan';
+import {
+    FLOOR_PLAN_HEIGHT, FLOOR_PLAN_WIDTH, MAX_FLOOR_PLAN_ELEMENTS, createDefaultFloorPlan, createElement,
+} from '../../util/layout/floorPlan';
 import FloorPlanEditor from './FloorPlanEditor';
 import FloorPlanView from './FloorPlanView';
 import { FloorPlan, FloorPlanElement } from '../../util/api/config/interfaces';
@@ -146,6 +148,54 @@ describe('FloorPlanEditor', () => {
         fireEvent.pointerMove(svg, { clientX: 10, clientY: 20 });
 
         expect(byType('switch')[1]).toMatchObject({ x: 400, y: 200 });
+    });
+
+    it('keeps an element inside the room when it is dragged past the edge', () => {
+        const { container } = renderEditor();
+        const svg = giveCanvasSize(container);
+        const before = byType('switch')[0];
+
+        fireEvent.pointerDown(marker('Blau'), { clientX: 10 + before.x / 2, clientY: 20 + before.y / 2 });
+        fireEvent.pointerMove(svg, { clientX: 10 + 900, clientY: 20 - 300 });
+        fireEvent.pointerUp(svg);
+
+        expect(byType('switch')[0]).toMatchObject({ x: FLOOR_PLAN_WIDTH, y: 0 });
+
+        fireEvent.pointerDown(marker('Blau'), { clientX: 10 + FLOOR_PLAN_WIDTH / 2, clientY: 20 });
+        fireEvent.pointerMove(svg, { clientX: 10 - 300, clientY: 20 + 900 });
+        fireEvent.pointerUp(svg);
+
+        expect(byType('switch')[0]).toMatchObject({ x: 0, y: FLOOR_PLAN_HEIGHT });
+    });
+
+    it('rotates the selected element and wraps the angle around', () => {
+        renderEditor();
+        fireEvent.click(screen.getByText('+ Tisch'));
+
+        fireEvent.change(screen.getByLabelText('Drehung'), { target: { value: '90' } });
+        expect(byType('table').at(-1)).toMatchObject({ rotation: 90 });
+
+        fireEvent.change(screen.getByLabelText('Drehung'), { target: { value: '270' } });
+        expect(byType('table').at(-1)).toMatchObject({ rotation: -90 });
+        expect(screen.getByLabelText('Drehung')).toHaveValue(-90);
+    });
+
+    it('stops adding elements once the plan is full', () => {
+        const plan = createDefaultFloorPlan(2);
+        while (plan.elements.length < MAX_FLOOR_PLAN_ELEMENTS) {
+            plan.elements.push(createElement(plan, 'table'));
+        }
+        renderEditor(plan);
+
+        for (const add of ['+ Tisch', '+ Sitzreihe', '+ Text']) {
+            expect(screen.getByText(add)).toBeDisabled();
+        }
+
+        fireEvent.focus(screen.getAllByRole('button', { name: 'Tisch' })[0]);
+        fireEvent.click(screen.getByText('Entfernen'));
+
+        expect(latest.elements).toHaveLength(MAX_FLOOR_PLAN_ELEMENTS - 1);
+        expect(screen.getByText('+ Tisch')).toBeEnabled();
     });
 
     it('only selects an element while the canvas has no size', () => {

@@ -14,13 +14,34 @@
     }
 
     .programRow {
-        ion-icon {
-            font-size: 22px;
+        input {
+            box-sizing: border-box;
         }
 
-        input,
-        select {
-            box-sizing: border-box;
+        .programIcon {
+            width: auto;
+
+            .imageSelectToggle {
+                min-height: 0;
+                padding: 6px 8px;
+                gap: 6px;
+                border-radius: 7px;
+                background-color: #2F315B;
+            }
+
+            .imageSelectMenu {
+                right: auto;
+                display: grid;
+                grid-template-columns: repeat(5, 40px);
+                gap: 2px;
+
+                button {
+                    justify-content: center;
+                    width: 40px;
+                    height: 40px;
+                    padding: 0;
+                }
+            }
         }
 
         .programTime {
@@ -36,16 +57,8 @@
         margin: 0;
     }
 
-    select {
-        font-family: Poppins, sans-serif;
-        background-color: #2F315B;
-        border: none;
-        padding: 6px 7px;
-        color: #fff;
-        border-radius: 5px;
-    }
-
-    button {
+    .programRow > button,
+    .programActions > button {
         font-family: Poppins, sans-serif;
         background-color: #2F315B;
         border: 1px solid #2F315B;

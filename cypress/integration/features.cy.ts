@@ -1,19 +1,7 @@
 import { ADMIN, SWITCHES, TEAMS, gameOf, opponentsIn, playsIn } from '../support/backend';
-
-const loginAsTeam = (teamName: string) => {
-  cy.visit('/login', {
-    onBeforeLoad(win) {
-      cy.spy(win.console, 'log').as('consoleLog');
-    },
-  });
-  cy.get('select').select(teamName);
-  cy.contains('ion-button', `Zum Team ${teamName} anmelden`).click();
-  cy.location('pathname').should('eq', '/tab1');
-};
-
-const waitForLiveUpdates = () => cy.get('@consoleLog').should('be.calledWith', 'Connected to WebSocket');
-
-const section = (title: string) => cy.contains('h3', title).parents('.flexSpiel');
+import {
+  asAdmin, characterOf, createSurvey, endBreak, loginAsTeam, markPlayed, section, setPoints, SURVEY, waitForLiveUpdates,
+} from '../support/app';
 
 const showsGame = (title: string, game: { switchIndex: number }, teamName: string, opponents: string[]) => {
   section(title).should('contain', teamName).and('contain', `Switch ${SWITCHES[game.switchIndex].name}`);
@@ -21,6 +9,18 @@ const showsGame = (title: string, game: { switchIndex: number }, teamName: strin
     section(title).should('contain', opponent);
   }
 };
+
+const finalist = (teamName: string) => cy.contains('.teamFinalContainer .teamContainer', teamName);
+
+const editSurvey = (questionText: string) => {
+  asAdmin('/admin/survey');
+  cy.contains('.currentSurvey', questionText).find('[title="Umfrage ändern"]').click();
+};
+
+const surveyQuestionInput = () => cy.contains('ion-modal .borderContainer p', /^Frage der Umfrage$/).siblings('input');
+
+const surveyOptionInput = (number: number) =>
+  cy.contains('ion-modal .form-group label', new RegExp(`^Option ${number}$`)).siblings('input');
 
 describe('frontend with the real backend', () => {
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe('frontend with the real backend', () => {
   it('registers a team that the login then offers', () => {
     cy.visit('/register');
 
-    cy.get('select').select('Yoshi');
+    cy.chooseImageSelectOption('Yoshi');
     cy.get('input[placeholder="Teamname"]').type('Die Dinos');
     cy.contains('ion-button', 'Team registrieren').click();
 
@@ -112,12 +112,7 @@ describe('frontend with the real backend', () => {
 
   it('counts the answer a team gives to a survey', () => {
     cy.registerTeams();
-    cy.adminApi('POST', '/admin/survey', {
-      questionText: 'Wer gewinnt?', questionType: 'MULTIPLE_CHOICE', options: ['Mario', 'Luigi', 'Peach'],
-      active: true, visible: true, live: false, finalTeamsOnly: false, oneAnswerPerKey: false,
-    }).then(response => {
-      const questionId = (response.body as { id: number }).id;
-
+    createSurvey().then(question => {
       loginAsTeam('Team Mario');
       cy.get('a[title="Umfragen"]').click();
       cy.contains('ion-item', 'Wer gewinnt?').click();
@@ -125,8 +120,33 @@ describe('frontend with the real backend', () => {
       cy.contains('ion-button', 'Antwort speichern').click();
       cy.contains('ion-button', 'Antwort speichern').should('not.exist');
 
-      cy.adminApi('GET', `/admin/survey/${questionId}/statistics`).its('body').should('deep.equal', [0, 1, 0]);
+      cy.adminApi('GET', `/admin/survey/${question.id}/statistics`).its('body').should('deep.equal', [0, 1, 0]);
     });
+  });
+
+  it('lets the admin reword a survey and delete it again', () => {
+    cy.registerTeams();
+    createSurvey();
+
+    editSurvey('Wer gewinnt?');
+    surveyQuestionInput().clear().type('Wer gewinnt heute?');
+    surveyOptionInput(3).clear().type('Yoshi');
+    cy.get('ion-modal').contains('ion-button', 'Umfrage ändern').click();
+    cy.toast('Umfrage erfolgreich geändert');
+    cy.contains('.currentSurvey', 'Wer gewinnt heute?');
+
+    loginAsTeam('Team Mario');
+    cy.get('a[title="Umfragen"]').click();
+    cy.contains('ion-accordion', 'Wer gewinnt heute?').should('contain', 'Yoshi').and('not.contain', 'Peach');
+
+    asAdmin('/admin/survey');
+    cy.contains('.currentSurvey', 'Wer gewinnt heute?').find('[title="Umfrage löschen"]').click();
+    cy.get('ion-modal').contains('ion-button', 'Umfrage löschen').click();
+    cy.toast('Umfrage erfolgreich gelöscht');
+    cy.contains('.currentSurvey', 'Wer gewinnt heute?').should('not.exist');
+
+    cy.visit('/survey');
+    cy.contains('p', 'Gerade finden keine Umfragen statt.');
   });
 
   it('clears the schedule on the team phones when the admin deletes it', () => {
@@ -142,6 +162,192 @@ describe('frontend with the real backend', () => {
 
     cy.contains('p', 'Keine Spiele gefunden.').should('be.visible');
     cy.contains('h3', 'Aktuelles Spiel').parents('.flexSpiel').should('not.exist');
+  });
+
+  it('explains why the admin cannot create a schedule', () => {
+    cy.registerTeams();
+    asAdmin('/admin/schedule');
+
+    cy.get('#switchCount').clear().type('6');
+    cy.contains('Mindestens 24 Teams nötig');
+    cy.contains('ion-button', 'Spielplan erstellen').click();
+    cy.toast('Nicht genügend Teams vorhanden (mindestens Spielfelder x Teams pro Spiel)');
+    cy.location('pathname').should('eq', '/admin/schedule');
+
+    cy.createSchedule();
+    cy.get('#switchCount').clear().type(String(SWITCHES.length));
+    cy.contains('ion-button', 'Spielplan erstellen').click();
+    cy.toast('Spielplan existiert bereits');
+    cy.location('pathname').should('eq', '/admin/schedule');
+  });
+
+  it('greys out a team the admin deactivated and leaves it out of the final', () => {
+    cy.registerTeams();
+    cy.createSchedule().then(([first]) => {
+      const [viewer, inactive] = first.games[0].teams.map(team => team.teamName);
+      setPoints(first, inactive, 40);
+
+      asAdmin('/admin/final');
+      finalist(inactive);
+
+      asAdmin('/admin/teams');
+      cy.contains('.teamContainer', inactive).find('[title="Team deaktivieren"]').click();
+      cy.contains('.teamContainer', inactive).find('[title="Team aktivieren"]');
+
+      asAdmin('/admin/final');
+      cy.get('.teamFinalContainer .teamContainer').should('have.length', 4);
+      finalist(inactive).should('not.exist');
+
+      asAdmin('/admin/points');
+      cy.get('select#round').select('Runde 1');
+      cy.get('.characterInput').filter(`:has(img[alt="${characterOf(inactive)}"])`)
+        .should('have.class', 'inactiveTeam')
+        .find('input').should('be.enabled');
+      cy.get('.characterInput').filter(`:has(img[alt="${characterOf(viewer)}"])`)
+        .should('not.have.class', 'inactiveTeam');
+
+      loginAsTeam(viewer);
+      section('Aktuelles Spiel').contains('.teamContainer', inactive).should('have.css', 'opacity', '0.5');
+      section('Aktuelles Spiel').contains('.teamContainer', viewer).should('have.css', 'opacity', '1');
+    });
+  });
+
+  it('refuses the final while group rounds are unplayed', () => {
+    cy.registerTeams();
+    cy.createSchedule();
+
+    asAdmin('/admin/final');
+    cy.contains('ion-button', 'Finalspiele erstellen').click();
+
+    cy.toast('Noch nicht alle Runden gespielt');
+    cy.location('pathname').should('eq', '/admin/final');
+  });
+
+  it('brings excluded teams back into the final and sends the other teams to a pause', () => {
+    cy.registerTeams();
+    cy.createSchedule().then(rounds => {
+      const ranked = rounds[0].games.flatMap(game => game.teams).map(team => team.teamName);
+      ranked.forEach((teamName, index) => setPoints(rounds[0], teamName, 40 - index));
+      endBreak();
+      markPlayed(...rounds);
+      const [leader, , , fourth, fifth] = ranked;
+      const sittingOut = TEAMS.map(team => team.teamName).find(name => !ranked.includes(name))!;
+
+      asAdmin('/admin/final');
+      cy.get('.teamFinalContainer .teamContainer').should('have.length', 4);
+      finalist(leader);
+      finalist(fifth).should('not.exist');
+
+      finalist(leader).find('[title="Team nicht am Finale teilnehmen lassen"]').click();
+      finalist(leader).should('not.exist');
+      finalist(fifth);
+
+      cy.contains('ion-button', 'Teams zurücksetzen').click();
+      cy.toast('Teams zurückgesetzt');
+      finalist(leader);
+      finalist(fourth);
+      finalist(fifth).should('not.exist');
+
+      cy.contains('ion-button', 'Finalspiele erstellen').click();
+      cy.location('pathname').should('eq', '/admin/dashboard');
+
+      loginAsTeam(sittingOut);
+      section('Aktuelles Spiel').should('contain', sittingOut).and('contain', 'Pause').and('not.contain', 'Switch');
+      loginAsTeam(leader);
+      section('Aktuelles Spiel').should('contain', fourth).and('contain', `Switch ${SWITCHES[0].name}`);
+    });
+  });
+
+  it('shows the texts the admin translated to a team that reads English', () => {
+    cy.registerTeams();
+    createSurvey();
+
+    asAdmin('/admin/program');
+    cy.get('.programRow').then(rows => {
+      for (let row = 0; row < rows.length; row++) {
+        cy.get('button[aria-label="Programmpunkt 1 entfernen"]').click();
+      }
+    });
+    cy.contains('p', 'Keine Programmpunkte.');
+    [['16:00 - 16:30', 'Begrüßung'], ['20:00 - 20:45', 'Siegerehrung']].forEach(([time, text], index) => {
+      cy.contains('button', '+ Programmpunkt hinzufügen').click();
+      cy.get(`input[aria-label="Zeit von Programmpunkt ${index + 1}"]`).type(time);
+      cy.get(`input[aria-label="Text von Programmpunkt ${index + 1}"]`).type(text);
+    });
+    cy.contains('.translationLanguages button', 'English').click();
+    cy.get('input[aria-label="Text von Programmpunkt 1"]').should('have.value', '').type('Welcome');
+    cy.contains('ion-button', 'Speichern').click();
+    cy.toast('Programm gespeichert');
+
+    editSurvey('Wer gewinnt?');
+    cy.get('ion-modal').contains('.translationLanguages button', 'English').click();
+    surveyQuestionInput().should('have.value', '').type('Who wins?');
+    surveyOptionInput(3).type('Princess Peach');
+    cy.get('ion-modal').contains('ion-button', 'Umfrage ändern').click();
+    cy.toast('Umfrage erfolgreich geändert');
+
+    loginAsTeam('Team Mario');
+    cy.get('.languageSwitchToggle').filter(':visible').click();
+    cy.contains('.languageSwitchMenu button', 'English').click();
+    cy.contains('h3', 'Current game');
+
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('h3', 'Program');
+    cy.contains('p', '16:00 - 16:30').should('contain', 'Welcome');
+    cy.contains('p', '20:00 - 20:45').should('contain', 'Siegerehrung');
+
+    cy.get('a[title="Surveys"]').filter(':visible').click();
+    cy.contains('ion-accordion', 'Who wins?').should('contain', 'Luigi').and('contain', 'Princess Peach');
+
+    cy.reload();
+    cy.contains('ion-accordion', 'Who wins?');
+  });
+
+  it('moves the texts into English when the admin makes it the default language', () => {
+    cy.registerTeams();
+    cy.adminApi('POST', '/admin/survey', {
+      ...SURVEY,
+      translations: { en: { questionText: 'Who wins?', options: ['', '', 'Princess Peach'] } },
+    });
+    cy.adminApi('PUT', '/admin/settings', {
+      program: JSON.stringify({
+        entries: [
+          { icon: 'megaphone', time: '16:00 - 16:30', text: 'Begrüßung', translations: { en: { text: 'Welcome' } } },
+          { icon: 'medal', time: '20:00 - 20:45', text: 'Siegerehrung' },
+        ],
+      }),
+    });
+
+    cy.setCookie('language', 'de');
+    asAdmin('/admin/control');
+    cy.contains('ion-button', 'Turniereinstellungen').click();
+    cy.get('ion-modal .languageField .languageSwitchToggle').click();
+    cy.get('ion-modal .languageSwitchMenu').contains('button', 'English').click();
+    cy.get('ion-modal').contains('ion-button', 'Speichern').click();
+    cy.toast('Einstellungen gespeichert');
+
+    asAdmin('/admin/program');
+    cy.get('.translationLanguages button').first().should('have.text', 'English (Standard)');
+    cy.get('input[aria-label="Text von Programmpunkt 1"]').should('have.value', 'Welcome');
+
+    // A team that never picked a language reads the app in the new default language
+    cy.clearAllCookies();
+    cy.visit('/login');
+    cy.chooseImageSelectOption('Team Mario');
+    cy.contains('ion-button', 'Log in to team Team Mario').click();
+    cy.contains('h3', 'Current game');
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('p', '16:00 - 16:30').should('contain', 'Welcome');
+    cy.contains('p', '20:00 - 20:45').should('contain', 'Siegerehrung');
+    cy.get('a[title="Surveys"]').filter(':visible').click();
+    cy.contains('ion-accordion', 'Who wins?').should('contain', 'Luigi').and('contain', 'Princess Peach');
+
+    // The former German texts stay as translation
+    cy.get('.languageSwitchToggle').filter(':visible').click();
+    cy.contains('.languageSwitchMenu button', 'Deutsch').click();
+    cy.contains('ion-accordion', 'Wer gewinnt?').should('contain', 'Peach').and('not.contain', 'Princess');
+    cy.get('ion-tab-button[tab="tab3"]').click();
+    cy.contains('p', '16:00 - 16:30').should('contain', 'Begrüßung');
   });
 
   it('ranks the teams by the points the admin entered', () => {

@@ -11,8 +11,9 @@ import {
     syncSwitchMarkers,
     updateElement,
 } from './floorPlan';
-import { resolveSwitch, suggestSwitch, SWITCH_PALETTE, switchColorStyle } from './switches';
+import { resolveSwitch, suggestSwitch, switchColorStyle, switchPalette } from './switches';
 import { FloorPlan } from '../api/config/interfaces';
+import { setBaseLanguage } from '../../i18n/languages';
 
 const markers = (plan: FloorPlan) => plan.elements.filter(element => element.type === 'switch');
 const markerIndexes = (plan: FloorPlan) => markers(plan).map(element => element.switchIndex);
@@ -25,25 +26,31 @@ describe('switches', () => {
     });
 
     it('numbers a switch without a name and gives it a palette colour', () => {
-        expect(resolveSwitch(configured, 1)).toEqual({ name: '2', color: SWITCH_PALETTE[1].color });
+        expect(resolveSwitch(configured, 1)).toEqual({ name: '2', color: switchPalette()[1].color });
     });
 
     it.each([[undefined], [null], [[]]])('numbers every switch while none is configured (%s)', (switches) => {
-        expect(resolveSwitch(switches, 2)).toEqual({ name: '3', color: SWITCH_PALETTE[2].color });
+        expect(resolveSwitch(switches, 2)).toEqual({ name: '3', color: switchPalette()[2].color });
     });
 
     it('reuses the palette colours for switches beyond the palette', () => {
-        expect(resolveSwitch([], SWITCH_PALETTE.length + 1)).toEqual({ name: String(SWITCH_PALETTE.length + 2), color: SWITCH_PALETTE[1].color });
+        expect(resolveSwitch([], switchPalette().length + 1)).toEqual({ name: String(switchPalette().length + 2), color: switchPalette()[1].color });
     });
 
     it('suggests the palette entries in order', () => {
-        expect(suggestSwitch([])).toEqual(SWITCH_PALETTE[0]);
-        expect(suggestSwitch([SWITCH_PALETTE[0]])).toEqual(SWITCH_PALETTE[1]);
+        expect(suggestSwitch([])).toEqual(switchPalette()[0]);
+        expect(suggestSwitch([switchPalette()[0]])).toEqual(switchPalette()[1]);
+    });
+
+    it('suggests the names in the default language with the other language as translation', () => {
+        setBaseLanguage('en');
+
+        expect(suggestSwitch([])).toEqual({ name: 'Blue', color: '#9DAEDA', translations: { de: { name: 'Blau' } } });
     });
 
     it('suggests a number when the palette name is taken or used up', () => {
-        expect(suggestSwitch([{ name: 'Rot', color: '#000000' }])).toEqual({ name: '2', color: SWITCH_PALETTE[1].color });
-        expect(suggestSwitch(SWITCH_PALETTE).name).toBe(String(SWITCH_PALETTE.length + 1));
+        expect(suggestSwitch([{ name: 'Rot', color: '#000000' }])).toEqual({ name: '2', color: switchPalette()[1].color });
+        expect(suggestSwitch(switchPalette()).name).toBe(String(switchPalette().length + 1));
     });
 
     it('passes the colour on as a CSS variable', () => {
@@ -75,6 +82,14 @@ describe('floor plan', () => {
             expect(plan.elements.filter(element => element.type === 'text').map(element => element.text)).toEqual(['getränke', 'essen', 'toilette', '↓', 'essen', 'toilette', '↓']);
             // Four rows in front of the main switch, two in front of every other one
             expect(plan.elements.filter(element => element.type === 'row')).toHaveLength(4 + (count - 1) * 2);
+        });
+
+        it('labels the room in the default language and keeps the other language as translation', () => {
+            setBaseLanguage('en');
+
+            const [drinks] = createDefaultFloorPlan(1).elements.filter(element => element.type === 'text');
+
+            expect(drinks).toMatchObject({ text: 'drinks', translations: { de: { text: 'getränke' } } });
         });
 
         it('turns the corner switches of the classic room towards the audience', () => {

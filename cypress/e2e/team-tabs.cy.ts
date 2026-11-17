@@ -38,14 +38,14 @@ describe('team tabs', () => {
     cy.contains('Switch Blau').should('not.exist');
     cy.contains('h3', 'Nächstes Spiel').parents('.flexSpiel').should('contain', 'Pause');
 
-    cy.get('select').select('Alle Spiele');
+    cy.contains('.segmentedToggle button', 'Alle Spiele').click();
 
     cy.contains('h3', 'Aktuelle Spiele');
     cy.contains('Switch Blau').should('exist');
     cy.get('body').should('have.class', 'all-games-selected');
 
     cy.reload();
-    cy.get('select').should('have.value', 'Alle Spiele');
+    cy.contains('.segmentedToggle button', 'Alle Spiele').should('have.attr', 'aria-pressed', 'true');
   });
 
   it('navigates between the tabs through the tab bar', () => {

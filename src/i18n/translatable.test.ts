@@ -1,3 +1,4 @@
+import { setBaseLanguage } from './languages';
 import { fitTranslatedList, localize, pruneTranslations,sanitizeTranslations, setTranslation, translatedChange, translatedValue, Translations } from './translatable';
 
 type Question = { questionText: string; options: string[] };
@@ -30,6 +31,28 @@ describe('localize', () => {
         expect(localize(question({ en: { questionText: '  ' } }), 'en').questionText).toBe('Wer gewinnt?');
         expect(localize(question({ fr: { questionText: 'Qui gagne ?' } }), 'en').questionText).toBe('Wer gewinnt?');
         expect(localize(question(), 'en').questionText).toBe('Wer gewinnt?');
+    });
+});
+
+describe('with English as default language', () => {
+    beforeEach(() => setBaseLanguage('en'));
+
+    it('shows the base texts to English readers and the German translation to German readers', () => {
+        const item = { questionText: 'Who wins?', options: ['Red', 'Blue'], translations: { de: { questionText: 'Wer gewinnt?' } } };
+
+        expect(localize(item, 'en')).toBe(item);
+        expect(localize(item, 'de')).toMatchObject({ questionText: 'Wer gewinnt?', options: ['Red', 'Blue'] });
+    });
+
+    it('edits the base texts in English and German as a translation', () => {
+        expect(translatedChange<Question, 'questionText'>({}, 'questionText', 'en', 'Who wins?')).toEqual({ questionText: 'Who wins?' });
+        expect(translatedChange<Question, 'questionText'>({}, 'questionText', 'de', 'Wer gewinnt?'))
+            .toEqual({ translations: { de: { questionText: 'Wer gewinnt?' } } });
+    });
+
+    it('drops translations into English, which the base texts already hold', () => {
+        expect(pruneTranslations<Question>({ en: { questionText: 'Who wins?' }, de: { questionText: 'Wer gewinnt?' } }))
+            .toEqual({ de: { questionText: 'Wer gewinnt?' } });
     });
 });
 

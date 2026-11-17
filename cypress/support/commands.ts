@@ -38,6 +38,7 @@ export const scheduleOverview = (overrides: Record<string, unknown> = {}) => ({
     finalScheduleCreated: false,
     numberOfRoundsUnplayed: 5,
     tournamentOpen: true,
+    rankingHiddenRounds: 1,
     ...overrides,
 });
 
@@ -92,6 +93,21 @@ Cypress.Commands.add('toast', (message: string) => {
     return cy.get('ion-toast').shadow().contains(message);
 });
 
+const visibleImageSelectToggle = () => cy.get('.imageSelectToggle').filter((_, toggle) => Cypress.dom.isVisible(toggle));
+
+Cypress.Commands.add('openImageSelect', () => {
+    visibleImageSelectToggle().should('have.length', 1).then(toggle => {
+        if (toggle.attr('aria-expanded') !== 'true') {
+            cy.wrap(toggle).click();
+        }
+    });
+    return visibleImageSelectToggle().parent().find('.imageSelectMenu [role="option"]');
+});
+
+Cypress.Commands.add('chooseImageSelectOption', (label: string) => {
+    cy.openImageSelect().filter((_, option) => option.textContent === label).should('have.length', 1).click();
+});
+
 declare global {
     // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace Cypress {
@@ -106,6 +122,10 @@ declare global {
             loginAsAdmin(): Chainable<void>;
             // Finds the toast showing the given message
             toast(message: string): Chainable<JQuery<HTMLElement>>;
+            // Opens the image dropdown and yields its options; wrap in `within` when a page shows more than one
+            openImageSelect(): Chainable<JQuery<HTMLElement>>;
+            // Picks the option with exactly the given label from the image dropdown
+            chooseImageSelectOption(label: string): Chainable<void>;
         }
     }
 }

@@ -4,7 +4,7 @@ import { backend, stubDefaultBackend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { currentPath, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
-import { DEFAULT_PROGRAM, parseProgram, serializeProgram } from '../../util/layout/program';
+import { defaultProgram, parseProgram, serializeProgram } from '../../util/layout/program';
 import Program from './Program';
 import { ProgramEntry } from '../../util/api/config/interfaces';
 
@@ -21,6 +21,11 @@ const texts = () => screen.queryAllByLabelText(/^Text von Programmpunkt/).map(in
 const times = () => screen.queryAllByLabelText(/^Zeit von Programmpunkt/).map(input => (input as HTMLInputElement).value);
 const savedProgram = () => parseProgram((backend.requestsTo('PUT', ADMIN_SETTINGS_URL)[0].body as TournamentDTO).program);
 const set = (label: string, value: string) => fireEvent.change(screen.getByLabelText(label), { target: { value } });
+const iconSelect = (number: number) => screen.getByRole('button', { name: new RegExp(`^Symbol von Programmpunkt ${number}`) });
+const chooseIcon = (number: number, label: string) => {
+    fireEvent.click(iconSelect(number));
+    fireEvent.click(screen.getByRole('option', { name: label }));
+};
 
 const TWO_ENTRIES: ProgramEntry[] = [
     { icon: 'megaphone', time: '10:00', text: 'Begrüßung' },
@@ -37,9 +42,9 @@ describe('admin Program', () => {
     it('starts from the default program while none is stored', async () => {
         renderPage();
 
-        await waitFor(() => expect(texts()).toEqual(DEFAULT_PROGRAM.map(entry => entry.text)));
-        expect(times()).toEqual(DEFAULT_PROGRAM.map(entry => entry.time));
-        expect(screen.getByLabelText('Symbol von Programmpunkt 3')).toHaveValue('pizza');
+        await waitFor(() => expect(texts()).toEqual(defaultProgram().map(entry => entry.text)));
+        expect(times()).toEqual(defaultProgram().map(entry => entry.time));
+        expect(iconSelect(3)).toHaveAccessibleName('Symbol von Programmpunkt 3: Essen');
     });
 
     it('loads the stored program', async () => {
@@ -58,7 +63,7 @@ describe('admin Program', () => {
         await waitFor(() => expect(texts()).toHaveLength(2));
 
         set('Text von Programmpunkt 1', ' Hallo ');
-        set('Symbol von Programmpunkt 1', 'music');
+        chooseIcon(1, 'Musik');
         fireEvent.click(screen.getByText(ADD));
         set('Zeit von Programmpunkt 3', '13:00');
         set('Text von Programmpunkt 3', 'Finale');
@@ -108,7 +113,7 @@ describe('admin Program', () => {
 
         fireEvent.click(screen.getByText('Standard-Programm'));
 
-        expect(texts()).toEqual(DEFAULT_PROGRAM.map(entry => entry.text));
+        expect(texts()).toEqual(defaultProgram().map(entry => entry.text));
     });
 
     it('requires a text for every entry', async () => {

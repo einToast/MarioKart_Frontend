@@ -1,13 +1,15 @@
 import { useState } from 'react';
-import { DEFAULT_LANGUAGE, Language } from '../i18n/languages';
+import { Language } from '../i18n/languages';
+import { useBaseLanguage } from './useBaseLanguage';
 import { setTranslation, Translations } from '../i18n/translatable';
 import { QuestionTranslation } from '../util/api/config/dto';
 
 export const useQuestionTranslations = () => {
-    const [language, setLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const baseLanguage = useBaseLanguage();
+    const [language, setLanguage] = useState<Language>(baseLanguage);
     const [translations, setTranslations] = useState<Translations<QuestionTranslation> | undefined>(undefined);
 
-    const translating = language !== DEFAULT_LANGUAGE;
+    const translating = language !== baseLanguage;
 
     const questionText = translations?.[language]?.questionText ?? '';
 
@@ -27,7 +29,7 @@ export const useQuestionTranslations = () => {
         });
 
     const reset = (initial?: Translations<QuestionTranslation>) => {
-        setLanguage(DEFAULT_LANGUAGE);
+        setLanguage(baseLanguage);
         setTranslations(initial);
     };
 

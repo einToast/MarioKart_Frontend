@@ -1,0 +1,59 @@
+.segmentedToggle {
+    display: inline-flex;
+    flex: 0 0 auto;
+    max-width: 100%;
+    gap: 2px;
+    padding: 3px;
+    border-radius: 999px;
+    background-color: rgba(var(--ion-color-bg02-rgb), 0.55);
+    border: 1px solid rgba(var(--ion-color-text01-rgb), 0.3);
+
+    button {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 4px 8px;
+        border: none;
+        border-radius: 999px;
+        background: transparent;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: Poppins, sans-serif;
+        font-size: 12px;
+        line-height: 1.2;
+        color: #ffffff;
+    }
+
+    button::after {
+        content: attr(data-label);
+        content: attr(data-label) / "";
+        height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        pointer-events: none;
+        font-weight: 600;
+    }
+
+    button:hover:not(:disabled):not([aria-pressed="true"]) {
+        background-color: rgba(var(--ion-color-text01-rgb), 0.12);
+    }
+
+    button[aria-pressed="true"] {
+        background: linear-gradient(var(--ion-color-gradient01), var(--ion-color-gradient02));
+        font-weight: 600;
+    }
+
+    button:focus-visible {
+        outline: 2px solid var(--ion-color-text01);
+        outline-offset: 1px;
+    }
+
+    button:disabled {
+        cursor: default;
+        opacity: 0.5;
+    }
+
+    button[aria-pressed="true"]:disabled {
+        opacity: 0.7;
+    }
+}

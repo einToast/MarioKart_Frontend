@@ -12,6 +12,7 @@ import { Message, StompSubscription } from "@stomp/stompjs";
 import { FloorPlanElementType } from "../../layout/floorPlan";
 import { ProgramIcon } from "../../layout/program";
 import { Translations } from "../../../i18n/translatable";
+import { Language } from "../../../i18n/languages";
 
 export type RoundOrBreak = RoundReturnDTO | BreakReturnDTO | null;
 
@@ -19,6 +20,13 @@ export interface User {
   character: string | null;
   teamId: number;
   name: string | null;
+}
+
+export interface LanguageDropdownProps {
+  value: Language;
+  onChange: (language: Language) => void;
+  label: string;
+  labelId?: string;
 }
 
 export interface LoginProps {
@@ -60,9 +68,13 @@ export interface OcrConfigModalResult {
   ocrConfigChanged?: boolean;
 }
 
+export interface TournamentSettingsModalResult {
+  settingsChanged?: boolean;
+}
+
 export interface RoundHeaderProps {
   title: string;
-  onOptionChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onOptionChange: (option: string) => void;
   selectedOption: string;
   loading: boolean;
 }
@@ -250,6 +262,28 @@ export interface ProgramEntry {
   time: string;
   text: string;
   translations?: Translations<TextTranslation>;
+}
+
+export interface HowToPlayRule {
+  text: string;
+  translations?: Translations<TextTranslation>;
+}
+
+export interface HowToPlay {
+  videoUrl: string;
+  rules: HowToPlayRule[];
+}
+
+export interface HowToPlayRuleRow {
+  key: number;
+  rule: HowToPlayRule;
+}
+
+export interface TournamentSettingsForm {
+  roundMinutes: number | '';
+  rankingHiddenRounds: number | '';
+  maxAnswersPerTeam: number | '';
+  surveyKeyDays: number | '';
 }
 
 export interface GamePhoto {

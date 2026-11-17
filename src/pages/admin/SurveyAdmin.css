@@ -78,6 +78,23 @@ form {
         top: 0;
     }
 
+    .borderContainer .segmentedToggle {
+        border-radius: 16px;
+
+        button {
+            white-space: normal;
+            border-radius: 13px;
+        }
+    }
+
+    .borderContainer > .segmentedToggle {
+        margin: 10px;
+    }
+
+    .borderContainer.multipleSelect .segmentedToggle {
+        margin: 10px 0;
+    }
+
     .borderContainer.multipleSelect {
         display: flex;
         margin-top: 10px;

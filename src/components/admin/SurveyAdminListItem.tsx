@@ -70,6 +70,7 @@ const SurveyAdminListItem: React.FC<SurveyAdminListItemProps> = ({
                 <IonIcon
                     slot="end"
                     icon={createOutline}
+                    title={t('admin.surveys.change')}
                     onClick={() => onOpenChangeModal(survey)}
                     style={{ cursor: 'pointer' }}
                     tabIndex={0}
