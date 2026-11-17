@@ -45,6 +45,10 @@ updates:
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
+      i18next:
+        patterns:
+          - "i18next"
+          - "react-i18next"
       npm-minor:
         patterns:
           - "*"
