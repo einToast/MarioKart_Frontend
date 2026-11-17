@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
-import { currentPath, renderWithRouter } from '../../test/render';
+import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
 import { defaultProgram, parseProgram, serializeProgram } from '../../util/layout/program';
 import Program from './Program';
@@ -147,12 +147,28 @@ describe('admin Program', () => {
         await expectErrorToast('Ungültige Einstellungen');
     });
 
-    it('shows an error when the settings cannot be loaded', async () => {
+    it('shows an error and cannot overwrite the stored program when the settings cannot be loaded', async () => {
         backend.fail('GET', SETTINGS_URL, 500);
 
         renderPage();
 
         await expectErrorToast('Einstellungen konnten nicht geladen werden');
+        expect(buttonOf(SAVE).disabled).toBe(true);
+        expect(screen.queryByText(ADD)).not.toBeInTheDocument();
+    });
+
+    it('offers the program for editing only once the stored one arrived', async () => {
+        const release = backend.getLater(SETTINGS_URL, { tournamentOpen: true, program: serializeProgram(TWO_ENTRIES) });
+        renderPage();
+
+        await waitFor(() => expect(backend.requestsTo('GET', SETTINGS_URL)).toHaveLength(1));
+        expect(screen.queryByText(ADD)).not.toBeInTheDocument();
+        expect(buttonOf(SAVE).disabled).toBe(true);
+
+        release();
+
+        await waitFor(() => expect(texts()).toEqual(['Begrüßung', 'Runden']));
+        expect(buttonOf(SAVE).disabled).toBe(false);
     });
 
     it('returns to the dashboard', async () => {

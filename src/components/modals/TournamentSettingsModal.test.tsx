@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { backend } from '../../test/backend';
 import { expectErrorToast } from '../../test/overlays';
+import { buttonOf } from '../../test/render';
 import { getBaseLanguage } from '../../i18n/languages';
 import TournamentSettingsModal from './TournamentSettingsModal';
 
@@ -41,6 +42,17 @@ describe('TournamentSettingsModal', () => {
 
         expect(screen.queryByText('Turniereinstellungen')).not.toBeInTheDocument();
         expect(backend.requests).toEqual([]);
+    });
+
+    it('offers no fields to edit and nothing to save until the stored settings arrived', async () => {
+        renderModal();
+
+        expect(screen.queryByRole('button', { name: /^Standardsprache: / })).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(ROUND_MINUTES)).not.toBeInTheDocument();
+        expect(buttonOf('Speichern').disabled).toBe(true);
+
+        await waitFor(() => expect(defaultLanguageToggle()).toHaveAccessibleName('Standardsprache: Deutsch'));
+        expect(buttonOf('Speichern').disabled).toBe(false);
     });
 
     it('shows the stored settings', async () => {

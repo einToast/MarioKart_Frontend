@@ -20,6 +20,7 @@ interface Route {
     method: Method;
     url: string | RegExp;
     responder: Responder | 'network-error';
+    released?: Promise<void>;
 }
 
 const parseBody = (data: unknown): unknown => {
@@ -70,6 +71,13 @@ class FakeBackend {
         return this.on(method, url, { status, data });
     }
 
+    getLater(url: string | RegExp, data?: unknown): () => void {
+        let release!: () => void;
+        const released = new Promise<void>(resolve => { release = resolve; });
+        this.routes.unshift({ method: 'GET', url, responder: { data }, released });
+        return release;
+    }
+
     // Rejects like a request that never reached the server (AxiosError without a response)
     networkError(method: Method, url: string | RegExp): this {
         this.routes.unshift({ method, url, responder: 'network-error' });
@@ -116,11 +124,17 @@ class FakeBackend {
         if (route.responder === 'network-error') {
             return Promise.reject(new AxiosError('Network Error', AxiosError.ERR_NETWORK, config, {}));
         }
+        const responder = route.responder;
+        return route.released
+            ? route.released.then(() => this.reply(request, responder, config))
+            : this.reply(request, responder, config);
+    };
 
+    private reply(request: BackendRequest, responder: Responder, config: InternalAxiosRequestConfig): Promise<AxiosResponse> {
         // A responder that throws must reject the request rather than throw out of the adapter
         let reply: BackendReply;
         try {
-            reply = typeof route.responder === 'function' ? route.responder(request) : route.responder;
+            reply = typeof responder === 'function' ? responder(request) : responder;
         } catch (error) {
             return Promise.reject(error);
         }
@@ -143,7 +157,7 @@ class FakeBackend {
             {},
             response
         ));
-    };
+    }
 
     private matches(pattern: string | RegExp, url: string): boolean {
         return typeof pattern === 'string' ? pattern === url : pattern.test(url);
