@@ -1,8 +1,9 @@
-import { DEFAULT_PROGRAM, defaultProgram, parseProgram, PROGRAM_ICONS, resolveProgram, serializeProgram } from './program';
+import { setBaseLanguage } from '../../i18n/languages';
+import { defaultProgram, parseProgram, PROGRAM_ICONS, resolveProgram, serializeProgram } from './program';
 
 describe('program', () => {
     it('has the classic schedule of the day as default', () => {
-        expect(DEFAULT_PROGRAM.map(entry => `${entry.time} ${entry.text}`)).toEqual([
+        expect(defaultProgram().map(entry => `${entry.time} ${entry.text}`)).toEqual([
             '16:00 - 16:45 Arne labert',
             '16:45 - 18:30 Runde 1 - 5',
             '18:30 - 19:00 Pause',
@@ -10,7 +11,13 @@ describe('program', () => {
             '20:00 - 20:45 Finale',
             '21:00 Siegerehrung',
         ]);
-        DEFAULT_PROGRAM.forEach(entry => expect(PROGRAM_ICONS[entry.icon]).toBeDefined());
+        defaultProgram().forEach(entry => expect(PROGRAM_ICONS[entry.icon]).toBeDefined());
+    });
+
+    it('writes the default in the default language and keeps the other language as translation', () => {
+        setBaseLanguage('en');
+
+        expect(defaultProgram()[2]).toEqual({ icon: 'pizza', time: '18:30 - 19:00', text: 'Break', translations: { de: { text: 'Pause' } } });
     });
 
     it('hands out an own copy of the default', () => {
@@ -53,8 +60,8 @@ describe('program', () => {
     });
 
     it('resolves to the default only while no readable program is stored', () => {
-        expect(resolveProgram(null)).toEqual(DEFAULT_PROGRAM);
-        expect(resolveProgram('broken')).toEqual(DEFAULT_PROGRAM);
+        expect(resolveProgram(null)).toEqual(defaultProgram());
+        expect(resolveProgram('broken')).toEqual(defaultProgram());
         expect(resolveProgram(serializeProgram([]))).toEqual([]);
     });
 });

@@ -4,7 +4,7 @@ import { backend, stubDefaultBackend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { currentPath, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
-import { DEFAULT_PROGRAM, parseProgram, serializeProgram } from '../../util/layout/program';
+import { defaultProgram, parseProgram, serializeProgram } from '../../util/layout/program';
 import Program from './Program';
 import { ProgramEntry } from '../../util/api/config/interfaces';
 
@@ -42,8 +42,8 @@ describe('admin Program', () => {
     it('starts from the default program while none is stored', async () => {
         renderPage();
 
-        await waitFor(() => expect(texts()).toEqual(DEFAULT_PROGRAM.map(entry => entry.text)));
-        expect(times()).toEqual(DEFAULT_PROGRAM.map(entry => entry.time));
+        await waitFor(() => expect(texts()).toEqual(defaultProgram().map(entry => entry.text)));
+        expect(times()).toEqual(defaultProgram().map(entry => entry.time));
         expect(iconSelect(3)).toHaveAccessibleName('Symbol von Programmpunkt 3: Essen');
     });
 
@@ -113,7 +113,7 @@ describe('admin Program', () => {
 
         fireEvent.click(screen.getByText('Standard-Programm'));
 
-        expect(texts()).toEqual(DEFAULT_PROGRAM.map(entry => entry.text));
+        expect(texts()).toEqual(defaultProgram().map(entry => entry.text));
     });
 
     it('requires a text for every entry', async () => {

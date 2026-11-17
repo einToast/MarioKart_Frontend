@@ -1,4 +1,4 @@
-import { getBaseLanguage } from './languages';
+import { DEFAULT_LANGUAGE, getBaseLanguage, Language, translationLanguages } from './languages';
 
 export type TranslatableValue = string | string[];
 
@@ -9,6 +9,17 @@ export type Translations<T extends TranslatableFields> = Partial<Record<string, 
 export interface Translatable<T extends TranslatableFields> {
     translations?: Translations<T>;
 }
+
+export const inBaseLanguage = <K extends string>(
+    field: K,
+    texts: Record<typeof DEFAULT_LANGUAGE, string> & Partial<Record<Language, string>>,
+): Record<K, string> & { translations?: Translations<Record<K, string>> } => {
+    const translations = Object.fromEntries(translationLanguages()
+        .filter(language => texts[language])
+        .map(language => [language, { [field]: texts[language] }]));
+    const base = { [field]: texts[getBaseLanguage()] ?? texts[DEFAULT_LANGUAGE] } as Record<K, string>;
+    return Object.keys(translations).length > 0 ? { ...base, translations: translations as Translations<Record<K, string>> } : base;
+};
 
 const hasText = (value: unknown): value is string => typeof value === 'string' && value.trim() !== '';
 

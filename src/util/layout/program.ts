@@ -11,7 +11,7 @@ import {
     trophyOutline,
 } from "ionicons/icons";
 import { ProgramEntry, ProgramRow, TextTranslation } from "../api/config/interfaces";
-import { pruneTranslations, sanitizeTranslations } from "../../i18n/translatable";
+import { inBaseLanguage, pruneTranslations, sanitizeTranslations } from "../../i18n/translatable";
 
 export const MAX_PROGRAM_ENTRIES = 30;
 export const MAX_PROGRAM_TIME_LENGTH = 20;
@@ -36,16 +36,14 @@ export type ProgramIcon = keyof typeof PROGRAM_ICONS;
 export const DEFAULT_PROGRAM_ICON: ProgramIcon = 'time';
 
 // Shown until an admin saves a program of their own
-export const DEFAULT_PROGRAM: ProgramEntry[] = [
-    { icon: 'megaphone', time: '16:00 - 16:45', text: 'Arne labert', translations: { en: { text: 'Arne talks' } } },
-    { icon: 'play', time: '16:45 - 18:30', text: 'Runde 1 - 5', translations: { en: { text: 'Rounds 1 - 5' } } },
-    { icon: 'pizza', time: '18:30 - 19:00', text: 'Pause', translations: { en: { text: 'Break' } } },
-    { icon: 'play', time: '19:00 - 20:00', text: 'Runde 6 - 8', translations: { en: { text: 'Rounds 6 - 8' } } },
-    { icon: 'final', time: '20:00 - 20:45', text: 'Finale', translations: { en: { text: 'Final' } } },
-    { icon: 'medal', time: '21:00', text: 'Siegerehrung', translations: { en: { text: 'Award ceremony' } } },
+export const defaultProgram = (): ProgramEntry[] => [
+    { icon: 'megaphone', time: '16:00 - 16:45', ...inBaseLanguage('text', { de: 'Arne labert', en: 'Arne talks' }) },
+    { icon: 'play', time: '16:45 - 18:30', ...inBaseLanguage('text', { de: 'Runde 1 - 5', en: 'Rounds 1 - 5' }) },
+    { icon: 'pizza', time: '18:30 - 19:00', ...inBaseLanguage('text', { de: 'Pause', en: 'Break' }) },
+    { icon: 'play', time: '19:00 - 20:00', ...inBaseLanguage('text', { de: 'Runde 6 - 8', en: 'Rounds 6 - 8' }) },
+    { icon: 'final', time: '20:00 - 20:45', ...inBaseLanguage('text', { de: 'Finale', en: 'Final' }) },
+    { icon: 'medal', time: '21:00', ...inBaseLanguage('text', { de: 'Siegerehrung', en: 'Award ceremony' }) },
 ];
-
-export const defaultProgram = (): ProgramEntry[] => DEFAULT_PROGRAM.map(entry => structuredClone(entry));
 
 let nextProgramRowKey = 0;
 export const toProgramRow = (entry: ProgramEntry): ProgramRow => ({ key: nextProgramRowKey++, entry });
