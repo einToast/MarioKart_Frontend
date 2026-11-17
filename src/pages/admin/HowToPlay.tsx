@@ -10,7 +10,7 @@ import Toast from "../../components/Toast";
 import { Language } from "../../i18n/languages";
 import { useBaseLanguage } from "../../hooks/useBaseLanguage";
 import { translatedChange, translatedValue } from "../../i18n/translatable";
-import { HowToPlayRule, HowToPlayRuleRow, TextTranslation } from "../../util/api/config/interfaces";
+import { HowToPlay as HowToPlayContent, HowToPlayRule, HowToPlayRuleRow, TextTranslation } from "../../util/api/config/interfaces";
 import {
     defaultHowToPlay,
     MAX_RULE_TEXT_LENGTH,
@@ -31,6 +31,7 @@ const HowToPlay: React.FC = () => {
     const { t } = useTranslation();
     const [videoUrl, setVideoUrl] = useState<string>('');
     const [rows, setRows] = useState<HowToPlayRuleRow[]>([]);
+    const [loaded, setLoaded] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const baseLanguage = useBaseLanguage();
     const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
@@ -47,13 +48,14 @@ const HowToPlay: React.FC = () => {
         setShowToast(true);
     };
 
-    const loadDefault = async () => {
-        const howToPlay = await defaultHowToPlay();
+    const show = (howToPlay: HowToPlayContent) => {
         setVideoUrl(howToPlay.videoUrl);
         setRows(howToPlay.rules.map(toRuleRow));
     };
 
     useEffect(() => {
+        let active = true;
+        setLoaded(false);
         const loadHowToPlay = async () => {
             const isAuthenticated = await PublicCookiesService.checkToken();
             if (!isAuthenticated) {
@@ -62,16 +64,21 @@ const HowToPlay: React.FC = () => {
             }
 
             const settings = await PublicSettingsService.getSettings();
-            const stored = parseHowToPlay(settings.howToPlay);
-            if (stored) {
-                setVideoUrl(stored.videoUrl);
-                setRows(stored.rules.map(toRuleRow));
-            } else {
-                await loadDefault();
+            const howToPlay = parseHowToPlay(settings.howToPlay) ?? await defaultHowToPlay();
+            if (active) {
+                show(howToPlay);
+                setLoaded(true);
             }
         };
 
-        loadHowToPlay().catch(error => showError(error.message));
+        loadHowToPlay().catch(error => {
+            if (active) {
+                showError(error.message);
+            }
+        });
+        return () => {
+            active = false;
+        };
     }, [location]);
 
     const handleChange = (index: number, changes: Partial<HowToPlayRule>) => {
@@ -121,7 +128,7 @@ const HowToPlay: React.FC = () => {
                     </LinearGradient>
                 </h2>
                 <p>{t('admin.howToPlay.description')}</p>
-                <div className="howToPlayVideo">
+                {loaded && <div className="howToPlayVideo">
                     <label htmlFor="howToPlayVideo">{t('admin.howToPlay.videoUrl')}</label>
                     <input id="howToPlayVideo"
                         type="url"
@@ -131,10 +138,10 @@ const HowToPlay: React.FC = () => {
                         onChange={(e) => setVideoUrl(e.target.value)}
                     />
                     <p>{t('admin.howToPlay.videoHint')}</p>
-                </div>
+                </div>}
                 <TranslationLanguageTabs value={editLanguage} onChange={setEditLanguage} />
 
-                <div className="programList">
+                {loaded && <div className="programList">
                     {rows.map(({ key: rowKey, rule }, index) => (
                         <div className="programRow" key={rowKey}>
                             <input
@@ -160,16 +167,16 @@ const HowToPlay: React.FC = () => {
                         >
                             {t('admin.howToPlay.add')}
                         </button>
-                        <button type="button" onClick={() => loadDefault().catch(error => showError(error.message))}>{t('admin.howToPlay.default')}</button>
+                        <button type="button" onClick={() => defaultHowToPlay().then(show).catch(error => showError(error.message))}>{t('admin.howToPlay.default')}</button>
                     </div>
-                </div>
+                </div>}
                 <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleSave}
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled || !loaded} onClick={handleSave}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (loaded && (e.key === 'Enter' || e.key === ' ')) {
                                 handleSave();
                             }
                         }}

@@ -1,6 +1,6 @@
 import { IonButton, IonCheckbox, IonContent, IonIcon, IonModal } from '@ionic/react';
 import { arrowForwardOutline } from "ionicons/icons";
-import React, { useEffect, useId, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import "../../pages/RegisterTeam.css";
 import "../../pages/admin/SurveyAdmin.css";
 import { OcrConfigModalResult } from "../../util/api/config/interfaces";
@@ -14,8 +14,10 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     const { t } = useTranslation();
     const modelLabelId = useId();
 
-    const [providers, setProviders] = useState<string[]>([]);
+    const [providers, setProviders] = useState<string[] | null>(null);
     const [provider, setProvider] = useState<string>('');
+    const shownProvider = useRef<string>('');
+    const [configLoaded, setConfigLoaded] = useState<boolean>(false);
     const [models, setModels] = useState<string[]>([]);
     const [model, setModel] = useState<string>('');
     const [thinking, setThinking] = useState<string>('');
@@ -43,18 +45,36 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
     };
 
     const selectProvider = (providerName: string) => {
+        shownProvider.current = providerName;
         setProvider(providerName);
         setModels([]);
+        setConfigLoaded(false);
+        const isShown = () => shownProvider.current === providerName;
         AdminOcrService.getProviderConfig(providerName)
             .then(config => {
-                setModel(config.model);
-                setThinking(config.thinking);
+                if (isShown()) {
+                    setModel(config.model);
+                    setThinking(config.thinking);
+                    setConfigLoaded(true);
+                }
             })
-            .catch(error => showError(error.message));
+            .catch(error => {
+                if (isShown()) {
+                    showError(error.message);
+                }
+            });
         // Without the list of models the model is typed in
         AdminOcrService.getProviderModels(providerName)
-            .then(setModels)
-            .catch(error => showError(error.message));
+            .then(providerModels => {
+                if (isShown()) {
+                    setModels(providerModels);
+                }
+            })
+            .catch(error => {
+                if (isShown()) {
+                    showError(error.message);
+                }
+            });
     };
 
     const handleChange = () => {
@@ -70,8 +90,14 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
         if (!showModal) {
             return;
         }
+        let active = true;
+        setProviders(null);
+        setConfigLoaded(false);
         Promise.all([AdminOcrService.getAvailableProviders(), PublicSettingsService.getSettings()])
             .then(([available, settings]) => {
+                if (!active) {
+                    return;
+                }
                 const standard = available.find(providerName => providerName === settings.ocrProvider) ?? available[0];
                 setProviders(available);
                 setStandardProvider(standard ?? '');
@@ -80,7 +106,15 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                     selectProvider(standard);
                 }
             })
-            .catch(error => showError(error.message));
+            .catch(error => {
+                if (active) {
+                    showError(error.message);
+                }
+            });
+        return () => {
+            active = false;
+            shownProvider.current = '';
+        };
     }, [showModal]);
 
     // The configured values stay selectable when the provider does not list them
@@ -91,9 +125,8 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ ocrConfigChanged: false })}>
             <IonContent>
                 <h4>{t('admin.ocr.title')}</h4>
-                {providers.length === 0 ? (
-                    <p>{t('admin.ocr.noProvider')}</p>
-                ) : (
+                {providers?.length === 0 && <p>{t('admin.ocr.noProvider')}</p>}
+                {providers && providers.length > 0 && (
                     <form onSubmit={handleChange}>
                         <IonCheckbox labelPlacement="end"
                             checked={relativePoints}
@@ -167,10 +200,10 @@ const OcrConfigModal: React.FC<{ showModal: boolean, closeModal: (result: OcrCon
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton className={"round"} disabled={provider === ''} onClick={handleChange}
+                    <IonButton className={"round"} disabled={!configLoaded} onClick={handleChange}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (configLoaded && (e.key === 'Enter' || e.key === ' ')) {
                                 handleChange();
                             }
                         }}

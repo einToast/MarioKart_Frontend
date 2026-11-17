@@ -32,6 +32,7 @@ import { translatedChange, translatedValue } from "../../i18n/translatable";
 const Program: React.FC = () => {
     const { t } = useTranslation();
     const [rows, setRows] = useState<ProgramRow[]>([]);
+    const [loaded, setLoaded] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const baseLanguage = useBaseLanguage();
     const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
@@ -49,6 +50,8 @@ const Program: React.FC = () => {
     };
 
     useEffect(() => {
+        let active = true;
+        setLoaded(false);
         const loadProgram = async () => {
             const isAuthenticated = await PublicCookiesService.checkToken();
             if (!isAuthenticated) {
@@ -57,10 +60,20 @@ const Program: React.FC = () => {
             }
 
             const settings = await PublicSettingsService.getSettings();
-            setRows(resolveProgram(settings.program).map(toProgramRow));
+            if (active) {
+                setRows(resolveProgram(settings.program).map(toProgramRow));
+                setLoaded(true);
+            }
         };
 
-        loadProgram().catch(error => showError(error.message));
+        loadProgram().catch(error => {
+            if (active) {
+                showError(error.message);
+            }
+        });
+        return () => {
+            active = false;
+        };
     }, [location]);
 
     const handleChange = (index: number, changes: Partial<ProgramEntry>) => {
@@ -106,7 +119,7 @@ const Program: React.FC = () => {
                 <p>{t('admin.program.description')}</p>
                 <TranslationLanguageTabs value={editLanguage} onChange={setEditLanguage} />
 
-                <div className="programList">
+                {loaded && <div className="programList">
                     {rows.map(({ key: rowKey, entry }, index) => (
                         <div className="programRow" key={rowKey}>
                             <ImageSelect
@@ -155,14 +168,14 @@ const Program: React.FC = () => {
                         </button>
                         <button type="button" onClick={() => setRows(defaultProgram().map(toProgramRow))}>{t('admin.program.default')}</button>
                     </div>
-                </div>
+                </div>}
                 <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleSave}
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled || !loaded} onClick={handleSave}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (loaded && (e.key === 'Enter' || e.key === ' ')) {
                                 handleSave();
                             }
                         }}

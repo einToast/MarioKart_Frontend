@@ -29,6 +29,7 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
 
     const [form, setForm] = useState<TournamentSettingsForm>(EMPTY_FORM);
     const [defaultLanguage, setDefaultLanguage] = useState<Language>(DEFAULT_LANGUAGE);
+    const [loaded, setLoaded] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
     const [showToast, setShowToast] = useState<boolean>(false);
 
@@ -41,8 +42,13 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
         if (!showModal) {
             return;
         }
+        let active = true;
+        setLoaded(false);
         PublicSettingsService.getSettings()
             .then(settings => {
+                if (!active) {
+                    return;
+                }
                 setForm({
                     roundMinutes: settings.roundMinutes ?? '',
                     rankingHiddenRounds: settings.rankingHiddenRounds ?? '',
@@ -50,8 +56,16 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
                     surveyKeyDays: settings.surveyKeyDays ?? '',
                 });
                 setDefaultLanguage(isLanguage(settings.defaultLanguage) ? settings.defaultLanguage : DEFAULT_LANGUAGE);
+                setLoaded(true);
             })
-            .catch(error => showError(error.message));
+            .catch(error => {
+                if (active) {
+                    showError(error.message);
+                }
+            });
+        return () => {
+            active = false;
+        };
     }, [showModal]);
 
     const handleChange = (field: keyof TournamentSettingsForm, value: string) => {
@@ -96,7 +110,7 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
         <IonModal isOpen={showModal} onDidDismiss={() => closeModal({ settingsChanged: false })}>
             <IonContent>
                 <h4>{t('admin.tournamentSettings.title')}</h4>
-                <form className="tournamentSettingsForm" onSubmit={(e) => {
+                {loaded && <form className="tournamentSettingsForm" onSubmit={(e) => {
                     e.preventDefault();
                     handleSave();
                 }}>
@@ -116,7 +130,7 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
                     {numberField('rankingHiddenRounds', 0, t('admin.tournamentSettings.rankingHiddenRoundsHint'))}
                     {numberField('maxAnswersPerTeam', 1)}
                     {numberField('surveyKeyDays', 1)}
-                </form>
+                </form>}
                 <div className={"playedContainer"}>
                     <IonButton className={"secondary round"} onClick={() => closeModal({ settingsChanged: false })}
                         tabIndex={0}
@@ -131,10 +145,10 @@ const TournamentSettingsModal: React.FC<{ showModal: boolean, closeModal: (resul
                             <IonIcon slot="end" icon={arrowForwardOutline}></IonIcon>
                         </div>
                     </IonButton>
-                    <IonButton className={"round"} onClick={handleSave}
+                    <IonButton className={"round"} onClick={handleSave} disabled={!loaded}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (loaded && (e.key === 'Enter' || e.key === ' ')) {
                                 handleSave();
                             }
                         }}

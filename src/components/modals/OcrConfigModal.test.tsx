@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { backend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
 import { buttonOf } from '../../test/render';
@@ -102,6 +102,31 @@ describe('OcrConfigModal', () => {
         await waitFor(() => expect(optionsOf('Modell')).toEqual(['gpt-6.1-sol', 'gpt-6.1-luna']));
         expect(fieldBelow('Modell')).toHaveValue('gpt-6.1-sol');
         expect(optionsOf('Denkaufwand')).toEqual(['xhigh', 'minimal', 'low', 'medium', 'high']);
+    });
+
+    it('saves the configuration of the chosen provider even when the previous one answers late', async () => {
+        const releaseGeminiConfig = backend.getLater(`${OCR_URL}/gemini/config`, { provider: 'gemini', model: 'gemini-3.8-flash', thinking: 'minimal' });
+        const releaseGeminiModels = backend.getLater(`${OCR_URL}/gemini/models`, ['gemini-3.8-flash', 'gemini-3.8-pro']);
+        backend.put(`${OCR_URL}/openai/config`, {}).put(SETTINGS_URL, {});
+        const { closeModal } = renderModal();
+        await waitFor(() => expect(optionsOf('Anbieter')).toHaveLength(2));
+        expect(buttonOf(SAVE).disabled).toBe(true);
+
+        fill(fieldBelow('Anbieter'), 'openai');
+        await waitFor(() => expect(fieldBelow('Modell')).toHaveValue('gpt-6.1-sol'));
+        await act(async () => {
+            releaseGeminiConfig();
+            releaseGeminiModels();
+            await new Promise(resolve => setTimeout(resolve, 0));
+        });
+
+        expect(fieldBelow('Anbieter')).toHaveValue('openai');
+        expect(optionsOf('Modell')).toEqual(['gpt-6.1-sol', 'gpt-6.1-luna']);
+        expect(fieldBelow('Denkaufwand')).toHaveValue('xhigh');
+        fireEvent.click(screen.getByText(SAVE));
+
+        await waitFor(() => expect(closeModal).toHaveBeenCalledWith({ ocrConfigChanged: true }));
+        expect(backend.requestsTo('PUT', `${OCR_URL}/openai/config`)[0].body).toEqual({ model: 'gpt-6.1-sol', thinking: 'xhigh' });
     });
 
     it('saves the edited configuration and reports the change', async () => {

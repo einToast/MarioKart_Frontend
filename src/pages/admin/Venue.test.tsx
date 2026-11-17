@@ -3,7 +3,7 @@ import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend } from '../../test/backend';
 import { makeSwitches } from '../../test/fixtures';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
-import { currentPath, renderWithRouter } from '../../test/render';
+import { buttonOf, currentPath, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
 import { createDefaultFloorPlan, createElement, isDefaultFloorPlan, parseFloorPlan, serializeFloorPlan } from '../../util/layout/floorPlan';
 import Venue from './Venue';
@@ -171,12 +171,15 @@ describe('admin Venue', () => {
         await expectErrorToast('Ungültige Einstellungen');
     });
 
-    it('shows an error when the settings cannot be loaded', async () => {
+    it('shows an error and cannot overwrite the stored venue when the settings cannot be loaded', async () => {
         backend.fail('GET', SETTINGS_URL, 500);
 
         renderPage();
 
         await expectErrorToast('Einstellungen konnten nicht geladen werden');
+        expect(buttonOf(SAVE).disabled).toBe(true);
+        expect(screen.queryByText('+ Switch hinzufügen')).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Tisch' })).not.toBeInTheDocument();
     });
 
     it('returns to the dashboard', async () => {

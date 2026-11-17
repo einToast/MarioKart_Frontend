@@ -31,6 +31,7 @@ const Venue: React.FC = () => {
     const [rows, setRows] = useState<SwitchRow[]>([]);
     const switches = useMemo(() => rows.map(row => row.gameSwitch), [rows]);
     const [plan, setPlan] = useState<FloorPlan>(createDefaultFloorPlan(0));
+    const [loaded, setLoaded] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const baseLanguage = useBaseLanguage();
     const [editLanguage, setEditLanguage] = useState<Language>(baseLanguage);
@@ -48,6 +49,8 @@ const Venue: React.FC = () => {
     };
 
     useEffect(() => {
+        let active = true;
+        setLoaded(false);
         const loadVenue = async () => {
             const isAuthenticated = await PublicCookiesService.checkToken();
             if (!isAuthenticated) {
@@ -56,13 +59,24 @@ const Venue: React.FC = () => {
             }
 
             const settings = await PublicSettingsService.getSettings();
+            if (!active) {
+                return;
+            }
             const loadedSwitches = settings.switches ?? [];
             const loadedPlan = parseFloorPlan(settings.floorPlan) ?? createDefaultFloorPlan(loadedSwitches.length);
             setRows(loadedSwitches.map(toSwitchRow));
             setPlan(syncSwitchMarkers(loadedPlan, loadedSwitches.length));
+            setLoaded(true);
         };
 
-        loadVenue().catch(error => showError(error.message));
+        loadVenue().catch(error => {
+            if (active) {
+                showError(error.message);
+            }
+        });
+        return () => {
+            active = false;
+        };
     }, [location]);
 
     // Games refer to switches by their position, so only the last switch can be removed
@@ -110,7 +124,7 @@ const Venue: React.FC = () => {
 
                 <h3>{t('admin.venue.switches')}</h3>
                 <p>{t('admin.venue.description')}</p>
-                <div className="switchList">
+                {loaded && <div className="switchList">
                     {rows.map(({ key, gameSwitch: existing }, index) => (
                         <div className="switchRow" key={key}>
                             <span className="switchNumber" style={{ backgroundColor: existing.color }}>{index + 1}</span>
@@ -141,17 +155,17 @@ const Venue: React.FC = () => {
                     >
                         {t('admin.venue.add')}
                     </button>
-                </div>
+                </div>}
 
                 <h3>{t('admin.venue.floorPlan')}</h3>
-                <FloorPlanEditor plan={plan} switches={switches} language={editLanguage} onChange={setPlan} />
+                {loaded && <FloorPlanEditor plan={plan} switches={switches} language={editLanguage} onChange={setPlan} />}
                 <div style={{ marginBottom: '115px' }}></div>
 
                 <div className={"playedContainer"}>
-                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled} onClick={handleSave}
+                    <IonButton slot="start" shape="round" className={"round"} disabled={buttonDisabled || !loaded} onClick={handleSave}
                         tabIndex={0}
                         onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
+                            if (loaded && (e.key === 'Enter' || e.key === ' ')) {
                                 handleSave();
                             }
                         }}

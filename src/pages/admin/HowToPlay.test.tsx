@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { itRequiresAnAdminSession } from '../../test/adminGuard';
 import { backend, stubDefaultBackend } from '../../test/backend';
 import { expectErrorToast, expectSuccessToast } from '../../test/overlays';
-import { renderWithRouter } from '../../test/render';
+import { buttonOf, renderWithRouter } from '../../test/render';
 import { TournamentDTO } from '../../util/api/config/dto';
 import { parseHowToPlay, serializeHowToPlay } from '../../util/layout/howToPlay';
 import HowToPlay from './HowToPlay';
@@ -91,5 +91,16 @@ describe('admin HowToPlay', () => {
 
         await expectErrorToast(message);
         expect(backend.requestsTo('PUT', ADMIN_SETTINGS_URL)).toHaveLength(0);
+    });
+
+    it('shows an error and cannot overwrite the stored rules when the settings cannot be loaded', async () => {
+        backend.fail('GET', SETTINGS_URL, 500);
+
+        renderPage();
+
+        await expectErrorToast('Einstellungen konnten nicht geladen werden');
+        expect(buttonOf('Speichern').disabled).toBe(true);
+        expect(screen.queryByLabelText(VIDEO)).not.toBeInTheDocument();
+        expect(screen.queryByText('+ Regel hinzufügen')).not.toBeInTheDocument();
     });
 });
