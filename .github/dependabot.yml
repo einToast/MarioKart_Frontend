@@ -37,27 +37,39 @@ updates:
         patterns:
           - "@ionic/react"
           - "@ionic/react-router"
+        update-types:
+          - "major"
       eslint:
         patterns:
           - "eslint"
           - "@eslint/js"
+        update-types:
+          - "major"
       react-router:
         patterns:
           - "react-router"
           - "react-router-dom"
+        update-types:
+          - "major"
       capacitor:
         patterns:
           - "@capacitor/*"
+        update-types:
+          - "major"
       react:
         patterns:
           - "react"
           - "react-dom"
           - "@types/react"
           - "@types/react-dom"
+        update-types:
+          - "major"
       i18next:
         patterns:
           - "i18next"
           - "react-i18next"
+        update-types:
+          - "major"
 
   - package-ecosystem: "npm"
     directory: "/docker/runtime"
@@ -93,6 +105,8 @@ updates:
       codeql-action:
         patterns:
           - "github/codeql-action*"
+        update-types:
+          - "major"
 
   - package-ecosystem: "docker"
     directory: "/"
