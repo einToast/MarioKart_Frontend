@@ -9,6 +9,9 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
     open-pull-requests-limit: 50
     ignore:
       - dependency-name: "eslint"
@@ -24,6 +27,12 @@ updates:
         versions:
           - ">= 7"
     groups:
+      npm-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
       ionic:
         patterns:
           - "@ionic/react"
@@ -49,6 +58,16 @@ updates:
         patterns:
           - "i18next"
           - "react-i18next"
+
+  - package-ecosystem: "npm"
+    directory: "/docker/runtime"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 10
+    groups:
       npm-minor:
         patterns:
           - "*"
@@ -56,19 +75,21 @@ updates:
           - "minor"
           - "patch"
 
-
-  - package-ecosystem: "npm"
-    directory: "/docker/runtime"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
     open-pull-requests-limit: 10
     groups:
+      actions-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
       codeql-action:
         patterns:
           - "github/codeql-action*"
@@ -77,14 +98,34 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
     open-pull-requests-limit: 10
     ignore:
       - dependency-name: "node"
         versions:
           - ">= 25, < 27"
+    groups:
+      docker-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
     open-pull-requests-limit: 10
+    groups:
+      devcontainers-minor:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
